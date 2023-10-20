@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Grafica_cumplimiento_Metas_LineaAccion_TODAS"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="552"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\TRABAJO\\ATHENEA\\ARTICULACION\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(205)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2008"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COD_LOCALIDAD" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["-99"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOCALIDAD" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["Todas"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["04/04/09"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COD_AREA" isForPrompting="true" class="java.lang.Integer"/>
+	<queryString><![CDATA[select     POA_PLANACTIVIDAD.PLACCODARGESTION as COD_AREA_GESTION,
+	   POA_AREAGESTION.ARGENOMBRE as NOMBRE_AREA,
+	   POA_LINEAACCION.LIACCODIGO,
+	   POA_LINEAACCION.LIACNOMBRE,
+	   AVG(CASE nvl(PLACCODTIMETA,0)
+	   when 1 then
+	   (SEGPORCEJECP1+SEGPORCEJECP2+SEGPORCEJECP3+SEGPORCEJECP4) / PLACCANTIDAD
+	   when 2 then
+	   NVL(CASE SEGPORCEJECP4 WHEN 0 THEN NULL ELSE SEGPORCEJECP4 END,
+	   NVL(CASE SEGPORCEJECP3 WHEN 0 THEN NULL ELSE SEGPORCEJECP3 END,
+	   NVL(CASE SEGPORCEJECP2 WHEN 0 THEN NULL ELSE SEGPORCEJECP2 END,
+	   NVL(CASE SEGPORCEJECP1 WHEN 0 THEN NULL ELSE SEGPORCEJECP1 END
+	   ,0))))
+	   when 3 then
+	   ((SEGPORCEJECP4+SEGPORCEJECP3+SEGPORCEJECP2+SEGPORCEJECP1)/CASE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) WHEN 0 THEN 1 ELSE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) END)/PLACCANTIDAD
+	   end ) AS PROMEDIO
+from POA_PLANACTIVIDAD 
+INNER JOIN POA_AREAGESTION ON POA_AREAGESTION.ARGECODIGO = POA_PLANACTIVIDAD.PLACCODARGESTION
+INNER JOIN POA ON POA.POACODINST = POA_PLANACTIVIDAD.PLACCODINST
+INNER JOIN INSTITUCION ON INSTITUCION.INSCODIGO = POA.POACODINST
+INNER JOIN POA_LINEAACCION ON POA_LINEAACCION.LIACCODAREAGESTION= POA_AREAGESTION.ARGECODIGO AND POA_LINEAACCION.LIACCODIGO = POA_PLANACTIVIDAD.PLACCODLIACCION  
+where POA.POAESTADO=1  and POA.POAVIGENCIA = $P{VIGENCIA}
+AND POA_PLANACTIVIDAD.PLACVIGENCIA= POA.POAVIGENCIA
+AND (-99=$P{INSTITUCION} or INSTITUCION.INSCODIGO = $P{INSTITUCION})
+AND (-99=$P{COD_LOCALIDAD} or INSTITUCION.INSCODLOCAL = $P{COD_LOCALIDAD})
+AND POA_PLANACTIVIDAD.PLACCODARGESTION=$P{COD_AREA}
+group by POA_PLANACTIVIDAD.PLACCODARGESTION,POA_AREAGESTION.ARGENOMBRE,POA_LINEAACCION.LIACCODIGO,POA_LINEAACCION.LIACNOMBRE,POA_AREAGESTION.ARGEORDEN
+ORDER BY POA_AREAGESTION.ARGEORDEN]]></queryString>
+
+	<field name="COD_AREA_GESTION" class="java.lang.Integer"/>
+	<field name="NOMBRE_AREA" class="java.lang.String"/>
+	<field name="LIACCODIGO" class="java.math.BigDecimal"/>
+	<field name="LIACNOMBRE" class="java.lang.String"/>
+	<field name="PROMEDIO" class="java.math.BigDecimal"/>
+
+	<variable name="TOTAL_PROMEDIOS" class="java.math.BigDecimal" resetType="Group" resetGroup="AREA" calculation="Sum">
+		<variableExpression><![CDATA[$F{PROMEDIO}]]></variableExpression>
+	</variable>
+
+		<group  name="AREA" >
+			<groupExpression><![CDATA[$F{NOMBRE_AREA}]]></groupExpression>
+			<groupHeader>
+			<band height="217"  isSplitAllowed="true" >
+				<pie3DChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="1"
+						width="549"
+						height="209"
+						key="element-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<pieDataset>
+						<dataset >
+						</dataset>
+						<keyExpression><![CDATA[$F{LIACNOMBRE}]]></keyExpression>
+						<valueExpression><![CDATA[$F{PROMEDIO}]]></valueExpression>
+						<labelExpression><![CDATA[$F{LIACNOMBRE}+": "+$F{PROMEDIO}]]></labelExpression>
+				<sectionHyperlink >
+				</sectionHyperlink>
+					</pieDataset>
+					<pie3DPlot depthFactor="0.3" >
+						<plot />
+					</pie3DPlot>
+				</pie3DChart>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="1"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

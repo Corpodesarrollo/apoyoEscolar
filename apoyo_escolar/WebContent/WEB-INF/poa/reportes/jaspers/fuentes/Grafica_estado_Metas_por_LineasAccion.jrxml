@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Grafica_estado_Metas_por_LineasAccion"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="792"
+		 pageHeight="612"
+		 columnWidth="732"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\TRABAJO\\ATHENEA\\ARTICULACION\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["123"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(-99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2008"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COD_LOCALIDAD" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["-99"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOCALIDAD" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["Todas"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["04/04/09"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COD_AREA" isForPrompting="true" class="java.lang.Long"/>
+	<queryString><![CDATA[select COD_LINEA, NOMBRE_LINEA,COD_ESTADO,ESTADO, CANTIDAD from TMP_REPORTE_ESTADOS_META 
+where USUARIO=$P{USUARIO} 
+and COD_AREA=$P{COD_AREA} 
+order by 1,3]]></queryString>
+
+	<field name="COD_LINEA" class="java.lang.Long"/>
+	<field name="NOMBRE_LINEA" class="java.lang.String"/>
+	<field name="COD_ESTADO" class="java.lang.Long"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="CANTIDAD" class="java.lang.Long"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="1"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="250"  isSplitAllowed="true" >
+				<barChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="6"
+						width="694"
+						height="239"
+						key="element-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<categoryDataset>
+						<dataset >
+						</dataset>
+						<categorySeries>
+							<seriesExpression><![CDATA[$F{ESTADO}]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{COD_LINEA}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{CANTIDAD}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+					</categoryDataset>
+					<barPlot isShowLabels="true" >
+						<plot >
+							<seriesColor seriesOrder="0" color="#FFFF66"/>
+							<seriesColor seriesOrder="1" color="#FF0000"/>
+							<seriesColor seriesOrder="2" color="#99F433"/>
+							<seriesColor seriesOrder="3" color="#339900"/>
+							<seriesColor seriesOrder="4" color="#FF6600"/>
+</plot>
+					<categoryAxisLabelExpression><![CDATA["*Lineas de acción"]]></categoryAxisLabelExpression>
+						<categoryAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</categoryAxisFormat>
+						<valueAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</valueAxisFormat>
+					</barPlot>
+				</barChart>
+			</band>
+		</summary>
+</jasperReport>

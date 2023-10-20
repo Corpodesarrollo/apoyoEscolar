@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context
+    crossContext="true"
+    reloadable="true">
+  <Resource
+    auth="Container"
+    name="jdbc/siges"
+    type="javax.sql.DataSource"
+    password="jaime"
+    driverClassName="oracle.jdbc.driver.OracleDriver"
+    maxIdle="2"
+    maxWait="10000"
+    removeAbandoned="true"
+    logAbandoned="true"
+    username="jaime"
+    url="jdbc:oracle:thin:@131.107.2.70:1521:NOTAS"
+    removeAbandonedTimeout="120"
+    maxActive="6"/>
+  <Resource
+    auth="Container"
+    name="jdbc/matriculas"
+    type="javax.sql.DataSource"
+    password="siges"
+    driverClassName="oracle.jdbc.driver.OracleDriver"
+    maxIdle="2"
+    maxWait="10000"
+    removeAbandoned="true"
+    logAbandoned="true"
+    username="matricund"
+    url="jdbc:oracle:thin:@131.107.2.70:1521:NOTAS"
+    removeAbandonedTimeout="120"
+    maxActive="6"/>
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
+</Context>

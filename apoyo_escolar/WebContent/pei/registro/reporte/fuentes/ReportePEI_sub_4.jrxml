@@ -1,0 +1,2282 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ReportePEI_sub_4"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="581"
+		 pageHeight="476"
+		 columnWidth="581"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="SubDatasetPreparacion" >
+
+		<parameter name="TIPO_PARAMS" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[SELECT nvl(CRALCODINST,   $P{INSTITUCION} ), 
+       PARHCODPADRE, 
+       PARHCODIGO, 
+       CRALVALORINST,
+       PARHORDEN||PARHCODIGO||'::'||PARHNOMBRE AS PARHNOMBRE,
+       PARHABREV,PARHVALMAX ,
+      NVL(CRALVALORINST,0)||'||'||PARHVALMAX||'::'||PARHNOMBRE AS PARAM
+FROM PEI_PARAM_HIJO 
+left outer join PEI_INST_CRITERIO_ALCANCE ON(CRALCODINST= $P{INSTITUCION}
+     and CRALCODCRITERIOPADRE=PARHCODPADRE 
+     and CRALCODCRITERIOHIJO=PARHCODIGO) 
+where PARHCODPADRE =$P{TIPO_PARAMS}
+      and PARHESTADO=1 
+order by PARHORDEN]]></queryString>
+
+		<field name="NVL(CRALCODINST,:1)" class="java.math.BigDecimal"/>
+		<field name="PARHCODPADRE" class="java.math.BigDecimal"/>
+		<field name="PARHCODIGO" class="java.math.BigDecimal"/>
+		<field name="CRALVALORINST" class="java.math.BigDecimal"/>
+		<field name="PARHNOMBRE" class="java.lang.String"/>
+		<field name="PARHABREV" class="java.lang.String"/>
+		<field name="PARHVALMAX" class="java.math.BigDecimal"/>
+		<field name="PARAM" class="java.lang.String"/>
+
+	</subDataset>
+
+	<subDataset name="SubDatasetArt" >
+
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[SELECT *
+FROM   PEI_INST_PRGSENA,
+        PEI_PARAM_HIJO 
+where PARHCODPADRE= 9
+and PRGSCODINST=$P{INSTITUCION}
+and PARHCODIGO=PRGSCODPROG 
+and PARHESTADO=1 
+order by PARHORDEN]]></queryString>
+
+		<field name="PRGSCODINST" class="java.math.BigDecimal"/>
+		<field name="PRGSCODPROG" class="java.math.BigDecimal"/>
+		<field name="PRGSNUMESTUD" class="java.math.BigDecimal"/>
+		<field name="PARHCODPADRE" class="java.math.BigDecimal"/>
+		<field name="PARHCODIGO" class="java.math.BigDecimal"/>
+		<field name="PARHNOMBRE" class="java.lang.String"/>
+		<field name="PARHABREV" class="java.lang.String"/>
+		<field name="PARHDESCRIPCION" class="java.lang.String"/>
+		<field name="PARHESTADO" class="java.math.BigDecimal"/>
+		<field name="PARHORDEN" class="java.math.BigDecimal"/>
+		<field name="PARHEDICION" class="java.math.BigDecimal"/>
+		<field name="PARHVALMAX" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<subDataset name="SubDatasetDocent" >
+
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[SELECT CADOCODINST, CADOCODFORMAC, CADONOMBREFORMAC, 
+CADONUMDOCENTES, 
+CADOCODUNIVERSIDAD,PARHNOMBRE 
+FROM PEI_INST_CAPACITADOCENTES,PEI_PARAM_HIJO 
+where CADOCODINST=$P{INSTITUCION}  
+and PARHCODPADRE=10  
+and CADOCODUNIVERSIDAD=PARHCODIGO 
+and PARHESTADO=1 
+order by CADOCODFORMAC]]></queryString>
+
+		<field name="CADOCODINST" class="java.math.BigDecimal"/>
+		<field name="CADOCODFORMAC" class="java.math.BigDecimal"/>
+		<field name="CADONOMBREFORMAC" class="java.lang.String"/>
+		<field name="CADONUMDOCENTES" class="java.math.BigDecimal"/>
+		<field name="CADOCODUNIVERSIDAD" class="java.math.BigDecimal"/>
+		<field name="PARHNOMBRE" class="java.lang.String"/>
+
+	</subDataset>
+
+	<subDataset name="SubDatasetArcUniv" >
+
+		<parameter name="INST" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[SELECT PRGUCODINST, PRGUCODUNIVERSIDAD, 
+      PRGUCODPROGRAMA,PRGUNUMESTUD,a.PARHNOMBRE AS A, a.PARHORDEN||b.PARHORDEN||'::'||b.PARHNOMBRE AS B 
+FROM PEI_INST_PRGUNIVERSIDAD,
+     PEI_PARAM_HIJO a,
+      PEI_PARAM_HIJO b 
+where PRGUCODINST= $P{INSTITUCION} 
+  and a.PARHCODPADRE=10
+  and a.PARHCODIGO=PRGUCODUNIVERSIDAD 
+  and a.PARHESTADO=1 
+   and b.PARHCODPADRE=9 
+   and b.PARHCODIGO=PRGUCODPROGRAMA 
+   and b.PARHESTADO=1 
+   order by a.PARHORDEN,b.PARHORDEN]]></queryString>
+
+		<field name="PRGUCODINST" class="java.math.BigDecimal"/>
+		<field name="PRGUCODUNIVERSIDAD" class="java.math.BigDecimal"/>
+		<field name="PRGUCODPROGRAMA" class="java.math.BigDecimal"/>
+		<field name="PRGUNUMESTUD" class="java.math.BigDecimal"/>
+		<field name="A" class="java.lang.String"/>
+		<field name="B" class="java.lang.String"/>
+
+	</subDataset>
+
+	<subDataset name="SubDatasetProy" >
+
+		<parameter name="INST" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[SELECT NVL( PROYCODINST, $P{INST}), 
+       p2.PARHCODIGO as PARHCODIGO_2,
+       p1.PARHCODIGO as PARHCODIGO_1,
+       p2.PARHORDEN||p2.PARHCODIGO||'::'||p2.PARHNOMBRE as PARHNOMBRE_2,
+       p1.PARHORDEN||p1.PARHCODIGO||'::'||p1.PARHNOMBRE as PARHNOMBRE_1,
+       case PROYETAPA when p2.PARHCODIGO then 1 else 0 end as checked,
+       PROYDIFICULTAD   
+FROM PEI_PARAM_HIJO p1
+left outer join PEI_INST_PROYECTO on(PROYCODINST=$P{INST} and p1.PARHCODIGO=PROYCODPROYECTO) 
+inner join PEI_PARAM_HIJO p2 on  p2.PARHCODPADRE=1 and p2.PARHESTADO=1
+where   p1.PARHCODPADRE=11 
+and p1.PARHESTADO=1 
+ORDER BY  PROYCODINST, 
+       p2.PARHORDEN,
+       p1.PARHORDEN,
+       p2.PARHCODIGO,
+       p1.PARHCODIGO,
+       p2.PARHNOMBRE,
+       p1.PARHNOMBRE,
+       PROYETAPA,
+       PROYDIFICULTAD]]></queryString>
+
+		<field name="NVL(PROYCODINST,:1)" class="java.math.BigDecimal"/>
+		<field name="PARHCODIGO_2" class="java.math.BigDecimal"/>
+		<field name="PARHCODIGO_1" class="java.math.BigDecimal"/>
+		<field name="PARHNOMBRE_2" class="java.lang.String"/>
+		<field name="PARHNOMBRE_1" class="java.lang.String"/>
+		<field name="CHECKED" class="java.math.BigDecimal"/>
+		<field name="PROYDIFICULTAD" class="java.lang.String"/>
+
+	</subDataset>
+
+	<subDataset name="SubDatasetProyDoc" >
+
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[SELECT OPROCODINST, OPROCODPROYECTO, OPROCODPROYECTO||'::'||OPRONOMBRE AS OPRONOMBRE, OPROALCANCE, OPRODIFICULTAD, OPROENTIDAD 
+FROM PEI_INST_OTROPROYECTO 
+where OPROCODINST=$P{INSTITUCION}
+order by OPROCODPROYECTO]]></queryString>
+
+		<field name="OPROCODINST" class="java.math.BigDecimal"/>
+		<field name="OPROCODPROYECTO" class="java.math.BigDecimal"/>
+		<field name="OPRONOMBRE" class="java.lang.String"/>
+		<field name="OPROALCANCE" class="java.lang.String"/>
+		<field name="OPRODIFICULTAD" class="java.lang.String"/>
+		<field name="OPROENTIDAD" class="java.lang.String"/>
+
+	</subDataset>
+
+	<subDataset name="SubDatasetDOCENTE" >
+
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[SELECT CADOCODINST, CADOCODFORMAC, CADOCODFORMAC||'::'||CADONOMBREFORMAC as CADONOMBREFORMAC, 
+CADONUMDOCENTES, 
+CADOCODUNIVERSIDAD,PARHNOMBRE 
+FROM PEI_INST_CAPACITADOCENTES,PEI_PARAM_HIJO 
+where CADOCODINST=$P{INSTITUCION}  
+and PARHCODPADRE=10  
+and CADOCODUNIVERSIDAD=PARHCODIGO 
+and PARHESTADO=1 
+order by CADOCODFORMAC]]></queryString>
+
+		<field name="CADOCODINST" class="java.math.BigDecimal"/>
+		<field name="CADOCODFORMAC" class="java.math.BigDecimal"/>
+		<field name="CADONOMBREFORMAC" class="java.lang.String"/>
+		<field name="CADONUMDOCENTES" class="java.math.BigDecimal"/>
+		<field name="CADOCODUNIVERSIDAD" class="java.math.BigDecimal"/>
+		<field name="PARHNOMBRE" class="java.lang.String"/>
+
+	</subDataset>
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["D:\\fredy\\backup_fredy\\_APOYO\\reporte_PEI\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TIPO_PARAMS" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(5)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ETAPA" isForPrompting="false" class="java.lang.Long"/>
+	<parameter name="TIPO_PARAMS2" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(5)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TIPO_PARAMS3" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(7)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="INST" isForPrompting="false" class="java.lang.Long"/>
+	<queryString><![CDATA[select pei_inst.*
+from 
+   PEI_INSTITUCION pei_inst
+WHERE  PEICODINST = $P{INSTITUCION}]]></queryString>
+
+	<field name="PEICODINST" class="java.math.BigDecimal"/>
+	<field name="PEIESTUDMAT" class="java.math.BigDecimal"/>
+	<field name="PEINUMJORNAD" class="java.math.BigDecimal"/>
+	<field name="PEIEXISTE" class="java.math.BigDecimal"/>
+	<field name="PEINOMBRE" class="java.lang.String"/>
+	<field name="PEICODETAPADES" class="java.math.BigDecimal"/>
+	<field name="PEICODENFASIS" class="java.math.BigDecimal"/>
+	<field name="PEIENFASISOTRO" class="java.lang.String"/>
+	<field name="PEICODENFPEDAG" class="java.math.BigDecimal"/>
+	<field name="PEIENFPEDAGOTRO" class="java.lang.String"/>
+	<field name="PEIESTADO" class="java.math.BigDecimal"/>
+	<field name="PEIPROCESO" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAMISION" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAVISION" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAPERFILES" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAOBJINSTIT" class="java.math.BigDecimal"/>
+	<field name="PEIETAPADIFICULTAD" class="java.lang.String"/>
+	<field name="PEICODFASECURRIC" class="java.math.BigDecimal"/>
+	<field name="PEIHERRAMIENTAVIDA" class="java.math.BigDecimal"/>
+	<field name="PEIBASECONOCIMIENTO" class="java.math.BigDecimal"/>
+	<field name="PEIALCANCEC1" class="java.lang.String"/>
+	<field name="PEIALCANCEC2" class="java.lang.String"/>
+	<field name="PEIALCANCEC3" class="java.lang.String"/>
+	<field name="PEIALCANCEC4" class="java.lang.String"/>
+	<field name="PEIALCANCEC5" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC1" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC2" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC3" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC4" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC5" class="java.lang.String"/>
+	<field name="PEIARTICULADO" class="java.math.BigDecimal"/>
+	<field name="PEIESTMEDIA" class="java.math.BigDecimal"/>
+	<field name="PEIESTARTICULADA" class="java.math.BigDecimal"/>
+	<field name="PEIESTARTSENA" class="java.math.BigDecimal"/>
+	<field name="PEIESTINTSENA" class="java.math.BigDecimal"/>
+	<field name="PEISEGEGRESADO" class="java.math.BigDecimal"/>
+	<field name="PEIPRACTICALAB" class="java.math.BigDecimal"/>
+	<field name="PEIPOACONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIPOACOMUNIDADESC" class="java.math.BigDecimal"/>
+	<field name="PEIPOATOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEICONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIEITOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEFRECUENCIA" class="java.math.BigDecimal"/>
+	<field name="PEIHRRORIENTSED" class="java.math.BigDecimal"/>
+	<field name="PEIHRROTROSDOCS" class="java.math.BigDecimal"/>
+	<field name="PEIHRRCUALES" class="java.lang.String"/>
+	<field name="PEIPRODADMIN" class="java.math.BigDecimal"/>
+	<field name="PEIPRODADMINCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIMANUALFUNC" class="java.math.BigDecimal"/>
+	<field name="PEIMANUALFUNCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIPROCINVENT" class="java.math.BigDecimal"/>
+	<field name="PEIPROCINVENTDIFICULTAD" class="java.lang.String"/>
+	<field name="PEISISTINF" class="java.math.BigDecimal"/>
+	<field name="PEISISTINFDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIESTCOMUNIC" class="java.math.BigDecimal"/>
+	<field name="PEIESTCOMUNICDIFICULTAD" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="476"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="12"
+						y="58"
+						width="246"
+						height="15"
+						key="staticText-2"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿El colegio está articulado con la eduación superior? ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="262"
+						y="59"
+						width="15"
+						height="15"
+						key="staticText-3"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Si  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="301"
+						y="59"
+						width="15"
+						height="15"
+						key="staticText-4"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[No]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="10"
+						y="80"
+						width="246"
+						height="15"
+						key="staticText-5"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Indicar la estrategia utilizada:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="17"
+						y="99"
+						width="237"
+						height="13"
+						key="staticText-6"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Media especializada]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="17"
+						y="116"
+						width="237"
+						height="13"
+						key="staticText-7"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Articulación con Instituciones de Educación Superior]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="17"
+						y="150"
+						width="237"
+						height="13"
+						key="staticText-8"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Integrados con el SENA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="16"
+						y="132"
+						width="237"
+						height="13"
+						key="staticText-9"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Articulados a Nivel superior con el SENA]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="261"
+						y="97"
+						width="14"
+						height="14"
+						key="textField-3"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIESTMEDIA}+"").equals("1")?"X":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="261"
+						y="115"
+						width="14"
+						height="14"
+						key="textField-4"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIESTARTICULADA}+"").equals("1")?"X":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="261"
+						y="132"
+						width="14"
+						height="14"
+						key="textField-5"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIESTARTSENA}+"").equals("1")?"X":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="261"
+						y="151"
+						width="14"
+						height="14"
+						key="textField-6"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIESTINTSENA}+"").equals("1")?"X":""]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="1"
+						width="580"
+						height="14"
+						backcolor="#EBE9E9"
+						key="staticText-11"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Registre su Criterio de Alcance]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="175"
+						width="580"
+						height="14"
+						backcolor="#EBE9E9"
+						key="staticText-12"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Articulación en programas con el SENA]]></text>
+				</staticText>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="25"
+						width="581"
+						height="7"
+						key="crosstab-2"
+						positionType="Float"/>
+
+					<crosstabParameter name="INSTITUCION" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{INSTITUCION}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabParameter name="TIPO_PARAMS" class="java.lang.Long" >						<parameterValueExpression><![CDATA[new Long(6)]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetPreparacion">
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="TIPO_PARAMS">
+									<datasetParameterExpression><![CDATA[new Long(6)]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[FORMULACIÓN]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PARHNOMBRE" width="510">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE}.substring( $V{PARHNOMBRE}.lastIndexOf("::") + 2, $V{PARHNOMBRE}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="NVL(CRALCODINST,511)" height="13" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[""]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<line direction="TopDown">
+					<reportElement
+						x="46"
+						y="0"
+						width="0"
+						height="13"
+						forecolor="#CCCCCC"
+						backcolor="#CCCCCC"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Max.]]></text>
+				</staticText>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="PARHVALMAX_First" class="java.math.BigDecimal" calculation="First">
+						<measureExpression><![CDATA[$F{PARHVALMAX}]]></measureExpression>
+					</measure>
+					<measure name="CRALVALORINST" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{CRALVALORINST}]]></measureExpression>
+					</measure>
+					<measure name="PARHVALMAX" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{PARHVALMAX}]]></measureExpression>
+					</measure>
+					<crosstabCell width="60" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{PARHVALMAX}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{CRALVALORINST}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" columnTotalGroup="NVL(CRALCODINST,511)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="60" height="0" rowTotalGroup="PARHNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="PARHNOMBRE" columnTotalGroup="NVL(CRALCODINST,511)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="32"
+						width="581"
+						height="7"
+						key="crosstab-3"
+						positionType="Float"/>
+
+					<crosstabParameter name="INSTITUCION" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{INSTITUCION}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetPreparacion">
+								<datasetParameter  name="TIPO_PARAMS">
+									<datasetParameterExpression><![CDATA[new Long(7)]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[EJECUCIÓN]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PARHNOMBRE" width="510">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE}.substring( $V{PARHNOMBRE}.lastIndexOf("::") + 2, $V{PARHNOMBRE}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="NVL(CRALCODINST,511)" height="13" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[""]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="0"
+						width="0"
+						height="13"
+						forecolor="#CCCCCC"
+						backcolor="#CCCCCC"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Max.]]></text>
+				</staticText>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="PARHVALMAX" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{PARHVALMAX}]]></measureExpression>
+					</measure>
+					<measure name="CRALVALORINST" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{CRALVALORINST}]]></measureExpression>
+					</measure>
+					<crosstabCell width="61" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{PARHVALMAX}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{CRALVALORINST}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" columnTotalGroup="NVL(CRALCODINST,511)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="61" height="0" rowTotalGroup="PARHNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="PARHNOMBRE" columnTotalGroup="NVL(CRALCODINST,511)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="39"
+						width="581"
+						height="7"
+						key="crosstab-4"
+						positionType="Float"/>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetPreparacion">
+								<datasetParameter  name="TIPO_PARAMS">
+									<datasetParameterExpression><![CDATA[new Long(8)]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[SEGUIMIENTO, EVALUACIÓN Y SOSTENIBILIDAD]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PARHNOMBRE" width="510">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE}.substring( $V{PARHNOMBRE}.lastIndexOf("::") + 2, $V{PARHNOMBRE}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="NVL(CRALCODINST,:1)" height="13" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.math.BigDecimal"><![CDATA[$F{NVL(CRALCODINST,:1)}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="0"
+						width="0"
+						height="13"
+						forecolor="#CCCCCC"
+						backcolor="#CCCCCC"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Max.]]></text>
+				</staticText>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="PARHVALMAX" class="java.math.BigDecimal" calculation="First">
+						<measureExpression><![CDATA[$F{PARHVALMAX}]]></measureExpression>
+					</measure>
+					<measure name="CRALVALORINST" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{CRALVALORINST}]]></measureExpression>
+					</measure>
+					<crosstabCell width="61" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{PARHVALMAX}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="0"
+						width="0"
+						height="13"
+						forecolor="#CCCCCC"
+						backcolor="#CCCCCC"
+						key="line-1"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{CRALVALORINST}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" columnTotalGroup="NVL(CRALCODINST,:1)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="61" height="0" rowTotalGroup="PARHNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="PARHNOMBRE" columnTotalGroup="NVL(CRALCODINST,:1)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="192"
+						width="581"
+						height="30"
+						key="crosstab-5"
+						positionType="Float"/>
+
+					<crosstabParameter name="INSTITUCION" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{INSTITUCION}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetArt">
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="172"
+						y="0"
+						width="100"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Programa]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PARHNOMBRE" width="272">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="172"
+						y="0"
+						width="100"
+						height="15"
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="2" rightBorder="Thin" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="PRGSCODINST1_" height="13" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[""]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="92"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Número de estudiantes]]></text>
+				</staticText>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="PRGSNUMESTUD" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{PRGSNUMESTUD}]]></measureExpression>
+					</measure>
+					<crosstabCell width="92" height="15">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="92"
+						height="15"
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="2" rightBorder="Thin" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{PRGSNUMESTUD}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="15" columnTotalGroup="PRGSCODINST1_">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="92" height="0" rowTotalGroup="PARHNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="PARHNOMBRE" columnTotalGroup="PRGSCODINST1_">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="579"
+						height="13"
+						key="staticText-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[No hay articulación en programas con el SENA]]></text>
+				</staticText>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="320"
+						y="61"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-1"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIARTICULADO}+"").equals("0"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="320"
+						y="61"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-2"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(($F{PEIARTICULADO}+"").equals("0"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="280"
+						y="61"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-3"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(($F{PEIARTICULADO}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="280"
+						y="61"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-4"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(!($F{PEIARTICULADO}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="228"
+						width="580"
+						height="14"
+						backcolor="#EBE9E9"
+						key="staticText-13"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Articulación con Instituciones Universitarias]]></text>
+				</staticText>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="246"
+						width="581"
+						height="33"
+						key="crosstab-6"
+						positionType="Float"/>
+
+					<crosstabParameter name="INSTITUCION" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{INSTITUCION}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetArcUniv">
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="166"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-14"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Programa]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="b" width="166">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{B}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="166"
+						height="13"
+						key="textField"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{b}.substring( $V{b}.lastIndexOf("::") + 2, $V{b}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="PAGE_NUMBER1" height="13" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[""]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="238"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-14"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Universidad]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="238"
+						y="0"
+						width="166"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-14"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Número de estudiantes]]></text>
+				</staticText>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="A" class="java.lang.String" calculation="Count">
+						<measureExpression><![CDATA[$F{A}]]></measureExpression>
+					</measure>
+					<measure name="PRGUNUMESTUD" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{PRGUNUMESTUD}]]></measureExpression>
+					</measure>
+					<crosstabCell width="405" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="238"
+						height="13"
+						key="textField"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{A}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="238"
+						y="0"
+						width="166"
+						height="13"
+						key="textField"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{PRGUNUMESTUD}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" columnTotalGroup="PAGE_NUMBER1">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="405" height="0" rowTotalGroup="b">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="b" columnTotalGroup="PAGE_NUMBER1">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="580"
+						height="13"
+						key="staticText-19"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[No hay articulación con Instituciones Universitarias]]></text>
+				</staticText>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<staticText>
+					<reportElement
+						x="219"
+						y="286"
+						width="13"
+						height="15"
+						key="staticText-14"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Si  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="262"
+						y="286"
+						width="13"
+						height="15"
+						key="staticText-15"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[No]]></text>
+				</staticText>
+				<elementGroup><!--  Start: 1 !-->
+				<staticText>
+					<reportElement
+						x="220"
+						y="310"
+						width="13"
+						height="15"
+						key="staticText-16"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Si  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="262"
+						y="310"
+						width="13"
+						height="15"
+						key="staticText-17"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[No]]></text>
+				</staticText>
+				</elementGroup><!-- End 1 !-->
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="9"
+						y="287"
+						width="205"
+						height="14"
+						key="textField-7"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["¿Realiza el seguimiento a egresados?"]]></textFieldExpression>
+				</textField>
+				<elementGroup><!--  Start: 1 !-->
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="10"
+						y="310"
+						width="205"
+						height="14"
+						key="textField-8"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["¿Realiza práctica laboral o pasantías?"]]></textFieldExpression>
+				</textField>
+				</elementGroup><!-- End 1 !-->
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="279"
+						y="287"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-5"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(($F{PEISEGEGRESADO}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="279"
+						y="287"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-6"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(  !($F{PEISEGEGRESADO}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="236"
+						y="288"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-7"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEISEGEGRESADO}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="236"
+						y="288"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-8"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(  ($F{PEISEGEGRESADO}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<elementGroup><!--  Start: 1 !-->
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="279"
+						y="312"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-9"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(  !($F{PEIPRACTICALAB}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="279"
+						y="312"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-10"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPRACTICALAB}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="236"
+						y="312"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-11"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(  ($F{PEIPRACTICALAB}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="236"
+						y="312"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-12"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPRACTICALAB}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				</elementGroup><!-- End 1 !-->
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="331"
+						width="580"
+						height="26"
+						backcolor="#EBE9E9"
+						key="staticText-18"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Proyectos según la Ley General de Proyectos
+Señale en qué etapa se encuentran los siguientes proyectos:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="402"
+						width="580"
+						height="26"
+						backcolor="#EBE9E9"
+						key="staticText-19"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Otros proyectos a iniciativa del colegio o del Nivel Central de la Secretaría de Educación
+Tales como Lectura, Escritura y Oralidad, Derechos humanos
+]]></text>
+				</staticText>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="18"
+						width="581"
+						height="7"
+						key="crosstab-7"/>
+
+					<crosstabParameter name="INSTITUCION" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{INSTITUCION}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetPreparacion">
+								<datasetParameter  name="TIPO_PARAMS">
+									<datasetParameterExpression><![CDATA[new Long(5)]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[PREPARACIÓN]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PARHNOMBRE" width="510" totalPosition="End">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="510"
+						height="13"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE}.substring( $V{PARHNOMBRE}.lastIndexOf("::") + 2, $V{PARHNOMBRE}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="PARHCODPADRE" height="13" totalPosition="End" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[""]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Max.]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="0"
+						width="0"
+						height="13"
+						forecolor="#CCCCCC"
+						backcolor="#CCCCCC"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="PARHVALMAX" class="java.math.BigDecimal" calculation="Count">
+						<measureExpression><![CDATA[$F{PARHVALMAX}]]></measureExpression>
+					</measure>
+					<measure name="CRALVALORINST" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{CRALVALORINST}]]></measureExpression>
+					</measure>
+					<crosstabCell width="61" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{CRALVALORINST}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="30"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{PARHVALMAX}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" columnTotalGroup="PARHCODPADRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="61" height="0" rowTotalGroup="PARHNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="PARHNOMBRE" columnTotalGroup="PARHCODPADRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="431"
+						width="581"
+						height="24"
+						key="crosstab-8"
+						positionType="Float"/>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetProyDoc">
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="186"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Nombres]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="OPRONOMBRE" width="186" totalPosition="End">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{OPRONOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="186"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{OPRONOMBRE}.substring($V{OPRONOMBRE}.lastIndexOf("::") + 2, $V{OPRONOMBRE}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="OPROCODINST" height="13" totalPosition="End" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.math.BigDecimal"><![CDATA[$F{OPROCODINST}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="148"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Alcances]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="148"
+						y="0"
+						width="135"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Dificultades]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="283"
+						y="0"
+						width="98"
+						height="13"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Entidad que apoya]]></text>
+				</staticText>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="OPROENTIDAD" class="java.lang.String" calculation="Count">
+						<measureExpression><![CDATA[$F{OPROENTIDAD}]]></measureExpression>
+					</measure>
+					<measure name="OPROALCANCE" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{OPROALCANCE}]]></measureExpression>
+					</measure>
+					<measure name="OPRODIFICULTAD" class="java.lang.String">
+						<measureExpression><![CDATA[$F{OPRODIFICULTAD}]]></measureExpression>
+					</measure>
+					<crosstabCell width="383" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="283"
+						y="0"
+						width="98"
+						height="13"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{OPROENTIDAD}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="148"
+						y="0"
+						width="135"
+						height="13"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{OPRODIFICULTAD}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="148"
+						height="13"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{OPROALCANCE}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" columnTotalGroup="OPROCODINST">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="383" height="0" rowTotalGroup="OPRONOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="OPRONOMBRE" columnTotalGroup="OPROCODINST">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="581"
+						height="13"
+						key="staticText-20"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[No hay datos sobre proyectos a iniciativa del colegio]]></text>
+				</staticText>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<crosstab >
+					<reportElement
+						x="0"
+						y="363"
+						width="581"
+						height="31"
+						key="crosstab-9"
+						positionType="Float"/>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetProy">
+								<datasetParameter  name="INSTITUCION">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="INST">
+									<datasetParameterExpression><![CDATA[$P{INSTITUCION}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="76"
+						height="25"
+						backcolor="#CCCCCC"
+						key="staticText-21"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PARHNOMBRE_1" width="76" totalPosition="End">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE_1}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="76"
+						height="16"
+						backcolor="#CCCCCC"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE_1}.substring($V{PARHNOMBRE_1}.lastIndexOf("::") + 2, $V{PARHNOMBRE_1}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="PARHNOMBRE_2" height="25" totalPosition="End" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE_2}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="73"
+						height="25"
+						backcolor="#CCCCCC"
+						key="textField-9"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE_2}.substring($V{PARHNOMBRE_2}.lastIndexOf("::") + 2, $V{PARHNOMBRE_2}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="209"
+						height="25"
+						backcolor="#CCCCCC"
+						key="textField-9"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["DIFICULTADES"]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+
+					<measure name="PROYCODINST_Count" class="java.math.BigDecimal" calculation="First">
+						<measureExpression><![CDATA[$F{CHECKED}]]></measureExpression>
+					</measure>
+					<measure name="PROYDIFICULTAD_" class="java.lang.String">
+						<measureExpression><![CDATA[$F{PROYDIFICULTAD}]]></measureExpression>
+					</measure>
+					<crosstabCell width="73" height="16">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="73"
+						height="16"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="1" leftBorder="Thin" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" rightPadding="1" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($V{PROYCODINST_Count}+"").equals("1")?"X":""]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="209" height="16" columnTotalGroup="PARHNOMBRE_2">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="209"
+						height="16"
+						key="textField-9"
+						stretchType="RelativeToBandHeight"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" lineSpacing="Single">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PROYDIFICULTAD_}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="73" height="0" rowTotalGroup="PARHNOMBRE_1">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="209" height="0" rowTotalGroup="PARHNOMBRE_1" columnTotalGroup="PARHNOMBRE_2">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="580"
+						height="13"
+						key="staticText-20"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[No hay datos de proyectos según la Ley General de Proyectos]]></text>
+				</staticText>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

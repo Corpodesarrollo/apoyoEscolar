@@ -1,0 +1,1939 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="libro_notas"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="792"
+		 pageHeight="612"
+		 columnWidth="764"
+		 columnSpacing="0"
+		 leftMargin="14"
+		 rightMargin="14"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="DESCRIPTORES" >
+
+		<parameter name="COD_ESTUDIANTE" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="COD_AREA" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="CONSECBOL" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[select DESCODTIPO, DESNOMTIPO, DESCODIGO, DESNOMBRE, DESCODJERAR, DESORDEN
+from BOL_DESCRIPTOR
+where DESCONSECBOL = $P{CONSECBOL}
+and DESCODEST = $P{COD_ESTUDIANTE}
+and DESCODAREA=$P{COD_AREA}
+order by DESCODTIPO,DESORDEN]]></queryString>
+
+		<field name="DESCODTIPO" class="java.math.BigDecimal"/>
+		<field name="DESNOMTIPO" class="java.lang.String"/>
+		<field name="DESCODIGO" class="java.math.BigDecimal"/>
+		<field name="DESNOMBRE" class="java.lang.String"/>
+		<field name="DESCODJERAR" class="java.math.BigDecimal"/>
+		<field name="DESORDEN" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<subDataset name="LOGROS" >
+
+		<parameter name="CONSECBOL" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="COD_ESTUDIANTE" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="COD_ASIG" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[select LOGCODIGO, LOGNOMBRE, LOGEVALU, LOGCODJERAR, LOGORDEN
+from BOL_LOGRO
+where
+LOGCONSECBOL =$P{CONSECBOL}
+and LOGCODEST=$P{COD_ESTUDIANTE}
+and LOGCODASI =$P{COD_ASIG}
+order by LOGORDEN]]></queryString>
+
+		<field name="LOGCODIGO" class="java.math.BigDecimal"/>
+		<field name="LOGNOMBRE" class="java.lang.String"/>
+		<field name="LOGEVALU" class="java.lang.String"/>
+		<field name="LOGCODJERAR" class="java.math.BigDecimal"/>
+		<field name="LOGORDEN" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<subDataset name="FALLAS" >
+
+		<parameter name="CONSECBOL" isForPrompting="false" class="java.lang.Long"/>
+		<parameter name="COD_ESTUDIANTE" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[select TO_CHAR(FALFECHA,'dd/mm/yyyy') as fec
+from BOL_FALLAS
+where FALCONSECBOL = $P{CONSECBOL}
+and FALCODESTU = $P{COD_ESTUDIANTE}]]></queryString>
+
+		<field name="FEC" class="java.lang.String"/>
+
+	</subDataset>
+
+	<parameter name="ESCUDO_COLEGIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Tomcat\\webapps\\apoyo\\etc\\img\\escudo\\e11100136548-.gif"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="ESCUDO_SED" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Tomcat\\webapps\\apoyo\\etc\\img\\escudo.gif"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["PRUEBAS"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["SEDE"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["JORNADA"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PERIODO" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(2009)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Tomcat\\webapps\\sigesCDAW\\boletines\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="RESOLUCION" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["No. 00000000000 del 30/06/2010"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CONSECBOL" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1677)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NUM_PERIODOS" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(4)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBTITULO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["LOGROS Y DESCRIPTORES"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NOMBRE_PER_FINAL" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["FINAL"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_DESCRIPTOR" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="MOSTRAR_LOGROS" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="MOSTRAR_AREAS" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="MOSTRAR_ASIG" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="MOSTRAR_LOGROS_P" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ESCUDO_COLEGIO_EXISTE" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="CONVINST" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CONVMEN" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select EST.ESTCODIGO,EST.NOMTIPODOC||'. '||EST.ESTNUMDOC as DOC, ESTNOMBRE1, EST.ESTNOMBRE2, EST.ESTAPELLIDO1, EST.ESTAPELLIDO2, EST.GRANOMBRE, EST.NOMDIRGRUPO,EST.EVACOMPOBS, ESTOBS, ESTOBSASIG, ESTOBSGRUPO, ESTOBSPER,ESTAUSENCIAS,GRUCODIGO,
+EST.EVACOMPEVAL1,EST.EVACOMPEVAL2,EST.EVACOMPEVAL3,EST.EVACOMPEVAL4,EST.EVACOMPEVAL5,EST.EVACOMPEVAL6,EST.EVACOMPEVAL7,
+A.ARECODIGO, A.ARENOMBRE, A.EVAAREEVAL1,A.EVAAREEVAL2,A.EVAAREEVAL3,A.EVAAREEVAL4,A.EVAAREEVAL5,A.EVAAREEVAL6,A.EVAAREEVAL7,A.EVAAREMEN,
+A.EvaAreRec1, A.EvaAreRec2, A.EvaAreRec3, A.EvaAreRec4, A.EvaAreRec5, A.EvaAreRec6, A.EvaAreRec7,
+M.ASICODIGO, M.ASINOMBRE, M.EVAASIEVAL1,M.EVAASIEVAL2,M.EVAASIEVAL3,M.EVAASIEVAL4,M.EVAASIEVAL5,M.EVAASIEVAL6,M.EVAASIEVAL7,M.EVAASIMEN,M.EVAASIINAS, 
+M.EvaAsiRec1, M.EvaAsiRec2, M.EvaAsiRec3, M.EvaAsiRec4, M.EvaAsiRec5, M.EvaAsiRec6, M.EvaAsiRec7
+from BOL_ASIGNATURA M
+INNER JOIN BOL_AREA A on A.ARECODIGO=M.ASICODAREA and A.ARECODEST = M.ASICODEST and A.ARECONSECBOL=M.ASICONSECBOL
+INNER JOIN BOL_ESTUDIANTE EST on EST.ESTCODIGO = A.ARECODEST and EST.ESTCONSECBOL = A.ARECONSECBOL
+where EST.ESTCONSECBOL = $P{CONSECBOL}
+order by GRUCODIGO,EST.ESTAPELLIDO1, EST.ESTAPELLIDO2, ESTNOMBRE1, EST.ESTNOMBRE2, ARECODIGO, ASICODIGO]]></queryString>
+
+	<field name="ESTCODIGO" class="java.lang.Long"/>
+	<field name="DOC" class="java.lang.String"/>
+	<field name="ESTNOMBRE1" class="java.lang.String"/>
+	<field name="ESTNOMBRE2" class="java.lang.String"/>
+	<field name="ESTAPELLIDO1" class="java.lang.String"/>
+	<field name="ESTAPELLIDO2" class="java.lang.String"/>
+	<field name="GRANOMBRE" class="java.lang.String"/>
+	<field name="NOMDIRGRUPO" class="java.lang.String"/>
+	<field name="EVACOMPOBS" class="java.lang.String"/>
+	<field name="ESTOBS" class="java.lang.String"/>
+	<field name="ESTOBSASIG" class="java.lang.String"/>
+	<field name="ESTOBSGRUPO" class="java.lang.String"/>
+	<field name="ESTOBSPER" class="java.lang.String"/>
+	<field name="ESTAUSENCIAS" class="java.lang.String"/>
+	<field name="GRUCODIGO" class="java.math.BigDecimal"/>
+	<field name="EVACOMPEVAL1" class="java.lang.String"/>
+	<field name="EVACOMPEVAL2" class="java.lang.String"/>
+	<field name="EVACOMPEVAL3" class="java.lang.String"/>
+	<field name="EVACOMPEVAL4" class="java.lang.String"/>
+	<field name="EVACOMPEVAL5" class="java.lang.String"/>
+	<field name="EVACOMPEVAL6" class="java.lang.String"/>
+	<field name="EVACOMPEVAL7" class="java.lang.String"/>
+	<field name="ARECODIGO" class="java.lang.Long"/>
+	<field name="ARENOMBRE" class="java.lang.String"/>
+	<field name="EVAAREEVAL1" class="java.lang.String"/>
+	<field name="EVAAREEVAL2" class="java.lang.String"/>
+	<field name="EVAAREEVAL3" class="java.lang.String"/>
+	<field name="EVAAREEVAL4" class="java.lang.String"/>
+	<field name="EVAAREEVAL5" class="java.lang.String"/>
+	<field name="EVAAREEVAL6" class="java.lang.String"/>
+	<field name="EVAAREEVAL7" class="java.lang.String"/>
+	<field name="EVAAREMEN" class="java.lang.String"/>
+	<field name="EVAAREREC1" class="java.lang.Integer"/>
+	<field name="EVAAREREC2" class="java.lang.Integer"/>
+	<field name="EVAAREREC3" class="java.lang.Integer"/>
+	<field name="EVAAREREC4" class="java.lang.Integer"/>
+	<field name="EVAAREREC5" class="java.lang.Integer"/>
+	<field name="EVAAREREC6" class="java.lang.Integer"/>
+	<field name="EVAAREREC7" class="java.lang.Integer"/>
+	<field name="ASICODIGO" class="java.lang.Long"/>
+	<field name="ASINOMBRE" class="java.lang.String"/>
+	<field name="EVAASIEVAL1" class="java.lang.String"/>
+	<field name="EVAASIEVAL2" class="java.lang.String"/>
+	<field name="EVAASIEVAL3" class="java.lang.String"/>
+	<field name="EVAASIEVAL4" class="java.lang.String"/>
+	<field name="EVAASIEVAL5" class="java.lang.String"/>
+	<field name="EVAASIEVAL6" class="java.lang.String"/>
+	<field name="EVAASIEVAL7" class="java.lang.String"/>
+	<field name="EVAASIMEN" class="java.lang.String"/>
+	<field name="EVAASIINAS" class="java.math.BigDecimal"/>
+	<field name="EVAASIREC1" class="java.lang.Integer"/>
+	<field name="EVAASIREC2" class="java.lang.Integer"/>
+	<field name="EVAASIREC3" class="java.lang.Integer"/>
+	<field name="EVAASIREC4" class="java.lang.Integer"/>
+	<field name="EVAASIREC5" class="java.lang.Integer"/>
+	<field name="EVAASIREC6" class="java.lang.Integer"/>
+	<field name="EVAASIREC7" class="java.lang.Integer"/>
+
+	<variable name="test" class="java.lang.String" resetType="None" calculation="Nothing">
+		<variableExpression><![CDATA["test"]]></variableExpression>
+		<initialValueExpression><![CDATA["test"		]]></initialValueExpression>
+	</variable>
+
+		<group  name="ESTUDIANTE" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[$F{ESTCODIGO}]]></groupExpression>
+			<groupHeader>
+			<band height="129"  isSplitAllowed="true" >
+				<rectangle radius="3" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="3"
+						width="763"
+						height="92"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-1"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="1Point"/>
+				</rectangle>
+				<rectangle radius="3" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="99"
+						width="763"
+						height="28"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-15"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="1Point"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="495"
+						y="69"
+						width="201"
+						height="23"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-10"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="68"
+						y="69"
+						width="133"
+						height="23"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-11"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="204"
+						y="69"
+						width="288"
+						height="23"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-12"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="512"
+						y="45"
+						width="184"
+						height="21"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-9"
+						stretchType="RelativeToBandHeight"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="68"
+						y="45"
+						width="226"
+						height="21"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-5"
+						stretchType="RelativeToBandHeight"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="297"
+						y="45"
+						width="61"
+						height="21"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-6"
+						stretchType="RelativeToBandHeight"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="360"
+						y="45"
+						width="149"
+						height="21"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-8"
+						stretchType="RelativeToBandHeight"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="68"
+						y="6"
+						width="627"
+						height="14"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-13"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="734"
+						y="99"
+						width="30"
+						height="28"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-83"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="1" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[FALLAS
+ACUM.]]></text>
+				</staticText>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="68"
+						y="22"
+						width="628"
+						height="21"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-4"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="77"
+						y="7"
+						width="610"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-79"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[SECRETARÍA DE EDUCACIÓN DISTRITAL]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="78"
+						y="24"
+						width="609"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="14" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{INSTITUCION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="516"
+						y="45"
+						width="96"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[RESOLUCIÓN:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="362"
+						y="45"
+						width="51"
+						height="10"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="staticText-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[GRUPO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="299"
+						y="45"
+						width="60"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[JORNADA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="69"
+						y="45"
+						width="55"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[SEDE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="68"
+						y="69"
+						width="82"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[IDENTIFICACIÓN:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="204"
+						y="69"
+						width="67"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[ESTUDIANTE:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="496"
+						y="69"
+						width="141"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="6" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[DIRECTOR DE GRUPO]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="70"
+						y="54"
+						width="224"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{SEDE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="299"
+						y="54"
+						width="59"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{JORNADA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="204"
+						y="80"
+						width="288"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ESTNOMBRE1}+""+($F{ESTNOMBRE2}!=null?" "+$F{ESTNOMBRE2}:"")+" "+$F{ESTAPELLIDO1}+" "+($F{ESTAPELLIDO2}!=null?$F{ESTAPELLIDO2}:"")]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Center" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="3"
+						y="17"
+						width="64"
+						height="70"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.lang.String"><![CDATA[$P{ESCUDO_SED}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="69"
+						y="80"
+						width="133"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DOC}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="496"
+						y="80"
+						width="200"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMDIRGRUPO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="516"
+						y="54"
+						width="181"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="1" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{RESOLUCION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="362"
+						y="54"
+						width="146"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-19"
+						isPrintInFirstWholeBand="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="1" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GRANOMBRE}]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Center" onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="697"
+						y="15"
+						width="64"
+						height="70"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="image-2">
+							<printWhenExpression><![CDATA[new Boolean($P{ESCUDO_COLEGIO_EXISTE}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.lang.String"><![CDATA[$P{ESCUDO_COLEGIO}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="6"
+						y="102"
+						width="57"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-81"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[ÁREAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="37"
+						y="113"
+						width="208"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-82"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[ASIGNATURAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="674"
+						y="99"
+						width="60"
+						height="28"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-84"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[VALORACIÓN
+NACIONAL]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="629"
+						y="99"
+						width="45"
+						height="28"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-58"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="1" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{NOMBRE_PER_FINAL}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="449"
+						y="99"
+						width="180"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-85">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()==6)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="3" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[PERÍODO]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="599"
+						y="110"
+						width="30"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-59">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"1":($P{NUM_PERIODOS}.intValue()==2)?"2":($P{NUM_PERIODOS}.intValue()==3)?"3":($P{NUM_PERIODOS}.intValue()==4)?"4":($P{NUM_PERIODOS}.intValue()==5)?"5":($P{NUM_PERIODOS}.intValue()==6)?"6":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="569"
+						y="110"
+						width="30"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-60">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"1":($P{NUM_PERIODOS}.intValue()==3)?"2":($P{NUM_PERIODOS}.intValue()==4)?"3":($P{NUM_PERIODOS}.intValue()==5)?"4":($P{NUM_PERIODOS}.intValue()==6)?"5":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="539"
+						y="110"
+						width="30"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-61">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>2)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"1":($P{NUM_PERIODOS}.intValue()==4)?"2":($P{NUM_PERIODOS}.intValue()==5)?"3":($P{NUM_PERIODOS}.intValue()==6)?"4":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="509"
+						y="110"
+						width="30"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-62">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>3)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"1":($P{NUM_PERIODOS}.intValue()==5)?"2":($P{NUM_PERIODOS}.intValue()==6)?"3":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="479"
+						y="110"
+						width="30"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-63">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>4)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?"1":($P{NUM_PERIODOS}.intValue()==6)?"2":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="449"
+						y="110"
+						width="30"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-64">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>5)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?"":($P{NUM_PERIODOS}.intValue()==6)?"1":""]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="479"
+						y="99"
+						width="150"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-86">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()==5)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="3" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[PERÍODO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="509"
+						y="99"
+						width="120"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-87">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()==4)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="3" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[PERÍODO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="539"
+						y="99"
+						width="90"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-88">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()==3)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="3" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[PERÍODO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="570"
+						y="99"
+						width="59"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-89">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()==2)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="3" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[PERÍODO]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="136"  isSplitAllowed="true" >
+				<crosstab >
+					<reportElement
+						x="19"
+						y="37"
+						width="715"
+						height="5"
+						key="crosstab-3"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{ESTAUSENCIAS}.equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<crosstabDataset isDataPreSorted="true" >
+						<dataset >
+							<datasetRun subDataset="FALLAS">
+								<datasetParameter  name="CONSECBOL">
+									<datasetParameterExpression><![CDATA[$P{CONSECBOL}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="COD_ESTUDIANTE">
+									<datasetParameterExpression><![CDATA[$F{ESTCODIGO}]]></datasetParameterExpression>
+								</datasetParameter>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="FALL" width="0">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA["FALLA"]]></bucketExpression>
+						</bucket>
+					</rowGroup>
+					<columnGroup name="FALLAS" height="11" headerPosition="Stretch">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{FEC}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="53"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{FALLAS}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="FECHA" class="java.lang.String">
+						<measureExpression><![CDATA[$F{FEC}]]></measureExpression>
+					</measure>
+					<crosstabCell width="54" height="0">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="54" height="0" rowTotalGroup="FALL">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" columnTotalGroup="FALLAS">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="FALL" columnTotalGroup="FALLAS">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="4"
+						y="23"
+						width="758"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-82"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{ESTAUSENCIAS}.equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["INASISTENCIAS"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="4"
+						y="3"
+						width="758"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-83"
+						positionType="Float"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["COMPORTAMIENTO"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="19"
+						y="17"
+						width="655"
+						height="5"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-86"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" isStyledText="true" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{EVACOMPOBS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="576"
+						y="120"
+						width="160"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-88"
+						positionType="FixRelativeToBottom"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["FIRMA DIRECTOR DE GRUPO"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="4"
+						y="44"
+						width="758"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-89"
+						positionType="Float"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["OBSERVACIONES"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="19"
+						y="59"
+						width="654"
+						height="5"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-90"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" isStyledText="true" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($F{ESTOBS}!=null)?$F{ESTOBS}+"\n":"")+(($F{ESTOBSASIG}!=null)?$F{ESTOBSASIG}+"\n":"")+(($F{ESTOBSGRUPO}!=null)?$F{ESTOBSGRUPO}+"\n":"")+(($F{ESTOBSPER}!=null)?$F{ESTOBSPER}+"\n":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="629"
+						y="3"
+						width="45"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-96"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{EVACOMPEVAL7}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="599"
+						y="3"
+						width="31"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-97">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?$F{EVACOMPEVAL1}:($P{NUM_PERIODOS}.intValue()==2)?$F{EVACOMPEVAL2}:($P{NUM_PERIODOS}.intValue()==3)?$F{EVACOMPEVAL3}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVACOMPEVAL4}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVACOMPEVAL5}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVACOMPEVAL6}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="569"
+						y="3"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-98">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?$F{EVACOMPEVAL1}:($P{NUM_PERIODOS}.intValue()==3)?$F{EVACOMPEVAL2}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVACOMPEVAL3}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVACOMPEVAL4}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVACOMPEVAL5}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="539"
+						y="3"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-99">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?$F{EVACOMPEVAL1}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVACOMPEVAL2}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVACOMPEVAL3}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVACOMPEVAL4}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="509"
+						y="3"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-100">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?$F{EVACOMPEVAL1}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVACOMPEVAL2}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVACOMPEVAL3}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="479"
+						y="3"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-101">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?$F{EVACOMPEVAL1}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVACOMPEVAL2}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="449"
+						y="3"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-102">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?"":($P{NUM_PERIODOS}.intValue()==6)?$F{EVACOMPEVAL1}:""]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="AREA" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[$F{ARECODIGO}]]></groupExpression>
+			<groupHeader>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="4"
+						y="0"
+						width="758"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-65"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ARENOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="449"
+						y="0"
+						width="30"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-73">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>5)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?"":($P{NUM_PERIODOS}.intValue()==6)?$F{EVAAREEVAL1}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="479"
+						y="0"
+						width="30"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-74">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>4)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?$F{EVAAREEVAL1}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAAREEVAL2}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="509"
+						y="0"
+						width="30"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-75">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>3)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?$F{EVAAREEVAL1}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAAREEVAL2}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAAREEVAL3}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="539"
+						y="0"
+						width="30"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-76">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>2)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?$F{EVAAREEVAL1}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVAAREEVAL2}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAAREEVAL3}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAAREEVAL4}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="569"
+						y="0"
+						width="30"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-77">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?$F{EVAAREEVAL1}:($P{NUM_PERIODOS}.intValue()==3)?$F{EVAAREEVAL2}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVAAREEVAL3}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAAREEVAL4}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAAREEVAL5}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="599"
+						y="0"
+						width="30"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-78">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?$F{EVAAREEVAL1}:($P{NUM_PERIODOS}.intValue()==2)?$F{EVAAREEVAL2}:($P{NUM_PERIODOS}.intValue()==3)?$F{EVAAREEVAL3}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVAAREEVAL4}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAAREEVAL5}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAAREEVAL6}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="629"
+						y="0"
+						width="45"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-84"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{EVAAREEVAL7}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="674"
+						y="0"
+						width="60"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-85">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{EVAAREMEN}]]></textFieldExpression>
+				</textField>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="450"
+						y="1"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-1">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>5 && ($P{NUM_PERIODOS}.intValue()==6 && $F{EVAAREREC1}.intValue()==1))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="480"
+						y="1"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-2">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>4 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAAREREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAAREREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="510"
+						y="1"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-3">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>3 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAAREREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAAREREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAAREREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="540"
+						y="1"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-4">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>2 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAAREREC4}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAAREREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAAREREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==3 && $F{EVAAREREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="570"
+						y="1"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-5">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>1 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAAREREC5}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAAREREC4}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAAREREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==3 && $F{EVAAREREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==2 && $F{EVAAREREC1}.intValue()==1) ))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="600"
+						y="1"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-6">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAAREREC6}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAAREREC5}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAAREREC4}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==3 && $F{EVAAREREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==2 && $F{EVAAREREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==1 && $F{EVAAREREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="638"
+						y="1"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-13">
+							<printWhenExpression><![CDATA[new Boolean($F{EVAAREREC7}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="2"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="16"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="37"
+						y="2"
+						width="725"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-66"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ASINOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="449"
+						y="2"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-67">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>5)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?"":($P{NUM_PERIODOS}.intValue()==6)?$F{EVAASIEVAL1}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="479"
+						y="2"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-68">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>4)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?"":($P{NUM_PERIODOS}.intValue()==5)?$F{EVAASIEVAL1}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAASIEVAL2}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="509"
+						y="2"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-69">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>3)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?"":($P{NUM_PERIODOS}.intValue()==4)?$F{EVAASIEVAL1}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAASIEVAL2}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAASIEVAL3}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="539"
+						y="2"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-70">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>2)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?"":($P{NUM_PERIODOS}.intValue()==3)?$F{EVAASIEVAL1}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVAASIEVAL2}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAASIEVAL3}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAASIEVAL4}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="569"
+						y="2"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-71">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?"":($P{NUM_PERIODOS}.intValue()==2)?$F{EVAASIEVAL1}:($P{NUM_PERIODOS}.intValue()==3)?$F{EVAASIEVAL2}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVAASIEVAL3}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAASIEVAL4}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAASIEVAL5}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="599"
+						y="2"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-72">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{NUM_PERIODOS}.intValue()==1)?$F{EVAASIEVAL1}:($P{NUM_PERIODOS}.intValue()==2)?$F{EVAASIEVAL2}:($P{NUM_PERIODOS}.intValue()==3)?$F{EVAASIEVAL3}:($P{NUM_PERIODOS}.intValue()==4)?$F{EVAASIEVAL4}:($P{NUM_PERIODOS}.intValue()==5)?$F{EVAASIEVAL5}:($P{NUM_PERIODOS}.intValue()==6)?$F{EVAASIEVAL6}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="629"
+						y="2"
+						width="45"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-79"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{EVAASIEVAL7}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="674"
+						y="2"
+						width="60"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-80">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{EVAASIMEN}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="734"
+						y="2"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-81">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{EVAASIINAS}]]></textFieldExpression>
+				</textField>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="450"
+						y="3"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-7">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>5 && ($P{NUM_PERIODOS}.intValue()==6 && $F{EVAASIREC1}.intValue()==1))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="480"
+						y="3"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-8">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>4 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAASIREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAASIREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="510"
+						y="3"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-9">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>3 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAASIREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAASIREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAASIREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="540"
+						y="3"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-10">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>2 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAASIREC4}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAASIREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAASIREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==3 && $F{EVAASIREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="570"
+						y="3"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-11">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>1 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAASIREC5}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAASIREC4}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAASIREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==3 && $F{EVAASIREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==2 && $F{EVAASIREC1}.intValue()==1) ))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="600"
+						y="3"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-12">
+							<printWhenExpression><![CDATA[new Boolean($P{NUM_PERIODOS}.intValue()>0 && (($P{NUM_PERIODOS}.intValue()==6 && $F{EVAASIREC6}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==5 && $F{EVAASIREC5}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==4 && $F{EVAASIREC4}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==3 && $F{EVAASIREC3}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==2 && $F{EVAASIREC2}.intValue()==1) || ($P{NUM_PERIODOS}.intValue()==1 && $F{EVAASIREC1}.intValue()==1)))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="637"
+						y="3"
+						width="28"
+						height="10"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-14">
+							<printWhenExpression><![CDATA[new Boolean($F{EVAASIREC7}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="42"  isSplitAllowed="true" >
+				<rectangle radius="3" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="13"
+						width="764"
+						height="27"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-16"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="1Point"/>
+				</rectangle>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="687"
+						y="29"
+						width="74"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-91"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Tahoma" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="501"
+						y="18"
+						width="260"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-93"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="6" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ESTNOMBRE1}+""+($F{ESTNOMBRE2}!=null?" "+$F{ESTNOMBRE2}:"")+" "+$F{ESTAPELLIDO1}+" "+($F{ESTAPELLIDO2}!=null?$F{ESTAPELLIDO2}:"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="4"
+						y="16"
+						width="491"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-94"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{CONVINST}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="4"
+						y="29"
+						width="625"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-95"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{CONVMEN}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="19"
+						y="0"
+						width="482"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-104"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Nota Recuperada."]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="629"
+						y="29"
+						width="58"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-105"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Tahoma" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+				</textField>
+				<ellipse>
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="2"
+						width="15"
+						height="8"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="ellipse-15"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</ellipse>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

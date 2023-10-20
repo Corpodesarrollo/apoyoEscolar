@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="horarios_espacios"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["D:\\TRABAJO\\ATHENEA\\ARTICULACION\\reportes\\horario\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ANO_VIGENCIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2007)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PER_VIGENCIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COMPONENTE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(312)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TIPOESPACIO" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(-99)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select ESPACIO_FISICO.ESPCODIGO, ESPACIO_FISICO.ESPNOMBRE 
+from SEDE_JORNADA_ESPACIOFISICO INNER JOIN ESPACIO_FISICO ON ESPACIO_FISICO.ESPCODIGO = SEDE_JORNADA_ESPACIOFISICO.SEDJORESPCODESPACIO 
+AND ESPACIO_FISICO.ESPCODINS = SEDE_JORNADA_ESPACIOFISICO.SEDJORESPCODINST 
+AND ESPACIO_FISICO.ESPCODSEDE = SEDE_JORNADA_ESPACIOFISICO.SEDJORESPCODSEDE 
+where SEDE_JORNADA_ESPACIOFISICO.SEDJORESPCODINST = $P{INSTITUCION} 
+AND SEDE_JORNADA_ESPACIOFISICO.SEDJORESPCODSEDE = $P{SEDE} 
+AND SEDE_JORNADA_ESPACIOFISICO.SEDJORESPCODJOR = $P{JORNADA} 
+AND ($P{TIPOESPACIO}=-99 OR ESPACIO_FISICO.ESPTIPO=$P{TIPOESPACIO})]]></queryString>
+
+	<field name="ESPCODIGO" class="java.lang.Long"/>
+	<field name="ESPNOMBRE" class="java.lang.String"/>
+
+		<background>
+			<band height="2"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="96"  isSplitAllowed="true" >
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="-21"
+						y="6"
+						width="782"
+						height="21"
+						key="subreport-1"
+						isPrintRepeatedValues="false"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ANO_VIGENCIA">
+						<subreportParameterExpression><![CDATA[$P{ANO_VIGENCIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PER_VIGENCIA">
+						<subreportParameterExpression><![CDATA[$P{PER_VIGENCIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="COMPONENTE">
+						<subreportParameterExpression><![CDATA[$P{COMPONENTE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TIPOESPACIO">
+						<subreportParameterExpression><![CDATA[$P{TIPOESPACIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ESPACIO">
+						<subreportParameterExpression><![CDATA[$F{ESPCODIGO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "horario_x_espacioFisico.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

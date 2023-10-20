@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ReportePEI"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="584"
+		 columnSpacing="0"
+		 leftMargin="14"
+		 rightMargin="14"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="ESCUDO_COLEGIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Tomcat\\webapps\\apoyo\\etc\\img\\escudo\\e11100136548-.gif"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(2009)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Tomcat\\webapps\\apoyoF\\pei\\registro\\reporte\\fuente\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INST" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(422)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select pei_inst.*,
+       inst.*,
+      local.g_connombre as nombre_local
+from 
+   PEI_INSTITUCION pei_inst, 
+   INSTITUCION inst, 
+   G_CONSTANTE local
+WHERE  INSCODIGO = $P{INST}
+AND INSCODIGO = PEICODINST
+AND G_CONTIPO = 7
+AND G_CONCODIGO = INSCODLOCAL]]></queryString>
+
+	<field name="PEICODINST" class="java.math.BigDecimal"/>
+	<field name="PEIESTUDMAT" class="java.math.BigDecimal"/>
+	<field name="PEINUMJORNAD" class="java.math.BigDecimal"/>
+	<field name="PEIEXISTE" class="java.math.BigDecimal"/>
+	<field name="PEINOMBRE" class="java.lang.String"/>
+	<field name="PEICODETAPADES" class="java.math.BigDecimal"/>
+	<field name="PEICODENFASIS" class="java.math.BigDecimal"/>
+	<field name="PEIENFASISOTRO" class="java.lang.String"/>
+	<field name="PEICODENFPEDAG" class="java.math.BigDecimal"/>
+	<field name="PEIENFPEDAGOTRO" class="java.lang.String"/>
+	<field name="PEIESTADO" class="java.math.BigDecimal"/>
+	<field name="PEIPROCESO" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAMISION" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAVISION" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAPERFILES" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAOBJINSTIT" class="java.math.BigDecimal"/>
+	<field name="PEIETAPADIFICULTAD" class="java.lang.String"/>
+	<field name="PEICODFASECURRIC" class="java.math.BigDecimal"/>
+	<field name="PEIHERRAMIENTAVIDA" class="java.math.BigDecimal"/>
+	<field name="PEIBASECONOCIMIENTO" class="java.math.BigDecimal"/>
+	<field name="PEIALCANCEC1" class="java.lang.String"/>
+	<field name="PEIALCANCEC2" class="java.lang.String"/>
+	<field name="PEIALCANCEC3" class="java.lang.String"/>
+	<field name="PEIALCANCEC4" class="java.lang.String"/>
+	<field name="PEIALCANCEC5" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC1" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC2" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC3" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC4" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC5" class="java.lang.String"/>
+	<field name="PEIARTICULADO" class="java.math.BigDecimal"/>
+	<field name="PEIESTMEDIA" class="java.math.BigDecimal"/>
+	<field name="PEIESTARTICULADA" class="java.math.BigDecimal"/>
+	<field name="PEIESTARTSENA" class="java.math.BigDecimal"/>
+	<field name="PEIESTINTSENA" class="java.math.BigDecimal"/>
+	<field name="PEISEGEGRESADO" class="java.math.BigDecimal"/>
+	<field name="PEIPRACTICALAB" class="java.math.BigDecimal"/>
+	<field name="PEIPOACONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIPOACOMUNIDADESC" class="java.math.BigDecimal"/>
+	<field name="PEIPOATOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEICONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIEITOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEFRECUENCIA" class="java.math.BigDecimal"/>
+	<field name="PEIHRRORIENTSED" class="java.math.BigDecimal"/>
+	<field name="PEIHRROTROSDOCS" class="java.math.BigDecimal"/>
+	<field name="PEIHRRCUALES" class="java.lang.String"/>
+	<field name="PEIPRODADMIN" class="java.math.BigDecimal"/>
+	<field name="PEIPRODADMINCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIMANUALFUNC" class="java.math.BigDecimal"/>
+	<field name="PEIMANUALFUNCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIPROCINVENT" class="java.math.BigDecimal"/>
+	<field name="PEIPROCINVENTDIFICULTAD" class="java.lang.String"/>
+	<field name="PEISISTINF" class="java.math.BigDecimal"/>
+	<field name="PEISISTINFDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIESTCOMUNIC" class="java.math.BigDecimal"/>
+	<field name="PEIESTCOMUNICDIFICULTAD" class="java.lang.String"/>
+	<field name="INSCODIGO" class="java.math.BigDecimal"/>
+	<field name="INSCODDANE" class="java.math.BigDecimal"/>
+	<field name="INSCODDANEANTERIOR" class="java.math.BigDecimal"/>
+	<field name="INSCODDEPTO" class="java.math.BigDecimal"/>
+	<field name="INSCODMUN" class="java.math.BigDecimal"/>
+	<field name="INSCODLOCAL" class="java.math.BigDecimal"/>
+	<field name="INSNOMBRE" class="java.lang.String"/>
+	<field name="INSSECTOR" class="java.math.BigDecimal"/>
+	<field name="INSZONA" class="java.math.BigDecimal"/>
+	<field name="INSCALENDARIO" class="java.math.BigDecimal"/>
+	<field name="INSCALENDARIOOTRO" class="java.lang.String"/>
+	<field name="INSRECTORNOMBRE" class="java.lang.String"/>
+	<field name="INSRECTORCC" class="java.math.BigDecimal"/>
+	<field name="INSRECTORANOPOSESION" class="java.math.BigDecimal"/>
+	<field name="INSRECTORTEL" class="java.lang.String"/>
+	<field name="INSRECTORCORREO" class="java.lang.String"/>
+	<field name="INSREPLEGALNOMBRE" class="java.lang.String"/>
+	<field name="INSREPLEGALCC" class="java.math.BigDecimal"/>
+	<field name="INSREPLEGALTEL" class="java.lang.String"/>
+	<field name="INSREPLEGALCORREO" class="java.lang.String"/>
+	<field name="INSPAGINAWEB" class="java.lang.String"/>
+	<field name="INSPROPIEDAD" class="java.math.BigDecimal"/>
+	<field name="INSNUMSEDES" class="java.math.BigDecimal"/>
+	<field name="INSGENERO" class="java.math.BigDecimal"/>
+	<field name="INSSUBSIDIO" class="java.lang.String"/>
+	<field name="INSDISCAPACIDAD" class="java.math.BigDecimal"/>
+	<field name="INSCAPEXCEPCIONAL" class="java.lang.String"/>
+	<field name="INSETNIA" class="java.lang.String"/>
+	<field name="INSNUCLEOCODIGO" class="java.lang.String"/>
+	<field name="INSHIMNO" class="java.lang.String"/>
+	<field name="INSLEMA" class="java.lang.String"/>
+	<field name="INSBANDERA" class="java.lang.String"/>
+	<field name="INSESCUDO" class="java.lang.String"/>
+	<field name="INSHISTORIA" class="java.lang.String"/>
+	<field name="INSIDIOMA" class="java.math.BigDecimal"/>
+	<field name="INSASOCPRIVADA" class="java.math.BigDecimal"/>
+	<field name="INSASOCPRIVADAOTRO" class="java.lang.String"/>
+	<field name="INSREGIMENCOSTOS" class="java.math.BigDecimal"/>
+	<field name="INSTARIFACOSTOS" class="java.math.BigDecimal"/>
+	<field name="INSINFORMEPEI" class="java.lang.String"/>
+	<field name="INSMETODOLOGIA" class="java.math.BigDecimal"/>
+	<field name="INSNIVELLOGRO" class="java.math.BigDecimal"/>
+	<field name="INSCODMETODOLOGIA" class="java.math.BigDecimal"/>
+	<field name="INSESTADO" class="java.lang.String"/>
+	<field name="INSENFASIS" class="java.math.BigDecimal"/>
+	<field name="INSMODALIDAD" class="java.math.BigDecimal"/>
+	<field name="INSHORARIO" class="java.math.BigDecimal"/>
+	<field name="INSNUMRES" class="java.lang.String"/>
+	<field name="INSFECRES" class="java.sql.Timestamp"/>
+	<field name="INSNIT" class="java.lang.String"/>
+	<field name="INSPORCMINAPROBAR" class="java.math.BigDecimal"/>
+	<field name="INSMAXLOGRO" class="java.math.BigDecimal"/>
+	<field name="INSMAXDESCRIPTOR" class="java.math.BigDecimal"/>
+	<field name="INSDIRECCION" class="java.lang.String"/>
+	<field name="INSCODDANE12" class="java.math.BigDecimal"/>
+	<field name="INSPLANESTUDIOS" class="java.math.BigDecimal"/>
+	<field name="INSVIGENCIA" class="java.math.BigDecimal"/>
+	<field name="NOMBRE_LOCAL" class="java.lang.String"/>
+
+	<variable name="test" class="java.lang.String" resetType="None" calculation="Nothing">
+		<variableExpression><![CDATA["test"]]></variableExpression>
+		<initialValueExpression><![CDATA["test"		]]></initialValueExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="78"  isSplitAllowed="true" >
+				<rectangle radius="3" >
+					<reportElement
+						mode="Transparent"
+						x="1"
+						y="6"
+						width="579"
+						height="67"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-1"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="1Point"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="6"
+						y="50"
+						width="569"
+						height="21"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-14"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="6"
+						y="9"
+						width="569"
+						height="14"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-13"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="6"
+						y="25"
+						width="569"
+						height="22"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-4"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="78"
+						y="10"
+						width="425"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-79"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="3" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[SECRETARÍA DE EDUCACIÓN DISTRITAL]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="78"
+						y="27"
+						width="425"
+						height="20"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{INSNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="79"
+						y="51"
+						width="425"
+						height="20"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-106"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE_LOCAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="39"
+						y="-76"
+						width="15"
+						height="15"
+						key="textField-107"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIPROCESO}+"").equals("1")?" X ":""]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="77"
+						y="-75"
+						width="68"
+						height="14"
+						key="staticText-80"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Socialización: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="188"
+						y="-75"
+						width="100"
+						height="14"
+						key="staticText-81"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[  	 Articulación al PEI:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="149"
+						y="-76"
+						width="15"
+						height="15"
+						key="textField-108"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIPROCESO}+"").equals("2")?" X ":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="294"
+						y="-76"
+						width="15"
+						height="15"
+						key="textField-109"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIPROCESO}+"").equals("3")?" X ":""]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="10"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="1"
+						y="1"
+						width="582"
+						height="4"
+						key="subreport-3"
+						positionType="Float"/>
+					<subreportParameter  name="INST">
+						<subreportParameterExpression><![CDATA[$P{INST}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSRECTORNOMBRE">
+						<subreportParameterExpression><![CDATA[$F{INSRECTORNOMBRE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSRECTORCORREO">
+						<subreportParameterExpression><![CDATA[$F{INSRECTORCORREO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSRECTORTEL">
+						<subreportParameterExpression><![CDATA[$F{INSRECTORTEL}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PEIESTUDMAT">
+						<subreportParameterExpression><![CDATA[$F{PEIESTUDMAT}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PEINOMBRE">
+						<subreportParameterExpression><![CDATA[$F{PEINOMBRE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PEICODETAPADES">
+						<subreportParameterExpression><![CDATA[$F{PEICODETAPADES}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "ReportePEI_sub_1.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="14"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="283"
+						y="3"
+						width="74"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-91"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Tahoma" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="225"
+						y="3"
+						width="58"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-105"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Tahoma" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+				</textField>
+				<rectangle radius="3" >
+					<reportElement
+						mode="Transparent"
+						x="3"
+						y="3"
+						width="579"
+						height="9"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-15"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight" pen="1Point"/>
+				</rectangle>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

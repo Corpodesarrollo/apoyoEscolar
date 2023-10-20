@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="horario_x_grupo"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\oc4j\\j2ee\\home\\applications\\apoyo\\apoyo44497\\repHorariosArt\\jaspers\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DOCENTE" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["79746623"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="QUERY_MATERIAS" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["select ART_HORARIO.ARTHORACLASE as HORACLASE,"+
+" (select ART_ASIGNATURA.ARTASIGNOMBRE from "+
+" ART_ASIGNATURA "+
+" where ART_ASIGNATURA.ARTASIGCODIGO = ART_HORARIO.ARTHORAASIGNATURA "+
+" AND ART_ASIGNATURA.ARTASIGCODINST = ART_GRUPO.ARTGRUCODINST"+
+" AND ART_ASIGNATURA.ARTASIGANOVIGENCIA = ART_GRUPO.ARTGRUANOVIGENCIA"+
+" AND ART_ASIGNATURA.ARTASIGPERVIGENCIA = ART_GRUPO.ARTGRUPERVIGENCIA"+
+" AND ART_ASIGNATURA.ARTASIGCOMPONENTE = ART_GRUPO.ARTGRUCOMPONENTE"+
+" AND ART_ASIGNATURA.ARTASIGCODESP = ART_GRUPO.ARTGRUCODESP"+
+" ) AS MATERIA,"+
+" (select ESPACIO_FISICO.ESPNOMBRE from ESPACIO_FISICO"+
+" where ESPACIO_FISICO.ESPCODIGO = ART_HORARIO.ARTHORAESPFISICO"+
+" AND ART_GRUPO.ARTGRUCODINST = ESPACIO_FISICO.ESPCODINS"+
+" AND ART_GRUPO.ARTGRUCODSEDE = ESPACIO_FISICO.ESPCODSEDE) as ESPACIO_FISICO,"+
+" (select PERSONAL.PERAPELLIDO1 ||' '||PERSONAL.PERAPELLIDO2||' '||PERSONAL.PERNOMBRE1||' '||PERSONAL.PERNOMBRE2"+
+"  from PERSONAL "+
+"  where PERSONAL.PERNUMDOCUM = to_char(ART_HORARIO.ARTHORADOCENTE)) as DOCENTE,"+
+" ART_GRUPO.ARTGRUPERESP ||'-'||ART_GRUPO.ARTGRUCONSECUTIVO as GRUPO,"+
+" ART_HORARIO.ARTHORADIA as DIA_SEMANA"+
+" from ART_HORARIO"+
+" INNER JOIN ART_GRUPO ON ART_GRUPO.ARTGRUCODIGO = ART_HORARIO.ARTHORAGRUPO"+
+" where "+
+" ART_GRUPO.ARTGRUANOVIGENCIA = ?"+
+" AND ART_GRUPO.ARTGRUPERVIGENCIA = ?"+
+" AND ART_GRUPO.ARTGRUCOMPONENTE = ?"+
+" AND ART_GRUPO.ARTGRUCODIGO  = ?"+
+" ORDER BY HORACLASE"
+
+
+]]></defaultValueExpression>
+	</parameter>
+	<parameter name="QUERY_DESCANSOS" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["select to_date(ROT_RECESO.ROTRECHORAINI,'hh24:mi') as HORA_INI,"+
+"to_date(ROT_RECESO.ROTRECHORAFIN,'hh24:mi') as HORA_FIN,"+
+"ROT_RECESO.ROTRECDESCRIPCION as NOMBREDESCANSO"+
+" from ROT_RECESO"+
+" where ROT_RECESO.ROTREC_STRCOD =? "+
+" order by HORA_INI"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_MATERIA" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_ESPACIO" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_DOCENTE" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ANO_VIGENCIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2008)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PER_VIGENCIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COMPONENTE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRUPO" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(67)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select ART_PARAM_HORARIO.ARTPARHORAINI as HORINI,
+ART_PARAM_HORARIO.ARTPARHORAMININI as MININI,
+ART_PARAM_HORARIO.ARTPARHORSABADO as SABADO,
+ART_PARAM_HORARIO.ARTPARHORDOMINGO as DOMINGO,
+ART_PARAM_HORARIO.ARTPARHORDURACLASE as DURHORA,
+ART_PARAM_HORARIO.ARTPARHORBLOQUE as NUMBLOQUES,
+ART_PARAM_HORARIO.ARTPARHORCLASEBLOQUE as DURBLOQUE,
+ART_PARAM_HORARIO.ARTPARHORANOVIGENCIA as ANO_VIGENCIA,
+ART_PARAM_HORARIO.ARTPARHORPERVIGENCIA as PER_VIGENCIA,
+ART_PARAM_HORARIO.ARTPARHORCOMPONENTE as COMPONENTE,
+ CASE ART_PARAM_HORARIO.ARTPARHORCOMPONENTE
+WHEN 1 THEN 'Academico' 
+WHEN 2 THEN 'Técnico' 
+END CASE ,
+ART_GRUPO.ARTGRUPERESP ||'-'||ART_GRUPO.ARTGRUCONSECUTIVO as GRUPO,
+INSTITUCION.INSNOMBRE,
+SEDE.SEDNOMBRE,
+ART_ESPECIALIDAD.ESPNOMBRE as ESPACIALIDAD,
+sysdate as TIEMPO_ACTUAL
+from ART_PARAM_HORARIO
+INNER JOIN INSTITUCION ON INSTITUCION.INSCODIGO = ART_PARAM_HORARIO.ARTPARHORCODINST
+INNER JOIN SEDE ON SEDE.SEDCODIGO = ART_PARAM_HORARIO.ARTPARHORSEDE AND SEDE.SEDCODINS = INSTITUCION.INSCODIGO
+INNER JOIN ART_GRUPO ON ART_GRUPO.ARTGRUCODINST = ART_PARAM_HORARIO.ARTPARHORCODINST
+AND ART_GRUPO.ARTGRUCODSEDE = ART_PARAM_HORARIO.ARTPARHORSEDE
+AND ART_GRUPO.ARTGRUCODJORNADA = ART_PARAM_HORARIO.ARTPARHORJORNADA
+AND ART_GRUPO.ARTGRUANOVIGENCIA = ART_PARAM_HORARIO.ARTPARHORANOVIGENCIA
+AND ART_GRUPO.ARTGRUPERVIGENCIA = ART_PARAM_HORARIO.ARTPARHORPERVIGENCIA
+AND ART_GRUPO.ARTGRUCOMPONENTE = ART_PARAM_HORARIO.ARTPARHORCOMPONENTE
+INNER JOIN ART_ESPECIALIDAD  ON ART_ESPECIALIDAD.ESPCODIGO = ART_GRUPO.ARTGRUCODESP AND ART_ESPECIALIDAD.ESPCODINST = ART_GRUPO.ARTGRUCODINST
+where
+ART_PARAM_HORARIO.ARTPARHORANOVIGENCIA = $P{ANO_VIGENCIA}
+AND ART_PARAM_HORARIO.ARTPARHORPERVIGENCIA = $P{PER_VIGENCIA}
+AND ART_PARAM_HORARIO.ARTPARHORCOMPONENTE = $P{COMPONENTE}
+AND ART_GRUPO.ARTGRUCODIGO = $P{GRUPO}]]></queryString>
+
+	<field name="HORINI" class="java.lang.Integer"/>
+	<field name="MININI" class="java.lang.Integer"/>
+	<field name="SABADO" class="java.lang.Integer"/>
+	<field name="DOMINGO" class="java.lang.Integer"/>
+	<field name="DURHORA" class="java.lang.Integer"/>
+	<field name="NUMBLOQUES" class="java.lang.Integer"/>
+	<field name="DURBLOQUE" class="java.lang.Integer"/>
+	<field name="ANO_VIGENCIA" class="java.lang.Integer"/>
+	<field name="PER_VIGENCIA" class="java.lang.Integer"/>
+	<field name="COMPONENTE" class="java.lang.Integer"/>
+	<field name="CASE" class="java.lang.String"/>
+	<field name="GRUPO" class="java.lang.String"/>
+	<field name="INSNOMBRE" class="java.lang.String"/>
+	<field name="SEDNOMBRE" class="java.lang.String"/>
+	<field name="ESPACIALIDAD" class="java.lang.String"/>
+	<field name="TIEMPO_ACTUAL" class="java.sql.Timestamp"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="92"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="10"
+						width="654"
+						height="18"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="13" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{INSNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="46"
+						width="193"
+						height="16"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="11" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Componente: "+$F{CASE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="551"
+						y="62"
+						width="103"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-4"
+						positionType="FixRelativeToBottom"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="10" isBold="false" isItalic="true" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{TIEMPO_ACTUAL}]]></textFieldExpression>
+				</textField>
+				<image  onErrorType="Icon" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="654"
+						y="10"
+						width="59"
+						height="65"
+						key="image-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="28"
+						width="653"
+						height="18"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="12" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SEDNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="516"
+						y="46"
+						width="137"
+						height="16"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="10" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Vigencia: "+$F{ANO_VIGENCIA}+" - "+$F{PER_VIGENCIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="62"
+						width="193"
+						height="16"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="11" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Semestre - Grupo: "+$F{GRUPO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="516"
+						y="62"
+						width="35"
+						height="16"
+						key="textField-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="10" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Fecha: "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="193"
+						y="46"
+						width="323"
+						height="16"
+						key="textField-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="11" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Especialidad: "+$F{ESPACIALIDAD}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="53"  isSplitAllowed="true" >
+				<subreport  isUsingCache="false">
+					<reportElement
+						x="0"
+						y="0"
+						width="782"
+						height="16"
+						key="subreport-4"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="HORAS_X_GRUPO">
+						<subreportParameterExpression><![CDATA[new Integer(1)]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MINUTOS_X_HORA">
+						<subreportParameterExpression><![CDATA[$F{DURHORA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MOSTRAR_MATERIA">
+						<subreportParameterExpression><![CDATA[$P{MOSTRAR_MATERIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MOSTRAR_ESPACIO">
+						<subreportParameterExpression><![CDATA[$P{MOSTRAR_ESPACIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MOSTRAR_DOCENTE">
+						<subreportParameterExpression><![CDATA[$P{MOSTRAR_DOCENTE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MOSTRAR_SABADOS">
+						<subreportParameterExpression><![CDATA[new Boolean(true)]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MOSTRAR_DOMINGOS">
+						<subreportParameterExpression><![CDATA[new Boolean(true)]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ANO_VIGENCIA">
+						<subreportParameterExpression><![CDATA[$P{ANO_VIGENCIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PER_VIGENCIA">
+						<subreportParameterExpression><![CDATA[$P{PER_VIGENCIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="COMPONENTE">
+						<subreportParameterExpression><![CDATA[$P{COMPONENTE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new org.athenea.sigae.report.datasource.HorarioAciclicoDatasource(
+$P{REPORT_CONNECTION},
+$P{QUERY_MATERIAS},new Object[]{$P{ANO_VIGENCIA},$P{PER_VIGENCIA},$P{COMPONENTE},$P{GRUPO}},
+$P{QUERY_DESCANSOS},new Object[]{new Integer(0)},
+$F{HORINI}.intValue(),$F{MININI}.intValue(),1,$F{DURHORA}.intValue(),
+($F{DURBLOQUE}.intValue()*$F{NUMBLOQUES}.intValue()))]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "horarioGrupo.jasper"]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="301"
+						y="38"
+						width="97"
+						height="15"
+						forecolor="#FF0000"
+						key="textField-5"
+						positionType="Float"
+						isPrintRepeatedValues="false"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["- ASIGNATURA -"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="424"
+						y="38"
+						width="105"
+						height="15"
+						forecolor="#009900"
+						key="textField-6"
+						positionType="Float"
+						isPrintRepeatedValues="false"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["- ESPACIO FISICO -"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="171"
+						y="23"
+						width="358"
+						height="15"
+						forecolor="#000000"
+						key="textField-8"
+						positionType="Float"
+						isPrintRepeatedValues="false"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["CONVENCIONES"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="171"
+						y="38"
+						width="97"
+						height="15"
+						forecolor="#0000FF"
+						key="textField-18"
+						positionType="Float"
+						isPrintRepeatedValues="false"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["- DOCENTE -"]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="17"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="646"
+						y="0"
+						width="100"
+						height="14"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="746"
+						y="0"
+						width="34"
+						height="14"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="0"
+						width="144"
+						height="14"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Generado por: "+$P{USUARIO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

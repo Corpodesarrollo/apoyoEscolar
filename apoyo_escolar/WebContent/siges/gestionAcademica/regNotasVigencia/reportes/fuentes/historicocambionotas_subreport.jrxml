@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="classic"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="555"
+		 columnSpacing="0"
+		 leftMargin="28"
+		 rightMargin="29"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="ESTNUMDOC" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["93120409334"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INST" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["180"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="METOD" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRADO" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["11"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2011"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT  DISTINCT PERNOMBRE1||' '||PERNOMBRE2||' '||PERAPELLIDO1||' '||PERAPELLIDO2 NOMBREUSUARIO,  
+       NOTLOGFECHA, NOTLOGDESCRIPCION
+       FROM NOTAS_LOG, ESTUDIANTE, PERSONAL, USUARIO
+      WHERE TO_CHAR(USUPERNUMDOCUM)=PERNUMDOCUM
+      AND USULOGIN=NOTLOGNUMDOCUSU
+        AND NOTLOGCODEST=ESTCODIGO
+        AND ESTNUMDOC=$P{ESTNUMDOC}
+        AND NOTLOGINSCOD = $P{INST}
+        AND NOTLOGSEDCOD=$P{SEDE}
+        AND NOTLOGMETCOD=$P{METOD}
+        AND NOTLOGGRACOD=$P{GRADO}
+        AND NOTLOGVIGENCIA=$P{VIGENCIA}
+ORDER BY NOTLOGFECHA DESC]]></queryString>
+
+	<field name="NOMBREUSUARIO" class="java.lang.String"/>
+	<field name="NOTLOGFECHA" class="java.sql.Timestamp"/>
+	<field name="NOTLOGDESCRIPCION" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="20"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="122"
+						height="19"
+						forecolor="#000000"
+						backcolor="#0066FF"
+						key="staticText"
+						positionType="Float"/>
+					<box topBorder="2Point" topBorderColor="#000000" leftBorder="2Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[FECHA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="122"
+						y="0"
+						width="259"
+						height="19"
+						forecolor="#000000"
+						backcolor="#0066FF"
+						key="staticText"
+						positionType="Float"/>
+					<box topBorder="2Point" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[DESCRIPCION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="381"
+						y="0"
+						width="174"
+						height="19"
+						forecolor="#000000"
+						backcolor="#3366FF"
+						key="staticText"
+						positionType="Float"/>
+					<box topBorder="2Point" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="2Point" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[USUARIO]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="20"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="122"
+						height="20"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField"
+						stretchType="RelativeToTallestObject"/>
+					<box topBorder="2Point" topBorderColor="#000000" topPadding="1" leftBorder="2Point" leftBorderColor="#000000" leftPadding="5" rightBorder="None" rightBorderColor="#000000" rightPadding="5" bottomBorder="2Point" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.sql.Timestamp"><![CDATA[$F{NOTLOGFECHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="122"
+						y="0"
+						width="259"
+						height="20"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField"
+						stretchType="RelativeToTallestObject"/>
+					<box topBorder="2Point" topBorderColor="#000000" topPadding="1" leftBorder="None" leftBorderColor="#000000" leftPadding="5" rightBorder="None" rightBorderColor="#000000" rightPadding="5" bottomBorder="2Point" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOTLOGDESCRIPCION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="381"
+						y="0"
+						width="174"
+						height="20"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField"
+						stretchType="RelativeToTallestObject"/>
+					<box topBorder="2Point" topBorderColor="#000000" topPadding="1" leftBorder="None" leftBorderColor="#000000" leftPadding="5" rightBorder="2Point" rightBorderColor="#000000" rightPadding="5" bottomBorder="2Point" bottomBorderColor="#000000" bottomPadding="1"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBREUSUARIO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

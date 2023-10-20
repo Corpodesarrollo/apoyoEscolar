@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="carneVariosCarta"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="552"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="carnes" >
+
+		<parameter name="usuario" isForPrompting="false" class="java.lang.String">
+			<defaultValueExpression ><![CDATA[""]]></defaultValueExpression>
+		</parameter>
+		<parameter name="LogosSED" isForPrompting="false" class="java.lang.String"/>
+		<parameter name="Fondo" isForPrompting="false" class="java.lang.String"/>
+		<parameter name="institucion" isForPrompting="true" class="java.lang.Long">
+			<defaultValueExpression ><![CDATA[new Long(130)]]></defaultValueExpression>
+		</parameter>
+		<parameter name="sede" isForPrompting="false" class="java.lang.Long">
+			<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+		</parameter>
+		<parameter name="jornada" isForPrompting="false" class="java.lang.Long">
+			<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+		</parameter>
+		<parameter name="metod" isForPrompting="false" class="java.lang.Long">
+			<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+		</parameter>
+		<parameter name="grado" isForPrompting="false" class="java.lang.Long">
+			<defaultValueExpression ><![CDATA[new Long(11)]]></defaultValueExpression>
+		</parameter>
+		<parameter name="grupo" isForPrompting="false" class="java.lang.Long">
+			<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+		</parameter>
+		<parameter name="RUTA_FOTOS" isForPrompting="false" class="java.lang.String"/>
+		<queryString><![CDATA[SELECT 
+   CARESTINST, CARESTINSTCODDANE, CARESTSEDE, 
+   CARESTJORN, CARESTAPELLIDOS, CARESTNOMBRES, 
+   CARESTNUMDOC, CARESTCODGRADO, SUBSTR(CARESTGRADO,1,18 ) AS CARESTGRADO, 
+   CARESTCODIGO, CARESTANO, CARESTNOMRECTOR, 
+   CARESTAPERECTOR, CARESTID, CARESTCODGRUPO, 
+   CARESTGRUPO, CARESTTIPDOC, to_char(CARESTFECNAC, 'yyyy') as FEC_NAC,
+   to_char(CARESTFECNAC, 'dd') as FEC_NAC_DIA,
+   ESTFOTO,
+   case to_char(CARESTFECNAC,'MM')
+when '01' then 'Enero'
+when '02' then 'Febrero'
+when '03' then 'Marzo'
+when '04' then 'Abril'
+when '05' then 'Mayo'
+when '06' then 'Junio'
+when '07' then 'Julio'
+when '08' then 'Agosto'
+when '09' then 'Septiembre'
+when '10' then 'Octubre'
+when '11' then 'Noviembre'
+when '12' then 'Diciembre'
+end MES,
+ (SELECT  'Loc. '||g_concodigo||' '||'('||g_connombre||')' from g_constante where g_contipo = 7 AND   g_concodigo =   (select institucion.INSCODLOCAL  from institucion   where INSCODDANE =CARESTINSTCODDANE )) as localidad,
+ (SELECT NVL(SEDE.SEDTELEFONO,' ')  FROM SEDE WHERE SEDE.SEDCODINS = (select INSCODIGO  from institucion   where INSCODDANE =CARESTINSTCODDANE ) AND SEDE.SEDCODIGO =1   ) AS TELEFONO
+FROM CARNE_ESTUDIANTE, ESTUDIANTE
+WHERE CARESTCODIGO = ESTCODIGO
+AND CARESTID=$P{usuario}
+AND (-9 = $P{institucion} OR CARESTCODINST = $P{institucion} )
+AND (-9 = $P{sede} OR CARESTCODSEDE = $P{sede} )
+AND (-9 = $P{jornada} OR  CARESTCODJORN = $P{jornada})
+AND (-9 = $P{metod} OR CARESTCODMETOD = $P{metod} )
+AND ( -9 =  $P{grado} or CARESTCODGRADO = $P{grado} )
+AND ( -9 = $P{grupo} or CARESTCODGRUPO = $P{grupo} )
+ORDER BY CARESTAPELLIDOS]]></queryString>
+
+		<field name="CARESTINST" class="java.lang.String"/>
+		<field name="CARESTINSTCODDANE" class="java.math.BigDecimal"/>
+		<field name="CARESTSEDE" class="java.lang.String"/>
+		<field name="CARESTJORN" class="java.lang.String"/>
+		<field name="CARESTAPELLIDOS" class="java.lang.String"/>
+		<field name="CARESTNOMBRES" class="java.lang.String"/>
+		<field name="CARESTNUMDOC" class="java.lang.String"/>
+		<field name="CARESTCODGRADO" class="java.math.BigDecimal"/>
+		<field name="CARESTGRADO" class="java.lang.String"/>
+		<field name="CARESTCODIGO" class="java.math.BigDecimal"/>
+		<field name="CARESTANO" class="java.math.BigDecimal"/>
+		<field name="CARESTNOMRECTOR" class="java.lang.String"/>
+		<field name="CARESTAPERECTOR" class="java.lang.String"/>
+		<field name="CARESTID" class="java.math.BigDecimal"/>
+		<field name="CARESTCODGRUPO" class="java.math.BigDecimal"/>
+		<field name="CARESTGRUPO" class="java.lang.String"/>
+		<field name="CARESTTIPDOC" class="java.lang.String"/>
+		<field name="FEC_NAC" class="java.lang.String"/>
+		<field name="FEC_NAC_DIA" class="java.lang.String"/>
+		<field name="ESTFOTO" class="java.lang.Integer"/>
+		<field name="MES" class="java.lang.String"/>
+		<field name="LOCALIDAD" class="java.lang.String"/>
+		<field name="TELEFONO" class="java.lang.String"/>
+
+	</subDataset>
+
+	<parameter name="usuario" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="LogosSED" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C://Reportes//Apoyo_Escolar//private//img//logos//LogosSED.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Fondo" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["E://Tomcat//webapps//apoyoF//etc//img//Fondo.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="institucion" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(130)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sede" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="jornada" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="metod" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="grado" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(11)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="grupo" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="RUTA_FOTOS" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Reportes\\Apoyo_Escolar\\WEB-INF\\private\\fotoEstudiante\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select sysdate from dual]]></queryString>
+
+	<field name="SYSDATE" class="java.sql.Timestamp"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="164"  isSplitAllowed="true" >
+				<crosstab >
+					<reportElement
+						x="0"
+						y="0"
+						width="552"
+						height="158"
+						key="crosstab-1"/>
+					<crosstabDataset isDataPreSorted="true" >
+						<dataset >
+							<datasetRun subDataset="carnes">
+								<datasetParameter  name="usuario">
+									<datasetParameterExpression><![CDATA[$P{usuario}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="LogosSED">
+									<datasetParameterExpression><![CDATA[$P{LogosSED}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="Fondo">
+									<datasetParameterExpression><![CDATA[$P{Fondo}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="institucion">
+									<datasetParameterExpression><![CDATA[$P{institucion}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="sede">
+									<datasetParameterExpression><![CDATA[$P{sede}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="jornada">
+									<datasetParameterExpression><![CDATA[$P{jornada}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="metod">
+									<datasetParameterExpression><![CDATA[$P{metod}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="grado">
+									<datasetParameterExpression><![CDATA[$P{grado}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="grupo">
+									<datasetParameterExpression><![CDATA[$P{grupo}]]></datasetParameterExpression>
+								</datasetParameter>
+								<datasetParameter  name="RUTA_FOTOS">
+									<datasetParameterExpression><![CDATA[$P{RUTA_FOTOS}]]></datasetParameterExpression>
+								</datasetParameter>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="ESTUDIANTE" width="0">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA["ESTUDIANTE"]]></bucketExpression>
+						</bucket>
+					</rowGroup>
+					<columnGroup name="ESTUDIANTES" height="0">
+						<bucket>
+							<bucketExpression class="java.math.BigDecimal"><![CDATA[$F{CARESTCODIGO}]]></bucketExpression>
+						</bucket>
+					</columnGroup>
+					<columnGroup name="CARESTINST" height="0">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[]]></bucketExpression>
+						</bucket>
+					</columnGroup>
+
+					<measure name="NOMBRE" class="java.lang.String">
+						<measureExpression><![CDATA[$F{CARESTNOMBRES}+" "+$F{CARESTAPELLIDOS}]]></measureExpression>
+					</measure>
+					<measure name="INSTITUCION" class="java.lang.String">
+						<measureExpression><![CDATA[$F{CARESTINST}]]></measureExpression>
+					</measure>
+					<measure name="DOCUMENTO" class="java.lang.String">
+						<measureExpression><![CDATA[$F{CARESTTIPDOC}+" N° "+$F{CARESTNUMDOC}]]></measureExpression>
+					</measure>
+					<measure name="SEDE" class="java.lang.String">
+						<measureExpression><![CDATA["Sede:"+$F{CARESTSEDE}+"     Jornada: "+$F{CARESTJORN}]]></measureExpression>
+					</measure>
+					<measure name="TELEFONO_LOCALIDAD" class="java.lang.String">
+						<measureExpression><![CDATA["Teléfono: "+$F{TELEFONO} + " "+$F{LOCALIDAD}]]></measureExpression>
+					</measure>
+					<measure name="FOTO" class="java.lang.Integer">
+						<measureExpression><![CDATA[$F{ESTFOTO}]]></measureExpression>
+					</measure>
+					<measure name="LogosSED" class="java.lang.String">
+						<measureExpression><![CDATA[$P{LogosSED}]]></measureExpression>
+					</measure>
+					<measure name="FONDO" class="java.lang.String">
+						<measureExpression><![CDATA[$P{Fondo}]]></measureExpression>
+					</measure>
+					<measure name="GRADO" class="java.lang.String">
+						<measureExpression><![CDATA["Grado: "+$F{CARESTGRADO}+" - "+ $F{CARESTGRUPO}]]></measureExpression>
+					</measure>
+					<measure name="FECHA_NACE" class="java.lang.String">
+						<measureExpression><![CDATA[$F{FEC_NAC_DIA}+" - "+$F{MES}+" - "+$F{FEC_NAC}]]></measureExpression>
+					</measure>
+					<measure name="CODBARRAS" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{CARESTCODIGO}]]></measureExpression>
+					</measure>
+					<measure name="CODIGO_EST" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{CARESTCODIGO}]]></measureExpression>
+					</measure>
+					<measure name="RUTA_FOTOS" class="java.lang.String">
+						<measureExpression><![CDATA[$P{RUTA_FOTOS}]]></measureExpression>
+					</measure>
+					<crosstabCell width="263" height="153">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="240"
+						height="153"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" fill="Solid" />
+					<imageExpression class="java.lang.String"><![CDATA[$V{FONDO}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="51"
+						width="160"
+						height="9"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{DOCUMENTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="40"
+						width="160"
+						height="9"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{NOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="23"
+						width="227"
+						height="8"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="5"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{TELEFONO_LOCALIDAD}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="5"
+						width="227"
+						height="10"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{INSTITUCION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="15"
+						width="227"
+						height="8"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="5"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{SEDE}]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="182"
+						y="120"
+						width="50"
+						height="20"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" fill="Solid" />
+					<imageExpression class="java.lang.String"><![CDATA[$V{LogosSED}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="177"
+						y="40"
+						width="56"
+						height="70"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-1">
+							<printWhenExpression><![CDATA[new Boolean ($V{FOTO}.intValue()==0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="6" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Foto del estudiante]]></text>
+				</staticText>
+				<image  onErrorType="Blank" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="176"
+						y="40"
+						width="56"
+						height="70"
+						key="image-1">
+							<printWhenExpression><![CDATA[new Boolean ($V{FOTO}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$V{RUTA_FOTOS}+$V{CODIGO_EST}+".jpg"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="145"
+						width="230"
+						height="8"
+						forecolor="#FFFFFF"
+						backcolor="#00529D"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="3" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[SECRETARIA DE EDUCACIÓN    ]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="7"
+						y="134"
+						width="169"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="3" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Este carné es personal e intransferible y lo acredita como estudiante del Sistema Educativo Oficial del Distrito Capital."]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="62"
+						width="109"
+						height="10"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{GRADO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="7"
+						y="93"
+						width="134"
+						height="9"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{FECHA_NACE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="7"
+						y="81"
+						width="83"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Fecha de Nacimiento:]]></text>
+				</staticText>
+				<image  scaleImage="FillFrame" vAlign="Middle" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="7"
+						y="107"
+						width="133"
+						height="26"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="barcode-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(9,String.valueOf($V{CODBARRAS}),false,false,null,0,0)]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="230"
+						y="145"
+						width="10"
+						height="8"
+						forecolor="#FFFFFF"
+						backcolor="#00529D"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="3" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[    ]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="118"
+						y="62"
+						width="49"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Times-Roman" pdfFontName="Times-Roman" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[" Año: "+ new SimpleDateFormat("yyyy").format( new Date())]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="263" height="0" rowTotalGroup="ESTUDIANTE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="153" columnTotalGroup="ESTUDIANTES">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="ESTUDIANTE" columnTotalGroup="ESTUDIANTES">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="153" columnTotalGroup="CARESTINST">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="ESTUDIANTE" columnTotalGroup="CARESTINST">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="constancia"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="651"
+		 columnWidth="500"
+		 columnSpacing="0"
+		 leftMargin="56"
+		 rightMargin="56"
+		 topMargin="28"
+		 bottomMargin="85"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\ATHENEA\\ARTICULACION\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COD_ESTUDIANTE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(354071)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(205)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ESPECIALIDAD" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOTIVO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["MOTIVO"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT INSTITUCION.INSNOMBRE as INSTITUCION,
+  INSTITUCION.INSCODDANE as DANE,
+  INSTITUCION.INSNUMRES as RESOLUCION,
+  INSTITUCION.INSFECRES as FEC_RES,
+to_char(INSTITUCION.INSFECRES,'DD') as DIA_RES,
+  CASE to_number(to_char(INSTITUCION.INSFECRES,'MM'))
+  WHEN 1 THEN 'Enero' 
+  WHEN 2 THEN 'Febrero' 
+  WHEN 3 THEN 'Marzo'
+  WHEN 4 THEN 'Abril'
+  WHEN 5 THEN 'Mayo'
+  WHEN 6 THEN 'Junio'
+  WHEN 7 THEN 'Julio'
+  WHEN 8 THEN 'Agosto'
+  WHEN 9 THEN 'Septiembre'
+  WHEN 10 THEN 'Octubre' 
+  WHEN 11 THEN 'Noviembre'
+  WHEN 12 THEN 'Diciembre'
+  END MES_RES,
+  to_char(INSTITUCION.INSFECRES,'YYYY') as ANO_RES,
+  SEDE.SEDNOMBRE as SEDE,
+  NOM_JOR.G_CONNOMBRE as JORNADA,
+  ARTESTCODIGO,
+  DOC.G_CONABREV as TIPO_DOC_EST,
+  ESTUDIANTE.ESTNUMDOC as DOC_EST,
+  ESTAPELLIDO1||' '||ESTAPELLIDO2||' '||ESTNOMBRE1||' '|| ESTNOMBRE2 as ESTUDIANTE,
+  GRADO.GRANOMBRE as GRADO,
+  NIVEL.G_CONNOMBRE as NIVEL,
+  ART_ESPECIALIDAD.ESPNOMBRE as ESPECIALIDAD,
+  G_JERARQUIA.G_JERVIGENCIA as VIGENCIA,
+  SYSDATE as TIEMPO_ACTUAL,
+  to_char(SYSDATE,'DD') as DIA,
+  CASE to_number(to_char(SYSDATE,'MM'))
+  WHEN 1 THEN 'Enero' 
+  WHEN 2 THEN 'Febrero' 
+  WHEN 3 THEN 'Marzo'
+  WHEN 4 THEN 'Abril'
+  WHEN 5 THEN 'Mayo'
+  WHEN 6 THEN 'Junio'
+  WHEN 7 THEN 'Julio'
+  WHEN 8 THEN 'Agosto'
+  WHEN 9 THEN 'Septiembre'
+  WHEN 10 THEN 'Octubre' 
+  WHEN 11 THEN 'Noviembre'
+  WHEN 12 THEN 'Diciembre'
+  END MES,
+  to_char(SYSDATE,'YYYY') as ANO
+ FROM ART_ESTUDIANTE 
+ INNER JOIN ESTUDIANTE ON ESTUDIANTE.ESTCODIGO = ART_ESTUDIANTE.ARTESTCODIGO 
+ INNER JOIN G_CONSTANTE DOC ON DOC.G_CONCODIGO = ESTUDIANTE.ESTTIPODOC
+ AND DOC.G_CONTIPO = 10
+ INNER JOIN G_JERARQUIA ON G_JERARQUIA.G_JERCODIGO = ESTUDIANTE.ESTGRUPO
+ INNER JOIN INSTITUCION ON INSTITUCION.INSCODIGO = ART_ESTUDIANTE.ARTESTCODINST
+ INNER JOIN SEDE ON SEDE.SEDCODINS = INSTITUCION.INSCODIGO
+ INNER JOIN JORNADA ON JORNADA.JORCODINS = INSTITUCION.INSCODIGO
+ INNER JOIN G_CONSTANTE NOM_JOR ON NOM_JOR.G_CONTIPO = 5 AND NOM_JOR.G_CONCODIGO = JORNADA.JORCODIGO
+ INNER JOIN GRADO ON GRADO.GRACODIGO = G_JERARQUIA.G_JERGRADO AND GRADO.GRACODINST = G_JERARQUIA.G_JERINST
+ INNER JOIN G_GRADO ON G_GRADO.G_GRACODIGO = GRADO.GRACODIGO
+ INNER JOIN G_CONSTANTE NIVEL ON NIVEL.G_CONCODIGO = G_GRADO.G_GRANIVEL AND NIVEL.G_CONTIPO = 1
+ INNER JOIN ART_ESPECIALIDAD ON ART_ESPECIALIDAD.ESPCODIGO = ART_ESTUDIANTE.ARTESTCODESP AND ART_ESPECIALIDAD.ESPCODINST = INSTITUCION.INSCODIGO
+ where
+ ESTUDIANTE.ESTCODIGO = $P{COD_ESTUDIANTE}
+ AND INSTITUCION.INSCODIGO =$P{INSTITUCION}
+ AND SEDE.SEDCODIGO = $P{SEDE}
+ AND JORNADA.JORCODIGO = $P{JORNADA}
+ AND ART_ESPECIALIDAD.ESPCODIGO = $P{ESPECIALIDAD}]]></queryString>
+
+	<field name="INSTITUCION" class="java.lang.String"/>
+	<field name="DANE" class="java.math.BigDecimal"/>
+	<field name="RESOLUCION" class="java.lang.String"/>
+	<field name="FEC_RES" class="java.sql.Timestamp"/>
+	<field name="DIA_RES" class="java.lang.String"/>
+	<field name="MES_RES" class="java.lang.String"/>
+	<field name="ANO_RES" class="java.lang.String"/>
+	<field name="SEDE" class="java.lang.String"/>
+	<field name="JORNADA" class="java.lang.String"/>
+	<field name="ARTESTCODIGO" class="java.math.BigDecimal"/>
+	<field name="TIPO_DOC_EST" class="java.lang.String"/>
+	<field name="DOC_EST" class="java.lang.String"/>
+	<field name="ESTUDIANTE" class="java.lang.String"/>
+	<field name="GRADO" class="java.lang.String"/>
+	<field name="NIVEL" class="java.lang.String"/>
+	<field name="ESPECIALIDAD" class="java.lang.String"/>
+	<field name="VIGENCIA" class="java.math.BigDecimal"/>
+	<field name="TIEMPO_ACTUAL" class="java.sql.Timestamp"/>
+	<field name="DIA" class="java.lang.String"/>
+	<field name="MES" class="java.lang.String"/>
+	<field name="ANO" class="java.lang.String"/>
+
+	<variable name="test" class="java.lang.String" resetType="None" calculation="Nothing">
+		<variableExpression><![CDATA["test"]]></variableExpression>
+		<initialValueExpression><![CDATA["test"		]]></initialValueExpression>
+	</variable>
+
+		<group  name="ARTESTUDIANTE" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{ARTESTCODIGO}]]></groupExpression>
+			<groupHeader>
+			<band height="350"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="144"
+						width="498"
+						height="34"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="12" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["ES SUSCRITO RECTOR DEL "+$F{INSTITUCION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="209"
+						width="498"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="11" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[HACE CONSTAR]]></text>
+				</staticText>
+				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Left" onErrorType="Icon" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="0"
+						width="59"
+						height="64"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.lang.String"><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="259"
+						width="498"
+						height="73"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None" lineSpacing="Double">
+						<font fontName="Arial" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Que "+$F{ESTUDIANTE}+", identificado(a) con "+$F{TIPO_DOC_EST}+" No. "+$F{DOC_EST}+", se encuentra matriculado(a) en esta Institución Educativa, cursando el grado "+$F{GRADO}+" de EDUCACIÓN "+$F{NIVEL}+", en la especialidad de "+$F{ESPECIALIDAD}+", durante el año lectivo de "+$F{ANO}+
+".\n\nSe expide la presente constancia en Bogotá D.C., a los "+$F{DIA}+" días del mes de "+$F{MES}+" de "+$F{ANO}+", para efectos de "+$P{MOTIVO}+". "]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="FillFrame" vAlign="Middle" hAlign="Center" onErrorType="Icon" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="424"
+						y="0"
+						width="41"
+						height="48"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="image-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.lang.String"><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="80"
+						width="186"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-19"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["REGISTRO D.A.N.E. "+$F{DANE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="64"
+						width="197"
+						height="16"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-21"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean($F{RESOLUCION}!=null)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Resolución de Aprobación No. "+($F{RESOLUCION}!=null?$F{RESOLUCION}:" ")+"\ndel "+$F{DIA_RES}+" de "+$F{MES_RES}+" de "+$F{ANO_RES}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="389"
+						y="48"
+						width="111"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="6" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["ALCALDÍA MAYOR"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="389"
+						y="69"
+						width="111"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Secretaría"]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="413"
+						y="68"
+						width="65"
+						height="0"
+						forecolor="#999999"
+						key="line-6"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="389"
+						y="78"
+						width="111"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Educación"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="390"
+						y="58"
+						width="110"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="7" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["DE BOGOTÁ D.C."]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="88"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="185"
+						y="66"
+						width="127"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Arial" pdfFontName="Helvetica" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Rector]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="169"
+						y="60"
+						width="168"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-5"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

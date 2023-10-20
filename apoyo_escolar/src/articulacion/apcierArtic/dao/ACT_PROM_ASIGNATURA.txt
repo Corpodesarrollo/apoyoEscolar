@@ -1,0 +1,285 @@
+CREATE OR REPLACE PROCEDURE APOYO_ESCOLAR.ACT_PROM_ASIGNATURA (Vigencia_p IN NUMBER, Periodo_p IN NUMBER, InsCodigo_p IN NUMBER, SedCodigo_p IN NUMBER, 
+JorCodigo_p IN NUMBER, GruCodJerar_p IN NUMBER, AsiCodigo_p IN NUMBER, Accion_p IN NUMBER) IS
+
+-- Accion_p = 1 -->  cerrar = promediar periodo final asignatura 
+-- Accion_p = 2 -->  abrir = borrar promedio de asignatura 
+
+  InsCodigo_v NUMBER(6);
+  SedCodigo_v NUMBER(6);
+  JorCodigo_v NUMBER(6);
+  MetCodigo_v NUMBER(3);
+  NivCodigo_v NUMBER(3);
+  GraCodigo_v NUMBER(3);
+  SedCodigo_o NUMBER(6);
+  JorCodigo_o NUMBER(6);
+  MetCodigo_o NUMBER(3);
+  NivCodigo_o NUMBER(3);
+  GraCodigo_o NUMBER(3);
+  GruCodJerar_v NUMBER(11);
+  AsiCodJerar_v NUMBER(11);
+  AsiCodigo_v NUMBER(11);
+  EstCodigo_v NUMBER(11);
+  NumReg_v NUMBER(6);
+  NumGru_v NUMBER(6);
+  NumPer_v NUMBER(6);
+  NumEst_v NUMBER(6);
+  SqlCode_v VARCHAR(500);
+  SqlErrM_v VARCHAR(500);
+
+  CURSOR Objeto_c IS
+  select distinct inscodigo, insnivcodsede, insnivcodjorn, insnivcodmetod, insnivcodnivel, insnivcodgrado
+  from institucion, institucion_nivel_evaluacion
+  where ((InsCodigo_p = 0) OR (InsCodigo_p = inscodigo)) 
+  and ((SedCodigo_p = 0) or (InsNivCodNivelEval in (1,3,4,5,6)) or (SedCodigo_p = InsNivCodSede))
+  and ((JorCodigo_p = 0)  or (InsNivCodNivelEval in (1,2,4,5,6,8,9,10,14,15,16,19)) or (JorCodigo_p = InsNivCodJorn))
+  and insestado = 'A'
+  and inscodigo = insnivcodinst
+  and insnivvigencia = Vigencia_p
+  and insnivtipoevalasig = 1
+  and insnivmodoeval = 2
+  and inscodigo in (
+  select g_jerinst
+  from g_jerarquia
+  where g_jertipo = 3
+  and g_jernivel = 4
+  and g_jerinst = inscodigo
+  and g_jervigencia = Vigencia_p
+  and g_jercodigo in (
+  select evaasicodjerar
+  from evaluacion_asignatura
+  where evaasivigencia = Vigencia_p));
+
+  CURSOR Grupo_Asig_c IS
+  select distinct ciegrucodjerar, ciegruareaasig, jg.g_jermetod, jg.g_jergrado 
+  from g_jerarquia jg, cierre_grupo, g_jerarquia ja
+  where ((GruCodJerar_p = 0) OR (ciegrucodjerar = GruCodJerar_p))
+  and ((AsiCodigo_p = 0) OR (ciegruareaasig = AsiCodigo_p))
+  and ciegruvigencia = Vigencia_p
+  and jg.g_jertipo = 1
+  and jg.g_jernivel = 8
+  and (jg.g_jerinst = InsCodigo_v) 
+  and ((SedCodigo_o is null) OR (jg.g_jersede = SedCodigo_o)) 
+  and ((JorCodigo_o is null) OR (jg.g_jerjorn = JorCodigo_o)) 
+  and ((MetCodigo_o is null) OR (jg.g_jermetod = MetCodigo_o)) 
+  and ((GraCodigo_o is null) OR (jg.g_jergrado = GraCodigo_o)) 
+  and ciegrucodjerar = jg.g_jercodigo
+  and jg.g_jerinst = InsCodigo_v
+  and decode(Periodo_p,1,ciegruestado1,2,ciegruestado2,3,ciegruestado3,4,ciegruestado4,5,ciegruestado5,6,ciegruestado6,7,
+  ciegruestado7,0) = 1
+  and ciegrutipo = 2
+  and ja.g_jertipo = 3
+  and ja.g_jernivel = 4
+  and ja.g_jerinst = jg.g_jerinst
+  and ja.g_jermetod = jg.g_jermetod
+  and ja.g_jergrado = jg.g_jergrado
+  and ja.g_jerareaasig = ciegruareaasig
+  and ja.g_jervigencia = Vigencia_p
+  and (ciegrucodjerar, ja.g_jercodigo) in (
+  select estgrupo, evaasicodjerar
+  from evaluacion_asignatura, estudiante
+  where evaasivigencia = Vigencia_p
+  and evaasicodestud = estcodigo
+  and evaasicodjerar = ja.g_jercodigo);
+
+  CURSOR Estudiante_c IS
+  select distinct estcodigo, estapellido1, estnombre1
+  from estudiante, evaluacion_asignatura
+  where estgrupo = GruCodJerar_v
+  and estestado between 100 and 199
+  and evaasicodestud = estcodigo
+  and evaasivigencia = Vigencia_p
+  and evaasicodjerar = AsiCodJerar_v
+  and (evaasieval1 is not null or evaasieval2 is not null or evaasieval3 is not null or evaasieval4 is not null or
+  evaasieval5 is not null or evaasieval6 is not null);
+ 
+BEGIN
+
+    delete from borrar;
+    commit;
+
+    NumReg_v := 1;
+
+    insert into borrar (codigo, mensaje, fecha)
+    values (NumReg_v, 'ACT_PROM_ASIGNATURA: Ins:' || InsCodigo_p || ' Sede:' || SedCodigo_p || ' Jorn:' || JorCodigo_p || ' GruCodJerar:' || GruCodJerar_p
+    || ' Asig:' || AsiCodigo_p || ' Vigencia:' || Vigencia_p || ' Periodo:' || Periodo_p || ' Accion:' || Accion_p, sysdate);
+    commit;
+
+        for registro1 IN Objeto_c loop
+
+            InsCodigo_v := registro1.InsCodigo;
+            SedCodigo_o := registro1.InsNivCodSede;
+            JorCodigo_o := registro1.InsNivCodJorn;
+            MetCodigo_o := registro1.InsNivCodMetod;
+            NivCodigo_o := registro1.InsNivCodNivel;
+            GraCodigo_o := registro1.InsNivCodGrado;
+/*
+            NumReg_v := NumReg_v +1;
+            insert into borrar (codigo, mensaje, fecha)
+            values (NumReg_v, 'Loop1 Inst:' || InsCodigo_v || ' Sede:' || SedCodigo_o || ' Jorn:' || JorCodigo_o || ' Met:' || 
+            MetCodigo_o || ' Gra:' || GraCodigo_o || ' Vig:' || Vigencia_p,sysdate);
+            commit;
+*/
+            if Accion_p = 2 and AsiCodigo_p = 0 and GruCodJerar_p = 0 and Periodo_p <> 7 then   -- Abrir todos los grupos  
+/*
+                NumReg_v := NumReg_v +1;
+                insert into borrar (codigo, mensaje, fecha)
+                values (NumReg_v, 'Accion2',sysdate);
+                commit;
+*/
+                update evaluacion_asignatura
+                set evaasieval7 = null
+                where evaasivigencia = Vigencia_p
+                and evaasicodestud in (
+                select estcodigo
+                from estudiante
+                where estgrupo in (
+                select g_jercodigo
+                from g_jerarquia
+                where g_jertipo = 1
+                and g_jernivel = 8
+                and g_jerinst = InsCodigo_p
+                and ((SedCodigo_o is null) OR (g_jersede = SedCodigo_o)) 
+                and ((JorCodigo_o is null) OR (g_jerjorn = JorCodigo_o))
+                and ((MetCodigo_o is null) OR (g_jermetod = MetCodigo_o)) 
+                and ((GraCodigo_o is null) OR (g_jergrado = GraCodigo_o)))) 
+                and evaasicodjerar in (
+                select ja.g_jercodigo
+                from g_jerarquia ja
+                where ja.g_jertipo = 3
+                and ja.g_jernivel = 4
+                and ja.g_jerinst = InsCodigo_p
+                and ja.g_jervigencia = Vigencia_p);
+/*
+                NumReg_v := NumReg_v +1;
+                insert into borrar (codigo, mensaje, fecha)
+                values (999, 'Despues de poner en nulo el periodo7 para todos los grupos',sysdate);
+                commit;
+*/            
+            end if;
+
+            if Accion_p = 1 then
+
+                NumGru_v := 1;
+
+                for registro2 IN Grupo_Asig_c loop
+
+                    MetCodigo_v := registro2.G_JerMetod;
+                    GraCodigo_v := registro2.G_JerGrado;
+                    GruCodJerar_v := registro2.CieGruCodJerar;
+                    AsiCodigo_v := registro2.CieGruAreaAsig;
+/*
+                    NumReg_v := NumReg_v +1;
+                    insert into borrar (codigo, mensaje, fecha)
+                    values (NumReg_v, 'En el segundo if: Inst:' || InsCodigo_v || ' met:' || MetCodigo_v || ' Gra:' || GraCodigo_v || 
+                    'GruCodJerar:' || GruCodJerar_v || ' Asi:' || AsiCodigo_v || ' Vig:' || Vigencia_p,sysdate);
+                    commit;
+*/
+                    select g_jercodigo
+                    into AsiCodJerar_v 
+                    from g_jerarquia
+                    where g_jertipo = 3
+                    and g_jernivel = 4
+                    and g_jerinst = InsCodigo_v
+                    and g_jermetod = MetCodigo_v
+                    and g_jergrado = GraCodigo_v
+                    and g_jerareaasig = AsiCodigo_v
+                    and g_jervigencia = Vigencia_p;
+
+                    NumEst_v := 0;
+/*
+                    NumReg_v := NumReg_v +1;
+                    insert into borrar (codigo, mensaje, fecha)
+                    values (NumReg_v, 'Antes de Loop4: ' || EstCodigo_v || ' AsiJerar: ' || AsiCodJerar_v|| ' GruCodJerar: ' || GruCodJerar_v,sysdate);
+                    commit;
+*/
+                    for registro4 IN Estudiante_c loop
+/*
+                        NumReg_v := NumReg_v +1;
+                        insert into borrar (codigo, mensaje, fecha)
+                        values (NumReg_v, 'Dentro del Loop4 Est: ' || EstCodigo_v || ' Asi: ' || AsiCodigo_v|| ' GruCodJerar: ' || GruCodJerar_v,sysdate);
+                        commit;
+*/
+                        NumReg_v := NumReg_v +1;
+                        NumEst_v := NumEst_v + 1;
+                        EstCodigo_v := registro4.EstCodigo;
+
+                        select decode(Periodo_p,1,decode(evaasieval1,null,decode(evaasirec1,null,0,1),1),
+                        2,decode(evaasieval1,null,decode(evaasirec1,null,0,1),1)+decode(evaasieval2,null,decode(evaasirec2,null,0,1),1),
+                        3,decode(evaasieval1,null,decode(evaasirec1,null,0,1),1)+decode(evaasieval2,null,decode(evaasirec2,null,0,1),1)+
+                        decode(evaasieval3,null,decode(evaasirec3,null,0,1),1),
+                        4,decode(evaasieval1,null,decode(evaasirec1,null,0,1),1)+decode(evaasieval2,null,decode(evaasirec2,null,0,1),1)+
+                        decode(evaasieval3,null,decode(evaasirec3,null,0,1),1)+decode(evaasieval4,null,decode(evaasirec4,null,0,1),1),
+                        5,decode(evaasieval1,null,decode(evaasirec1,null,0,1),1)+decode(evaasieval2,null,decode(evaasirec2,null,0,1),1)+
+                        decode(evaasieval3,null,decode(evaasirec3,null,0,1),1)+decode(evaasieval4,null,decode(evaasirec4,null,0,1),1)+
+                        decode(evaasieval5,null,decode(evaasirec5,null,0,1),1),
+                        6,decode(evaasieval1,null,decode(evaasirec1,null,0,1),1)+decode(evaasieval2,null,decode(evaasirec2,null,0,1),1)+
+                        decode(evaasieval3,null,decode(evaasirec3,null,0,1),1)+decode(evaasieval4,null,decode(evaasirec4,null,0,1),1)+
+                        decode(evaasieval5,null,decode(evaasirec5,null,0,1),1)+decode(evaasieval6,null,decode(evaasirec6,null,0,1),1),
+                        7,decode(evaasieval1,null,decode(evaasirec1,null,0,1),1)+decode(evaasieval2,null,decode(evaasirec2,null,0,1),1)+
+                        decode(evaasieval3,null,decode(evaasirec3,null,0,1),1)+decode(evaasieval4,null,decode(evaasirec4,null,0,1),1)+
+                        decode(evaasieval5,null,decode(evaasirec5,null,0,1),1)+decode(evaasieval6,null,decode(evaasirec6,null,0,1),1),
+                        0)
+                        into numper_v 
+                        from evaluacion_asignatura
+                        where evaasivigencia = Vigencia_p
+                        and evaasicodjerar = AsiCodJerar_v
+                        and evaasicodestud = EstCodigo_v; 
+/*
+                        NumReg_v := NumReg_v +1;
+                        insert into borrar (codigo, mensaje, fecha)
+                        values (NumReg_v, 'Loop3 Est: ' || EstCodigo_v || ' Asi: ' || AsiCodigo_v|| ' NumNotas: ' || NumPer_v,sysdate);
+                        commit;
+*/
+                        if NumPer_v = 0 then
+                            update evaluacion_asignatura
+                            set evaasieval7 = null
+                            where evaasivigencia = Vigencia_p
+                            and evaasicodjerar = AsiCodJerar_v
+                            and evaasicodestud = EstCodigo_v;
+                        else                             
+                            update evaluacion_asignatura
+                            set evaasieval7 = (decode (Periodo_p,1,nvl(evaasirec1,nvl(evaasieval1,0)),
+                            2,nvl(evaasirec1,nvl(evaasieval1,0))+nvl(evaasirec2,nvl(evaasieval2,0)),
+                            3,nvl(evaasirec1,nvl(evaasieval1,0))+nvl(evaasirec2,nvl(evaasieval2,0))+nvl(evaasirec3,nvl(evaasieval3,0)),
+                            4,nvl(evaasirec1,nvl(evaasieval1,0))+nvl(evaasirec2,nvl(evaasieval2,0))+nvl(evaasirec3,nvl(evaasieval3,0))+
+                            nvl(evaasirec4,nvl(evaasieval4,0)),
+                            5,nvl(evaasirec1,nvl(evaasieval1,0))+nvl(evaasirec2,nvl(evaasieval2,0))+nvl(evaasirec3,nvl(evaasieval3,0))+
+                            nvl(evaasirec4,nvl(evaasieval4,0))+nvl(evaasirec5,nvl(evaasieval5,0)),
+                            6,nvl(evaasirec1,nvl(evaasieval1,0))+nvl(evaasirec2,nvl(evaasieval2,0))+nvl(evaasirec3,nvl(evaasieval3,0))+
+                            nvl(evaasirec4,nvl(evaasieval4,0))+nvl(evaasirec5,nvl(evaasieval5,0))+nvl(evaasirec6,nvl(evaasieval6,0)),
+                            7,nvl(evaasirec1,nvl(evaasieval1,0))+nvl(evaasirec2,nvl(evaasieval2,0))+nvl(evaasirec3,nvl(evaasieval3,0))+
+                            nvl(evaasirec4,nvl(evaasieval4,0))+nvl(evaasirec5,nvl(evaasieval5,0))+nvl(evaasirec6,nvl(evaasieval6,0)))) / NumPer_v
+                            where evaasivigencia = Vigencia_p
+                            and evaasicodjerar = AsiCodJerar_v
+                            and evaasicodestud = EstCodigo_v; 
+                        end if;
+                        
+                    end loop;             
+                    
+                end loop;
+                  
+
+            end if;
+
+        end loop;
+        
+    insert into borrar (codigo, mensaje, fecha)
+    values (NumReg_v, 'ACT_PROM_ASIGNATURA: Termino bien',sysdate);
+    commit;
+
+    EXCEPTION
+    WHEN OTHERS THEN
+
+        SqlCode_v := sqlcode;
+        SqlErrM_v := sqlerrm;
+
+        insert into borrar(codigo, mensaje, fecha)
+        values (81000, SqlCode_v, sysdate);
+
+        insert into borrar(codigo, mensaje, fecha)
+        values (82000, SqlErrM_v || ' Est:' || EstCodigo_v || ' AsiJerar:' || AsiCodJerar_v || ' Grupo:' || GruCodJerar_v , sysdate);
+
+        commit;
+
+    END;
+/

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Grafica_necesidades_lineasAccion_area"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="612"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\TRABAJO\\ATHENEA\\ARTICULACION\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(205)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2008"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COD_LOCALIDAD" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["-99"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOCALIDAD" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["Todas"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AREA" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(1)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select count(POA_PLANACTIVIDAD2.PLACCODIGO) as CANTIDAD, POA_PLANACTIVIDAD2.PLACCODLIACCION, POA_LINEAACCION.LIACNOMBRE,
+round(count(POA_PLANACTIVIDAD2.PLACCODIGO)*100/(select count(POA_PLANACTIVIDAD2.PLACCODIGO) from POA_PLANACTIVIDAD2 INNER JOIN POA ON POA.POACODINST = POA_PLANACTIVIDAD2.PLACCODINST INNER JOIN INSTITUCION ON INSTITUCION.INSCODIGO = POA.POACODINST where POA.POAESTADO=1  and POA.POAVIGENCIA = $P{VIGENCIA} and POA_PLANACTIVIDAD2.PLACCODARGESTION = $P{AREA} AND (-99=$P{COD_LOCALIDAD} or INSTITUCION.INSCODLOCAL = $P{COD_LOCALIDAD})),1) as PORCENTAJE
+from POA_PLANACTIVIDAD2 
+INNER JOIN POA_LINEAACCION ON POA_LINEAACCION.LIACCODIGO = POA_PLANACTIVIDAD2.PLACCODLIACCION
+INNER JOIN POA ON POA.POACODINST = POA_PLANACTIVIDAD2.PLACCODINST
+INNER JOIN INSTITUCION ON INSTITUCION.INSCODIGO = POA.POACODINST
+where POA.POAESTADO=1  and POA.POAVIGENCIA = $P{VIGENCIA}
+AND (-99=$P{COD_LOCALIDAD} or INSTITUCION.INSCODLOCAL = $P{COD_LOCALIDAD})
+and POA_PLANACTIVIDAD2.PLACCODARGESTION = $P{AREA}
+group by POA_PLANACTIVIDAD2.PLACCODLIACCION, POA_LINEAACCION.LIACNOMBRE
+order by 2]]></queryString>
+
+	<field name="CANTIDAD" class="java.lang.Integer"/>
+	<field name="PLACCODLIACCION" class="java.math.BigDecimal"/>
+	<field name="LIACNOMBRE" class="java.lang.String"/>
+	<field name="PORCENTAJE" class="java.lang.Double"/>
+
+	<variable name="TOTAL_NESECIDADES" class="java.lang.Integer" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL_NEC" class="java.lang.Integer" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD}]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="618"  isSplitAllowed="true" >
+				<pie3DChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="33"
+						width="607"
+						height="464"
+						key="element-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+					</chartLegend>
+					</chart>
+					<pieDataset>
+						<dataset >
+						</dataset>
+						<keyExpression><![CDATA[$F{LIACNOMBRE}]]></keyExpression>
+						<valueExpression><![CDATA[$F{CANTIDAD}]]></valueExpression>
+						<labelExpression><![CDATA[$F{PORCENTAJE}+"%"]]></labelExpression>
+				<sectionHyperlink >
+				</sectionHyperlink>
+					</pieDataset>
+					<pie3DPlot depthFactor="0.1" >
+						<plot />
+					</pie3DPlot>
+				</pie3DChart>
+			</band>
+		</summary>
+</jasperReport>

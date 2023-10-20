@@ -1,0 +1,6 @@
+-Parti en dos la parte de integracion para que cada uno (duc-mat) tenga objetos separados.
+-No he hecho nada con el fuente, pero ahi toca mirar como se manejan las 2 conexiones si es por jdbc o por dblink
+-Solo se ha hecho el primer archivo de duc (objetos)
+-Necesitamos el esquema de matriculas
+-Hay dudas con el manejo se parado de colegios-sedes y la info de estudiante (ubicacion)
+-Empiezo con DUC pero no hay tiempo porque empiezo con poa2

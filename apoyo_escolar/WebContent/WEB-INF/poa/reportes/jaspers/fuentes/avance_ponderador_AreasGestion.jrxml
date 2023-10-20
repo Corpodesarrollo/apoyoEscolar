@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="avance_ponderador_AreasGestion"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="574"
+		 columnSpacing="0"
+		 leftMargin="8"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\iReport-2.0.4\\POA\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(490)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2010"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COD_LOCALIDAD" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["9"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOCALIDAD" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["Todas"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["04/04/09"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select INSTITUCION.INSNOMBRE AS COLEGIO,
+       POA_PLANACTIVIDAD.PLACCODARGESTION as COD_AREA_GESTION,
+	   POA_AREAGESTION.ARGENOMBRE as NOMBRE_AREA,
+	   sum(POA_PLANACTIVIDAD.placponderado) as ponderador,
+	   sum (nvl(CASE PLACCODTIMETA
+	   when 1 then
+	   (to_number(to_number(nvl(SEGPERIODO1,0))+to_number(nvl(SEGPERIODO2,0))+to_number(nvl(SEGPERIODO3,0))+to_number(nvl(SEGPERIODO4,0)))/PLACCANTIDAD)*(PLACPONDERADO/100)
+	   when 2 then
+	    NVL(CASE SEGPORCEJECP4 WHEN 0 THEN NULL ELSE SEGPORCEJECP4 END,
+      NVL(CASE SEGPORCEJECP3 WHEN 0 THEN NULL ELSE SEGPORCEJECP3 END,
+      NVL(CASE SEGPORCEJECP2 WHEN 0 THEN NULL ELSE SEGPORCEJECP2 END,
+      NVL(CASE SEGPORCEJECP1 WHEN 0 THEN NULL ELSE SEGPORCEJECP1 END
+      ,0))))*(PLACPONDERADO/100)
+	   when 3 then
+     (((to_number(to_number(nvl(SEGPERIODO1,0))+to_number(nvl(SEGPERIODO2,0))+to_number(nvl(SEGPERIODO3,0))+to_number(nvl(SEGPERIODO4,0))))/CASE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) WHEN 0 THEN 1 ELSE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) END)/PLACCANTIDAD)*(PLACPONDERADO/100)
+	   end,0)) AS NIVEL_CUMPLIMIENTO,
+     
+     
+	   nvl (sum(POA_PLANACTIVIDAD.placponderado) -  sum (nvl(CASE PLACCODTIMETA
+	   when 1 then
+	   	   (to_number(to_number(nvl(SEGPERIODO1,0))+to_number(nvl(SEGPERIODO2,0))+to_number(nvl(SEGPERIODO3,0))+to_number(nvl(SEGPERIODO4,0)))/PLACCANTIDAD)*(PLACPONDERADO/100)
+	   when 2 then
+	    NVL(CASE SEGPORCEJECP4 WHEN 0 THEN NULL ELSE SEGPORCEJECP4 END,
+      NVL(CASE SEGPORCEJECP3 WHEN 0 THEN NULL ELSE SEGPORCEJECP3 END,
+      NVL(CASE SEGPORCEJECP2 WHEN 0 THEN NULL ELSE SEGPORCEJECP2 END,
+      NVL(CASE SEGPORCEJECP1 WHEN 0 THEN NULL ELSE SEGPORCEJECP1 END
+      ,0))))*(PLACPONDERADO/100)
+	   when 3 then
+	        (((to_number(to_number(nvl(SEGPERIODO1,0))+to_number(nvl(SEGPERIODO2,0))+to_number(nvl(SEGPERIODO3,0))+to_number(nvl(SEGPERIODO4,0))))/CASE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) WHEN 0 THEN 1 ELSE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) END)/PLACCANTIDAD)*(PLACPONDERADO/100)
+	   end,0)),0) as PENDIENTE	   
+from POA_PLANACTIVIDAD  
+INNER JOIN POA_AREAGESTION ON POA_AREAGESTION.ARGECODIGO = POA_PLANACTIVIDAD.PLACCODARGESTION
+INNER JOIN POA ON POA.POACODINST = POA_PLANACTIVIDAD.PLACCODINST
+INNER JOIN INSTITUCION ON INSTITUCION.INSCODIGO = POA.POACODINST
+where POA.POAESTADO=1  and POA.POAVIGENCIA = $P{VIGENCIA}
+AND POA_PLANACTIVIDAD.PLACVIGENCIA= POA.POAVIGENCIA
+AND ($P{INSTITUCION}=-99 or INSTITUCION.INSCODIGO = $P{INSTITUCION})
+AND INSTITUCION.INSCODLOCAL = $P{COD_LOCALIDAD}
+group by INSTITUCION.INSNOMBRE,POA_PLANACTIVIDAD.PLACCODARGESTION,POA_AREAGESTION.ARGENOMBRE,POA_AREAGESTION.ARGEORDEN
+ORDER BY INSTITUCION.INSNOMBRE,POA_AREAGESTION.ARGEORDEN]]></queryString>
+
+	<field name="COLEGIO" class="java.lang.String"/>
+	<field name="COD_AREA_GESTION" class="java.math.BigDecimal"/>
+	<field name="NOMBRE_AREA" class="java.lang.String"/>
+	<field name="PONDERADOR" class="java.lang.Double"/>
+	<field name="NIVEL_CUMPLIMIENTO" class="java.lang.Double"/>
+	<field name="PENDIENTE" class="java.lang.Double"/>
+
+	<variable name="TOTAL_PONDERADOR" class="java.lang.Double" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{PONDERADOR}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_NIVEL_CUMPLIMIENTO" class="java.lang.Double" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{NIVEL_CUMPLIMIENTO}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PENDIENTE" class="java.lang.Double" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{PENDIENTE}]]></variableExpression>
+	</variable>
+
+		<group  name="COLEGIO" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{COLEGIO}]]></groupExpression>
+			<groupHeader>
+			<band height="76"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="207"
+						y="42"
+						width="116"
+						height="34"
+						backcolor="#FF9933"
+						key="staticText-5"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Ponderador]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="20"
+						y="42"
+						width="187"
+						height="34"
+						backcolor="#FF9933"
+						key="staticText-6"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Área de Gestión]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="323"
+						y="42"
+						width="132"
+						height="34"
+						backcolor="#FF9933"
+						key="staticText-7"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Nivel
+Cumplimiento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="455"
+						y="42"
+						width="117"
+						height="34"
+						backcolor="#FF9933"
+						key="staticText-8"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Pendiente]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="19"
+						y="2"
+						width="552"
+						height="28"
+						backcolor="#FFFFFF"
+						key="textField-30"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{COLEGIO}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="226"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="20"
+						y="0"
+						width="186"
+						height="20"
+						backcolor="#FF9900"
+						key="textField-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["TOTAL"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="207"
+						y="0"
+						width="116"
+						height="20"
+						backcolor="#FF9900"
+						key="textField-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Double"><![CDATA[$V{TOTAL_PONDERADOR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="323"
+						y="0"
+						width="132"
+						height="20"
+						backcolor="#FF9900"
+						key="textField-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Double"><![CDATA[$V{TOTAL_NIVEL_CUMPLIMIENTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="455"
+						y="0"
+						width="117"
+						height="20"
+						backcolor="#FF9900"
+						key="textField-29"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Double"><![CDATA[$V{TOTAL_PENDIENTE}]]></textFieldExpression>
+				</textField>
+				<stackedBarChart>
+					<chart evaluationTime="Group" evaluationGroup="COLEGIO"  hyperlinkTarget="Self" >
+					<reportElement
+						x="21"
+						y="41"
+						width="550"
+						height="184"
+						key="element-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						<chartTitle color="#000000" >
+					<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+								<titleExpression><![CDATA["Avance del ponderador por áreas de gestión"]]></titleExpression>
+					</chartTitle>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<categoryDataset>
+						<dataset resetType="Group" resetGroup="COLEGIO" >
+						</dataset>
+						<categorySeries>
+							<seriesExpression><![CDATA["Pendiente"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{NOMBRE_AREA}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{PONDERADOR}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+						<categorySeries>
+							<seriesExpression><![CDATA["Nivel de cumplimiento"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{NOMBRE_AREA}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{NIVEL_CUMPLIMIENTO}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+					</categoryDataset>
+					<barPlot isShowLabels="true" >
+						<plot backcolor="#CCCCCC" >
+							<seriesColor seriesOrder="0" color="#FFCC00"/>
+							<seriesColor seriesOrder="1" color="#009933"/>
+</plot>
+					<categoryAxisLabelExpression><![CDATA["Área de gestión"]]></categoryAxisLabelExpression>
+						<categoryAxisFormat>
+							<axisFormat >
+								<labelFont>
+					<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+								</labelFont>
+								<tickLabelFont>
+								</tickLabelFont>
+							</axisFormat>
+						</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["Ponderador"]]></valueAxisLabelExpression>
+						<valueAxisFormat>
+							<axisFormat >
+								<labelFont>
+					<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+								</labelFont>
+								<tickLabelFont>
+								</tickLabelFont>
+							</axisFormat>
+						</valueAxisFormat>
+					</barPlot>
+				</stackedBarChart>
+				<stackedBarChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						x="54"
+						y="21"
+						width="126"
+						height="13"
+						key="element-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<categoryDataset>
+						<dataset >
+						</dataset>
+					</categoryDataset>
+					<barPlot >
+						<plot />
+						<categoryAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</categoryAxisFormat>
+						<valueAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</valueAxisFormat>
+					</barPlot>
+				</stackedBarChart>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="89"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="39"
+						y="10"
+						width="468"
+						height="27"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="15" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["SECRETARÍA DE EDUCACIÓN"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="461"
+						y="72"
+						width="95"
+						height="16"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-4"
+						positionType="FixRelativeToBottom"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="10" isBold="false" isItalic="true" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{FECHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="421"
+						y="72"
+						width="39"
+						height="16"
+						key="textField-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="10" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Fecha: "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="39"
+						y="37"
+						width="468"
+						height="16"
+						key="textField-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Bold" size="11" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Reporte de Avance del Ponderador por Áreas de Gestión"]]></textFieldExpression>
+				</textField>
+				<image  onErrorType="Icon" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="507"
+						y="10"
+						width="42"
+						height="52"
+						key="image-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="39"
+						y="53"
+						width="468"
+						height="16"
+						key="textField-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Bold" size="11" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Localidad: "+$P{LOCALIDAD}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="25"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="20"
+						y="0"
+						width="186"
+						height="25"
+						key="textField-20"
+						stretchType="RelativeToBandHeight"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE_AREA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="207"
+						y="0"
+						width="116"
+						height="25"
+						key="textField-21"
+						stretchType="RelativeToBandHeight"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Double"><![CDATA[$F{PONDERADOR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="323"
+						y="0"
+						width="132"
+						height="25"
+						key="textField-26"
+						stretchType="RelativeToBandHeight"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Double"><![CDATA[$F{NIVEL_CUMPLIMIENTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="455"
+						y="0"
+						width="117"
+						height="25"
+						key="textField-28"
+						stretchType="RelativeToBandHeight"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Double"><![CDATA[$F{PENDIENTE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="17"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="437"
+						y="0"
+						width="100"
+						height="14"
+						key="textField">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="537"
+						y="0"
+						width="34"
+						height="14"
+						key="textField">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="21"
+						y="0"
+						width="144"
+						height="14"
+						key="textField-1">
+							<printWhenExpression><![CDATA[new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Generado por: "+$P{USUARIO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

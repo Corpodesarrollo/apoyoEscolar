@@ -1,0 +1,13 @@
+CREATE OR REPLACE FUNCTION getGrados (rotId NUMERIC) RETURN CURSOR IS
+CURSOR cursor_asig IS SELECT * FROM dual;
+BEGIN
+	 RETURN cursor_asig;
+END getGrados;
+
+
+CREATE OR REPLACE FUNCTION getGrados2 (rotId NUMBER) RETURN NUMBER IS
+BEGIN
+	 RETURN 0;
+END getGrados2;
+
+SELECT * FROM user_errors

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ReportePEI_sub_1_001"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="581"
+		 pageHeight="802"
+		 columnWidth="581"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="INST" isForPrompting="false" class="java.lang.Long"/>
+	<queryString><![CDATA[select pei_inst.*, inst.*, (SELECT count(SEDCODIGO) FROM SEDE WHERE SEDCODINS= INSCODIGO) as NUMSEDES_
+from    PEI_INSTITUCION pei_inst,
+        INSTITUCION inst
+ WHERE  PEICODINST = $P{INST}
+ AND INSCODIGO  = $P{INST}]]></queryString>
+
+	<field name="PEICODINST" class="java.math.BigDecimal"/>
+	<field name="PEIESTUDMAT" class="java.math.BigDecimal"/>
+	<field name="PEINUMJORNAD" class="java.math.BigDecimal"/>
+	<field name="PEIEXISTE" class="java.math.BigDecimal"/>
+	<field name="PEINOMBRE" class="java.lang.String"/>
+	<field name="PEICODETAPADES" class="java.math.BigDecimal"/>
+	<field name="PEICODENFASIS" class="java.math.BigDecimal"/>
+	<field name="PEIENFASISOTRO" class="java.lang.String"/>
+	<field name="PEICODENFPEDAG" class="java.math.BigDecimal"/>
+	<field name="PEIENFPEDAGOTRO" class="java.lang.String"/>
+	<field name="PEIESTADO" class="java.math.BigDecimal"/>
+	<field name="PEIPROCESO" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAMISION" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAVISION" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAPERFILES" class="java.math.BigDecimal"/>
+	<field name="PEIETAPAOBJINSTIT" class="java.math.BigDecimal"/>
+	<field name="PEIETAPADIFICULTAD" class="java.lang.String"/>
+	<field name="PEICODFASECURRIC" class="java.math.BigDecimal"/>
+	<field name="PEIHERRAMIENTAVIDA" class="java.math.BigDecimal"/>
+	<field name="PEIBASECONOCIMIENTO" class="java.math.BigDecimal"/>
+	<field name="PEIALCANCEC1" class="java.lang.String"/>
+	<field name="PEIALCANCEC2" class="java.lang.String"/>
+	<field name="PEIALCANCEC3" class="java.lang.String"/>
+	<field name="PEIALCANCEC4" class="java.lang.String"/>
+	<field name="PEIALCANCEC5" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC1" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC2" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC3" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC4" class="java.lang.String"/>
+	<field name="PEIDIFICULTADC5" class="java.lang.String"/>
+	<field name="PEIARTICULADO" class="java.math.BigDecimal"/>
+	<field name="PEIESTMEDIA" class="java.math.BigDecimal"/>
+	<field name="PEIESTARTICULADA" class="java.math.BigDecimal"/>
+	<field name="PEIESTARTSENA" class="java.math.BigDecimal"/>
+	<field name="PEIESTINTSENA" class="java.math.BigDecimal"/>
+	<field name="PEISEGEGRESADO" class="java.math.BigDecimal"/>
+	<field name="PEIPRACTICALAB" class="java.math.BigDecimal"/>
+	<field name="PEIPOACONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIPOACOMUNIDADESC" class="java.math.BigDecimal"/>
+	<field name="PEIPOATOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEICONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIEITOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEFRECUENCIA" class="java.math.BigDecimal"/>
+	<field name="PEIHRRORIENTSED" class="java.math.BigDecimal"/>
+	<field name="PEIHRROTROSDOCS" class="java.math.BigDecimal"/>
+	<field name="PEIHRRCUALES" class="java.lang.String"/>
+	<field name="PEIPRODADMIN" class="java.math.BigDecimal"/>
+	<field name="PEIPRODADMINCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIMANUALFUNC" class="java.math.BigDecimal"/>
+	<field name="PEIMANUALFUNCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIPROCINVENT" class="java.math.BigDecimal"/>
+	<field name="PEIPROCINVENTDIFICULTAD" class="java.lang.String"/>
+	<field name="PEISISTINF" class="java.math.BigDecimal"/>
+	<field name="PEISISTINFDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIESTCOMUNIC" class="java.math.BigDecimal"/>
+	<field name="PEIESTCOMUNICDIFICULTAD" class="java.lang.String"/>
+	<field name="INSCODIGO" class="java.math.BigDecimal"/>
+	<field name="INSCODDANE" class="java.math.BigDecimal"/>
+	<field name="INSCODDANEANTERIOR" class="java.math.BigDecimal"/>
+	<field name="INSCODDEPTO" class="java.math.BigDecimal"/>
+	<field name="INSCODMUN" class="java.math.BigDecimal"/>
+	<field name="INSCODLOCAL" class="java.math.BigDecimal"/>
+	<field name="INSNOMBRE" class="java.lang.String"/>
+	<field name="INSSECTOR" class="java.math.BigDecimal"/>
+	<field name="INSZONA" class="java.math.BigDecimal"/>
+	<field name="INSCALENDARIO" class="java.math.BigDecimal"/>
+	<field name="INSCALENDARIOOTRO" class="java.lang.String"/>
+	<field name="INSRECTORNOMBRE" class="java.lang.String"/>
+	<field name="INSRECTORCC" class="java.math.BigDecimal"/>
+	<field name="INSRECTORANOPOSESION" class="java.math.BigDecimal"/>
+	<field name="INSRECTORTEL" class="java.lang.String"/>
+	<field name="INSRECTORCORREO" class="java.lang.String"/>
+	<field name="INSREPLEGALNOMBRE" class="java.lang.String"/>
+	<field name="INSREPLEGALCC" class="java.math.BigDecimal"/>
+	<field name="INSREPLEGALTEL" class="java.lang.String"/>
+	<field name="INSREPLEGALCORREO" class="java.lang.String"/>
+	<field name="INSPAGINAWEB" class="java.lang.String"/>
+	<field name="INSPROPIEDAD" class="java.math.BigDecimal"/>
+	<field name="INSNUMSEDES" class="java.math.BigDecimal"/>
+	<field name="INSGENERO" class="java.math.BigDecimal"/>
+	<field name="INSSUBSIDIO" class="java.lang.String"/>
+	<field name="INSDISCAPACIDAD" class="java.math.BigDecimal"/>
+	<field name="INSCAPEXCEPCIONAL" class="java.lang.String"/>
+	<field name="INSETNIA" class="java.lang.String"/>
+	<field name="INSNUCLEOCODIGO" class="java.lang.String"/>
+	<field name="INSHIMNO" class="java.lang.String"/>
+	<field name="INSLEMA" class="java.lang.String"/>
+	<field name="INSBANDERA" class="java.lang.String"/>
+	<field name="INSESCUDO" class="java.lang.String"/>
+	<field name="INSHISTORIA" class="java.lang.String"/>
+	<field name="INSIDIOMA" class="java.math.BigDecimal"/>
+	<field name="INSASOCPRIVADA" class="java.math.BigDecimal"/>
+	<field name="INSASOCPRIVADAOTRO" class="java.lang.String"/>
+	<field name="INSREGIMENCOSTOS" class="java.math.BigDecimal"/>
+	<field name="INSTARIFACOSTOS" class="java.math.BigDecimal"/>
+	<field name="INSINFORMEPEI" class="java.lang.String"/>
+	<field name="INSMETODOLOGIA" class="java.math.BigDecimal"/>
+	<field name="INSNIVELLOGRO" class="java.math.BigDecimal"/>
+	<field name="INSCODMETODOLOGIA" class="java.math.BigDecimal"/>
+	<field name="INSESTADO" class="java.lang.String"/>
+	<field name="INSENFASIS" class="java.math.BigDecimal"/>
+	<field name="INSMODALIDAD" class="java.math.BigDecimal"/>
+	<field name="INSHORARIO" class="java.math.BigDecimal"/>
+	<field name="INSNUMRES" class="java.lang.String"/>
+	<field name="INSFECRES" class="java.sql.Timestamp"/>
+	<field name="INSNIT" class="java.lang.String"/>
+	<field name="INSPORCMINAPROBAR" class="java.math.BigDecimal"/>
+	<field name="INSMAXLOGRO" class="java.math.BigDecimal"/>
+	<field name="INSMAXDESCRIPTOR" class="java.math.BigDecimal"/>
+	<field name="INSDIRECCION" class="java.lang.String"/>
+	<field name="INSCODDANE12" class="java.math.BigDecimal"/>
+	<field name="INSPLANESTUDIOS" class="java.math.BigDecimal"/>
+	<field name="INSVIGENCIA" class="java.math.BigDecimal"/>
+	<field name="NUMSEDES_" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="33"
+						y="1"
+						width="49"
+						height="14"
+						key="staticText-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Consulta]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="121"
+						y="1"
+						width="68"
+						height="14"
+						key="staticText-2"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Socialización]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="232"
+						y="1"
+						width="100"
+						height="14"
+						key="staticText-3"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[  	 Articulación al PEI]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="85"
+						y="2"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-1">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPROCESO}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="193"
+						y="2"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-2">
+							<printWhenExpression><![CDATA[new Boolean(  ($F{PEIPROCESO}+"").equals("2"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="317"
+						y="3"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-3">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPROCESO}+"").equals("3"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="85"
+						y="2"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-4">
+							<printWhenExpression><![CDATA[new Boolean( !($F{PEIPROCESO}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="193"
+						y="2"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-5">
+							<printWhenExpression><![CDATA[new Boolean(!  ($F{PEIPROCESO}+"").equals("2"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="317"
+						y="3"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-6">
+							<printWhenExpression><![CDATA[new Boolean( !($F{PEIPROCESO}+"").equals("3"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

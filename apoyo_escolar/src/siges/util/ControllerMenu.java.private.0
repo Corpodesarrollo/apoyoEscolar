@@ -1,0 +1,275 @@
+package siges.util;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ResourceBundle;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import siges.dao.DataSourceManager;
+import siges.dao.OperacionesGenerales;
+import siges.dao.Ruta;
+import siges.login.beans.Login;
+
+/**
+ * Nombre: ControllerMenu<br>
+ * Descripciñn: Controla el menu lateral de la pñgina<br>
+ * Funciones de la pñgina: Envia al integrador lo que debe pintar el menu<br>
+ * Fecha de modificaciñn: 20/07/2005 <br>
+ * 
+ * @author Latined <br>
+ * @version v 1.0 <br>
+ */
+public class ControllerMenu extends HttpServlet {
+	private Integer cadena = new Integer(java.sql.Types.VARCHAR);
+
+	private Integer entero = new Integer(java.sql.Types.INTEGER);
+
+	/**
+	 * Procesa la peticion HTTP
+	 * 
+	 * @param HttpServletRequest
+	 *            request
+	 * @param HttpServletResponse
+	 *            response
+	 */
+	public String process(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		Connection cn = null;
+		PreparedStatement pst = null;
+		Statement ps = null;
+		ResultSet rs = null;
+		ResourceBundle rb = ResourceBundle.getBundle("common");
+		String menu = getServletContext().getInitParameter("menu");
+		String error = getServletContext().getInitParameter("error");
+		String view = null;
+		String dane = null;
+		Collection list, list2, list3;
+		try {
+			Login login = (Login) session.getAttribute("login");
+			int perf = login != null ? Integer.parseInt(login.getPerfil()) : -1;
+			String userid  = login.getUsuarioId();
+			String sede = login.getSedeId();
+			String jornada = login.getJornadaId();
+			long inst = (login != null && !login.getInstId().equals("")) ? Long
+					.parseLong(login.getInstId()) : -1;
+			cn = DataSourceManager.getConnection(1);
+			// escudo//
+			if (session.getAttribute("imagenEscudo") == null && login != null
+					&& !login.getInstId().equals("")) {
+				String path = rb.getString("escudo.PathEscudo");
+
+				String relativo = Ruta.getRelativo(getServletContext(), path);
+				String absoluto = Ruta.get(getServletContext(), path);
+				// String absoluto = getServletContext().getRealPath("/") +
+				// path.replace('.', File.separatorChar);
+				File f = null;
+				ps = cn.createStatement();
+				rs = ps.executeQuery("select inscoddane from institucion where inscodigo="
+						+ login.getInstId());
+				if (rs.next()) {
+					dane = rs.getString(1);
+				}
+				rs.close();
+				ps.close();
+				// System.out.println("valor de ruta de archivo:"+absoluto+ "e"
+				// + dane + ".gif");
+				// System.out.println("relativo " + relativo + "e" + dane +
+				// ".gif");
+				f = new File(absoluto + "e" + dane + ".gif");
+				boolean band = false;
+				if (f.exists()) {
+					// System.out.println("EXITE");
+					session.setAttribute("imagenEscudo", relativo + "e" + dane
+							+ ".gif");
+					session.setAttribute("extensionEscudo", "gif");
+					session.setAttribute("tipo", "gif");
+					f = null;
+					band = true;
+				}
+				if (!band) {
+					session.setAttribute("imagenEscudo", null);
+					// System.out.println(session.getAttribute("imagenEscudo"));
+				}
+			}
+			// fin escudo//
+			// poner las categorias
+			String sql = rb.getString("categoria");
+			pst = cn.prepareStatement(sql);
+			pst.setInt(1, perf);
+			pst.setLong(2, inst);
+			rs = pst.executeQuery();
+			int m = rs.getMetaData().getColumnCount();
+			list = new ArrayList();
+			Object[] o;
+			int i = 0, f = 0;
+			while (rs.next()) {
+				f++;
+				o = new Object[m];
+				for (i = 1; i <= m; i++)
+					o[i - 1] = rs.getString(i);
+				list.add(o);
+			}
+			rs.close();
+			pst.close();
+			session.setAttribute("mnucat", list);
+			// poner menu publico
+			sql = rb.getString("menuPublico");
+			pst = cn.prepareStatement(sql);
+			pst.setLong(1, inst);
+			rs = pst.executeQuery();
+			m = rs.getMetaData().getColumnCount();
+			list2 = new ArrayList();
+			i = 0;
+			f = 0;
+			while (rs.next()) {
+				f++;
+				o = new Object[m];
+				for (i = 1; i <= m; i++)
+					o[i - 1] = rs.getString(i);
+				list2.add(o);
+			}
+			rs.close();
+			pst.close();
+			session.setAttribute("mnuPublico", list2);
+
+			// poner Menu privado
+			sql = rb.getString("menuPrivado");
+			pst = cn.prepareStatement(sql);
+			pst.setInt(1, perf);
+			pst.setLong(2, inst);
+			rs = pst.executeQuery();
+			m = rs.getMetaData().getColumnCount();
+			list3 = new ArrayList();
+			i = 0;
+			f = 0;
+			while (rs.next()) {
+				f++;
+				o = new Object[m];
+				for (i = 1; i <= m; i++)
+					o[i - 1] = rs.getString(i);
+				String servicio = o[0].toString().toLowerCase();
+				if(servicio.startsWith("http://")){
+					/**
+					 * Modificado por Christiam Hernandez 
+					 * 28/02/2013
+					 * los (&) estaban llegando con caracteres especiales.
+					 * 
+					 *  original
+					 *  o[0] = o[0] + "?login=" + userid + "&inst=" + inst + "&sede=" + sede + "&jornada=" + jornada;
+					 */
+					o[0] = o[0] + "?var="+ userid + "-" + inst + "-" + sede + "-" + jornada;
+					System.out.println(o[0]);
+				}
+				list3.add(o);
+			}
+			rs.close();
+			pst.close();
+			session.setAttribute("mnuPrivado", list3);
+
+			// Menu publico Param
+			pst = cn.prepareStatement(rb.getString("MenuPublicoParam"));
+			rs = pst.executeQuery();
+			m = rs.getMetaData().getColumnCount();
+			list = new ArrayList();
+			i = f = 0;
+			while (rs.next()) {
+				f++;
+				o = new Object[m];
+				for (i = 1; i <= m; i++)
+					o[i - 1] = rs.getString(i);
+				list.add(o);
+			}
+			rs.close();
+			pst.close();
+			// menu privado param
+			pst = cn.prepareStatement(rb.getString("MenuPrivadoParam"));
+			pst.setInt(1, perf);
+			rs = pst.executeQuery();
+			m = rs.getMetaData().getColumnCount();
+			i = f = 0;
+			while (rs.next()) {
+				f++;
+				o = new Object[m];
+				for (i = 1; i <= m; i++)
+					o[i - 1] = rs.getString(i);
+				list.add(o);
+			}
+			session.setAttribute("menuParam", list);
+			// menu privado param
+			view = menu;
+			return view;
+		} catch (Exception e) {
+			System.out.println("MENU ERROR: " + e);
+			req.setAttribute("mensaje", e.getMessage());
+			return error;
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(ps);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	/**
+	 * Recibe la peticion por el metodo get de HTTP
+	 * 
+	 * @param HttpServletRequest
+	 *            request
+	 * @param HttpServletResponse
+	 *            response
+	 */
+	public void doGet(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException, IOException {
+		doPost(req, res);
+	}
+
+	/**
+	 * Recibe la peticion por el metodo Post de HTTP
+	 * 
+	 * @param HttpServletRequest
+	 *            request
+	 * @param HttpServletResponse
+	 *            response
+	 */
+	public void doPost(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException, IOException {
+		String s = process(req, res);
+		if (s != null && !s.equals(""))
+			ir(2, s, req, res);
+	}
+
+	/**
+	 * recibe el url de destino, el request y el response y manda el control a
+	 * la pagina indicada
+	 * 
+	 * @param: int a
+	 * @param: String s
+	 * @param: HttpServletRequest request
+	 * @param: HttpServletResponse response
+	 */
+	public void ir(int a, String s, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(s);
+		if (a == 1)
+			rd.include(request, response);
+		else
+			rd.forward(request, response);
+	}
+
+}

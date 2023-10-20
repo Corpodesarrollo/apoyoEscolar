@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="tabla_6C_pregunta"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="651"
+		 pageHeight="792"
+		 columnWidth="651"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\TRABAJO\\ATHENEA\\ARTICULACION\\reportes\\encuesta\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(205)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRADO" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(-99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRUPO" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(-99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PARAM_ORDEN" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TOTAL_ESTUDIANTES" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(3)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ID_USUARIO" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(666)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="UNIVERSIDAD" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COLEGIO" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select * from ART_ENCUESTA_TEMP3 
+where UNIVERSIDAD = $P{UNIVERSIDAD} AND COLEGIO=$P{COLEGIO} order by ESPCODIGO]]></queryString>
+
+	<field name="ESPCODIGO" class="java.lang.Integer"/>
+	<field name="ESPNOMBRE" class="java.lang.String"/>
+	<field name="ESPCICLO" class="java.lang.String"/>
+	<field name="COLEGIO" class="java.lang.Integer"/>
+	<field name="UNIVERSIDAD" class="java.lang.Integer"/>
+
+	<variable name="CONSECUTIVO" class="java.lang.Integer" resetType="Report" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="17"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="184"
+						height="17"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="textField-11"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ESPNOMBRE}]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Transparent"
+						x="184"
+						y="0"
+						width="58"
+						height="17"
+						key="subreport-1"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TOTAL_ESTUDIANTES">
+						<subreportParameterExpression><![CDATA[$P{TOTAL_ESTUDIANTES}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="COLEGIO">
+						<subreportParameterExpression><![CDATA[$F{COLEGIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ID_USUARIO">
+						<subreportParameterExpression><![CDATA[$P{ID_USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ESPECIALIDAD">
+						<subreportParameterExpression><![CDATA[$F{ESPCODIGO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "preguntaSeis_sub.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Transparent"
+						x="242"
+						y="0"
+						width="58"
+						height="17"
+						key="subreport-2"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TOTAL_ESTUDIANTES">
+						<subreportParameterExpression><![CDATA[$P{TOTAL_ESTUDIANTES}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="COLEGIO">
+						<subreportParameterExpression><![CDATA[$F{COLEGIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ID_USUARIO">
+						<subreportParameterExpression><![CDATA[$P{ID_USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ESPECIALIDAD">
+						<subreportParameterExpression><![CDATA[$F{ESPCODIGO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "preguntaSeis_sub2.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

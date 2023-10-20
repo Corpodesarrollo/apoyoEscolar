@@ -1,0 +1,8 @@
+DIV.clSlide{position:absolute;  ;z-index:10; left:0; width:138; height:22; clip:rect(0,138,22,0); padding:3px;}
+DIV.clSlideSub{position:absolute; ;z-index:10; padding:2px; clip:rect(0,127,20,0); width:127; height:20; left:8; visibility:hidden}
+DIV.clSlideSub2{position:absolute; ;z-index:10; padding:2px; clip:rect(0,118,20,0); width:118; height:20; left:8; visibility:hidden}
+#divSlideCont{position:absolute; z-index:10; left:0; top:100; height:600; width:170; visibility:hidden}
+A.clSlideLinks{font-family: Arial, Trebuchet MS, Verdana, Helvetica; font-size:12px; font-weight:bold; text-decoration:none; color:white}
+A.clSlideSubLinks{font-family: Arial, Trebuchet MS, Verdana, Helvetica; font-size:10px; font-weight:none; text-decoration:none; color:white}
+A.clSlideSub2Links{font-family: Arial, Trebuchet MS, Verdana, Helvetica; font-size:10px; font-weight:none; text-decoration:none; color:white}
+

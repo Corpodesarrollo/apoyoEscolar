@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="estudiantes_x_encuesta"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="556"
+		 columnSpacing="0"
+		 leftMargin="28"
+		 rightMargin="28"
+		 topMargin="28"
+		 bottomMargin="28"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\TRABAJO\\ATHENEA\\ARTICULACION\\reportes\\encuesta\\jaspers\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(312)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRADO" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(9)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRUPO" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(-99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="METODOLOGIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_ALCALDIA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOCALIDAD" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(16)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SECRETARIA" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ESTADO" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(-99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ORDEN" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(1)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select LOCALIDAD.G_CONNOMBRE,
+INSTITUCION.INSNOMBRE,
+  SEDE.SEDNOMBRE,
+  JORNADA.G_CONNOMBRE as JORNADA,  
+  GRADO.GRANOMBRE as GRADO,
+  sysdate as TIEMPO_ACTUAL
+from INSTITUCION
+INNER JOIN G_CONSTANTE LOCALIDAD  ON LOCALIDAD.G_CONCODIGO = INSTITUCION.INSCODLOCAL
+AND LOCALIDAD.G_CONTIPO = 7
+  INNER JOIN SEDE ON  SEDE.SEDCODINS = INSTITUCION.INSCODIGO 
+  INNER JOIN JORNADA ON JORNADA.JORCODINS = INSTITUCION.INSCODIGO
+  INNER JOIN G_CONSTANTE JORNADA ON JORNADA.G_CONTIPO = 5 AND JORNADA.G_CONCODIGO = JORNADA.JORCODIGO
+  INNER JOIN GRADO ON GRADO.GRACODINST = INSTITUCION.INSCODIGO
+  where
+(LOCALIDAD.G_CONCODIGO = $P{LOCALIDAD} or $P{LOCALIDAD}=-99)
+AND (INSTITUCION.INSCODIGO = $P{INSTITUCION} or $P{INSTITUCION}=-99)
+AND (SEDE.SEDCODIGO =$P{SEDE} or $P{SEDE}=-99)
+AND (JORNADA.JORCODIGO = $P{JORNADA} or $P{JORNADA}=-99)
+AND (GRADO.GRACODIGO = $P{GRADO} or $P{GRADO}=-99)
+AND (GRADO.GRACODMETOD = $P{METODOLOGIA} or $P{METODOLOGIA}=-99)
+and ROWNUM = 1]]></queryString>
+
+	<field name="G_CONNOMBRE" class="java.lang.String"/>
+	<field name="INSNOMBRE" class="java.lang.String"/>
+	<field name="SEDNOMBRE" class="java.lang.String"/>
+	<field name="JORNADA" class="java.lang.String"/>
+	<field name="GRADO" class="java.lang.String"/>
+	<field name="TIEMPO_ACTUAL" class="java.sql.Timestamp"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="111"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="-2"
+						y="84"
+						width="551"
+						height="27"
+						key="textField-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="12" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Listado Estudiantes"]]></textFieldExpression>
+				</textField>
+				<image  onErrorType="Icon" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="-1"
+						y="9"
+						width="55"
+						height="55"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></imageExpression>
+				</image>
+				<image  onErrorType="Icon" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="499"
+						y="9"
+						width="55"
+						height="55"
+						key="image-2">
+							<printWhenExpression><![CDATA[new Boolean($P{SECRETARIA}.intValue()!=1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="54"
+						y="16"
+						width="445"
+						height="27"
+						key="textField-24">
+							<printWhenExpression><![CDATA[new Boolean($P{SECRETARIA}.intValue()!=1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="15" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{INSNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="63"
+						y="64"
+						width="163"
+						height="16"
+						key="textField-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{SEDE}.longValue()==-99)?"":"Sede: "+$F{SEDNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="226"
+						y="64"
+						width="151"
+						height="16"
+						key="textField-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{JORNADA}.longValue()==-99)?"":"Jornada: "+$F{JORNADA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="377"
+						y="64"
+						width="114"
+						height="16"
+						key="textField-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{GRADO}.longValue()==-99)?"":"Grado: "+$F{GRADO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="64"
+						y="45"
+						width="175"
+						height="16"
+						key="textField-28">
+							<printWhenExpression><![CDATA[new Boolean($P{SECRETARIA}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{LOCALIDAD}.longValue()==-99)?"":"Localidad: "+$F{G_CONNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="54"
+						y="16"
+						width="445"
+						height="27"
+						key="textField-29">
+							<printWhenExpression><![CDATA[new Boolean($P{SECRETARIA}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="15" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Secretaría Distrital de Educación de Bogotá"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="239"
+						y="45"
+						width="235"
+						height="16"
+						key="textField-30">
+							<printWhenExpression><![CDATA[new Boolean($P{SECRETARIA}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{INSTITUCION}.longValue()==-99)?"":"Institución: "+$F{INSNOMBRE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="26"  isSplitAllowed="true" >
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="-2"
+						y="0"
+						width="552"
+						height="16"
+						key="subreport-4">
+							<printWhenExpression><![CDATA[new Boolean($P{ORDEN}.intValue()==1 && $P{ESTADO}.intValue()==-99)]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRADO">
+						<subreportParameterExpression><![CDATA[$P{GRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRUPO">
+						<subreportParameterExpression><![CDATA[$P{GRUPO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="METODOLOGIA">
+						<subreportParameterExpression><![CDATA[$P{METODOLOGIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_ALCALDIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_ALCALDIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LOCALIDAD">
+						<subreportParameterExpression><![CDATA[$P{LOCALIDAD}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "informacion_estud_x_enc.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="2"
+						width="540"
+						height="16"
+						key="subreport-5">
+							<printWhenExpression><![CDATA[new Boolean($P{ORDEN}.intValue()==2 && $P{ESTADO}.intValue()==-99)]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRADO">
+						<subreportParameterExpression><![CDATA[$P{GRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRUPO">
+						<subreportParameterExpression><![CDATA[$P{GRUPO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="METODOLOGIA">
+						<subreportParameterExpression><![CDATA[$P{METODOLOGIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_ALCALDIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_ALCALDIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LOCALIDAD">
+						<subreportParameterExpression><![CDATA[$P{LOCALIDAD}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "informacion_estud_x_enc2.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="-2"
+						y="4"
+						width="531"
+						height="16"
+						key="subreport-6">
+							<printWhenExpression><![CDATA[new Boolean($P{ORDEN}.intValue()==1 && $P{ESTADO}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRADO">
+						<subreportParameterExpression><![CDATA[$P{GRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRUPO">
+						<subreportParameterExpression><![CDATA[$P{GRUPO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="METODOLOGIA">
+						<subreportParameterExpression><![CDATA[$P{METODOLOGIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_ALCALDIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_ALCALDIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LOCALIDAD">
+						<subreportParameterExpression><![CDATA[$P{LOCALIDAD}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "informacion_estud_x_enc3.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="5"
+						width="515"
+						height="16"
+						key="subreport-7">
+							<printWhenExpression><![CDATA[new Boolean($P{ORDEN}.intValue()==2 && $P{ESTADO}.intValue()==1)]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRADO">
+						<subreportParameterExpression><![CDATA[$P{GRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRUPO">
+						<subreportParameterExpression><![CDATA[$P{GRUPO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="METODOLOGIA">
+						<subreportParameterExpression><![CDATA[$P{METODOLOGIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_ALCALDIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_ALCALDIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LOCALIDAD">
+						<subreportParameterExpression><![CDATA[$P{LOCALIDAD}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "informacion_estud_x_enc4.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="-2"
+						y="8"
+						width="501"
+						height="16"
+						key="subreport-8">
+							<printWhenExpression><![CDATA[new Boolean($P{ORDEN}.intValue()==1 && $P{ESTADO}.intValue()>1)]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRADO">
+						<subreportParameterExpression><![CDATA[$P{GRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRUPO">
+						<subreportParameterExpression><![CDATA[$P{GRUPO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="METODOLOGIA">
+						<subreportParameterExpression><![CDATA[$P{METODOLOGIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_ALCALDIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_ALCALDIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LOCALIDAD">
+						<subreportParameterExpression><![CDATA[$P{LOCALIDAD}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ESTADO">
+						<subreportParameterExpression><![CDATA[new Integer($P{ESTADO}.intValue()-1)]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "informacion_estud_x_enc5.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="10"
+						width="474"
+						height="16"
+						key="subreport-9">
+							<printWhenExpression><![CDATA[new Boolean($P{ORDEN}.intValue()==2 && $P{ESTADO}.intValue()>1)]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRADO">
+						<subreportParameterExpression><![CDATA[$P{GRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRUPO">
+						<subreportParameterExpression><![CDATA[$P{GRUPO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="METODOLOGIA">
+						<subreportParameterExpression><![CDATA[$P{METODOLOGIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_ALCALDIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_ALCALDIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LOCALIDAD">
+						<subreportParameterExpression><![CDATA[$P{LOCALIDAD}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ESTADO">
+						<subreportParameterExpression><![CDATA[new Integer($P{ESTADO}.intValue()-1)]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "informacion_estud_x_enc6.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="68"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="415"
+						y="51"
+						width="100"
+						height="14"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="515"
+						y="51"
+						width="34"
+						height="14"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="-1"
+						y="54"
+						width="144"
+						height="14"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Generado por: "+$P{USUARIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="219"
+						y="54"
+						width="43"
+						height="14"
+						key="textField-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="10" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Fecha: "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="263"
+						y="54"
+						width="76"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-22"
+						positionType="FixRelativeToBottom"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="10" isBold="false" isItalic="true" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{TIEMPO_ACTUAL}]]></textFieldExpression>
+				</textField>
+				<image  onErrorType="Icon" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="3"
+						y="2"
+						width="140"
+						height="52"
+						key="image-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{PATH_ICONO_ALCALDIA}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="407"
+						y="33"
+						width="145"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-31"
+						positionType="FixRelativeToBottom"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="8" isBold="false" isItalic="true" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{ORDEN}.intValue()==2)?"Ordenado por: Identificación":"Ordenado por: Apellidos"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="407"
+						y="16"
+						width="145"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-32"
+						positionType="FixRelativeToBottom">
+							<printWhenExpression><![CDATA[new Boolean($P{ESTADO}.intValue()!=-99)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Serif" pdfFontName="Helvetica-Oblique" size="8" isBold="false" isItalic="true" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{ESTADO}.intValue()==1)?"Estado: No ha Ingresado":($P{ESTADO}.intValue()==1)?"Estado: Consultado":"Estado: Guardado"]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

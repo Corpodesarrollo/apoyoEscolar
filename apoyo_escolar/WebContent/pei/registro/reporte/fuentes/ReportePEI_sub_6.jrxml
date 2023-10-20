@@ -1,0 +1,1563 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ReportePEI_sub_6"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="581"
+		 pageHeight="1600"
+		 columnWidth="581"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="SubDatasetProceAdmin" >
+
+		<parameter name="INST" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[select
+PEIPRODADMIN,PEIPRODADMINCDIFICULTAD,
+PEIMANUALFUNC,PEIMANUALFUNCDIFICULTAD,
+PEIPROCINVENT,PEIPROCINVENTDIFICULTAD,
+PEISISTINF,PEISISTINFDIFICULTAD,
+PEIESTCOMUNIC,PEIESTCOMUNICDIFICULTAD, 
+p1.PARHCODIGO, p1.PARHORDEN||p1.PARHCODIGO||'::'||p1.PARHNOMBRE AS PARHNOMBRE_1,
+p2.PARHCODIGO, p2.PARHORDEN||p2.PARHCODIGO||'::'||p2.PARHNOMBRE AS PARHNOMBRE_2,
+p1.PARHCODIGO,
+case p1.PARHCODIGO when 1 then PEIPRODADMIN||'::'||p2.PARHCODIGO 
+                   when 2 then PEIMANUALFUNC||'::'||p2.PARHCODIGO
+                   when 3 then PEIPROCINVENT||'::'||p2.PARHCODIGO  
+                   when 4 then PEISISTINF||'::'||p2.PARHCODIGO 
+                   when 5 then PEIESTCOMUNIC||'::'||p2.PARHCODIGO
+end as checked,
+case p1.PARHCODIGO when 1 then PEIPRODADMINCDIFICULTAD 
+                   when 2 then PEIMANUALFUNCDIFICULTAD
+                   when 3 then PEIPROCINVENTDIFICULTAD  
+                   when 4 then PEISISTINFDIFICULTAD 
+                   when 5 then PEIESTCOMUNICDIFICULTAD 
+end as dificul                   
+from PEI_INSTITUCION , PEI_PARAM_HIJO p2, PEI_PARAM_HIJO p1 
+where PEICODINST= $P{INST}
+AND p2.PARHCODPADRE=1
+and p2.PARHESTADO=1
+AND p1.PARHCODPADRE=12
+and p1.PARHESTADO=1]]></queryString>
+
+		<field name="PEIPRODADMIN" class="java.math.BigDecimal"/>
+		<field name="PEIPRODADMINCDIFICULTAD" class="java.lang.String"/>
+		<field name="PEIMANUALFUNC" class="java.math.BigDecimal"/>
+		<field name="PEIMANUALFUNCDIFICULTAD" class="java.lang.String"/>
+		<field name="PEIPROCINVENT" class="java.math.BigDecimal"/>
+		<field name="PEIPROCINVENTDIFICULTAD" class="java.lang.String"/>
+		<field name="PEISISTINF" class="java.math.BigDecimal"/>
+		<field name="PEISISTINFDIFICULTAD" class="java.lang.String"/>
+		<field name="PEIESTCOMUNIC" class="java.math.BigDecimal"/>
+		<field name="PEIESTCOMUNICDIFICULTAD" class="java.lang.String"/>
+		<field name="PARHCODIGO" class="java.math.BigDecimal"/>
+		<field name="PARHNOMBRE_1" class="java.lang.String"/>
+		<field name="PARHNOMBRE_2" class="java.lang.String"/>
+		<field name="CHECKED" class="java.lang.String"/>
+		<field name="DIFICUL" class="java.lang.String"/>
+
+	</subDataset>
+
+	<parameter name="INST" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(511)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["D:\\fredy\\backup_fredy\\_APOYO\\reporte_PEI\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select PEICODINST,PEIESTADO,PEIPOACONSTRUCCION,PEIPOACOMUNIDADESC,PEIPOATOMADECISION,PEIEICONSTRUCCION,PEIEITOMADECISION,PEIEFRECUENCIA,PEIHRRORIENTSED,PEIHRROTROSDOCS,PEIHRRCUALES,PEIPRODADMIN,PEIPRODADMINCDIFICULTAD,PEIMANUALFUNC,PEIMANUALFUNCDIFICULTAD,PEIPROCINVENT,PEIPROCINVENTDIFICULTAD,PEISISTINF,PEISISTINFDIFICULTAD,PEIESTCOMUNIC,PEIESTCOMUNICDIFICULTAD 
+from PEI_INSTITUCION 
+where PEICODINST = $P{INST}]]></queryString>
+
+	<field name="PEICODINST" class="java.math.BigDecimal"/>
+	<field name="PEIESTADO" class="java.math.BigDecimal"/>
+	<field name="PEIPOACONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIPOACOMUNIDADESC" class="java.math.BigDecimal"/>
+	<field name="PEIPOATOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEICONSTRUCCION" class="java.math.BigDecimal"/>
+	<field name="PEIEITOMADECISION" class="java.math.BigDecimal"/>
+	<field name="PEIEFRECUENCIA" class="java.math.BigDecimal"/>
+	<field name="PEIHRRORIENTSED" class="java.math.BigDecimal"/>
+	<field name="PEIHRROTROSDOCS" class="java.math.BigDecimal"/>
+	<field name="PEIHRRCUALES" class="java.lang.String"/>
+	<field name="PEIPRODADMIN" class="java.math.BigDecimal"/>
+	<field name="PEIPRODADMINCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIMANUALFUNC" class="java.math.BigDecimal"/>
+	<field name="PEIMANUALFUNCDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIPROCINVENT" class="java.math.BigDecimal"/>
+	<field name="PEIPROCINVENTDIFICULTAD" class="java.lang.String"/>
+	<field name="PEISISTINF" class="java.math.BigDecimal"/>
+	<field name="PEISISTINFDIFICULTAD" class="java.lang.String"/>
+	<field name="PEIESTCOMUNIC" class="java.math.BigDecimal"/>
+	<field name="PEIESTCOMUNICDIFICULTAD" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="560"  isSplitAllowed="true" >
+				<crosstab >
+					<reportElement
+						x="1"
+						y="488"
+						width="581"
+						height="38"
+						key="crosstab-2"
+						positionType="Float"/>
+
+					<crosstabParameter name="INST" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{INST}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="SubDatasetProceAdmin">
+								<datasetParameter  name="INST">
+									<datasetParameterExpression><![CDATA[$P{INST}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="66"
+						height="25"
+						backcolor="#CCCCCC"
+						key="staticText-50"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PARHNOMBRE_1" width="66">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE_1}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="66"
+						height="13"
+						backcolor="#CCCCCC"
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE_1}.substring($V{PARHNOMBRE_1}.lastIndexOf("::") + 2, $V{PARHNOMBRE_1}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="PARHNOMBRE_2" height="25" totalPosition="End" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHNOMBRE_2}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="73"
+						height="25"
+						backcolor="#CCCCCC"
+						key="textField"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARHNOMBRE_2}.substring($V{PARHNOMBRE_2}.lastIndexOf("::") + 2, $V{PARHNOMBRE_2}.length() )]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="221"
+						height="25"
+						backcolor="#CCCCCC"
+						key="textField"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["DIFICULTADES"]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+
+					<measure name="CHECKED" class="java.lang.String">
+						<measureExpression><![CDATA[$F{CHECKED}]]></measureExpression>
+					</measure>
+					<measure name="DIFICUL" class="java.lang.String">
+						<measureExpression><![CDATA[$F{DIFICUL}]]></measureExpression>
+					</measure>
+					<crosstabCell width="73" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="73"
+						height="13"
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($V{CHECKED}.substring(0,$V{CHECKED}.lastIndexOf("::") )).equals(  $V{CHECKED}.substring($V{CHECKED}.lastIndexOf("::")+2, $V{CHECKED}.length() ))?"X":""]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="222" height="13" columnTotalGroup="PARHNOMBRE_2">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="221"
+						height="13"
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="Thin" topBorderColor="#000000" topPadding="2" leftBorder="Thin" leftBorderColor="#000000" leftPadding="4" rightBorder="Thin" rightBorderColor="#000000" rightPadding="4" bottomBorder="Thin" bottomBorderColor="#000000" bottomPadding="2"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top" isStyledText="true">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{DIFICUL}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="73" height="0" rowTotalGroup="PARHNOMBRE_1">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="222" height="0" rowTotalGroup="PARHNOMBRE_1" columnTotalGroup="PARHNOMBRE_2">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="9"
+						y="471"
+						width="414"
+						height="15"
+						key="textField-37"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["De los siguientes ítems señalar la etapa de desarrollo en que se encuentra:"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="455"
+						width="580"
+						height="14"
+						backcolor="#EBE9E9"
+						key="staticText-50"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Procedimientos Administrativos]]></text>
+				</staticText>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="-1"
+						y="1"
+						width="581"
+						height="14"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-1"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="-1"
+						y="18"
+						width="580"
+						height="15"
+						backcolor="#CCCCCC"
+						key="staticText-51"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Estrategias de Gestión]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="3"
+						y="39"
+						width="462"
+						height="14"
+						key="staticText-52"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Con relación al Plan Operativo Anual, señalar:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="73"
+						width="71"
+						height="18"
+						key="staticText-53"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Pocas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="131"
+						y="73"
+						width="79"
+						height="18"
+						key="staticText-54"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[  Algunas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="259"
+						y="73"
+						width="77"
+						height="18"
+						key="staticText-55"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Frecuentemente ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="383"
+						y="73"
+						width="44"
+						height="18"
+						key="staticText-56"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Siempre ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="101"
+						width="462"
+						height="17"
+						key="staticText-57"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿En la ejecución del Plan Operativo Anual participan representantes de la comunidad escolar?]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="4"
+						y="146"
+						width="462"
+						height="17"
+						key="staticText-58"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿El Plan Operativo Anual es base para la toma de decisiones?]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="3"
+						y="60"
+						width="462"
+						height="13"
+						key="staticText-59"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿En su construcción participan los órganos del Gobierno Escolar?]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="196"
+						width="462"
+						height="14"
+						key="staticText-60"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Con relación a la evaluación institucional, señalar:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="261"
+						width="462"
+						height="17"
+						key="staticText-61"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿La evaluación institucional es la base para la toma de decisiones?]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="213"
+						width="462"
+						height="18"
+						key="staticText-62"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿En su desarrollo participan los órganos del Gobierno Escolar?]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="-1"
+						y="2"
+						width="581"
+						height="13"
+						key="staticText-63"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[DESARROLLO ADMINISTRATIVO]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="81"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-2"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACONSTRUCCION}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="81"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-3"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACONSTRUCCION}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="217"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-4"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACONSTRUCCION}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="217"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-5"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACONSTRUCCION}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="340"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-6"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACONSTRUCCION}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="340"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-7"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACONSTRUCCION}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="433"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-8"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACONSTRUCCION}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="433"
+						y="75"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-9"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACONSTRUCCION}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="6"
+						y="121"
+						width="71"
+						height="18"
+						key="staticText-64"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Pocas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="132"
+						y="121"
+						width="79"
+						height="18"
+						key="staticText-65"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[  Algunas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="260"
+						y="121"
+						width="77"
+						height="18"
+						key="staticText-66"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Frecuentemente ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="384"
+						y="121"
+						width="44"
+						height="18"
+						key="staticText-67"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Siempre ]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="82"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-10"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="82"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-11"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="218"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-12"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="218"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-13"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="341"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-14"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="341"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-15"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="434"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-16"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="434"
+						y="123"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-17"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="6"
+						y="167"
+						width="71"
+						height="18"
+						key="staticText-68"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Pocas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="132"
+						y="167"
+						width="79"
+						height="18"
+						key="staticText-69"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[  Algunas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="260"
+						y="167"
+						width="77"
+						height="18"
+						key="staticText-70"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Frecuentemente ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="384"
+						y="167"
+						width="44"
+						height="18"
+						key="staticText-71"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Siempre ]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="82"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-18"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="82"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-19"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="218"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-20"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="218"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-21"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="341"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-22"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="341"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-23"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="434"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-24"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="434"
+						y="169"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-25"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="5"
+						y="235"
+						width="71"
+						height="18"
+						key="staticText-72"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Pocas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="131"
+						y="235"
+						width="79"
+						height="18"
+						key="staticText-73"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[  Algunas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="259"
+						y="235"
+						width="77"
+						height="18"
+						key="staticText-74"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Frecuentemente ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="383"
+						y="235"
+						width="44"
+						height="18"
+						key="staticText-75"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Siempre ]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="81"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-26"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="81"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-27"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="217"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-28"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="217"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-29"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="340"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-30"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="340"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-31"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="433"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-32"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOACOMUNIDADESC}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="433"
+						y="237"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-33"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOACOMUNIDADESC}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="5"
+						y="280"
+						width="71"
+						height="18"
+						key="staticText-76"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Pocas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="131"
+						y="280"
+						width="79"
+						height="18"
+						key="staticText-77"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[  Algunas Veces]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="259"
+						y="280"
+						width="77"
+						height="18"
+						key="staticText-78"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Frecuentemente ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="383"
+						y="280"
+						width="44"
+						height="18"
+						key="staticText-79"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Siempre ]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="81"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-34"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="81"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-35"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("1") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="217"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-36"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="217"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-37"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("2") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="340"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-38"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="340"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-39"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("3") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="433"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-40"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIPOATOMADECISION}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="433"
+						y="282"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-41"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIPOATOMADECISION}+"").equals("4") )]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="1"
+						y="304"
+						width="574"
+						height="17"
+						key="staticText-80"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿Con qué frecuencia se realizan evaluaciones institucionales?]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="80"
+						y="327"
+						width="71"
+						height="13"
+						key="staticText-81"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Semestral ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="206"
+						y="327"
+						width="79"
+						height="13"
+						key="staticText-82"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Anual ]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="156"
+						y="330"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-42"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(! ($F{PEIEFRECUENCIA}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="156"
+						y="330"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-43"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean( ($F{PEIEFRECUENCIA}+"").equals("1"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="289"
+						y="329"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-44"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(($F{PEIEFRECUENCIA}+"").equals("2"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="289"
+						y="329"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="rectangle-45"
+						positionType="Float">
+							<printWhenExpression><![CDATA[new Boolean(!($F{PEIEFRECUENCIA}+"").equals("2"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="7"
+						y="355"
+						width="572"
+						height="17"
+						key="staticText-83"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[¿Qué instrumentos o herramientas utilizan para la evaluación institucional?]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="8"
+						y="380"
+						width="109"
+						height="17"
+						key="staticText-84"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Orientación de la SED ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="8"
+						y="404"
+						width="109"
+						height="17"
+						key="staticText-85"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Otros Documentos ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="428"
+						width="50"
+						height="17"
+						key="staticText-86"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[¿Cuáles? ]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="126"
+						y="382"
+						width="14"
+						height="14"
+						key="textField-38"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIHRRORIENTSED}+"").equals("1")?"X":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="126"
+						y="405"
+						width="14"
+						height="14"
+						key="textField-39"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{PEIHRROTROSDOCS}+"").equals("1")?"X":""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="67"
+						y="428"
+						width="475"
+						height="17"
+						key="textField-40"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PEIHRRCUALES}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

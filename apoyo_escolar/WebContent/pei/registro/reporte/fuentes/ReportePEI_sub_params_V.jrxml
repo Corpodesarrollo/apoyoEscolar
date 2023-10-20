@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ReportePEI_sub_params_V"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="581"
+		 pageHeight="18"
+		 columnWidth="581"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="SubDataset1" >
+
+		<parameter name="TIPO_PARAMS" isForPrompting="false" class="java.lang.Long"/>
+		<queryString><![CDATA[select *
+from 
+PEI_PARAM_HIJO 
+WHERE PARHCODPADRE = $P{TIPO_PARAMS}
+AND PARHESTADO = 1
+ORDER BY PARHORDEN]]></queryString>
+
+		<field name="PARHCODPADRE" class="java.math.BigDecimal"/>
+		<field name="PARHCODIGO" class="java.math.BigDecimal"/>
+		<field name="PARHNOMBRE" class="java.lang.String"/>
+		<field name="PARHABREV" class="java.lang.String"/>
+		<field name="PARHDESCRIPCION" class="java.lang.String"/>
+		<field name="PARHESTADO" class="java.math.BigDecimal"/>
+		<field name="PARHORDEN" class="java.math.BigDecimal"/>
+		<field name="PARHEDICION" class="java.math.BigDecimal"/>
+		<field name="PARHVALMAX" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<parameter name="ETAPA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(3)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TIPO_PARAMS" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT SYSDATE FROM DUAL]]></queryString>
+
+	<field name="SYSDATE" class="java.sql.Timestamp"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="18"  isSplitAllowed="true" >
+				<crosstab >
+					<reportElement
+						x="0"
+						y="0"
+						width="579"
+						height="15"
+						key="crosstab-1"
+						stretchType="RelativeToTallestObject"/>
+
+					<crosstabParameter name="ETAPA" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{ETAPA}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabParameter name="TIPO_PARAMS" class="java.lang.Long" >						<parameterValueExpression><![CDATA[$P{TIPO_PARAMS}]]></parameterValueExpression>
+					</crosstabParameter>
+					<crosstabDataset isDataPreSorted="true" >
+						<dataset >
+							<datasetRun subDataset="SubDataset1">
+								<datasetParameter  name="TIPO_PARAMS">
+									<datasetParameterExpression><![CDATA[$P{TIPO_PARAMS}]]></datasetParameterExpression>
+								</datasetParameter>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="PAGE_NUMBER" width="0">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[""]]></bucketExpression>
+						</bucket>
+					</rowGroup>
+					<columnGroup name="PARAM" height="14" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{PARHCODIGO}+"::"+$F{PARHNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="18"
+						y="0"
+						width="256"
+						height="14"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{PARAM}.substring($V{PARAM}.lastIndexOf("::")+2,$V{PARAM}.length() )]]></textFieldExpression>
+				</textField>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Opaque"
+						x="278"
+						y="2"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="rectangle-1"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean(($V{PARAM}.substring(0,$V{PARAM}.lastIndexOf("::")) ).equals( $P{ETAPA}+"" ))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="278"
+						y="2"
+						width="10"
+						height="10"
+						forecolor="#000000"
+						backcolor="#D6D2D2"
+						key="rectangle-1"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean(! ($V{PARAM}.substring(0,$V{PARAM}.lastIndexOf("::")) ).equals( $P{ETAPA}+"" ))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="RelativeToBandHeight" pen="Thin"/>
+				</rectangle>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="PAGE_NUMBER_Count" class="java.lang.Integer" calculation="Count">
+						<measureExpression><![CDATA[$F{PARHNOMBRE}]]></measureExpression>
+					</measure>
+					<crosstabCell width="571" height="0">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" columnTotalGroup="PARAM">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="571" height="0" rowTotalGroup="PAGE_NUMBER">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="PAGE_NUMBER" columnTotalGroup="PARAM">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents backcolor="#FFFFFF" mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

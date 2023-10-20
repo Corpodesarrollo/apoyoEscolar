@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="horarioDocente"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="780"
+		 pageHeight="535"
+		 columnWidth="780"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["D:\\Carlos\\SIGAE\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="HORAS_X_GRUPO" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MINUTOS_X_HORA" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(60)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MINUTOS_X_HORA_1" isForPrompting="false" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(60)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_MATERIA" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(false)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_DOCENTE" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(false)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_ESPACIO" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(false)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_DOMINGOS" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(false)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_SABADOS" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(false)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_GRUPO" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(false)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_INI" isForPrompting="false" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+
+	<field name="HORA_INI" class="java.util.Date"/>
+	<field name="HORA_CLASE" class="java.lang.Integer"/>
+	<field name="MATERIA1" class="java.lang.String"/>
+	<field name="ESPACIO_FISICO1" class="java.lang.String"/>
+	<field name="DOCENTE1" class="java.lang.String"/>
+	<field name="MATERIA2" class="java.lang.String"/>
+	<field name="ESPACIO_FISICO2" class="java.lang.String"/>
+	<field name="DOCENTE2" class="java.lang.String"/>
+	<field name="MATERIA3" class="java.lang.String"/>
+	<field name="ESPACIO_FISICO3" class="java.lang.String"/>
+	<field name="DOCENTE3" class="java.lang.String"/>
+	<field name="MATERIA4" class="java.lang.String"/>
+	<field name="ESPACIO_FISICO4" class="java.lang.String"/>
+	<field name="DOCENTE4" class="java.lang.String"/>
+	<field name="MATERIA5" class="java.lang.String"/>
+	<field name="ESPACIO_FISICO5" class="java.lang.String"/>
+	<field name="DOCENTE5" class="java.lang.String"/>
+	<field name="MATERIA6" class="java.lang.String"/>
+	<field name="ESPACIO_FISICO6" class="java.lang.String"/>
+	<field name="DOCENTE6" class="java.lang.String"/>
+	<field name="MATERIA7" class="java.lang.String"/>
+	<field name="ESPACIO_FISICO7" class="java.lang.String"/>
+	<field name="DOCENTE7" class="java.lang.String"/>
+	<field name="NOMBREDESCANSO" class="java.lang.String"/>
+	<field name="GRUPO1" class="java.lang.String"/>
+	<field name="GRUPO2" class="java.lang.String"/>
+	<field name="GRUPO3" class="java.lang.String"/>
+	<field name="GRUPO4" class="java.lang.String"/>
+	<field name="GRUPO5" class="java.lang.String"/>
+	<field name="GRUPO6" class="java.lang.String"/>
+	<field name="GRUPO7" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="16"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="586"
+						y="0"
+						width="97"
+						height="16"
+						backcolor="#DFDADA"
+						key="textField-16"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["SÁBADO"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="37"
+						height="16"
+						backcolor="#DFDADA"
+						key="staticText-1"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[CLASE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="37"
+						y="0"
+						width="57"
+						height="16"
+						backcolor="#DFDADA"
+						key="staticText-2"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[HORA]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="94"
+						y="0"
+						width="97"
+						height="16"
+						backcolor="#DFDADA"
+						key="textField-17"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LUNES"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="191"
+						y="0"
+						width="104"
+						height="16"
+						backcolor="#DFDADA"
+						key="textField-18"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["MARTES"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="295"
+						y="0"
+						width="97"
+						height="16"
+						backcolor="#DFDADA"
+						key="textField-19"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["MIÉRCOLES"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="392"
+						y="0"
+						width="97"
+						height="16"
+						backcolor="#DFDADA"
+						key="textField-20"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["JUEVES"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="489"
+						y="0"
+						width="97"
+						height="16"
+						backcolor="#DFDADA"
+						key="textField-21"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["VIERNES"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="683"
+						y="0"
+						width="97"
+						height="16"
+						backcolor="#DFDADA"
+						key="textField-22"/>
+					<box topBorder="1Point" topBorderColor="#000000" leftBorder="1Point" leftBorderColor="#000000" rightBorder="1Point" rightBorderColor="#000000" bottomBorder="1Point" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["DOMINGO"]]></textFieldExpression>
+				</textField>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="33"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="94"
+						y="0"
+						width="686"
+						height="32"
+						forecolor="#999999"
+						key="textField">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()<0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="13" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["------- "+$F{NOMBREDESCANSO}+" -------"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="94"
+						y="0"
+						width="97"
+						height="32"
+						forecolor="#CCCCCC"
+						key="textField-8"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA1}==null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="8" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LIBRE"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="586"
+						y="0"
+						width="97"
+						height="32"
+						forecolor="#CCCCCC"
+						key="textField-13"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0 && (($P{MOSTRAR_SABADOS}.booleanValue()&& $F{MATERIA6}==null) || (!$P{MOSTRAR_SABADOS}.booleanValue() && $P{MOSTRAR_DOMINGOS}.booleanValue()&& $F{MATERIA7}==null)))]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="8" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LIBRE"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="683"
+						y="0"
+						width="97"
+						height="32"
+						forecolor="#CCCCCC"
+						key="textField-14"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0 && $P{MOSTRAR_DOMINGOS}.booleanValue()&& $P{MOSTRAR_SABADOS}.booleanValue() && $F{MATERIA7}==null)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="8" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LIBRE"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="392"
+						y="0"
+						width="97"
+						height="32"
+						forecolor="#CCCCCC"
+						key="textField-11"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA4}==null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="8" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LIBRE"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="489"
+						y="0"
+						width="97"
+						height="32"
+						forecolor="#CCCCCC"
+						key="textField-12"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA5}==null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="8" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LIBRE"]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="37"
+						height="32"
+						key="subreport-1"
+						stretchType="RelativeToBandHeight"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0)]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="HORA_CLASE">
+						<subreportParameterExpression><![CDATA[$F{HORA_CLASE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="HORA_INI">
+						<subreportParameterExpression><![CDATA[$F{HORA_INI}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MINUTOS_X_HORA">
+						<subreportParameterExpression><![CDATA[$P{MINUTOS_X_HORA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="HORAS_X_GRUPO">
+						<subreportParameterExpression><![CDATA[$P{HORAS_X_GRUPO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new JREmptyDataSource($P{HORAS_X_GRUPO}.intValue())]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "horario_sub.jasper"]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="191"
+						y="0"
+						width="104"
+						height="32"
+						forecolor="#CCCCCC"
+						key="textField-9"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA2}==null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="8" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LIBRE"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="295"
+						y="0"
+						width="97"
+						height="32"
+						forecolor="#CCCCCC"
+						key="textField-10"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA3}==null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="8" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["LIBRE"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="HH:mm" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="37"
+						y="0"
+						width="57"
+						height="32"
+						key="textField-15">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()<0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{HORA_INI}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="94"
+						y="11"
+						width="97"
+						height="11"
+						forecolor="#FF0000"
+						key="textField-23"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA1}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_MATERIA}.booleanValue() && $F{MATERIA1}!=null)?"- "+$F{MATERIA1}+" -":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="94"
+						y="0"
+						width="97"
+						height="11"
+						forecolor="#FF9900"
+						key="textField-25"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA1}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_GRUPO}.booleanValue() && $F{GRUPO1}!=null)?(($P{MOSTRAR_MATERIA}.booleanValue()?"":"")+"- "+$F{GRUPO1}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="191"
+						y="11"
+						width="104"
+						height="11"
+						forecolor="#FF0000"
+						key="textField-26"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA2}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_MATERIA}.booleanValue() && $F{MATERIA2}!=null)?"- "+$F{MATERIA2}+" -":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="191"
+						y="0"
+						width="104"
+						height="11"
+						forecolor="#FF9900"
+						key="textField-28"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA2}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_GRUPO}.booleanValue() && $F{GRUPO2}!=null)?(($P{MOSTRAR_MATERIA}.booleanValue()?"":"")+"- "+$F{GRUPO2}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="295"
+						y="11"
+						width="97"
+						height="11"
+						forecolor="#FF0000"
+						key="textField-29"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA3}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_MATERIA}.booleanValue() && $F{MATERIA3}!=null)?"- "+$F{MATERIA3}+" -":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="295"
+						y="0"
+						width="97"
+						height="11"
+						forecolor="#FF9900"
+						key="textField-31"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA3}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_GRUPO}.booleanValue() && $F{GRUPO3}!=null)?(($P{MOSTRAR_MATERIA}.booleanValue()?"":"")+"- "+$F{GRUPO3}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="392"
+						y="11"
+						width="97"
+						height="11"
+						forecolor="#FF0000"
+						key="textField-32"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA4}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_MATERIA}.booleanValue() && $F{MATERIA4}!=null)?"- "+$F{MATERIA4}+" -":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="392"
+						y="0"
+						width="97"
+						height="11"
+						forecolor="#FF9900"
+						key="textField-33"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA4}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_GRUPO}.booleanValue() && $F{GRUPO4}!=null)?(($P{MOSTRAR_MATERIA}.booleanValue()?"":"")+"- "+$F{GRUPO4}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="489"
+						y="11"
+						width="97"
+						height="11"
+						forecolor="#FF0000"
+						key="textField-35"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA5}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_MATERIA}.booleanValue() && $F{MATERIA5}!=null)?"- "+$F{MATERIA5}+" -":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="489"
+						y="0"
+						width="97"
+						height="11"
+						forecolor="#FF9900"
+						key="textField-37"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA5}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_GRUPO}.booleanValue() && $F{GRUPO5}!=null)?(($P{MOSTRAR_MATERIA}.booleanValue()?"":"")+"- "+$F{GRUPO5}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="586"
+						y="11"
+						width="97"
+						height="11"
+						forecolor="#FF0000"
+						key="textField-38"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA6}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_MATERIA}.booleanValue() && $F{MATERIA6}!=null)?"- "+$F{MATERIA6}+" -":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="586"
+						y="0"
+						width="97"
+						height="11"
+						forecolor="#FF9900"
+						key="textField-40"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA6}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_GRUPO}.booleanValue() && $F{GRUPO6}!=null)?(($P{MOSTRAR_MATERIA}.booleanValue()?"":"")+"- "+$F{GRUPO6}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="683"
+						y="11"
+						width="97"
+						height="11"
+						forecolor="#FF0000"
+						key="textField-41"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA7}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_MATERIA}.booleanValue() && $F{MATERIA7}!=null)?"- "+$F{MATERIA7}+" -":"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="683"
+						y="0"
+						width="97"
+						height="11"
+						forecolor="#FF9900"
+						key="textField-43"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA7}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_GRUPO}.booleanValue() && $F{GRUPO7}!=null)?(($P{MOSTRAR_MATERIA}.booleanValue()?"":"")+"- "+$F{GRUPO7}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="94"
+						y="22"
+						width="97"
+						height="10"
+						forecolor="#009900"
+						key="textField-44"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA1}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_ESPACIO}.booleanValue())?((($P{MOSTRAR_DOCENTE}.booleanValue() || $P{MOSTRAR_GRUPO}.booleanValue() || $P{MOSTRAR_MATERIA}.booleanValue())?"":"")+"- "+$F{ESPACIO_FISICO1}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="191"
+						y="22"
+						width="104"
+						height="10"
+						forecolor="#009900"
+						key="textField-45"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA2}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_ESPACIO}.booleanValue() && $F{ESPACIO_FISICO2}!=null)?((($P{MOSTRAR_DOCENTE}.booleanValue() || $P{MOSTRAR_GRUPO}.booleanValue() || $P{MOSTRAR_MATERIA}.booleanValue())?"":"")+"- "+$F{ESPACIO_FISICO2}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="295"
+						y="22"
+						width="97"
+						height="10"
+						forecolor="#009900"
+						key="textField-46"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA3}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_ESPACIO}.booleanValue() && $F{ESPACIO_FISICO3}!=null)?((($P{MOSTRAR_DOCENTE}.booleanValue() || $P{MOSTRAR_GRUPO}.booleanValue() || $P{MOSTRAR_MATERIA}.booleanValue())?"":"")+"- "+$F{ESPACIO_FISICO3}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="392"
+						y="22"
+						width="97"
+						height="10"
+						forecolor="#009900"
+						key="textField-47"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA4}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_ESPACIO}.booleanValue() && $F{ESPACIO_FISICO4}!=null)?((($P{MOSTRAR_DOCENTE}.booleanValue() || $P{MOSTRAR_GRUPO}.booleanValue() || $P{MOSTRAR_MATERIA}.booleanValue())?"":"")+"- "+$F{ESPACIO_FISICO4}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="489"
+						y="22"
+						width="97"
+						height="10"
+						forecolor="#009900"
+						key="textField-48"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA5}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_ESPACIO}.booleanValue() && $F{ESPACIO_FISICO5}!=null)?((($P{MOSTRAR_DOCENTE}.booleanValue() || $P{MOSTRAR_GRUPO}.booleanValue() || $P{MOSTRAR_MATERIA}.booleanValue())?"":"")+"- "+$F{ESPACIO_FISICO5}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="586"
+						y="22"
+						width="97"
+						height="10"
+						forecolor="#009900"
+						key="textField-49"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA6}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_ESPACIO}.booleanValue() && $F{ESPACIO_FISICO6}!=null)?((($P{MOSTRAR_DOCENTE}.booleanValue() || $P{MOSTRAR_GRUPO}.booleanValue() || $P{MOSTRAR_MATERIA}.booleanValue())?"":"")+"- "+$F{ESPACIO_FISICO6}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="683"
+						y="22"
+						width="97"
+						height="10"
+						forecolor="#009900"
+						key="textField-50"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()>0
+&& $F{MATERIA7}!=null )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($P{MOSTRAR_ESPACIO}.booleanValue() && $F{ESPACIO_FISICO7}!=null)?((($P{MOSTRAR_DOCENTE}.booleanValue() || $P{MOSTRAR_GRUPO}.booleanValue() || $P{MOSTRAR_MATERIA}.booleanValue())?"":"")+"- "+$F{ESPACIO_FISICO7}+" -"):"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="37"
+						height="32"
+						forecolor="#999999"
+						key="textField-51"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[new Boolean($F{HORA_CLASE}.intValue()<0)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Oblique" size="13" isBold="false" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["---"]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

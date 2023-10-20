@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="listado_lideres_x_sede_jor"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="623"
+		 pageHeight="792"
+		 columnWidth="623"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\ATHENEA\\SIGAE\\reports_SIGAE\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1669)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CODLOCAL" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(999)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2007)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TIPO_LIDER" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select  
+SEDE.SEDNOMBRE,
+JORNADA.JORCODIGO,
+JOR_NOMBRE.G_CONNOMBRE as NOM_JORNADA,
+ESTUDIANTE.ESTAPELLIDO1 ||' '||ESTUDIANTE.ESTAPELLIDO2||' '||ESTUDIANTE.ESTNOMBRE1||' '||ESTUDIANTE.ESTNOMBRE2 AS NOM_ESTUDIANTE,
+GRADO.GRANOMBRE,
+GRUPO.GRUNOMBRE,
+LIDER.LIDTELEFONO,
+LIDER.LIDCORREO,
+to_char(LIDER.LIDFECHAINICIO,'YYYY') as VIGENCIA,
+LIDER.LIDCARGO, CASE LIDER.LIDCARGO
+WHEN 1 THEN 'Personero'
+WHEN 2 THEN 'Contralor'
+WHEN 3 THEN 'Pdte. Cjo. Estudiantil'
+WHEN 4 THEN 'Intg. Cjo. Estudiantil'
+END CASE 
+from LIDER
+INNER JOIN ESTUDIANTE ON ESTUDIANTE.ESTCODIGO = LIDER.LIDCODESTUD
+INNER JOIN GRUPO ON GRUPO.GRUCODJERAR = LIDER.LIDCODJERAR AND GRUPO.GRUCODIGO = LIDER.LIDGRUPO
+INNER JOIN G_JERARQUIA ON G_JERARQUIA.G_JERCODIGO = LIDER.LIDCODJERAR
+INNER JOIN INSTITUCION ON INSTITUCION.INSCODIGO = G_JERARQUIA.G_JERINST
+INNER JOIN SEDE ON SEDE.SEDCODIGO = G_JERARQUIA.G_JERSEDE AND SEDE.SEDCODINS = INSTITUCION.INSCODIGO
+INNER JOIN JORNADA ON JORNADA.JORCODIGO = G_JERARQUIA.G_JERJORN AND JORNADA.JORCODINS = INSTITUCION.INSCODIGO
+INNER JOIN G_CONSTANTE JOR_NOMBRE ON JOR_NOMBRE.G_CONCODIGO =  G_JERARQUIA.G_JERJORN AND JOR_NOMBRE.G_CONTIPO = 5 
+INNER JOIN GRADO ON GRADO.GRACODIGO = G_JERARQUIA.G_JERGRADO  AND GRADO.GRACODINST = INSTITUCION.INSCODIGO
+WHERE G_JERARQUIA.G_JERTIPO = 1 AND G_JERARQUIA.G_JERNIVEL=7
+AND G_JERARQUIA.G_JERLOCAL = $P{CODLOCAL}
+AND G_JERARQUIA.G_JERINST = $P{INSTITUCION}
+AND ($P{SEDE}=-999 OR G_JERARQUIA.G_JERSEDE = $P{SEDE})
+AND ($P{JORNADA}=-999 OR G_JERARQUIA.G_JERJORN = $P{JORNADA})
+AND (-999=$P{VIGENCIA} OR to_char(LIDER.LIDFECHAINICIO,'YYYY') = $P{VIGENCIA})
+AND (-999=$P{TIPO_LIDER} OR LIDER.LIDCARGO = $P{TIPO_LIDER})
+]]></queryString>
+
+	<field name="SEDNOMBRE" class="java.lang.String"/>
+	<field name="JORCODIGO" class="java.math.BigDecimal"/>
+	<field name="NOM_JORNADA" class="java.lang.String"/>
+	<field name="NOM_ESTUDIANTE" class="java.lang.String"/>
+	<field name="GRANOMBRE" class="java.lang.String"/>
+	<field name="GRUNOMBRE" class="java.lang.String"/>
+	<field name="LIDTELEFONO" class="java.lang.String"/>
+	<field name="LIDCORREO" class="java.lang.String"/>
+	<field name="VIGENCIA" class="java.lang.String"/>
+	<field name="LIDCARGO" class="java.math.BigDecimal"/>
+	<field name="CASE" class="java.lang.String"/>
+
+
+		<group  name="GRUSEDE" >
+			<groupExpression><![CDATA[$F{SEDNOMBRE}]]></groupExpression>
+			<groupHeader>
+			<band height="19"  isSplitAllowed="true" >
+				<rectangle radius="1" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="571"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="566"
+						height="18"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-BoldOblique" size="11" isBold="true" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Sede: "+$F{SEDNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="354"
+						y="0"
+						width="213"
+						height="18"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-15">
+							<printWhenExpression><![CDATA[new Boolean(($P{TIPO_LIDER}.longValue()>0 ? true : false ))]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-BoldOblique" size="9" isBold="true" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Cargo: "+$F{CASE}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="GRUJORNADA" >
+			<groupExpression><![CDATA[$F{NOM_JORNADA}]]></groupExpression>
+			<groupHeader>
+			<band height="34"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="30"
+						y="17"
+						width="198"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Estudiante]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="276"
+						y="17"
+						width="44"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Grupo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="319"
+						y="17"
+						width="75"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Teléfono]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="393"
+						y="17"
+						width="113"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Correo Electrónico]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="228"
+						y="17"
+						width="48"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Grado]]></text>
+				</staticText>
+				<rectangle radius="1" >
+					<reportElement
+						mode="Opaque"
+						x="30"
+						y="0"
+						width="541"
+						height="17"
+						forecolor="#000000"
+						backcolor="#E6E3E3"
+						key="rectangle-2"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="30"
+						y="0"
+						width="536"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-BoldOblique" size="11" isBold="true" isItalic="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Jornada: "+$F{NOM_JORNADA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="506"
+						y="17"
+						width="70"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-13">
+							<printWhenExpression><![CDATA[new Boolean(($P{TIPO_LIDER}.longValue()<0 ? true : false ))]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Cargo]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="23"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="30"
+						y="0"
+						width="198"
+						height="23"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOM_ESTUDIANTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="276"
+						y="0"
+						width="44"
+						height="23"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GRUNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="319"
+						y="0"
+						width="75"
+						height="23"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{LIDTELEFONO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="394"
+						y="0"
+						width="112"
+						height="23"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{LIDCORREO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="228"
+						y="0"
+						width="48"
+						height="23"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GRANOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="506"
+						y="0"
+						width="70"
+						height="23"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-14">
+							<printWhenExpression><![CDATA[new Boolean(($P{TIPO_LIDER}.longValue()<0 ? true : false ))]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CASE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

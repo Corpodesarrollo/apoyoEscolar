@@ -1,0 +1,3346 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="EstadisticasXdocente"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="Genero" >
+
+		<parameter name="inst" isForPrompting="false" class="java.lang.String"/>
+		<queryString><![CDATA[SELECT distinct sednombre,g_connombre,(SELECT count(*) M from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=1)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) M,(SELECT count(*) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=2)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR  
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null) submas,sede,g_constante where  
+        G_JERINST=sede.sedcodins 
+        and sede.sedcodigo=G_JERSEDE 
+        and g_contipo=5
+        and g_concodigo=G_JERJORN]]></queryString>
+
+		<field name="SEDNOMBRE" class="java.lang.String"/>
+		<field name="G_CONNOMBRE" class="java.lang.String"/>
+		<field name="M" class="java.math.BigDecimal"/>
+		<field name="F" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<subDataset name="EdadGenero" >
+
+		<parameter name="inst" isForPrompting="false" class="java.lang.String"/>
+		<queryString><![CDATA[SELECT distinct sednombre,g_connombre,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=1
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) BETWEEN 20 AND 30)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) M23,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=2
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) BETWEEN 20 AND 30)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) F23,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=1
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) BETWEEN 31 AND 40)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) M34,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=2
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) BETWEEN 31 AND 40)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) F34,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=1
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) BETWEEN 41 AND 50)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) M45,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=2
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) BETWEEN 41 AND 50)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) F45,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=1
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) >50)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) M6,(SELECT nvl(count(*),0) F from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR 
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null
+        and PERGENERO=2
+        and perfechanac is not null
+        AND (((to_date(perfechanac,'DD/MM/YY') - to_date(SYSDATE,'DD/MM/YY')) / 365) ) >50)
+        where G_JERINST=submas.G_JERINST  
+				and G_JERSEDE=submas.G_JERSEDE  
+				and G_JERJORN=submas.G_JERJORN) F6 from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN,PERGENERO
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR  
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null) submas,sede,g_constante where  
+        G_JERINST=sede.sedcodins 
+        and sede.sedcodigo=G_JERSEDE 
+        and g_contipo=5
+        and g_concodigo=G_JERJORN]]></queryString>
+
+		<field name="SEDNOMBRE" class="java.lang.String"/>
+		<field name="G_CONNOMBRE" class="java.lang.String"/>
+		<field name="M23" class="java.math.BigDecimal"/>
+		<field name="F23" class="java.math.BigDecimal"/>
+		<field name="M34" class="java.math.BigDecimal"/>
+		<field name="F34" class="java.math.BigDecimal"/>
+		<field name="M45" class="java.math.BigDecimal"/>
+		<field name="F45" class="java.math.BigDecimal"/>
+		<field name="M6" class="java.math.BigDecimal"/>
+		<field name="F6" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<subDataset name="Escalafon" >
+
+		<parameter name="inst" isForPrompting="false" class="java.lang.String"/>
+		<queryString><![CDATA[SELECT SEDNOMBRE,G_CONNOMBRE,
+sum(case when PERGENERO=1 AND PERESCALAFON='A1' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='A1' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='A2' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='A2' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='A3' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='A3' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='B1' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='B1' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='B2' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='B2' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='B3' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='B3' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='C1' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='C1' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='C2' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='C2' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='C3' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='C3' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='D1' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='D1' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='1' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='1' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='2' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='2' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='3' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='3' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='4' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='4' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='5' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='5' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='6' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='6' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='7' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='7' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='8' then 1 else 0 end),sum(case when PERGENERO=2 AND PERESCALAFON='8' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='9' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='9' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='10' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='10' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='11' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='11' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='12' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='12' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='13' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='13' then 1 else 0 end),
+sum(case when PERGENERO=1 AND PERESCALAFON='14' then 1 else 0 end), sum(case when PERGENERO=2 AND PERESCALAFON='14' then 1 else 0 end)
+FROM DOCENTE_SEDE_JORNADA,sede,USUARIO,g_constante,g_jerarquia,PERSONAL 
+where g_jertipo=1 and g_jernivel=6 and g_jerinst=$P{inst}
+and SEDCODINS=DOCSEDJORCODINST and SEDCODIGO=DOCSEDJORCODSEDE 
+and G_JERINST=DOCSEDJORCODINST and G_JERSEDE=DOCSEDJORCODSEDE 
+and G_JERJORN=DOCSEDJORCODJOR and G_CONTIPO=5 and G_CONCODIGO=DOCSEDJORCODJOR 
+and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM and PERNUMDOCUM like DOCSEDJORNUMDOCUM 
+and USUCODJERAR=g_jercodigo group by SEDNOMBRE,G_CONNOMBRE
+order by  SEDNOMBRE,G_CONNOMBRE]]></queryString>
+
+		<field name="SEDNOMBRE" class="java.lang.String"/>
+		<field name="G_CONNOMBRE" class="java.lang.String"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=A1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=A2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=A3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=B1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=B1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=B2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=B2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=B3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=B3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=C1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=C1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=C2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=C2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=C3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=C3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=D1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=D1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=1THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=2THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=3THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=4THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=4THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=5THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=5THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=6THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=6THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=7THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=7THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=8THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=8THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=9THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=9THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=10THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=10THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=11THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=11THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=12THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=12THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=13THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=13THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=14THEN1ELSE0END)" class="java.math.BigDecimal"/>
+		<field name="SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=14THEN1ELSE0END)" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<parameter name="inst" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["614"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT count(*) totaldoc from (SELECT   distinct DOCSEDJORNUMDOCUM,G_JERINST,G_JERSEDE,G_JERJORN
+				FROM DOCENTE_SEDE_JORNADA,
+				USUARIO,g_jerarquia,
+				PERSONAL where g_jerinst = $P{inst} 
+				and G_JERINST=DOCSEDJORCODINST  
+				and G_JERSEDE=DOCSEDJORCODSEDE  
+				and G_JERJORN=DOCSEDJORCODJOR  
+				and DOCSEDJORNUMDOCUM=USUPERNUMDOCUM  
+				and PERNUMDOCUM like DOCSEDJORNUMDOCUM  
+        and USUCODJERAR = g_jercodigo
+        and USUperfcodigo='422'
+        and PERGENERO is not null)]]></queryString>
+
+	<field name="TOTALDOC" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="264"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="20"
+						y="29"
+						width="110"
+						height="15"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[TOTAL DOCENTES :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="135"
+						y="29"
+						width="71"
+						height="15"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTALDOC}]]></textFieldExpression>
+				</textField>
+				<crosstab >
+					<reportElement
+						x="20"
+						y="78"
+						width="425"
+						height="19"
+						key="crosstab-1"/>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="Genero">
+								<datasetParameter  name="inst">
+									<datasetParameterExpression><![CDATA[$P{inst}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="172"
+						height="13"
+						backcolor="#00A2B9"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[Sede]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="172"
+						y="0"
+						width="115"
+						height="13"
+						backcolor="#00A2B9"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[Jornada]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="SEDNOMBRE" width="172" totalPosition="End" headerPosition="Middle">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{SEDNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="172"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{SEDNOMBRE}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="287"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Total"]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<rowGroup name="G_CONNOMBRE" width="115" headerPosition="Middle">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{G_CONNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="115"
+						height="15"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{G_CONNOMBRE}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="Genero" height="13">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA["M"]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="41"
+						height="13"
+						backcolor="#00A2B9"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="41"
+						y="0"
+						width="36"
+						height="13"
+						backcolor="#00A2B9"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="M_Count" class="java.math.BigDecimal" calculation="Count">
+						<measureExpression><![CDATA[$F{M}]]></measureExpression>
+					</measure>
+					<measure name="M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{M}]]></measureExpression>
+					</measure>
+					<measure name="F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{F}]]></measureExpression>
+					</measure>
+					<measure name="FS" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{F}]]></measureExpression>
+					</measure>
+					<measure name="sedecount" class="java.lang.Integer" calculation="Count">
+						<measureExpression><![CDATA[$F{SEDNOMBRE}]]></measureExpression>
+					</measure>
+					<measure name="MS" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{M}]]></measureExpression>
+					</measure>
+					<crosstabCell width="77" height="15">
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="1"
+						width="41"
+						height="14"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="41"
+						y="1"
+						width="36"
+						height="14"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="77" height="13" rowTotalGroup="SEDNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="41"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{MS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="41"
+						y="0"
+						width="36"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{FS}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="15" columnTotalGroup="Genero">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" rowTotalGroup="SEDNOMBRE" columnTotalGroup="Genero">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="77" height="0" rowTotalGroup="G_CONNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="G_CONNOMBRE" columnTotalGroup="Genero">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<staticText>
+					<reportElement
+						x="20"
+						y="59"
+						width="163"
+						height="15"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[DOCENTES POR GENERO :]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="50"
+						width="535"
+						height="0"
+						forecolor="#FF0033"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch" pen="2Point"/>
+				</line>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="535"
+						height="15"
+						backcolor="#FF9000"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[ESTADÍSTICAS DE DOCENTE]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="111"
+						width="535"
+						height="0"
+						forecolor="#FF0033"
+						key="line-2"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch" pen="2Point"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="20"
+						y="122"
+						width="211"
+						height="15"
+						key="staticText-4"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[DOCENTES POR EDAD Y GÉNERO:
+]]></text>
+				</staticText>
+				<crosstab >
+					<reportElement
+						x="20"
+						y="151"
+						width="508"
+						height="17"
+						key="crosstab-2"
+						positionType="Float"/>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="EdadGenero">
+								<datasetParameter  name="inst">
+									<datasetParameterExpression><![CDATA[$P{inst}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="147"
+						height="25"
+						backcolor="#00A2B9"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Sede]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="147"
+						y="0"
+						width="100"
+						height="25"
+						backcolor="#00A2B9"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[Jornada]]></text>
+				</staticText>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="SEDNOMBRE" width="147" totalPosition="End" headerPosition="Middle">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{SEDNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="147"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{SEDNOMBRE}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="246"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Total"]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<rowGroup name="G_CONNOMBRE" width="100" totalPosition="End" headerPosition="Middle">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{G_CONNOMBRE}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="100"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{G_CONNOMBRE}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabRowHeader>
+					</rowGroup>
+					<columnGroup name="M" height="25" headerPosition="Center">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA["Edades"]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="50"
+						height="13"
+						backcolor="#00A2B9"
+						key="textField"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Entre 20 y 30"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["M"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="25"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["F"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="50"
+						y="0"
+						width="50"
+						height="13"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Entre 30 y 40"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="50"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["M"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="75"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["F"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="100"
+						y="0"
+						width="50"
+						height="13"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Entre 40 y 50"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="100"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["M"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="125"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["F"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="150"
+						y="0"
+						width="50"
+						height="13"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Mayores 50"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="150"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["M"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="175"
+						y="13"
+						width="25"
+						height="12"
+						backcolor="#00A2B9"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["F"]]></textFieldExpression>
+				</textField>
+						</cellContents>
+						</crosstabColumnHeader>
+					</columnGroup>
+
+					<measure name="SEDNOMBRE_Nothing" class="java.lang.String" calculation="Sum">
+						<measureExpression><![CDATA[$F{SEDNOMBRE}]]></measureExpression>
+					</measure>
+					<measure name="M23" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{M23}]]></measureExpression>
+					</measure>
+					<measure name="F23" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{F23}]]></measureExpression>
+					</measure>
+					<measure name="M34" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{M34}]]></measureExpression>
+					</measure>
+					<measure name="F34" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{F34}]]></measureExpression>
+					</measure>
+					<measure name="M45" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{M45}]]></measureExpression>
+					</measure>
+					<measure name="F45" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{F45}]]></measureExpression>
+					</measure>
+					<measure name="M6" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{M6}]]></measureExpression>
+					</measure>
+					<measure name="F6" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{F6}]]></measureExpression>
+					</measure>
+					<measure name="M23S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{M23}]]></measureExpression>
+					</measure>
+					<measure name="F23S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{F23}]]></measureExpression>
+					</measure>
+					<measure name="M34S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{M34}]]></measureExpression>
+					</measure>
+					<measure name="F34S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{F34}]]></measureExpression>
+					</measure>
+					<measure name="M45S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{M45}]]></measureExpression>
+					</measure>
+					<measure name="F45S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{F45}]]></measureExpression>
+					</measure>
+					<measure name="M6S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{M6}]]></measureExpression>
+					</measure>
+					<measure name="F6S" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{F6}]]></measureExpression>
+					</measure>
+					<crosstabCell width="200" height="13">
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="25"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M23}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="25"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F23}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="50"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M34}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="75"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F34}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="100"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M45}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="125"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F45}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="150"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="175"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F6}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" columnTotalGroup="M">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="200" height="0" rowTotalGroup="G_CONNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="G_CONNOMBRE" columnTotalGroup="M">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="200" height="13" rowTotalGroup="SEDNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="25"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M23S}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="25"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F23S}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="50"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M34S}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="75"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F34S}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="100"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M45S}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="125"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F45S}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="150"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M6S}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="175"
+						y="0"
+						width="25"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F6S}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="13" rowTotalGroup="SEDNOMBRE" columnTotalGroup="M">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="183"
+						width="535"
+						height="0"
+						forecolor="#FF0033"
+						key="line-3"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch" pen="2Point"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="20"
+						y="194"
+						width="447"
+						height="15"
+						key="staticText-5"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[DOCENTES POR CATEGORIA EN EL ESCALAFÓN NACIONAL DOCENTE Y GÉNERO:
+]]></text>
+				</staticText>
+				<crosstab >
+					<reportElement
+						x="20"
+						y="216"
+						width="508"
+						height="18"
+						key="crosstab-3"
+						positionType="Float"/>
+					<crosstabDataset>
+						<dataset >
+							<datasetRun subDataset="Escalafon">
+								<datasetParameter  name="inst">
+									<datasetParameterExpression><![CDATA[$P{inst}]]></datasetParameterExpression>
+								</datasetParameter>
+								<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabHeaderCell>					<rowGroup name="SEDNOMBRE" width="0">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{SEDNOMBRE}]]></bucketExpression>
+						</bucket>
+					</rowGroup>
+					<rowGroup name="G_CONNOMBRE" width="0">
+						<bucket>
+							<bucketExpression class="java.lang.String"><![CDATA[$F{G_CONNOMBRE}]]></bucketExpression>
+						</bucket>
+					</rowGroup>
+					<columnGroup name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)" height="0">
+						<bucket>
+							<bucketExpression class="java.math.BigDecimal"><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)}]]></bucketExpression>
+						</bucket>
+					</columnGroup>
+
+					<measure name="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)_Count" class="java.math.BigDecimal" calculation="Count">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="A1F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=A1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="A2M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="A2F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=A2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="A3M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="B1M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=B1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="B1F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=B1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="B2M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=B2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="B2F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=B2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="B3M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=B3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="B3F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=B3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="C1M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=C1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="C1F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=C1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="C2M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=C2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="C2F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=C2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="C3M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=C3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="C3F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=C3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="D1M" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=D1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="D1F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=D1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="A3F" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=A3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M1" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F1" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=1THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M2" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F2" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=2THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M3" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F3" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=3THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M4" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=4THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F4" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=4THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M5" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=5THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F5" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=5THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M6" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=6THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F6" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=6THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M7" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=7THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F7" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=7THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M8" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=8THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F8" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=8THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M9" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=9THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F9" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=9THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M10" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=10THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F10" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=10THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M11" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=11THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F11" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=11THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M12" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=12THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F12" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=12THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M13" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=13THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F13" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=13THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="M14" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=14THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<measure name="F14" class="java.math.BigDecimal">
+						<measureExpression><![CDATA[$F{SUM(CASEWHENPERGENERO=2ANDPERESCALAFON=14THEN1ELSE0END)}]]></measureExpression>
+					</measure>
+					<crosstabCell width="448" height="167">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="142"
+						width="22"
+						height="13"
+						key="textField"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="1"
+						y="1"
+						width="189"
+						height="11"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Decreto No. 2277 de Septiembre de 1979
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="25"
+						width="448"
+						height="12"
+						backcolor="#00A2B9"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Sede - Jornada]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="37"
+						width="448"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{SEDNOMBRE}+" - "+$V{G_CONNOMBRE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="1"
+						y="95"
+						width="189"
+						height="11"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Decreto No. 1278 de 2002
+
+
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="32"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="64"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[3]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="96"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[4]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="128"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[5]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="160"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[6]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="192"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[7]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="224"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[8]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="256"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[9]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="288"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[10]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="320"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[11]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="352"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[12]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="384"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[13]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="416"
+						y="50"
+						width="32"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[14]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="16"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="32"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="48"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="64"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="80"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="96"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="112"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="128"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="144"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="160"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="176"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="192"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="208"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="224"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="240"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="256"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="272"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="288"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="304"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="320"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="336"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="352"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="368"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="384"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="400"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="416"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="432"
+						y="62"
+						width="16"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[A1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="44"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[A2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="88"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[A3]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="132"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[B1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="176"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[B2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="220"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[B3]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="264"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[C1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="308"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[C2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="352"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[C3]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="396"
+						y="118"
+						width="44"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[D1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="22"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="44"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="66"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="88"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="110"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="132"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="154"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="176"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="198"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="220"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="242"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="264"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="286"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="308"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="330"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="352"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="374"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="396"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[M]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="418"
+						y="130"
+						width="22"
+						height="12"
+						backcolor="#C9EFEF"
+						key="staticText-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[F]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="22"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{A1F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="44"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{A2M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="66"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{A2F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="110"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{A3F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="88"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{A3M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="154"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{B1F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="132"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{B1M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="198"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{B2F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="176"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{B2M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="242"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{B3F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="220"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{B3M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="286"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{C1F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="264"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{C1M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="330"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{C2F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="308"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{C2M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="374"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{C3F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="352"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{C3M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="418"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{D1F}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="396"
+						y="142"
+						width="22"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{D1M}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="16"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="32"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="48"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="64"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="80"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="96"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="112"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="128"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="144"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="160"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="176"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="192"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M7}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="208"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F7}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="224"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M8}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="240"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F8}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="256"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M9}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="272"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F9}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="288"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M10}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="304"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F10}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="320"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M11}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="336"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F11}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="352"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M12}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="368"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F12}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="384"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M13}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="400"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F13}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="416"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{M14}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="432"
+						y="74"
+						width="16"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{F14}]]></textFieldExpression>
+				</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="448" height="0" rowTotalGroup="SEDNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="167" columnTotalGroup="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="SEDNOMBRE" columnTotalGroup="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="448" height="0" rowTotalGroup="G_CONNOMBRE">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="0" height="0" rowTotalGroup="G_CONNOMBRE" columnTotalGroup="SUM(CASEWHENPERGENERO=1ANDPERESCALAFON=A1THEN1ELSE0END)">
+						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</crosstabCell>
+					<whenNoDataCell>						<cellContents mode="Transparent">
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+						</cellContents>
+					</whenNoDataCell>					</crosstab>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

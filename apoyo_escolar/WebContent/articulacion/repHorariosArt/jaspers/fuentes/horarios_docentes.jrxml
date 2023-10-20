@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="horarios_docentes"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\TRABAJO\\ATHENEA\\ARTICULACION\\reportes\\horario\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["?"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="QUERY_MATERIAS" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["select ART_HORARIO.ARTHORACLASE as HORACLASE,"+
+" (select ART_ASIGNATURA.ARTASIGNOMBRE from "+
+" ART_ASIGNATURA "+
+" where ART_ASIGNATURA.ARTASIGCODIGO = ART_HORARIO.ARTHORAASIGNATURA "+
+" AND ART_ASIGNATURA.ARTASIGCODINST = ART_GRUPO.ARTGRUCODINST"+
+" AND ART_ASIGNATURA.ARTASIGANOVIGENCIA = ART_GRUPO.ARTGRUANOVIGENCIA"+
+" AND ART_ASIGNATURA.ARTASIGPERVIGENCIA = ART_GRUPO.ARTGRUPERVIGENCIA"+
+" AND ART_ASIGNATURA.ARTASIGCOMPONENTE = ART_GRUPO.ARTGRUCOMPONENTE"+
+" AND ART_ASIGNATURA.ARTASIGCODESP = ART_GRUPO.ARTGRUCODESP"+
+" ) AS MATERIA,"+
+" (select ESPACIO_FISICO.ESPNOMBRE from ESPACIO_FISICO"+
+" where ESPACIO_FISICO.ESPCODIGO = ART_HORARIO.ARTHORAESPFISICO"+
+" AND ART_GRUPO.ARTGRUCODINST = ESPACIO_FISICO.ESPCODINS"+
+" AND ART_GRUPO.ARTGRUCODSEDE = ESPACIO_FISICO.ESPCODSEDE) as ESPACIO_FISICO,"+
+" (select PERSONAL.PERAPELLIDO1 ||' '||PERSONAL.PERAPELLIDO2||' '||PERSONAL.PERNOMBRE1||' '||PERSONAL.PERNOMBRE2"+
+"  from PERSONAL "+
+"  where PERSONAL.PERNUMDOCUM = to_char(ART_HORARIO.ARTHORADOCENTE)) as DOCENTE,"+
+" ART_GRUPO.ARTGRUPERESP ||'-'||ART_GRUPO.ARTGRUCONSECUTIVO as GRUPO,"+
+" ART_HORARIO.ARTHORADIA as DIA_SEMANA"+
+" from ART_HORARIO"+
+" INNER JOIN ART_INSCRIPCION ON ART_INSCRIPCION.ARTINSGRUPO = ART_HORARIO.ARTHORAGRUPO"+
+" INNER JOIN ART_GRUPO ON ART_GRUPO.ARTGRUCODIGO = ART_HORARIO.ARTHORAGRUPO"+
+" where "+
+" ART_INSCRIPCION.ARTINSCODEST = ?"+
+" AND ART_INSCRIPCION.ARTINSANOVIGENCIA = ?"+
+" AND ART_INSCRIPCION.ARTINSPERVIGENCIA = ?"+
+" AND ART_GRUPO.ARTGRUANOVIGENCIA = ART_INSCRIPCION.ARTINSANOVIGENCIA"+
+" AND ART_GRUPO.ARTGRUPERVIGENCIA = ART_INSCRIPCION.ARTINSPERVIGENCIA"+
+" AND ART_GRUPO.ARTGRUCOMPONENTE = ?"+
+" UNION"+
+" select ART_HORARIO.ARTHORACLASE as HORACLASE,"+
+" ART_ASIGNATURA.ARTASIGNOMBRE AS MATERIA,"+
+" (select ESPACIO_FISICO.ESPNOMBRE from ESPACIO_FISICO"+
+" where ESPACIO_FISICO.ESPCODIGO = ART_HORARIO.ARTHORAESPFISICO"+
+" AND ART_GRUPO.ARTGRUCODINST = ESPACIO_FISICO.ESPCODINS"+
+" AND ART_GRUPO.ARTGRUCODSEDE = ESPACIO_FISICO.ESPCODSEDE) as ESPACIO_FISICO,"+
+" (select PERSONAL.PERAPELLIDO1 ||' '||PERSONAL.PERAPELLIDO2||' '||PERSONAL.PERNOMBRE1||' '||PERSONAL.PERNOMBRE2"+
+"   from PERSONAL "+
+"   where PERSONAL.PERNUMDOCUM = to_char(ART_HORARIO.ARTHORADOCENTE)) as DOCENTE,"+
+" ART_GRUPO.ARTGRUPERESP ||'-'||ART_GRUPO.ARTGRUCONSECUTIVO as GRUPO,"+
+" ART_HORARIO.ARTHORADIA"+
+" from ART_HORARIO"+
+" INNER JOIN ART_GRUPO ON ART_GRUPO.ARTGRUCODIGO = ART_HORARIO.ARTHORAGRUPO"+
+" INNER JOIN ART_ASIGNATURA_COMPLEMENTARIA ON ART_ASIGNATURA_COMPLEMENTARIA.ASIGCOMCODIGO = ART_HORARIO.ARTHORAASIGNATURA"+
+" INNER JOIN ART_INSCRIPCION ON ART_INSCRIPCION.ARTINSCODASIG = ART_ASIGNATURA_COMPLEMENTARIA.ASIGCODIGO"+
+" INNER JOIN ART_ASIGNATURA ON ART_ASIGNATURA.ARTASIGCODIGO = ART_ASIGNATURA_COMPLEMENTARIA.ASIGCOMCODIGO"+
+" AND ART_ASIGNATURA.ARTASIGCODINST = ART_GRUPO.ARTGRUCODINST"+
+" AND ART_ASIGNATURA.ARTASIGANOVIGENCIA = ART_GRUPO.ARTGRUANOVIGENCIA"+
+" AND ART_ASIGNATURA.ARTASIGPERVIGENCIA = ART_GRUPO.ARTGRUPERVIGENCIA"+
+" AND ART_ASIGNATURA.ARTASIGCOMPONENTE = ART_GRUPO.ARTGRUCOMPONENTE"+
+" AND ART_ASIGNATURA.ARTASIGCODESP = ART_GRUPO.ARTGRUCODESP"+
+" where "+
+" ART_INSCRIPCION.ARTINSCODEST = ?"+
+" AND ART_INSCRIPCION.ARTINSANOVIGENCIA = ?"+
+" AND ART_INSCRIPCION.ARTINSPERVIGENCIA = ?"+
+" AND ART_GRUPO.ARTGRUANOVIGENCIA = ART_INSCRIPCION.ARTINSANOVIGENCIA"+
+" AND ART_GRUPO.ARTGRUPERVIGENCIA = ART_INSCRIPCION.ARTINSPERVIGENCIA"+
+" AND ART_GRUPO.ARTGRUCOMPONENTE = ?"+
+" ORDER BY HORACLASE"
+
+
+]]></defaultValueExpression>
+	</parameter>
+	<parameter name="QUERY_DESCANSOS" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["select to_date(ROT_RECESO.ROTRECHORAINI,'hh24:mi') as HORA_INI,"+
+"to_date(ROT_RECESO.ROTRECHORAFIN,'hh24:mi') as HORA_FIN,"+
+"ROT_RECESO.ROTRECDESCRIPCION as NOMBREDESCANSO"+
+" from ROT_RECESO"+
+" where ROT_RECESO.ROTREC_STRCOD =? "+
+" order by HORA_INI"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_MATERIA" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_ESPACIO" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_GRUPO" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta al icono del ejercito.]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//error.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<parameterDescription><![CDATA[Ruta completa al Icono de la Escuela]]></parameterDescription>
+		<defaultValueExpression ><![CDATA[".//1.jpg"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ANO_VIGENCIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2007)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PER_VIGENCIA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COMPONENTE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(2)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MOSTRAR_DOCENTE" isForPrompting="false" class="java.lang.Boolean">
+		<defaultValueExpression ><![CDATA[new Boolean(true)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(205)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(1)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="false" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[new Long(4)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT TRIM(PERNUMDOCUM) as DOCENTE,PERAPELLIDO1||' '||PERAPELLIDO2 AS APELLIDOS,PERNOMBRE1||' '||PERNOMBRE2 AS NOMBRES 
+FROM DOCENTE_SEDE_JORNADA,PERSONAL 
+WHERE DOCSEDJORCODINST=$P{INSTITUCION}
+AND DOCSEDJORCODSEDE= $P{SEDE}
+AND DOCSEDJORCODJOR=$P{JORNADA} 
+AND PERNUMDOCUM LIKE DOCSEDJORNUMDOCUM 
+ORDER BY PERAPELLIDO1]]></queryString>
+
+	<field name="DOCENTE" class="java.lang.String"/>
+	<field name="APELLIDOS" class="java.lang.String"/>
+	<field name="NOMBRES" class="java.lang.String"/>
+
+		<background>
+			<band height="2"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="96"  isSplitAllowed="true" >
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="6"
+						width="782"
+						height="21"
+						key="subreport-1"
+						isPrintRepeatedValues="false"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="REPORT_CONNECTION">
+						<subreportParameterExpression><![CDATA[$P{REPORT_CONNECTION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="USUARIO">
+						<subreportParameterExpression><![CDATA[$P{USUARIO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_SECRETARIA">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_SECRETARIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PATH_ICONO_INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{PATH_ICONO_INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ANO_VIGENCIA">
+						<subreportParameterExpression><![CDATA[$P{ANO_VIGENCIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PER_VIGENCIA">
+						<subreportParameterExpression><![CDATA[$P{PER_VIGENCIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="COMPONENTE">
+						<subreportParameterExpression><![CDATA[$P{COMPONENTE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="DOCENTE">
+						<subreportParameterExpression><![CDATA[$F{DOCENTE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INSTITUCION">
+						<subreportParameterExpression><![CDATA[$P{INSTITUCION}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="JORNADA">
+						<subreportParameterExpression><![CDATA[$P{JORNADA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "horario_x_docente.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

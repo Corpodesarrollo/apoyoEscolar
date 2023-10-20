@@ -1,0 +1,70 @@
+<html>
+<head>
+<link href='../../etc/css/cssmain.css' rel="stylesheet" type="text/css">
+<SCRIPT language=javascript src='../../etc/js/validar.js'></SCRIPT>
+<title>ESPACIO FÍSICO</title>
+	<script languaje='javaScript'>
+			var id;
+			var dia;
+			var clase;
+			var espacio;
+			function borrar_combo(combo){
+				for(var i = combo.length - 1; i >= 0; i--) { if(navigator.appName == "Netscape") combo.options[i] = null; else combo.remove(i); }
+				combo.options[0] = new Option("-- Seleccione uno --","");
+			}
+			function cargar(forma){
+				cargarChecks(forma.espacio);
+			}
+			
+			function cancelar(){
+		    	parent.close();
+			}
+			
+			function aceptar(){
+					opener.document.forms['frmNuevo'].elements['checkEsp'][id].value=clase+'|'+dia+'|'+document.frmEsp.espacio.options[document.frmEsp.espacio.selectedIndex].value;
+					opener.document.forms['frmNuevo'].elements['spEsp'][id].value=document.frmEsp.espacio.options[document.frmEsp.espacio.selectedIndex].text;
+					//opener.document.getElementById('spEsp')[id].innerHTML=document.frmEsp.espacio.options[document.frmEsp.espacio.selectedIndex].text;
+					//alert(opener.document.forms['frmNuevo'].elements['checkEsp'][id].value);
+		    	parent.close();
+			}
+			
+			function cargarChecks(combo_hijo){
+				id=opener.document.forms['fr'].elements['id'].value;
+				dia=opener.document.forms['fr'].elements['dia'].value;
+				clase=opener.document.forms['fr'].elements['clase'].value;
+				espacio=opener.document.forms['fr'].elements['espacio'].value;
+				borrar_combo(combo_hijo);
+				var n=opener.document.forms['frmNuevo'].elements['lEspacio'].length;
+				for(var i=0;i<n;i++){
+					if(opener.document.forms['frmNuevo'].elements['lEspacio'][i].value==espacio){
+						combo_hijo.options[i] = new Option(opener.document.forms['frmNuevo'].elements['lEspacio_'][i].value,opener.document.forms['frmNuevo'].elements['lEspacio'][i].value,"SELECTED"); combo_hijo.selectedIndex = i;					
+					}else{
+						combo_hijo.options[i] = new Option(opener.document.forms['frmNuevo'].elements['lEspacio_'][i].value,opener.document.forms['frmNuevo'].elements['lEspacio'][i].value);							
+					}	
+				}	
+			}
+			
+	</script>
+</head>
+<body onLoad='cargar(frmEsp)'>
+		<FORM ACTION="" METHOD="POST" name="frmEsp">
+			<table border="1" align="center" width="100%" cellpadding="0" cellspacing="0" bordercolor="#FFFFFF">
+				<caption>Espacio Físico</caption>
+				<tr><th>
+					<INPUT class='boton' TYPE="button" NAME="cmd" VALUE="Aceptar" onClick="aceptar()">
+					<INPUT class='boton' TYPE="button" NAME="cmd2" VALUE="Cancelar" onClick="cancelar()">
+				</th></tr>
+			</table>
+			<table border="1" align="center" width="100%" cellpadding="0" cellspacing="0" bordercolor="#FFFFFF">
+				<tr>
+					<td>Espacio físico:</td>
+					<td>
+						<select name="espacio" style='width:150px;'>
+						<option value='-99'>--Seleccione uno--</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</FORM>
+	</body>
+</html>

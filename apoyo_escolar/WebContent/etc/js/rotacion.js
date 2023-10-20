@@ -1,0 +1,11 @@
+var Htipo_receso=180;
+var Hestructura=170;
+var Hfijar_espacio=250;
+var Hfijar_asignatura=250;
+var Hfijar_espacio_docente=250;
+var Hinhabilitar_espacio=250;
+var Hinhabilitar_docentes=250;
+var Hpriorizar=180;
+var Hfijar_horario=190;
+var Hborrar_horario=185;
+var Hinhabilitar_hora=250;

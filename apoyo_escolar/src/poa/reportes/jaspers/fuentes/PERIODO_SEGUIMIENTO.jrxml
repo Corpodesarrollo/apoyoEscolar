@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="PERIODO_SEGUIMIENTO"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="1008"
+		 pageHeight="612"
+		 columnWidth="1008"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="ACTIVIDADES" >
+
+		<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.String"/>
+		<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.String"/>
+		<queryString><![CDATA[select B.ARGENOMBRE,B.ARGECODIGO,C.LIACNOMBRE, C.LIACCODIGO,A.PLACOBJETIVO,A.PLACNOMBRE,A.SEGPORCEJECP1,A.SEGPORCEJECP2,A.SEGPORCEJECP3,A.SEGPORCEJECP4,A.PLACCANTIDAD,A.PLACPONDERADO,
+CASE A.PLACCODTIMETA
+when 1 then 
+A.SEGPORCEJECP1+A.SEGPORCEJECP2+A.SEGPORCEJECP3+SEGPORCEJECP4
+when 2 then 
+A.SEGPORCEJECP1+A.SEGPORCEJECP2+A.SEGPORCEJECP3+SEGPORCEJECP4
+when 3 then 
+(SEGPORCEJECP4+SEGPORCEJECP3+SEGPORCEJECP2+SEGPORCEJECP1)/CASE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) WHEN 0 THEN 1 ELSE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) END
+end AVANCE_TOTAL,
+
+CASE A.PLACCODTIMETA
+when 1 then 
+(A.SEGPORCEJECP1+A.SEGPORCEJECP2+A.SEGPORCEJECP3+SEGPORCEJECP4)/A.PLACCANTIDAD
+when 2 then 
+NVL(CASE SEGPORCEJECP4 WHEN 0 THEN NULL ELSE SEGPORCEJECP4 END,
+NVL(CASE SEGPORCEJECP3 WHEN 0 THEN NULL ELSE SEGPORCEJECP3 END,
+NVL(CASE SEGPORCEJECP2 WHEN 0 THEN NULL ELSE SEGPORCEJECP2 END,
+NVL(CASE SEGPORCEJECP1 WHEN 0 THEN NULL ELSE SEGPORCEJECP1 END
+,0))))
+when 3 then 
+((SEGPORCEJECP4+SEGPORCEJECP3+SEGPORCEJECP2+SEGPORCEJECP1)/CASE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) WHEN 0 THEN 1 ELSE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) END)/A.PLACCANTIDAD
+end PORC_EJECUCION,
+
+CASE A.PLACCODTIMETA
+when 1 then 
+((A.SEGPORCEJECP1+A.SEGPORCEJECP2+A.SEGPORCEJECP3+SEGPORCEJECP4)/A.PLACCANTIDAD)*A.PLACPONDERADO
+when 2 then 
+NVL(CASE SEGPORCEJECP4 WHEN 0 THEN NULL ELSE SEGPORCEJECP4 END,
+NVL(CASE SEGPORCEJECP3 WHEN 0 THEN NULL ELSE SEGPORCEJECP3 END,
+NVL(CASE SEGPORCEJECP2 WHEN 0 THEN NULL ELSE SEGPORCEJECP2 END,
+NVL(CASE SEGPORCEJECP1 WHEN 0 THEN NULL ELSE SEGPORCEJECP1 END
+,0))))*A.PLACPONDERADO
+when 3 then 
+(((SEGPORCEJECP4+SEGPORCEJECP3+SEGPORCEJECP2+SEGPORCEJECP1)/CASE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) WHEN 0 THEN 1 ELSE (CASE SEGPORCEJECP4 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP3 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP2 WHEN 0 THEN 0 ELSE 1 END+CASE SEGPORCEJECP1 WHEN 0 THEN 0 ELSE 1 END) END)/A.PLACCANTIDAD)*A.PLACPONDERADO
+end AVANCE_PONDERADOR,
+
+
+NVL(CASE SEGFTEVERIFP4 WHEN null THEN NULL ELSE SEGFTEVERIFP4 END,
+NVL(CASE SEGFTEVERIFP3 WHEN null THEN NULL ELSE SEGFTEVERIFP3 END,
+NVL(CASE SEGFTEVERIFP2 WHEN null THEN NULL ELSE SEGFTEVERIFP2 END,
+NVL(CASE SEGFTEVERIFP1 WHEN null THEN NULL ELSE SEGFTEVERIFP1 END
+,'')))) as FTE_VERF,
+
+NVL(CASE SEGANALISISP4 WHEN null THEN NULL ELSE SEGANALISISP4 END,
+NVL(CASE SEGANALISISP3 WHEN null THEN NULL ELSE SEGANALISISP3 END,
+NVL(CASE SEGANALISISP2 WHEN null THEN NULL ELSE SEGANALISISP2 END,
+NVL(CASE SEGANALISISP1 WHEN null THEN NULL ELSE SEGANALISISP1 END
+,'')))) as ANALISIS,
+A.PLACFECHATERMIN,A.SEGFECHACUMPLIMT,
+CASE 
+when A.SEGFECHACUMPLIMT IS NULL 
+then 
+     CASE 
+     WHEN A.PLACFECHATERMIN > sysdate
+     THEN 'Aún queda tiempo para cumplir con la meta'
+     ELSE 'La meta presenta retraso en su cumplimiento'     
+     END 
+else 
+     CASE
+     WHEN A.SEGFECHACUMPLIMT = A.PLACFECHATERMIN
+     THEN 'La meta se cumplió en el tiempo establecido'
+     WHEN A.SEGFECHACUMPLIMT < A.PLACFECHATERMIN
+     THEN 'La meta se cumplió antes del tiempo establecido' 
+     WHEN A.SEGFECHACUMPLIMT > A.PLACFECHATERMIN
+     THEN 'La meta se cumplió después del tiempo establecido' 
+     end
+end ESTADO_ACTIVIDAD,
+POA.POACODINST, A.PLACCODIGO
+FROM POA_PLANACTIVIDAD A
+INNER JOIN POA_AREAGESTION B ON B.ARGECODIGO = A.PLACCODARGESTION
+INNER JOIN POA_LINEAACCION C ON C.LIACCODIGO = A.PLACCODLIACCION
+INNER JOIN POA ON POA.POACODINST = A.PLACCODINST and POA.POAVIGENCIA = A.PLACVIGENCIA
+where POA.POAVIGENCIA = $P{VIGENCIA}
+and POA.POACODINST = $P{INSTITUCION}
+and POA.POAESTADO = 1
+order by B.ARGECODIGO, C.LIACCODIGO]]></queryString>
+
+		<field name="ARGENOMBRE" class="java.lang.String"/>
+		<field name="ARGECODIGO" class="java.math.BigDecimal"/>
+		<field name="LIACNOMBRE" class="java.lang.String"/>
+		<field name="LIACCODIGO" class="java.math.BigDecimal"/>
+		<field name="PLACOBJETIVO" class="java.lang.String"/>
+		<field name="PLACNOMBRE" class="java.lang.String"/>
+		<field name="SEGPORCEJECP1" class="java.lang.Double"/>
+		<field name="SEGPORCEJECP2" class="java.lang.Double"/>
+		<field name="SEGPORCEJECP3" class="java.lang.Double"/>
+		<field name="SEGPORCEJECP4" class="java.lang.Double"/>
+		<field name="PLACCANTIDAD" class="java.lang.Double"/>
+		<field name="PLACPONDERADO" class="java.lang.Double"/>
+		<field name="AVANCE_TOTAL" class="java.lang.Double"/>
+		<field name="PORC_EJECUCION" class="java.lang.Double"/>
+		<field name="AVANCE_PONDERADOR" class="java.lang.Double"/>
+		<field name="FTE_VERF" class="java.lang.String"/>
+		<field name="ANALISIS" class="java.lang.String"/>
+		<field name="PLACFECHATERMIN" class="java.sql.Timestamp"/>
+		<field name="SEGFECHACUMPLIMT" class="java.sql.Timestamp"/>
+		<field name="ESTADO_ACTIVIDAD" class="java.lang.String"/>
+		<field name="POACODINST" class="java.math.BigDecimal"/>
+		<field name="PLACCODIGO" class="java.math.BigDecimal"/>
+
+	</subDataset>
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C://TRABAJO//ATHENEA//POA//reportes//"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PATH_ICONO_SECRETARIA" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PATH_ICONO_ALCALDIA" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PIE_PAGINA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["DIRECCIÓN DE PLANEACIÓN"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="INSTITUCION" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["553"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2008"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT PLACCODINST,
+max(SEGPORCEJECP1) as PRIMER,
+max(SEGPORCEJECP2) as SEGUNDO,
+max(SEGPORCEJECP3) as TERCER,
+max(SEGPORCEJECP4) as CUARTO
+FROM POA_PLANACTIVIDAD A
+INNER JOIN POA ON POA.POACODINST = A.PLACCODINST and POA.POAVIGENCIA = A.PLACVIGENCIA
+where A.PLACVIGENCIA=$P{VIGENCIA}
+and A.PLACCODINST = $P{INSTITUCION}
+and POA.POAESTADO = 1
+group by PLACCODINST]]></queryString>
+
+	<field name="PLACCODINST" class="java.math.BigDecimal"/>
+	<field name="PRIMER" class="java.lang.Integer"/>
+	<field name="SEGUNDO" class="java.lang.Integer"/>
+	<field name="TERCER" class="java.lang.Integer"/>
+	<field name="CUARTO" class="java.lang.Integer"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="false" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="13"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="682"
+						height="13"
+						key="textField-98"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["SEGUIMIENTO "+(($F{CUARTO}.intValue()>0)?"CUARTO TRIMESTRE":($F{TERCER}.intValue()>0)?"TERCER TRIMESTRE":($F{SEGUNDO}.intValue()>0)?"SEGUNDO TRIMESTRE":"PRIMER TRIMESTRE")]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="false" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

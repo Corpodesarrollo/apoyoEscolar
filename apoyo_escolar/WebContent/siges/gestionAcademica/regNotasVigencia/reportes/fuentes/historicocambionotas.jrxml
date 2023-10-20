@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="cierrevigenciadet"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="792"
+		 columnWidth="552"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<subDataset name="NOTAS_L" >
+
+		<parameter name="ESTNUMDOC" isForPrompting="false" class="java.lang.String">
+			<defaultValueExpression ><![CDATA[$P{ESTNUMDOC}]]></defaultValueExpression>
+		</parameter>
+		<parameter name="INST" isForPrompting="false" class="java.lang.String">
+			<defaultValueExpression ><![CDATA[$P{INST}]]></defaultValueExpression>
+		</parameter>
+		<parameter name="SEDE" isForPrompting="false" class="java.lang.String">
+			<defaultValueExpression ><![CDATA[$P{SEDE}]]></defaultValueExpression>
+		</parameter>
+		<parameter name="METOD" isForPrompting="false" class="java.lang.String">
+			<defaultValueExpression ><![CDATA[$P{METOD}]]></defaultValueExpression>
+		</parameter>
+		<parameter name="GRADO" isForPrompting="false" class="java.lang.String">
+			<defaultValueExpression ><![CDATA[$P{GRADO}]]></defaultValueExpression>
+		</parameter>
+		<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.String">
+			<defaultValueExpression ><![CDATA[$P{VIGENCIA}]]></defaultValueExpression>
+		</parameter>
+		<queryString><![CDATA[SELECT  DISTINCT PERNOMBRE1||' '||PERNOMBRE2||' '||PERAPELLIDO1||' '||PERAPELLIDO2 NOMBREUSUARIO,  
+       NOTLOGFECHA, NOTLOGDESCRIPCION
+       FROM NOTAS_LOG, ESTUDIANTE, PERSONAL, USUARIO
+      WHERE TO_CHAR(USUPERNUMDOCUM)=PERNUMDOCUM
+      AND USULOGIN=NOTLOGNUMDOCUSU
+        AND NOTLOGCODEST=ESTCODIGO
+        AND ESTNUMDOC=$P{ESTNUMDOC}
+        AND NOTLOGINSCOD = $P{INST}
+        AND NOTLOGSEDCOD=$P{SEDE}
+        AND NOTLOGMETCOD=$P{METOD}
+        AND NOTLOGGRACOD=$P{GRADO}
+        AND NOTLOGVIGENCIA=$P{VIGENCIA}]]></queryString>
+
+		<field name="NOMBREUSUARIO" class="java.lang.String"/>
+		<field name="NOTLOGFECHA" class="java.sql.Timestamp"/>
+		<field name="NOTLOGDESCRIPCION" class="java.lang.String"/>
+
+	</subDataset>
+
+	<parameter name="INST" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["180"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SEDE" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRADO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["11"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GRUPO" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="JORNADA" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VIGENCIA" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2011"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\SED\\Apoyo_Escolar\\apoyo_escolar\\WebContent\\siges\\gestionAcademica\\regNotasVigencia\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ESTNUMDOC" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["93120409334"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="METOD" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ESTNOMBRE" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["camilo"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select insnombre,sednombre, G_ConNombre,granombre,grunombre
+from g_jerarquia,sede,institucion,g_constante,grado,grupo
+where g_jerarquia.g_jerinst=$P{INST} 
+and g_jerarquia.g_jergrado=$P{GRADO}
+and g_jerarquia.g_jersede=$P{SEDE}
+and g_jerarquia.g_jerjorn=$P{JORNADA}
+and g_jerarquia.g_jergrupo=$P{GRUPO}
+and sedcodins=g_jerinst
+and sedcodigo=g_jersede
+and inscodigo=g_jerinst
+and g_constante.g_contipo=5
+and g_constante.g_concodigo=g_jerarquia.g_jerjorn
+and gracodinst=g_jerinst
+and gracodigo=g_jergrado
+and grujergrupo=g_jercodigo
+and rownum=1]]></queryString>
+
+	<field name="INSNOMBRE" class="java.lang.String"/>
+	<field name="SEDNOMBRE" class="java.lang.String"/>
+	<field name="G_CONNOMBRE" class="java.lang.String"/>
+	<field name="GRANOMBRE" class="java.lang.String"/>
+	<field name="GRUNOMBRE" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="105"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="61"
+						y="7"
+						width="434"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[SECRETARÍA DE EDUCACIÓN DISTRITAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="23"
+						width="361"
+						height="19"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[REPORTE DETALLADO DE CAMBIO DE REGISTRO DE NOTAS]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="109"
+						y="46"
+						width="217"
+						height="14"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{INSNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="367"
+						y="46"
+						width="132"
+						height="14"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SEDNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="107"
+						y="64"
+						width="83"
+						height="14"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{G_CONNOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="239"
+						y="64"
+						width="105"
+						height="14"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GRANOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="399"
+						y="64"
+						width="40"
+						height="14"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GRUNOMBRE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="333"
+						y="46"
+						width="31"
+						height="14"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Sede:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="55"
+						y="64"
+						width="49"
+						height="14"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Jornada:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="199"
+						y="64"
+						width="34"
+						height="14"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Grado:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="358"
+						y="64"
+						width="37"
+						height="14"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Grupo:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="54"
+						y="46"
+						width="52"
+						height="14"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Institucion:]]></text>
+				</staticText>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="6"
+						y="0"
+						width="541"
+						height="105"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="49"
+						y="7"
+						width="450"
+						height="12"
+						key="rectangle-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="90"
+						y="22"
+						width="361"
+						height="19"
+						key="rectangle-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="49"
+						y="45"
+						width="277"
+						height="14"
+						key="rectangle-4"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="333"
+						y="46"
+						width="166"
+						height="14"
+						key="rectangle-5"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="49"
+						y="64"
+						width="141"
+						height="14"
+						key="rectangle-6"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="199"
+						y="64"
+						width="145"
+						height="14"
+						key="rectangle-7"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="353"
+						y="64"
+						width="146"
+						height="14"
+						key="rectangle-8"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="55"
+						y="83"
+						width="49"
+						height="14"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Nombre:]]></text>
+				</staticText>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="50"
+						y="83"
+						width="276"
+						height="14"
+						key="rectangle-9"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="107"
+						y="83"
+						width="217"
+						height="14"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ESTNOMBRE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="334"
+						y="83"
+						width="70"
+						height="14"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Identificación:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="407"
+						y="83"
+						width="92"
+						height="14"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ESTNUMDOC}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="332"
+						y="83"
+						width="167"
+						height="14"
+						key="rectangle-10"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="30"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="-30"
+						y="0"
+						width="541"
+						height="23"
+						key="subreport-1"
+						positionType="Float"/>
+					<subreportParameter  name="ESTNUMDOC">
+						<subreportParameterExpression><![CDATA[$P{ESTNUMDOC}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="INST">
+						<subreportParameterExpression><![CDATA[$P{INST}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SEDE">
+						<subreportParameterExpression><![CDATA[$P{SEDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="METOD">
+						<subreportParameterExpression><![CDATA[$P{METOD}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="GRADO">
+						<subreportParameterExpression><![CDATA[$P{GRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="VIGENCIA">
+						<subreportParameterExpression><![CDATA[$P{VIGENCIA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "historicocambionotas_subreport.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>
