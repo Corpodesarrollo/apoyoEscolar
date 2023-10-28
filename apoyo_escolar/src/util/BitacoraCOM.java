@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 
 public class BitacoraCOM {
 
-	public static String insertarBitacora(int colegio,int jornada,int modulo,int perfil,int sede,int submodulo,int tipoLog,int usuario, String descripcion){
+	public static String insertarBitacora(long colegio,int jornada,int modulo,String perfil,int sede,int submodulo,int tipoLog,String usuario, String descripcion){
 		String responseJson = "";
 		String URL = "http://localhost:8080/api/apoyo/consultas/insertarBitacora/";
 		try {

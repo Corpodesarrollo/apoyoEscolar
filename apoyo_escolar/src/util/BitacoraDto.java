@@ -2,19 +2,20 @@ package util;
 
 public class BitacoraDto {
 	
-	private int usuario;
+	private String usuario;
 	private int modulo;
 	private int submodulo;
 	private int tipoLog;
-	private int colegio;
+	private long colegio;
 	private int jornada;
 	private int sede;
-	private int perfil;
+	private String perfil;
 	private String descripcion;
-	public int getUsuario() {
+	
+	public String getUsuario() {
 		return usuario;
 	}
-	public void setUsuario(int usuario) {
+	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
 	public int getModulo() {
@@ -35,10 +36,10 @@ public class BitacoraDto {
 	public void setTipoLog(int tipoLog) {
 		this.tipoLog = tipoLog;
 	}
-	public int getColegio() {
+	public long getColegio() {
 		return colegio;
 	}
-	public void setColegio(int colegio) {
+	public void setColegio(long colegio) {
 		this.colegio = colegio;
 	}
 	public int getJornada() {
@@ -53,10 +54,10 @@ public class BitacoraDto {
 	public void setSede(int sede) {
 		this.sede = sede;
 	}
-	public int getPerfil() {
+	public String getPerfil() {
 		return perfil;
 	}
-	public void setPerfil(int perfil) {
+	public void setPerfil(String perfil) {
 		this.perfil = perfil;
 	}
 	public String getDescripcion() {

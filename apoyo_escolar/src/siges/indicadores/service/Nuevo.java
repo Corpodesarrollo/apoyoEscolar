@@ -4,6 +4,7 @@
 package siges.indicadores.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -11,7 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
+import articulacion.asigGrupo.dao.AsignacionGrupoDAO;
+import articulacion.asignatura.dao.AsignaturaDAO;
 import siges.common.service.Service;
+import siges.common.vo.ItemVO;
 import siges.dao.Cursor;
 import siges.indicadores.dao.IndicadoresDAO;
 import siges.indicadores.vo.DescriptorVO;
@@ -20,7 +26,10 @@ import siges.indicadores.vo.FiltroLogroVO;
 import siges.indicadores.vo.LogroVO;
 import siges.indicadores.vo.ParamsVO;
 import siges.login.beans.Login;
+import siges.rotacion.beans.forma.GradoVO;
 import siges.util.Acceso;
+import util.BitacoraCOM;
+import util.LogLogroDto;
 
 /**
  * 22/01/2009
@@ -375,6 +384,54 @@ public class Nuevo extends Service {
 			session.removeAttribute("indicadorLogroVO");
 			request.setAttribute(ParamsVO.SMS,
 					"El logro fue ingresado/actualizado satisfactoriamente");
+			//insercion de bitacora
+			BitacoraCOM com = new BitacoraCOM();
+			
+			LogLogroDto log = new LogLogroDto();
+			log.setAbreviatura(logro.getLogAbreviatura());
+			
+			List<ItemVO> asignaturas = indicadoresDAO.getListaAsignatura(
+					logro.getLogInstitucion(),
+					logro.getLogMetodologia(),
+					logro.getLogVigencia(), logro.getLogGrado());
+			
+			for(int i=0;i<asignaturas.size();i++){
+				ItemVO obj = asignaturas.get(i);
+				if(obj.getCodigo()==logro.getLogMetodologia()){
+					log.setAsignatura(obj.getNombre());
+					break;
+				}
+			}
+
+			log.setAsignatura(logro.getLogAbreviatura());
+			log.setComentario(logro.getLogDescripcion());
+			log.setGrado(logro.getLogGrado());
+			log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
+			log.setLogro(String.valueOf(logro.getLogCodigo()));
+			
+			List<ItemVO> metodologias = indicadoresDAO
+					.getListaMetodologia(logro.getLogInstitucion());
+
+			for(int i=0;i<metodologias.size();i++){
+				ItemVO obj = metodologias.get(i);
+				if(obj.getCodigo()==logro.getLogMetodologia()){
+					log.setMetodología(obj.getNombre());
+					break;
+				}
+			}
+			
+			
+			log.setOrden(logro.getLogOrden());
+			log.setPeriodoFinal(logro.getLogPeriodoFin());
+			log.setPeriodoInicial(logro.getLogPeriodoIni());
+			log.setTipoCargue("individual");
+			log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());
+			
+			Gson gson = new Gson();
+			String jsonString = gson.toJson(log);
+			
+			com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+					1301, 1/*registro*/, usuVO.getUsuarioId(), jsonString);
 		} catch (Exception e) {
 			request.setAttribute(ParamsVO.SMS,
 					"El logro no fue ingresado/actualizado: " + e.getMessage());
