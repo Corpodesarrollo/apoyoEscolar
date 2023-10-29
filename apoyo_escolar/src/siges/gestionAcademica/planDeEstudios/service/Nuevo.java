@@ -30,6 +30,7 @@ import siges.gestionAcademica.planDeEstudios.vo.PlanDeEstudiosVO;
 import siges.login.beans.Login;
 import util.BitacoraCOM;
 import util.LogAreaDto;
+import util.LogAsignaturaDto;
 import util.LogDescriptorDto;
 import util.LogPlanEstudioDto;
 
@@ -767,11 +768,60 @@ public class Nuevo extends Service {
 		String mspon1 = "";
 		String mspon2 = "";
 		String mspon3 = "";
+
 		try {
+			//insercion de bitacora
+			String jsonString="";
+			BitacoraCOM com = new BitacoraCOM();
+			try{
+				
+				LogAsignaturaDto log = new LogAsignaturaDto();
+				log.setAbreviatura(asignatura.getAsiAbreviatura());
+				log.setArea(String.valueOf(asignatura.getAsiArea()));;
+				Gson gson = new Gson();
+				String jsonGrados = gson.toJson(asignatura.getAsiGrado());
+				log.setGrados(jsonGrados);
+				log.setIdentificadorRegistro(String.valueOf(asignatura.getAsiCodigo()));
+				List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
+				for(int i=0;i<metodologias.size();i++){
+					ItemVO obj = metodologias.get(i);
+					if(obj.getCodigo()==asignatura.getAsiMetodologia()){
+						log.setMetodologia(obj.getNombre());
+						break;
+					}
+				}
+				log.setNombre(asignatura.getAsiNombre());
+				log.setOrden(String.valueOf(asignatura.getAsiOrden()));
+				List<ItemVO> vigencias = planDeEstudiosDAO.getListaVigenciaInst(Long.valueOf(usuVO.getInstId()));
+				for(int i=0;i<vigencias.size();i++){
+					ItemVO obj = vigencias.get(i);
+					if(obj.getCodigo()==asignatura.getAsiVigencia()){
+						log.setVigencia(obj.getNombre());
+						break;
+					}
+				}
+				gson = new Gson();
+				jsonString = gson.toJson(log);
+			}catch(Exception e){
+				
+			}	
 			if (asignatura.getFormaEstado().equals("1")) {
 				planDeEstudiosDAO.actualizarAsignatura(asignatura);
+				try{
+					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							63, 2/*actualizacion*/, usuVO.getUsuarioId(), jsonString);
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+				
 			} else {
 				planDeEstudiosDAO.ingresarAsignatura(asignatura);
+				try{
+					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							63, 2/*actualizacion*/, usuVO.getUsuarioId(), jsonString);
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 			session.removeAttribute("asignaturaPlanVO");
 			if (((String) request.getParameter("jornpon")).equals("INS")) {
