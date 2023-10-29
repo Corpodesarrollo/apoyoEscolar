@@ -29,6 +29,7 @@ import siges.gestionAcademica.planDeEstudios.vo.ParamsVO;
 import siges.gestionAcademica.planDeEstudios.vo.PlanDeEstudiosVO;
 import siges.login.beans.Login;
 import util.BitacoraCOM;
+import util.LogAreaDto;
 import util.LogDescriptorDto;
 import util.LogPlanEstudioDto;
 
@@ -475,10 +476,60 @@ public class Nuevo extends Service {
 	public boolean areaGuardar(HttpServletRequest request, HttpSession session,
 			Login usuVO, AreaVO area) throws ServletException {
 		try {
+			//insercion de bitacora
+			String jsonString="";
+			BitacoraCOM com = new BitacoraCOM();
+			try{
+				
+				LogAreaDto log = new LogAreaDto();
+				log.setAbreviatura(area.getAreAbreviatura());
+				log.setArea(String.valueOf(area.getAreCodigo()));
+				Gson gson = new Gson();
+				String jsonGrados = gson.toJson(area.getAreGrado());
+				log.setGrados(jsonGrados);
+				log.setIdentificadorRegistro(String.valueOf(area.getAreCodigo()));
+				
+				List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
+				for(int i=0;i<metodologias.size();i++){
+					ItemVO obj = metodologias.get(i);
+					if(obj.getCodigo()==area.getAreMetodologia()){
+						log.setMetodologia(obj.getNombre());
+						break;
+					}
+				}
+				log.setNombre(area.getAreNombre());
+				log.setOrden(String.valueOf(area.getAreOrden()));
+				List<ItemVO> vigencias = planDeEstudiosDAO.getListaVigenciaInst(Long.valueOf(usuVO.getInstId()));
+				for(int i=0;i<vigencias.size();i++){
+					ItemVO obj = vigencias.get(i);
+					if(obj.getCodigo()==area.getAreVigencia()){
+						log.setVigencia(obj.getNombre());
+						break;
+					}
+				}
+				gson = new Gson();
+				jsonString = gson.toJson(log);
+			}catch(Exception e){
+				
+			}	
 			if (area.getFormaEstado().equals("1")) {
 				planDeEstudiosDAO.actualizarArea(area);
+				try{
+					
+					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							63, 2/*actualizacion*/, usuVO.getUsuarioId(), jsonString);
+				}catch(Exception e){
+					
+				}	
 			} else {
 				planDeEstudiosDAO.ingresarArea(area);
+				try{
+					
+					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							63, 1/*ingreso*/, usuVO.getUsuarioId(), jsonString);
+				}catch(Exception e){
+					
+				}	
 			}
 			session.removeAttribute("areaPlanVO");
 			request.setAttribute(ParamsVO.SMS,
