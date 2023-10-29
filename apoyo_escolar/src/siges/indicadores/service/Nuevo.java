@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.python.core.exceptions;
+
 import com.google.gson.Gson;
 
 import articulacion.asigGrupo.dao.AsignacionGrupoDAO;
@@ -376,62 +378,81 @@ public class Nuevo extends Service {
 					.getListaAsignatura(logro.getLogInstitucion(),
 							logro.getLogMetodologia(), logro.getLogVigencia(),
 							logro.getLogGrado()));
+			
+			//insercion de bitacora
+			BitacoraCOM com = new BitacoraCOM();
+			String jsonString="";
+			try{
+				
+				
+				LogLogroDto log = new LogLogroDto();
+				log.setAbreviatura(logro.getLogAbreviatura());
+				
+				List<ItemVO> asignaturas = indicadoresDAO.getListaAsignatura(
+						logro.getLogInstitucion(),
+						logro.getLogMetodologia(),
+						logro.getLogVigencia(), logro.getLogGrado());
+				
+				for(int i=0;i<asignaturas.size();i++){
+					ItemVO obj = asignaturas.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setAsignatura(obj.getNombre());
+						break;
+					}
+				}
+
+				log.setAsignatura(logro.getLogAbreviatura());
+				log.setComentario(logro.getLogDescripcion());
+				log.setGrado(logro.getLogGrado());
+				log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
+				log.setLogro(String.valueOf(logro.getLogCodigo()));
+				
+				List<ItemVO> metodologias = indicadoresDAO
+						.getListaMetodologia(logro.getLogInstitucion());
+
+				for(int i=0;i<metodologias.size();i++){
+					ItemVO obj = metodologias.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setMetodología(obj.getNombre());
+						break;
+					}
+				}
+				
+				
+				log.setOrden(logro.getLogOrden());
+				log.setPeriodoFinal(logro.getLogPeriodoFin());
+				log.setPeriodoInicial(logro.getLogPeriodoIni());
+				log.setTipoCargue("individual");
+				log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());
+				
+				Gson gson = new Gson();
+				jsonString = gson.toJson(log);
+			}catch(Exception e){
+				
+			}
+			
+			
 			if (logro.getFormaEstado().equals("1")) {
 				indicadoresDAO.actualizarLogro(logro);
+				try{
+					com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							1301, 2/*modificacion*/, usuVO.getUsuarioId(), jsonString);
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 			} else {
 				indicadoresDAO.ingresarLogro(logro);
+				try{
+					com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							1301, 1/*registro*/, usuVO.getUsuarioId(), jsonString);
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 			session.removeAttribute("indicadorLogroVO");
 			request.setAttribute(ParamsVO.SMS,
-					"El logro fue ingresado/actualizado satisfactoriamente");
-			//insercion de bitacora
-			BitacoraCOM com = new BitacoraCOM();
+					"El logro fue ingresado/actualizado satisfactoriamente");	
 			
-			LogLogroDto log = new LogLogroDto();
-			log.setAbreviatura(logro.getLogAbreviatura());
-			
-			List<ItemVO> asignaturas = indicadoresDAO.getListaAsignatura(
-					logro.getLogInstitucion(),
-					logro.getLogMetodologia(),
-					logro.getLogVigencia(), logro.getLogGrado());
-			
-			for(int i=0;i<asignaturas.size();i++){
-				ItemVO obj = asignaturas.get(i);
-				if(obj.getCodigo()==logro.getLogMetodologia()){
-					log.setAsignatura(obj.getNombre());
-					break;
-				}
-			}
-
-			log.setAsignatura(logro.getLogAbreviatura());
-			log.setComentario(logro.getLogDescripcion());
-			log.setGrado(logro.getLogGrado());
-			log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
-			log.setLogro(String.valueOf(logro.getLogCodigo()));
-			
-			List<ItemVO> metodologias = indicadoresDAO
-					.getListaMetodologia(logro.getLogInstitucion());
-
-			for(int i=0;i<metodologias.size();i++){
-				ItemVO obj = metodologias.get(i);
-				if(obj.getCodigo()==logro.getLogMetodologia()){
-					log.setMetodología(obj.getNombre());
-					break;
-				}
-			}
-			
-			
-			log.setOrden(logro.getLogOrden());
-			log.setPeriodoFinal(logro.getLogPeriodoFin());
-			log.setPeriodoInicial(logro.getLogPeriodoIni());
-			log.setTipoCargue("individual");
-			log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());
-			
-			Gson gson = new Gson();
-			String jsonString = gson.toJson(log);
-			
-			com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-					1301, 1/*registro*/, usuVO.getUsuarioId(), jsonString);
 		} catch (Exception e) {
 			request.setAttribute(ParamsVO.SMS,
 					"El logro no fue ingresado/actualizado: " + e.getMessage());
@@ -458,6 +479,57 @@ public class Nuevo extends Service {
 			request.setAttribute("listaArea", indicadoresDAO.getListaArea(
 					desc.getDesInstitucion(), desc.getDesMetodologia(),
 					desc.getDesVigencia(), desc.getDesGrado()));
+			
+			//insercion de bitacora
+			try{
+				BitacoraCOM com = new BitacoraCOM();
+				
+				LogLogroDto log = new LogLogroDto();
+				/*log.setAbreviatura(logro.getLogAbreviatura());
+				
+				List<ItemVO> asignaturas = indicadoresDAO.getListaAsignatura(
+						desc.getLogInstitucion(),
+						logro.getLogMetodologia(),
+						logro.getLogVigencia(), logro.getLogGrado());
+				
+				for(int i=0;i<asignaturas.size();i++){
+					ItemVO obj = asignaturas.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setAsignatura(obj.getNombre());
+						break;
+					}
+				}
+
+				log.setAsignatura(logro.getLogAbreviatura());
+				log.setComentario(logro.getLogDescripcion());
+				log.setGrado(logro.getLogGrado());
+				log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
+				log.setLogro(String.valueOf(logro.getLogCodigo()));
+				
+				List<ItemVO> metodologias = indicadoresDAO
+						.getListaMetodologia(logro.getLogInstitucion());
+
+				for(int i=0;i<metodologias.size();i++){
+					ItemVO obj = metodologias.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setMetodología(obj.getNombre());
+						break;
+					}
+				}
+				
+				
+				log.setOrden(logro.getLogOrden());
+				log.setPeriodoFinal(logro.getLogPeriodoFin());
+				log.setPeriodoInicial(logro.getLogPeriodoIni());
+				log.setTipoCargue("individual");
+				log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());*/
+				
+				Gson gson = new Gson();
+				String jsonString = gson.toJson(log);
+			}catch(Exception e){
+				
+			}
+			
 			if (desc.getFormaEstado().equals("1")) {
 				indicadoresDAO.actualizarDescriptor(desc);
 			} else {
