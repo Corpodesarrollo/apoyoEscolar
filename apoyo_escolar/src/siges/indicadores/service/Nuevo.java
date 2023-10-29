@@ -31,6 +31,7 @@ import siges.login.beans.Login;
 import siges.rotacion.beans.forma.GradoVO;
 import siges.util.Acceso;
 import util.BitacoraCOM;
+import util.LogDescriptorDto;
 import util.LogLogroDto;
 
 /**
@@ -338,6 +339,59 @@ public class Nuevo extends Service {
 			logro.setLogCodigo(Long.parseLong(params[1]));
 			logro.setLogVigencia(Integer.parseInt(params[2]));
 			indicadoresDAO.eliminarLogro(logro);
+			//insercion de bitacora
+			BitacoraCOM com = new BitacoraCOM();
+			String jsonString="";
+			try{
+				
+				
+				LogLogroDto log = new LogLogroDto();
+				log.setAbreviatura(logro.getLogAbreviatura());
+				
+				List<ItemVO> asignaturas = indicadoresDAO.getListaAsignatura(
+						logro.getLogInstitucion(),
+						logro.getLogMetodologia(),
+						logro.getLogVigencia(), logro.getLogGrado());
+				
+				for(int i=0;i<asignaturas.size();i++){
+					ItemVO obj = asignaturas.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setAsignatura(obj.getNombre());
+						break;
+					}
+				}
+
+				log.setAsignatura(logro.getLogAbreviatura());
+				log.setComentario(logro.getLogDescripcion());
+				log.setGrado(logro.getLogGrado());
+				log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
+				log.setLogro(String.valueOf(logro.getLogCodigo()));
+				
+				List<ItemVO> metodologias = indicadoresDAO
+						.getListaMetodologia(logro.getLogInstitucion());
+
+				for(int i=0;i<metodologias.size();i++){
+					ItemVO obj = metodologias.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setMetodología(obj.getNombre());
+						break;
+					}
+				}
+				
+				
+				log.setOrden(logro.getLogOrden());
+				log.setPeriodoFinal(logro.getLogPeriodoFin());
+				log.setPeriodoInicial(logro.getLogPeriodoIni());
+				log.setTipoCargue("individual");
+				log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());
+				
+				Gson gson = new Gson();
+				jsonString = gson.toJson(log);
+				com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+						1301, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
+			}catch(Exception e){
+				
+			}
 			session.removeAttribute("indicadorLogroVO");
 			request.setAttribute(ParamsVO.SMS,
 					"El logro fue eliminado satisfactoriamente");
@@ -360,6 +414,71 @@ public class Nuevo extends Service {
 			desc.setDesCodigo(Long.parseLong(params[1]));
 			desc.setDesVigencia(Integer.parseInt(params[2]));
 			indicadoresDAO.eliminarDescriptor(desc);
+			//insercion de bitacora
+			String jsonString="";
+			BitacoraCOM com = new BitacoraCOM();
+			try{
+				
+				
+				LogDescriptorDto log = new LogDescriptorDto();
+				log.setAbreviatura(desc.getDesAbreviatura());
+				
+				List<ItemVO> areas = indicadoresDAO.getListaArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado());
+				
+				for(int i=0;i<areas.size();i++){
+					ItemVO obj = areas.get(i);
+					if(obj.getCodigo()==desc.getDesArea()){
+						log.setArea(obj.getNombre());
+						break;
+					}
+				}
+
+				log.setComentario(desc.getDesDescripcion());
+				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado(), desc.getDesArea());
+				
+				for(int i=0;i<docentes.size();i++){
+					ItemVO obj = docentes.get(i);
+					if(obj.getCodigo()==desc.getDesArea()){
+						log.setDocente(obj.getNombre());
+						break;
+					}
+				}
+				log.setGrado(desc.getDesGrado());
+				log.setIdentificadorRegistro(String.valueOf(desc.getDesCodigo()));
+				
+				List<ItemVO> metodologias = indicadoresDAO
+						.getListaMetodologia(desc.getDesInstitucion());
+
+				for(int i=0;i<metodologias.size();i++){
+					ItemVO obj = metodologias.get(i);
+					if(obj.getCodigo()==desc.getDesMetodologia()){
+						log.setMetodología(obj.getNombre());
+						break;
+					}
+				}
+				
+				log.setOrden(desc.getDesOrden());
+				log.setPeriodoFinal(desc.getDesPeriodoFin());
+				log.setPeriodoInicial(desc.getDesPeriodoIni());
+				List<ItemVO> tDescriptor = indicadoresDAO.getListaTipoDescriptor();
+				
+				for(int i=0;i<tDescriptor.size();i++){
+					ItemVO obj = docentes.get(i);
+					if(obj.getCodigo()==desc.getDesArea()){
+						log.setTipoDescriptor(obj.getNombre());
+						break;
+					}
+				}
+				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
+				
+				Gson gson = new Gson();
+				jsonString = gson.toJson(log);
+				com.insertarBitacora(desc.getDesInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+						1301, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
+			}catch(Exception e){
+				
+			}
+			
 			session.removeAttribute("indicadorDescriptorVO");
 			request.setAttribute(ParamsVO.SMS,
 					"El descriptor fue eliminado satisfactoriamente");
@@ -481,59 +600,84 @@ public class Nuevo extends Service {
 					desc.getDesVigencia(), desc.getDesGrado()));
 			
 			//insercion de bitacora
+			String jsonString="";
+			BitacoraCOM com = new BitacoraCOM();
 			try{
-				BitacoraCOM com = new BitacoraCOM();
 				
-				LogLogroDto log = new LogLogroDto();
-				/*log.setAbreviatura(logro.getLogAbreviatura());
 				
-				List<ItemVO> asignaturas = indicadoresDAO.getListaAsignatura(
-						desc.getLogInstitucion(),
-						logro.getLogMetodologia(),
-						logro.getLogVigencia(), logro.getLogGrado());
+				LogDescriptorDto log = new LogDescriptorDto();
+				log.setAbreviatura(desc.getDesAbreviatura());
 				
-				for(int i=0;i<asignaturas.size();i++){
-					ItemVO obj = asignaturas.get(i);
-					if(obj.getCodigo()==logro.getLogMetodologia()){
-						log.setAsignatura(obj.getNombre());
+				List<ItemVO> areas = indicadoresDAO.getListaArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado());
+				
+				for(int i=0;i<areas.size();i++){
+					ItemVO obj = areas.get(i);
+					if(obj.getCodigo()==desc.getDesArea()){
+						log.setArea(obj.getNombre());
 						break;
 					}
 				}
 
-				log.setAsignatura(logro.getLogAbreviatura());
-				log.setComentario(logro.getLogDescripcion());
-				log.setGrado(logro.getLogGrado());
-				log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
-				log.setLogro(String.valueOf(logro.getLogCodigo()));
+				log.setComentario(desc.getDesDescripcion());
+				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado(), desc.getDesArea());
+				
+				for(int i=0;i<docentes.size();i++){
+					ItemVO obj = docentes.get(i);
+					if(obj.getCodigo()==desc.getDesArea()){
+						log.setDocente(obj.getNombre());
+						break;
+					}
+				}
+				log.setGrado(desc.getDesGrado());
+				log.setIdentificadorRegistro(String.valueOf(desc.getDesCodigo()));
 				
 				List<ItemVO> metodologias = indicadoresDAO
-						.getListaMetodologia(logro.getLogInstitucion());
+						.getListaMetodologia(desc.getDesInstitucion());
 
 				for(int i=0;i<metodologias.size();i++){
 					ItemVO obj = metodologias.get(i);
-					if(obj.getCodigo()==logro.getLogMetodologia()){
+					if(obj.getCodigo()==desc.getDesMetodologia()){
 						log.setMetodología(obj.getNombre());
 						break;
 					}
 				}
 				
+				log.setOrden(desc.getDesOrden());
+				log.setPeriodoFinal(desc.getDesPeriodoFin());
+				log.setPeriodoInicial(desc.getDesPeriodoIni());
+				List<ItemVO> tDescriptor = indicadoresDAO.getListaTipoDescriptor();
 				
-				log.setOrden(logro.getLogOrden());
-				log.setPeriodoFinal(logro.getLogPeriodoFin());
-				log.setPeriodoInicial(logro.getLogPeriodoIni());
-				log.setTipoCargue("individual");
-				log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());*/
+				for(int i=0;i<tDescriptor.size();i++){
+					ItemVO obj = docentes.get(i);
+					if(obj.getCodigo()==desc.getDesArea()){
+						log.setTipoDescriptor(obj.getNombre());
+						break;
+					}
+				}
+				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
 				
 				Gson gson = new Gson();
-				String jsonString = gson.toJson(log);
+				jsonString = gson.toJson(log);
 			}catch(Exception e){
 				
 			}
 			
 			if (desc.getFormaEstado().equals("1")) {
 				indicadoresDAO.actualizarDescriptor(desc);
+				try{
+					com.insertarBitacora(desc.getDesInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							1301, 2/*modificacion*/, usuVO.getUsuarioId(), jsonString);
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 			} else {
 				indicadoresDAO.ingresarDescriptor(desc);
+				try{
+					com.insertarBitacora(desc.getDesInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							1301, 1/*insercion*/, usuVO.getUsuarioId(), jsonString);
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 			session.removeAttribute("indicadorDescriptorVO");
 			request.setAttribute(ParamsVO.SMS,
