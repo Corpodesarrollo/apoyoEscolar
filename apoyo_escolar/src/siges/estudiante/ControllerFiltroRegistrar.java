@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+import com.google.gson.Gson;
 
 import siges.dao.Cursor;
 import siges.dao.Ruta;
@@ -31,6 +31,10 @@ import siges.io.Zip;
 import siges.login.beans.Login;
 import siges.util.Logger;
 import siges.util.beans.ReporteVO;
+import util.BitacoraCOM;
+import util.LogAccionDto;
+import util.LogDetalleAccionEstudianteDto;
+import util.LogEstudianteDto;
 
 /**
  * Nombre: ControllerFiltroSave<BR>
@@ -131,16 +135,55 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 				msgResultado = obj.getValue();
 			}
 			if(idResultado != null){
+				int tipoAccion = 1;
 				switch(String.valueOf(idResultado)){
 					case "0": mensaje = msgResultado; break;
 					case "1": 
 						resultado = estudianteDAO.updateGrupoAlumno(filtro);
 						mensaje = " El estudiante fue actualizado satisfactoriamente.";
+						tipoAccion=1;
 						break;
 					case "2": 
 						resultado = estudianteDAO.registrarAlumno(filtro);
 						mensaje = " El estudiante fue registrado satisfactoriamente.";
+						tipoAccion=2;
 						break;
+				}
+				try
+				{
+					LogEstudianteDto log = new LogEstudianteDto();
+					log.setNumeroIdentificacion(filtro.getId());
+					log.setEstado("Activo");
+					LogAccionDto logAccion= new LogAccionDto();
+					logAccion.setFechaExpedicion(basica.getEstfechanac().toString());
+					logAccion.setDepartamentoExpedicion(basica.getEstexpdoccoddep());
+					logAccion.setCorreoInstitucional(basica.getEstlugnaccodmun());
+					logAccion.setDepartamentoNacimiento(basica.getEstlugnaccoddep());
+					logAccion.setDepartamentoNacimiento(basica.getEstlugnaccoddep());
+					logAccion.setTelefono1(basica.getEsttelefono());
+					logAccion.setTelefono2(basica.getEsttelefono());
+					logAccion.setDireccionResidencia(basica.getEstdireccion());
+					LogDetalleAccionEstudianteDto detalle= new LogDetalleAccionEstudianteDto();
+					log.setLogAccion(detalle);
+					log.setNombreInstitucion(login.getInst());
+					log.setSede(filtro.getSede());
+					log.setJornada(filtro.getJornada());
+					log.setGrado(filtro.getGrado());
+					log.setGrupo(filtro.getGrupo());
+					BitacoraCOM.insertarBitacora(
+							Long.parseLong(login.getInstId()), 
+							Integer.parseInt(login.getJornadaId()),
+							2 ,
+							login.getPerfil(), 
+							Integer.parseInt(login.getSede()), 
+							0, 
+							tipoAccion, 
+							login.getUsuarioId(), 
+							new Gson().toJson(log)
+							);
+				}catch(Exception e){
+					e.printStackTrace();
+					System.out.println("Error " + this + ":" + e.toString());
 				}
 				request.setAttribute("mensaje",mensaje);
 			}else{

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import siges.dao.Cursor;
 import siges.dao.Util;
 import siges.estudiante.beans.Convivencia;
@@ -19,6 +21,7 @@ import siges.login.beans.Login;
 import siges.personal.beans.ParamsVO;
 import siges.personal.beans.Personal;
 import siges.personal.dao.PersonalDAO;
+import util.BitacoraCOM;
 
 /**
  * Nombre: ControllerFiltroEdit Descripcion: Controla el formulario de nuevo
@@ -78,9 +81,9 @@ public class ControllerFiltroEdit extends HttpServlet {
 			request.setAttribute("mensaje", mensaje);
 			return er;
 		}
+		Collection list;
 		try {
 			request.getSession().removeAttribute("editar");
-			Collection list;
 			Object[] o;
 			String s;
 			int z;
@@ -116,6 +119,10 @@ public class ControllerFiltroEdit extends HttpServlet {
 		// System.out.println("Entra formualrio login.getPerfil()" +
 		// login.getPerfil());
 		asignarPersona(request);
+		BitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+				Integer.parseInt(login.getJornadaId()), 2, 
+				login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+				121, 4/*Consulta Generada*/, login.getUsuarioId(), new Gson().toJson(list));
 		return sig2;
 	}
 

@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import siges.dao.Cursor;
 import siges.dao.Ruta;
 import siges.dao.Ruta2;
@@ -26,6 +28,8 @@ import siges.estudiante.dao.EstudianteDAO;
 import siges.io.Zip;
 import siges.login.beans.Login;
 import siges.util.beans.ReporteVO;
+import util.BitacoraCOM;
+import util.LogEstudianteDto;
 
 /**
  * Nombre: ControllerFiltroSave<BR>
@@ -130,6 +134,32 @@ public class ControllerFiltroSave extends HttpServlet {
 					setMensaje(estudianteDAO.getMensaje());
 					request.setAttribute("mensaje", mensaje);
 					return er;
+				}
+				try
+				{
+					Basica basica = estudianteDAO.asignarBasica(id, login);
+					LogEstudianteDto log = new LogEstudianteDto();
+					log.setNumeroIdentificacion(basica.getEstnumdoc());
+					log.setEstado("Activo");
+					log.setNombreInstitucion(login.getInst());
+					log.setSede(basica.getEstsede());
+					log.setJornada(basica.getEstjor());
+					log.setGrado(basica.getEstgra());
+					log.setGrupo(basica.getEstgrupo());
+					BitacoraCOM.insertarBitacora(
+							Long.parseLong(login.getInstId()), 
+							Integer.parseInt(login.getJornadaId()),
+							2 ,
+							login.getPerfil(), 
+							Integer.parseInt(login.getSede()), 
+							0, 
+							3, 
+							login.getUsuarioId(), 
+							new Gson().toJson(log)
+							);
+				}catch(Exception e){
+					e.printStackTrace();
+					System.out.println("Error " + this + ":" + e.toString());
 				}
 				boton = "";
 			}

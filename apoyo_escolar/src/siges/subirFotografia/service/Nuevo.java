@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +34,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
+import com.google.gson.Gson;
+
+import jxl.write.DateTime;
 import siges.common.service.Service;
 import siges.dao.Cursor;
 import siges.dao.OperacionesGenerales;
@@ -37,6 +45,8 @@ import siges.subirFotografia.dao.SubirFotografiaDAO;
 import siges.subirFotografia.io.SubirFotografiaIO;
 import siges.subirFotografia.vo.ParamsVO;
 import siges.subirFotografia.vo.SubirFotografiaVO;
+import util.BitacoraCOM;
+import util.LogPersonalDto;
 import siges.login.beans.Login;
 import siges.estudiante.beans.Basica;
 import siges.exceptions.InternalErrorException;
@@ -44,6 +54,7 @@ import siges.personal.beans.Personal;
 import java.util.ResourceBundle;
 import java.io.ByteArrayInputStream;
 import java.nio.file.StandardCopyOption;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 /**
  * 24/09/2008 
@@ -295,6 +306,29 @@ public class Nuevo extends Service{
 							subirFotografiaVO.setAyuArchivo(item.get());
 							subirFotografiaVO.setEstCodigo(Long.parseLong(personal.getPernumdocum()));
 							subirFotografiaDAO.actualizarFotoPersonal(subirFotografiaVO,personal.getPertipdocum());
+							//bitacora
+							try
+							{
+								LogPersonalDto log = new LogPersonalDto();
+								byte[] encoded = Base64.getEncoder().encode(item.get());
+							    String encodedString = new String(encoded,StandardCharsets.US_ASCII);
+								log.setFoto(encodedString);;
+								log.setFecha(LocalDateTime.now().toString());
+								BitacoraCOM.insertarBitacora(
+										Long.parseLong(usuVO.getInstId()), 
+										Integer.parseInt(usuVO.getJornadaId()),
+										2 ,
+										usuVO.getPerfil(), 
+										Integer.parseInt(usuVO.getSede()), 
+										20001, 
+										2, 
+										usuVO.getUsuarioId(), 
+										new Gson().toJson(log)
+										);
+							}catch(Exception e){
+								e.printStackTrace();
+								System.out.println("Error " + this + ":" + e.toString());
+							}
 						}
 					}
 				}

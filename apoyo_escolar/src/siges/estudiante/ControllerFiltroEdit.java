@@ -10,11 +10,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.google.gson.Gson;
 
 import siges.dao.Cursor;
 import siges.estudiante.beans.Basica;
 import siges.estudiante.dao.EstudianteDAO;
 import siges.login.beans.Login;
+import siges.util.Logger;
+import util.BitacoraCOM;
 
 /**
  * Nombre: ControllerFiltroEdit<BR>
@@ -100,6 +105,22 @@ public class ControllerFiltroEdit extends HttpServlet {
 			request.setAttribute("filtroMetodologiaF",estudianteDAO.getFiltro(rb.getString("listaMetodologiaInstitucion"), list));
 			request.setAttribute("filtroGradoF2", estudianteDAO.getFiltro(rb.getString("filtroSedeJornadaGradoInstitucion2"), list));
 			request.setAttribute("filtroGrupoF", estudianteDAO.getFiltro(rb.getString("filtroSedeJornadaGradoGrupoInstitucion"),list));
+			Gson gson = new Gson();
+			String jsonString = gson.toJson(list);
+			try {
+				HttpSession session = request.getSession();
+				Login usuVO = (Login) session.getAttribute("login");
+				
+				BitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+										Integer.parseInt(usuVO.getJornadaId()), 2, 
+										usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+										30, 4/*Consulta Generada*/, usuVO.getUsuarioId(), jsonString);
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println("Error " + this + ":" + e.toString());
+				Logger.print(login.getUsuarioId(), "HOJAS DE VIDA (Bitacora), módulo de Adicionar Estudiante. ",
+						7, 1, this.toString());
+			}
 		} catch (Exception e) {
 			System.out.println("Error " + this + ":" + e.toString());
 			throw new ServletException(e);

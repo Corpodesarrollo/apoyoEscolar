@@ -1,7 +1,10 @@
 package siges.personal;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -15,6 +18,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.validator.GenericValidator;
 
+import com.google.gson.Gson;
+
 import siges.dao.Cursor;
 import siges.estudiante.beans.AsistenciaVO;
 import siges.estudiante.beans.Convivencia;
@@ -25,6 +30,9 @@ import siges.personal.beans.FormacionVO;
 import siges.personal.beans.LaboralVO;
 import siges.personal.beans.Personal;
 import siges.personal.dao.PersonalDAO;
+import util.BitacoraCOM;
+import util.LogPersonalCargaDto;
+import util.LogPersonalDto;
 
 /**
  * Nombre: Descripcion: Controla la peticion de insertar un nuevo registro
@@ -214,7 +222,7 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 					if (personal2.getPernumdocum() != null && peremail != null) {
 						updateEmail(request, personal2.getPernumdocum(),
-								peremail);
+								peremail,login);
 						request.setAttribute("mensaje", getMensaje());
 						request.setAttribute("mensaje",
 								"La información fue ingresada satisfactoriamente");
@@ -565,7 +573,7 @@ public class ControllerNuevoSave extends HttpServlet {
 			Iterator iteradorGrados = listaGrados.iterator();
 			Iterator iteradorAsignaturas = listaAsignaturas.iterator();
 			
-			
+			List<LogPersonalCargaDto> lstCargaDto= new ArrayList<>();
 			while(iteradorAsignaturas.hasNext()){
 				
 				Object[] asignatura = (Object[]) iteradorAsignaturas.next();
@@ -586,15 +594,49 @@ public class ControllerNuevoSave extends HttpServlet {
 							cargaAsignaturaGrado[GRADO]= grado[0].toString();
 							cargaAsignaturaGrado[CARGA]= parametro;
 							listaCargaAsignaturaGrado.add(cargaAsignaturaGrado);
+							LogPersonalCargaDto cargaDto= new LogPersonalCargaDto();
+							cargaDto.setInstitucion(login.getInst());
+							cargaDto.setDocente(carga.getRotdagdocente().trim());
+							cargaDto.setAsignatura(asignatura[0].toString());
+							cargaDto.setGrado(grado[0].toString());
+							cargaDto.setHoras(parametro.toString());
+							
+							lstCargaDto.add(cargaDto);							
 						}
 						else{
 							boolean eliminaDatos = personalDAO.eliminarGruposGrado(Long.parseLong(login.getInstId()),Integer.parseInt(carga.getRotdagsede().trim()), Integer.parseInt(carga.getRotdagjornada().trim()),Integer.parseInt(grado[0].toString()),Long.parseLong(asignatura[0].toString()), Long.parseLong(carga.getRotdagdocente().trim()), carga.getRotdagVigencia());
 							String llaveCompuesta = Long.parseLong(login.getInstId())+"-"+Integer.parseInt(carga.getRotdagsede().trim())+"-"+Integer.parseInt(carga.getRotdagjornada().trim())+"-"+Integer.parseInt(grado[0].toString())+"-"+Long.parseLong(asignatura[0].toString());
 							if (eliminaDatos) {personalDAO.insetrarMensajeRegistroBorrado(llaveCompuesta, "borrado desde la funcion InsertarCarga");}
+							try
+							{
+								LogPersonalCargaDto cargaDto= new LogPersonalCargaDto();
+								cargaDto.setInstitucion(login.getInst());
+								cargaDto.setDocente(carga.getRotdagdocente().trim());
+								cargaDto.setAsignatura(asignatura[0].toString());
+								cargaDto.setGrado(grado[0].toString());
+								cargaDto.setHoras(parametro.toString());								
+								BitacoraCOM.insertarBitacora(
+										Long.parseLong(login.getInstId()), 
+										Integer.parseInt(login.getJornadaId()),
+										2 ,
+										login.getPerfil(), 
+										Integer.parseInt(login.getSede()), 
+										20002, 
+										3, 
+										login.getUsuarioId(), 
+										new Gson().toJson(cargaDto)
+										);
+							}catch(Exception e){
+								e.printStackTrace();
+								System.out.println("Error " + this + ":" + e.toString());
+							}
 						}
 					}
 					
 				}
+				
+				
+				
 				if(listaCargaAsignaturaGrado != null && listaCargaAsignaturaGrado.size()>0){
 					Iterator iteradorListaCargaAsignaturaGrado = listaCargaAsignaturaGrado.iterator();
 					String[] vectorGrados = new String[listaCargaAsignaturaGrado.size()];
@@ -619,6 +661,23 @@ public class ControllerNuevoSave extends HttpServlet {
 					setMensaje(personalDAO.getMensaje());
 					return;
 				}
+			}
+			try
+			{
+				BitacoraCOM.insertarBitacora(
+						Long.parseLong(login.getInstId()), 
+						Integer.parseInt(login.getJornadaId()),
+						2 ,
+						login.getPerfil(), 
+						Integer.parseInt(login.getSede()), 
+						20003, 
+						1, 
+						login.getUsuarioId(), 
+						new Gson().toJson(lstCargaDto)
+						);
+			}catch(Exception e){
+				e.printStackTrace();
+				System.out.println("Error " + this + ":" + e.toString());
 			}
 			request.removeAttribute("guia");
 			setMensaje("La información fue ingresada satisfactoriamente");
@@ -930,11 +989,32 @@ public class ControllerNuevoSave extends HttpServlet {
 	}
 
 	public void updateEmail(HttpServletRequest request, String pernumdoc,
-			String peremail) throws ServletException, IOException {
+			String peremail,Login login) throws ServletException, IOException {
 		System.out.println("updateEmail");
 		if (!personalDAO.updatePersonal(pernumdoc, peremail)) {
 			setMensaje(personalDAO.getMensaje());
 			return;
+		}
+		//bitacora
+		try
+		{
+			LogPersonalDto log = new LogPersonalDto();
+			log.setCorreo(peremail);
+			log.setFecha(LocalDateTime.now().toString());
+			BitacoraCOM.insertarBitacora(
+					Long.parseLong(login.getInstId()), 
+					Integer.parseInt(login.getJornadaId()),
+					2 ,
+					login.getPerfil(), 
+					Integer.parseInt(login.getSede()), 
+					20002, 
+					2, 
+					login.getUsuarioId(), 
+					new Gson().toJson(log)
+					);
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println("Error " + this + ":" + e.toString());
 		}
 		setMensaje("La información fue ingresada satisfactoriamente");
 	}

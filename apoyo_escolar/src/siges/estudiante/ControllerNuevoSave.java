@@ -8,6 +8,8 @@ package siges.estudiante;
 */
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +17,18 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import siges.dao.Cursor;
 import siges.login.beans.Login;
+import util.BitacoraCOM;
+import util.LogAccionDto;
+import util.LogDetalleAccionEstudianteDto;
+import util.LogEstudianteDto;
+import util.LogInformacionConvivenciaDto;
+import util.LogInformacionMeritosDto;
+import util.LogSeccionFamiliarDto;
+import util.LogSeccionSaludDto;
 import siges.estudiante.beans.Salud;
 import siges.estudiante.beans.Basica;
 import siges.estudiante.beans.Familiar;
@@ -174,7 +186,7 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 					
 					if (familiar.getEstado().equals("1")) {
-						actualizarRegistroFamiliar(request, familiar, familiar2);
+						actualizarRegistroFamiliar(request, familiar, familiar2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -189,13 +201,13 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 					
 					if (salud.getSalestado().equals("")) {
-						insertarRegistroSalud(request, salud, basica2);
+						insertarRegistroSalud(request, salud, basica2,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					
 					if (salud.getSalestado().equals("1")) {
-						actualizarRegistroSalud(request, salud, salud2, basica2);
+						actualizarRegistroSalud(request, salud, salud2, basica2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -216,7 +228,7 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 					
 					if (convivencia.getEstado().equals("1")) {
-						actualizarRegistroConvivencia(request, convivencia,	convivencia2);
+						actualizarRegistroConvivencia(request, convivencia,	convivencia2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -231,13 +243,13 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 					
 					if (academicaVO.getAcaEstado().equals("")) {
-						insertarRegistroAcademica(request, academicaVO, basica2);
+						insertarRegistroAcademica(request, academicaVO, basica2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					
 					if (academicaVO.getAcaEstado().equals("1")) {
-						actualizarRegistroAcademica(request, academicaVO, academicaVO2);
+						actualizarRegistroAcademica(request, academicaVO, academicaVO2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -252,13 +264,13 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 					
 					if (asistenciaVO.getAsiEstado().equals("")) {
-						insertarRegistroAsistencia(request, asistenciaVO, basica2);
+						insertarRegistroAsistencia(request, asistenciaVO, basica2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					
 					if (asistenciaVO.getAsiEstado().equals("1")) {
-						actualizarRegistroAsistencia(request, asistenciaVO,	asistenciaVO2);
+						actualizarRegistroAsistencia(request, asistenciaVO,	asistenciaVO2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -280,7 +292,7 @@ public class ControllerNuevoSave extends HttpServlet {
 					
 					if (atencion.getEstado().equals("1")) {
 						atencion.setUsuario(login.getUsuarioId());
-						actualizarRegistroAtencion(request, atencion, atencion2);
+						actualizarRegistroAtencion(request, atencion, atencion2 ,login);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -310,7 +322,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	
 	
 	public void actualizarRegistroAcademica(HttpServletRequest request,
-			AcademicaVO academicaVO, AcademicaVO academicaVO2)
+			AcademicaVO academicaVO, AcademicaVO academicaVO2,Login login)
 			throws ServletException, IOException {
 		if (compararFichasAcademica(academicaVO, academicaVO2)) {
 			setMensaje("La ficha seleccionada para guardar cambios no ha sido modificada");
@@ -326,10 +338,11 @@ public class ControllerNuevoSave extends HttpServlet {
 		setMensaje("La información fue actualizada satisfactoriamente");
 		request.getSession().removeAttribute("academicaVO");
 		request.getSession().removeAttribute("academicaVO2");
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(academicaVO2));
 	}
 
 	public void actualizarRegistroAsistencia(HttpServletRequest request,
-			AsistenciaVO asistenciaVO, AsistenciaVO asistenciaVO2)
+			AsistenciaVO asistenciaVO, AsistenciaVO asistenciaVO2,Login login)
 			throws ServletException, IOException {
 		if (compararFichasAsistencia(asistenciaVO, asistenciaVO2)) {
 			setMensaje("La ficha seleccionada para guardar cambios no ha sido modificada");
@@ -345,10 +358,11 @@ public class ControllerNuevoSave extends HttpServlet {
 		setMensaje("La información fue actualizada satisfactoriamente");
 		request.getSession().removeAttribute("asistenciaVO");
 		request.getSession().removeAttribute("asistenciaVO2");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(asistenciaVO2));
 	}
 
 	public void insertarRegistroAcademica(HttpServletRequest request,
-			AcademicaVO academicaVO, Basica basica2) throws ServletException,
+			AcademicaVO academicaVO, Basica basica2,Login login) throws ServletException,
 			IOException {
 		academicaVO.setAcaEstudiante(basica2.getEstcodigo());
 		if (!estudianteDAO.insertar(academicaVO)) {
@@ -358,10 +372,12 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().removeAttribute("academicaVO");
 		request.getSession().removeAttribute("academicaVO2");
 		setMensaje("La información fue ingresada satisfactoriamente");
+		LogInformacionMeritosDto logMeritos = new LogInformacionMeritosDto();
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(academicaVO));
 	}
 
 	public void insertarRegistroAsistencia(HttpServletRequest request,
-			AsistenciaVO asistenciaVO, Basica basica2) throws ServletException,
+			AsistenciaVO asistenciaVO, Basica basica2, Login login) throws ServletException,
 			IOException {
 		asistenciaVO.setAsiTipoPer("1");
 		asistenciaVO.setAsiCodPer(basica2.getEstcodigo());
@@ -372,6 +388,7 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().removeAttribute("asistenciaVO");
 		request.getSession().removeAttribute("asistenciaVO2");
 		setMensaje("La información fue ingresada satisfactoriamente");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(asistenciaVO));
 	}
 
 	public void insertarRegistroConvivencia(HttpServletRequest request,
@@ -390,6 +407,14 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().removeAttribute("nuevoConvivencia");
 		request.getSession().removeAttribute("nuevoConvivencia2");
 		setMensaje("La información fue ingresada satisfactoriamente");
+		LogInformacionConvivenciaDto logConvivenvia= new LogInformacionConvivenciaDto();
+		logConvivenvia.setFechaOcurrencia(convivencia.getConfecha());
+		logConvivenvia.setPeriodo(convivencia.getPeriodo());
+		logConvivenvia.setTipoDeSituacion(convivencia.getIdTipo());
+		logConvivenvia.setTipoDeEvento(convivencia.getCondescripcion());
+		logConvivenvia.setLugar("");
+		logConvivenvia.setQuiénInformoDelEvento("");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logConvivenvia));
 	}
 
 	/**
@@ -458,10 +483,27 @@ public class ControllerNuevoSave extends HttpServlet {
 		}
 		setMensaje("La información fue actualizada satisfactoriamente");
 		recargarBeansBasica(request, basica);
+		LogEstudianteDto logEstudiante= new LogEstudianteDto();
+		logEstudiante.setNombreCompleto(basica2.getEstnombre1()+" "+basica2.getEstnombre2()+" "+basica2.getEstapellido1()+" "+basica2.getEstapellido2());
+		logEstudiante.setNumeroIdentificacion(basica2.getEstnumdoc());
+		logEstudiante.setTipodocumento(basica2.getEsttipodoc());
+		logEstudiante.setEstado(basica2.getEstado());
+		LogDetalleAccionEstudianteDto logDetalle = new LogDetalleAccionEstudianteDto();
+		LogAccionDto logAccion= new LogAccionDto();
+		logAccion.setDepartamentoExpedicion(basica2.getEstexpdoccoddep());
+		logAccion.setMunicipioExpedicion(basica2.getEstlugnaccodmun());
+		logAccion.setDepartamentoNacimiento(basica2.getEstlugnaccoddep());
+		logAccion.setMunicipioNacieminto(basica2.getEstlugnaccodmun());
+		logAccion.setTelefono1(basica2.getEsttelefono());
+		logAccion.setTelefono2(basica2.getEsttelefono());
+		logAccion.setDireccionResidencia(basica2.getEstdireccion());
+		logDetalle.setLogAccion(logAccion);
+		logEstudiante.setLogAccion(logDetalle);	
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(logEstudiante));
 	}
 
 	public void actualizarRegistroFamiliar(HttpServletRequest request,
-			Familiar familiar, Familiar familiar2) throws ServletException,
+			Familiar familiar, Familiar familiar2,Login login) throws ServletException,
 			IOException {
 		if (compararFichasFamiliar(familiar, familiar2)) {
 			setMensaje("La ficha seleccionada para guardar cambios no ha sido modificada");
@@ -474,10 +516,43 @@ public class ControllerNuevoSave extends HttpServlet {
 		}
 		setMensaje("La información fue actualizada satisfactoriamente");
 		recargarBeansFamiliar(request, familiar);
+		List<LogSeccionFamiliarDto> lstLogFAmiliar= new ArrayList<>();
+		LogSeccionFamiliarDto logFamiliar;
+		if(familiar2.getMadre()!=""){
+			logFamiliar= new LogSeccionFamiliarDto();
+			logFamiliar.setSeccionParentesco(familiar2.getMadre());
+			logFamiliar.setPrimerNombre(familiar.getFamnommadre());
+			logFamiliar.setTipoDocumento(familiar2.getFamtipdocmadre());
+			logFamiliar.setNoDeIdentificacion(familiar2.getFamnumdocmadre());
+			logFamiliar.setEsAcudiente((familiar2.getFamnumdocacudi()==familiar2.getFamnumdocmadre())?"SI":"NO");
+			logFamiliar.setTeléfono(familiar.getFamtelmadre());
+			lstLogFAmiliar.add(logFamiliar);		
+		}
+		
+		if(familiar2.getPadre()!=""){
+			logFamiliar= new LogSeccionFamiliarDto();
+			logFamiliar.setSeccionParentesco(familiar2.getPadre());
+			logFamiliar.setPrimerNombre(familiar.getFamnompadre());
+			logFamiliar.setTipoDocumento(familiar2.getFamtipdocpadre());
+			logFamiliar.setNoDeIdentificacion(familiar2.getFamnumdocpadre());
+			logFamiliar.setTeléfono(familiar.getFamtelpadre());
+			logFamiliar.setEsAcudiente((familiar2.getFamnumdocacudi()==familiar2.getFamnumdocpadre())?"SI":"NO");
+			lstLogFAmiliar.add(logFamiliar);
+		}
+		if(familiar2.getFamnomacudi()!="" && (familiar2.getFamnumdocacudi()!=familiar2.getFamnumdocpadre() && familiar2.getFamnumdocacudi()==familiar2.getFamnumdocmadre())){
+			logFamiliar= new LogSeccionFamiliarDto();
+			logFamiliar.setPrimerNombre(familiar.getFamnomacudi());
+			logFamiliar.setTipoDocumento(familiar2.getFamtipdocacudi());
+			logFamiliar.setNoDeIdentificacion(familiar2.getFamnumdocacudi());
+			logFamiliar.setTeléfono(familiar.getFamtelacudi());
+			logFamiliar.setEsAcudiente("SI");
+			lstLogFAmiliar.add(logFamiliar);		
+		}
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(lstLogFAmiliar));
 	}
 
 	public void actualizarRegistroSalud(HttpServletRequest request,
-			Salud salud, Salud salud2, Basica basica2) throws ServletException,
+			Salud salud, Salud salud2, Basica basica2,Login login) throws ServletException,
 			IOException {
 		if (compararFichasSalud(salud, salud2)) {
 			setMensaje("La ficha seleccionada para guardar cambios no ha sido modificada");
@@ -491,10 +566,20 @@ public class ControllerNuevoSave extends HttpServlet {
 		}
 		setMensaje("La información fue actualizada satisfactoriamente");
 		recargarBeansSalud(request, salud);
+		
+		LogSeccionSaludDto logSalud = new LogSeccionSaludDto();
+		logSalud.setTipoDeSangre(salud2.getSaltiposangre());
+		logSalud.setTalla("0");
+		logSalud.setPeso("0");
+		logSalud.setDiscapacidad("--");
+		logSalud.setAlergia(salud2.getSalalergias());
+		logSalud.setEnfermedades(salud2.getSalenfermedades());
+		logSalud.setMedicamentos(salud2.getSalmedicamentos());
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logSalud));
 	}
 
 	public void actualizarRegistroAtencion(HttpServletRequest request,
-			AtencionEspecial atencion, AtencionEspecial atencion2)
+			AtencionEspecial atencion, AtencionEspecial atencion2,Login login)
 			throws ServletException, IOException {
 		if (compararFichasAtencion(atencion, atencion2)) {
 			setMensaje("La ficha seleccionada para guardar cambios no ha sido modificada");
@@ -511,10 +596,11 @@ public class ControllerNuevoSave extends HttpServlet {
 		// recargarBeans(request);
 		request.getSession().removeAttribute("nuevoAtencion");
 		request.getSession().removeAttribute("nuevoAtencion2");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(atencion2));
 	}
 
 	public void actualizarRegistroConvivencia(HttpServletRequest request,
-			Convivencia convivencia, Convivencia convivencia2)
+			Convivencia convivencia, Convivencia convivencia2,Login login)
 			throws ServletException, IOException {
 		if (compararFichasConvivencia(convivencia, convivencia2)) {
 			setMensaje("La ficha seleccionada para guardar cambios no ha sido modificada");
@@ -531,6 +617,14 @@ public class ControllerNuevoSave extends HttpServlet {
 		// recargarBeans(request);
 		request.getSession().removeAttribute("nuevoConvivencia");
 		request.getSession().removeAttribute("nuevoConvivencia2");
+		LogInformacionConvivenciaDto logConvivenvia= new LogInformacionConvivenciaDto();
+		logConvivenvia.setFechaOcurrencia(convivencia2.getConfecha());
+		logConvivenvia.setPeriodo(convivencia2.getPeriodo());
+		logConvivenvia.setTipoDeSituacion(convivencia2.getIdTipo());
+		logConvivenvia.setTipoDeEvento(convivencia2.getCondescripcion());
+		logConvivenvia.setLugar("");
+		logConvivenvia.setQuiénInformoDelEvento("");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logConvivenvia));
 	}
 
 	/**
@@ -562,6 +656,23 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().setAttribute("nuevoBasica2",
 				(Basica) basica.clone());
 		setMensaje("La información fue ingresada satisfactoriamente");
+		LogEstudianteDto logEstudiante= new LogEstudianteDto();
+		logEstudiante.setNombreCompleto(basica.getEstnombre1()+" "+basica.getEstnombre2()+" "+basica.getEstapellido1()+" "+basica.getEstapellido2());
+		logEstudiante.setNumeroIdentificacion(basica.getEstnumdoc());
+		logEstudiante.setTipodocumento(basica.getEsttipodoc());
+		logEstudiante.setEstado(basica.getEstado());
+		LogDetalleAccionEstudianteDto logDetalle = new LogDetalleAccionEstudianteDto();
+		LogAccionDto logAccion= new LogAccionDto();
+		logAccion.setDepartamentoExpedicion(basica.getEstexpdoccoddep());
+		logAccion.setMunicipioExpedicion(basica.getEstlugnaccodmun());
+		logAccion.setDepartamentoNacimiento(basica.getEstlugnaccoddep());
+		logAccion.setMunicipioNacieminto(basica.getEstlugnaccodmun());
+		logAccion.setTelefono1(basica.getEsttelefono());
+		logAccion.setTelefono2(basica.getEsttelefono());
+		logAccion.setDireccionResidencia(basica.getEstdireccion());
+		logDetalle.setLogAccion(logAccion);
+		logEstudiante.setLogAccion(logDetalle);		
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logEstudiante));
 	}
 	
 	
@@ -599,7 +710,39 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().setAttribute("nuevoFamiliar2",	(Familiar) familiar.clone());
 		setMensaje("La información fue ingresada satisfactoriamente");
 		setMensaje("El código de la familia ingresada es " + familiar.getFamcodigo());
+		List<LogSeccionFamiliarDto> lstLogFAmiliar= new ArrayList<>();
+		LogSeccionFamiliarDto logFamiliar;
+		if(familiar.getMadre()!=""){
+			logFamiliar= new LogSeccionFamiliarDto();
+			logFamiliar.setSeccionParentesco(familiar.getMadre());
+			logFamiliar.setPrimerNombre(familiar.getFamnommadre());
+			logFamiliar.setTipoDocumento(familiar.getFamtipdocmadre());
+			logFamiliar.setNoDeIdentificacion(familiar.getFamnumdocmadre());
+			logFamiliar.setEsAcudiente((familiar.getFamnumdocacudi()==familiar.getFamnumdocmadre())?"SI":"NO");
+			logFamiliar.setTeléfono(familiar.getFamtelmadre());
+			lstLogFAmiliar.add(logFamiliar);		
+		}
 		
+		if(familiar.getPadre()!=""){
+			logFamiliar= new LogSeccionFamiliarDto();
+			logFamiliar.setSeccionParentesco(familiar.getPadre());
+			logFamiliar.setPrimerNombre(familiar.getFamnompadre());
+			logFamiliar.setTipoDocumento(familiar.getFamtipdocpadre());
+			logFamiliar.setNoDeIdentificacion(familiar.getFamnumdocpadre());
+			logFamiliar.setTeléfono(familiar.getFamtelpadre());
+			logFamiliar.setEsAcudiente((familiar.getFamnumdocacudi()==familiar.getFamnumdocpadre())?"SI":"NO");
+			lstLogFAmiliar.add(logFamiliar);
+		}
+		if(familiar.getFamnomacudi()!="" && (familiar.getFamnumdocacudi()!=familiar.getFamnumdocpadre() && familiar.getFamnumdocacudi()==familiar.getFamnumdocmadre())){
+			logFamiliar= new LogSeccionFamiliarDto();
+			logFamiliar.setPrimerNombre(familiar.getFamnomacudi());
+			logFamiliar.setTipoDocumento(familiar.getFamtipdocacudi());
+			logFamiliar.setNoDeIdentificacion(familiar.getFamnumdocacudi());
+			logFamiliar.setTeléfono(familiar.getFamtelacudi());
+			logFamiliar.setEsAcudiente("SI");
+			lstLogFAmiliar.add(logFamiliar);		
+		}
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(lstLogFAmiliar));
 	}
 	
 	
@@ -607,7 +750,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	
 	
 	public void insertarRegistroSalud(HttpServletRequest request, Salud salud,
-			Basica basica2) throws ServletException, IOException {
+			Basica basica2,Login login) throws ServletException, IOException {
 		String resultado;
 		String[] resul;
 		salud.setSaltipoperso("1");// tipo estudiante
@@ -619,6 +762,15 @@ public class ControllerNuevoSave extends HttpServlet {
 		salud.setSalestado("1");
 		request.getSession().setAttribute("nuevoSalud2", (Salud) salud.clone());
 		setMensaje("La información fue ingresada satisfactoriamente");
+		LogSeccionSaludDto logSalud = new LogSeccionSaludDto();
+		logSalud.setTipoDeSangre(salud.getSaltiposangre());
+		logSalud.setTalla("0");
+		logSalud.setPeso("0");
+		logSalud.setDiscapacidad("--");
+		logSalud.setAlergia(salud.getSalalergias());
+		logSalud.setEnfermedades(salud.getSalenfermedades());
+		logSalud.setMedicamentos(salud.getSalmedicamentos());
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logSalud));
 	}
 
 	public void insertarRegistroAtencion(HttpServletRequest request,
@@ -634,9 +786,29 @@ public class ControllerNuevoSave extends HttpServlet {
 		}
 		request.getSession().removeAttribute("nuevoAtencion");
 		request.getSession().removeAttribute("nuevoAtencion2");
-		setMensaje("La información fue ingresada satisfactoriamente");
+		setMensaje("La información fue ingresada satisfactoriamente");	
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(atencion));
 	}
 
+	private void insertarBitacora(Login usuVO, int modulo,int submodulo, int tipoLog,String jsonString){
+		try {
+			BitacoraCOM.insertarBitacora(
+					Long.parseLong(usuVO.getInstId()),
+					Integer.parseInt( usuVO.getJornadaId()), 
+					submodulo, 
+					usuVO.getPerfil(), 
+					Integer.parseInt(usuVO.getSedeId()), 
+					submodulo, 
+					tipoLog, 
+					usuVO.getUsuarioId(), 
+					jsonString);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println("Error " + this + ":" + e.toString());
+		}
+	}
+	
 	/**
 	 * Elimina del contexto de la sesion los beans de informacion del estudiante
 	 * 

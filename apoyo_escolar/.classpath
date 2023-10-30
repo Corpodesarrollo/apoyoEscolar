@@ -14,6 +14,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Giroco/Documents/corpodesarrollo/apoyoEscolar/apoyoEscolar/apoyo_escolar/WebContent/WEB-INF/lib/gson-2.8.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Angel/Downloads/gson-2.8.9.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

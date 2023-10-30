@@ -17,6 +17,8 @@ import siges.login.beans.Login;
 import siges.personal.beans.FiltroPersonal;
 import siges.personal.beans.Personal;
 import siges.personal.dao.PersonalDAO;
+import util.BitacoraCOM;
+import util.LogPersonalDto;
 
 /**
  * Nombre: ControllerFiltroEdit Descripcion: Controla el formulario de nuevo
@@ -149,6 +151,23 @@ public class ControllerFiltroSave extends HttpServlet {
 						"VERIFIQUE LA SIGUIENTE INFORMACION: \n\n"
 								+ "- Accesos de usuario eliminados satisfactoriamente");
 				boton = "";
+				try
+				{
+					BitacoraCOM.insertarBitacora(
+							Long.parseLong(login.getInstId()), 
+							Integer.parseInt(login.getJornadaId()),
+							2 ,
+							login.getPerfil(), 
+							Integer.parseInt(login.getSede()), 
+							20002, 
+							3, 
+							login.getUsuarioId(), 
+							""
+							);
+				}catch(Exception e){
+					e.printStackTrace();
+					System.out.println("Error " + this + ":" + e.toString());
+				}
 			}
 			if (boton.equals("")) {
 				filtro = (FiltroPersonal) request.getSession().getAttribute(
