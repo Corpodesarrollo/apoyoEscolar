@@ -12,12 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import siges.dao.Cursor;
 import siges.grupoPeriodo.beans.AbrirGrupo;
 import siges.grupoPeriodo.beans.CierreVO;
 import siges.grupoPeriodo.dao.GrupoPeriodoDAO;
 import siges.login.beans.Login;
 import siges.util.Logger;
+import util.BitacoraCOM;
+import util.BitacoraDto;
+import util.LogAbrirGrupoDto;
+import util.LogCerrarPeriodoDto;
 
 /**
 *	Nombre:	ControllerAbrirSave<BR>
@@ -174,6 +180,32 @@ public class ControllerAbrirSave extends HttpServlet{
 		Logger.print(login.getUsuarioId(),
 		        "Abrir Grupo Inst:"+login.getInstId()+" Sede:"+login.getInstId()+" Jorn:"+login.getJornadaId()+" Met:"+abrirGrupo.getMetodologia()+" Gra:"+abrirGrupo.getGrado()+" Grupo:"+abrirGrupo.getGrupo()+" Asig:"+abrirGrupo.getAsignatura()+" Per:"+abrirGrupo.getPeriodo(),
 		        7,1,this.toString());
+		
+		try {
+			LogAbrirGrupoDto logGrupo= new LogAbrirGrupoDto();
+			logGrupo.setInstitucion(login.getInst());
+			logGrupo.setSede(login.getSede());
+			logGrupo.setJornada(login.getJornada());
+			logGrupo.setMetodologia(abrirGrupo.getMetodologia());
+			logGrupo.setArea(abrirGrupo.getArea());
+			logGrupo.setDimension("--");
+			logGrupo.setAsignatura(abrirGrupo.getAsignatura());
+			logGrupo.setAbrirPor(login.getUsuario());
+			logGrupo.setGrado(abrirGrupo.getGrado());
+			logGrupo.setGrupo(abrirGrupo.getGrupo());
+			logGrupo.setPeriodo(abrirGrupo.getPeriodo());
+			BitacoraCOM.insertarBitacora(
+					Long.parseLong(login.getInstId()), 
+					Integer.parseInt(login.getJornada()),
+					4 ,
+					login.getPerfil(), 
+					Integer.parseInt(login.getSedeId()),
+					1112, 
+					1, login.getUsuario(), new Gson().toJson(logGrupo));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 		return true;
 	}
 
@@ -229,6 +261,25 @@ public class ControllerAbrirSave extends HttpServlet{
 					Logger.print(login.getUsuarioId(),
 					        "Cerrar Periodo Inst:"+login.getInstId()+" Sede:"+sede+" Jornada:"+jor+" Periodo:"+periodo,
 					        7,1,this.toString());
+					
+					try {
+						LogCerrarPeriodoDto logPeriodo= new LogCerrarPeriodoDto();
+						logPeriodo.setInstitucion(login.getInst());
+						logPeriodo.setSede(login.getSede());
+						logPeriodo.setJornada(login.getJornada());
+						logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+						BitacoraCOM.insertarBitacora(
+								Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornada()),
+								4 ,
+								login.getPerfil(), 
+								Integer.parseInt(login.getSedeId()),
+								1112, 
+								2, login.getUsuario(), new Gson().toJson(logPeriodo));
+					} catch (Exception e) {
+						// TODO: handle exception
+						e.printStackTrace();
+					}
 					return false;
 				}					    
 			}else{
@@ -281,6 +332,24 @@ public class ControllerAbrirSave extends HttpServlet{
 			Logger.print(login.getUsuarioId(),
 			        "Cerrar Periodo Inst:"+login.getInstId()+" Sede:"+sede+" Jornada:"+jor+" Periodo:"+periodo,
 			        7,1,this.toString());
+			try {
+				LogCerrarPeriodoDto logPeriodo= new LogCerrarPeriodoDto();
+				logPeriodo.setInstitucion(login.getInst());
+				logPeriodo.setSede(login.getSede());
+				logPeriodo.setJornada(login.getJornada());
+				logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+				BitacoraCOM.insertarBitacora(
+						Long.parseLong(login.getInstId()), 
+						Integer.parseInt(login.getJornada()),
+						4 ,
+						login.getPerfil(), 
+						Integer.parseInt(login.getSedeId()),
+						1112, 
+						2, login.getUsuario(), new Gson().toJson(logPeriodo));
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
 			return true;
 		}
 
