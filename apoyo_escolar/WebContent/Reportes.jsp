@@ -52,7 +52,7 @@
 		if(urlPath.indexOf("http") > -1){
 			urlPath = '<c:out value="${fila[1]}"/>';
 		}
-        document.listado.action= urlPath;
+        document.listado.action= "./GuardarBitacoraReporte?archivo=<c:url value="/${fila[0]}"/>&action=" + urlPath;
 		document.listado.submit();
 	}
 </c:forEach>
@@ -66,7 +66,7 @@
 			urlPath = '<c:out value="${fila[1]}"/>';
 		}
 		var blade="http://bladenodo4.redp.edu.co:7779";
-         document.listado.action= blade + urlPath;
+         document.listado.action= "./GuardarBitacoraReporte?archivo=<c:url value="/${fila[0]}"/>&action=" + blade + urlPath;
 
         //document.listado.action= urlPath;
 		document.listado.submit();

@@ -13,7 +13,7 @@ public class BitacoraCOM {
 
 	public static String insertarBitacora(long colegio,int jornada,int modulo,String perfil,int sede,int submodulo,int tipoLog,String usuario, String descripcion){
 		String responseJson = "";
-		String URL = "http://localhost:8080/api/apoyo/consultas/insertarBitacora/";
+		String URL = "http://20.237.244.76:8080/api/apoyo/consultas/insertarBitacora/";
 		try {
 		//Creamos el cliente de conexión al API Restful
 		      Client client = ClientBuilder.newClient();
