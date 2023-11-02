@@ -34,20 +34,20 @@ public class GuardarBitacoraReporte extends HttpServlet {
 		String jsonString="";
 		BitacoraCOM com = new BitacoraCOM();
 		try{
-			//Login login = (Login)request.getSession().getAttribute("login");
-			Login login = new Login();
-			login.setInstId("1");
-			login.setJornadaId("1");
-			login.setPerfil("180");
-			login.setSedeId("1");
-			login.setUsuarioId("21233646");
+			Login login = (Login)request.getSession().getAttribute("login");
+//			Login login = new Login();
+//			login.setInstId("1");
+//			login.setJornadaId("1");
+//			login.setPerfil("180");
+//			login.setSedeId("1");
+//			login.setUsuarioId("21233646");
 			String nombreArchivo = request.getParameter("archivo");
 			Map<String, String> desc = new HashMap<String, String>();
-			desc.put("Nombre del archivo", nombreArchivo);
+			desc.put("Descarga", nombreArchivo);
 			Gson gson = new Gson();
 			jsonString = gson.toJson(desc);
 			com.insertarBitacora(Long.valueOf(login.getInstId()), Integer.parseInt(login.getJornadaId()), 4, login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-					1002, 5/*eliminacion*/, login.getUsuarioId(), jsonString);	
+					1002, 6/*Descarga de documentos*/, login.getUsuarioId(), jsonString);	
 		}catch(Exception e){
 			
 		}
