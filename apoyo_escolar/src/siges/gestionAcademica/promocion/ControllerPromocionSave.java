@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
 import articulacion.apcierArtic.vo.ParamsVO;
 
 import siges.dao.Cursor;
@@ -24,6 +26,8 @@ import siges.gestionAdministrativa.cierreVigencia.dao.CierreVigenciaDAO;
 import siges.gestionAdministrativa.cierreVigencia.vo.ItemVO;
 import siges.util.Acceso;
 import siges.util.Logger;
+import util.BitacoraCOM;
+import util.LogPromocionDto;
 
 /**
 *	Nombre:	ControllerEvaluacionSave<BR>
@@ -325,7 +329,26 @@ public class ControllerPromocionSave extends HttpServlet{
 
 			
 			Logger.print(login.getUsuarioId(),"Promocinn Inst:"+filtroEvaluacion.getInstitucion()+" Sede:"+filtroEvaluacion.getSede()+" Jorn:"+filtroEvaluacion.getJornada()+" Gra:"+filtroEvaluacion.getGrado()+" Grupo:"+grupo,6,1,this.toString());
-		
+			try {
+				LogPromocionDto logPeriodo= new LogPromocionDto();
+				logPeriodo.setInstitucion(login.getInst());
+				logPeriodo.setSede(login.getSede());
+				logPeriodo.setJornada(login.getJornada());
+				logPeriodo.setAsignatura(filtroEvaluacion.getAsignatura());
+				logPeriodo.setPorcentaje(filtroEvaluacion.getPorcentaje()[0]);
+				logPeriodo.setArea(filtroEvaluacion.getArea());				
+				BitacoraCOM.insertarBitacora(
+						Long.parseLong(login.getInstId()), 
+						Integer.parseInt(login.getJornada()),
+						4 ,
+						login.getPerfil(), 
+						Integer.parseInt(login.getSedeId()),
+						1112, 
+						2, login.getUsuario(), new Gson().toJson(logPeriodo));
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
 		 }catch(Exception e){ 
 			 System.out.println("e.getMessage() " + e.getMessage());
 		    setMensaje(e.getMessage());
