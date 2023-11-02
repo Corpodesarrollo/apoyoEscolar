@@ -3,20 +3,33 @@ package siges.login;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
+
+import com.google.gson.Gson;
+
+import jxl.write.DateTime;
+import kodo.conf.descriptor.Log4JLogFactoryBeanDConfigBeanInfo;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import siges.util.Acceso;
 import siges.util.Logger;
+import util.BitacoraCOM;
+import util.LogCierreSesionDto;
+import util.LogLoginDto;
 import siges.login.beans.Login;
 import siges.dao.DataSourceManager;
 import siges.dao.OperacionesGenerales;
@@ -86,11 +99,28 @@ public class ControllerLogin extends HttpServlet {
 					
 					session = req.getSession(true);
 					session.setAttribute("login", login);
-					
 					removerObjetos(req);
 					
 					Logger.print(log, "Login. Acceso de estudiante satisfactorio: "	+ login.getUsuarioId(), 0, 1, this.toString());
-					
+					try{
+						Date fechaLogin = new Date(System.currentTimeMillis());
+						session.setAttribute("fechaInicioSesion",fechaLogin);
+						LogLoginDto logLogin= new LogLoginDto();
+						SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						logLogin.setFechaLogin(formatter.format(fechaLogin));
+						BitacoraCOM.insertarBitacora(
+								Long.parseLong(login.getInstId()),
+								Integer.parseInt(login.getJornadaId()),
+								1,
+								login.getPerfil(),
+								Integer.parseInt(login.getSedeId()),
+								45,
+								0,
+								login.getUsuarioId(),
+								new Gson().toJson(logLogin));
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 					// TODO: Revisar si es necesario en este punto el cambio de la contraseña temporal
 					view = inte;
 					
@@ -152,7 +182,25 @@ public class ControllerLogin extends HttpServlet {
 					ponerPerfilesTodos(req, params);
 					view = log_;
 					Logger.print(log, "Login. Autenticacinn exitosa." + log, 0, 1, this.toString());
-					
+					try{
+						Date fechaLogin = new Date(System.currentTimeMillis());
+						session.setAttribute("fechaInicioSesion",fechaLogin);
+						LogLoginDto logLogin= new LogLoginDto();
+						SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						logLogin.setFechaLogin(formatter.format(fechaLogin));
+						BitacoraCOM.insertarBitacora(
+								Long.parseLong(login.getInstId()),
+								Integer.parseInt(login.getJornadaId()),
+								1,
+								login.getPerfil(),
+								Integer.parseInt(login.getSedeId()),
+								45,
+								0,
+								login.getUsuarioId(),
+								new Gson().toJson(logLogin));
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 					return view;
 				}
 				
@@ -201,6 +249,25 @@ public class ControllerLogin extends HttpServlet {
 			
 				view = inte;
 				Logger.print(log, "Login. Autenticacinn exitosa." + log, 0, 1, this.toString());
+				try{
+					Date fechaLogin = new Date(System.currentTimeMillis());
+					session.setAttribute("fechaInicioSesion",fechaLogin);
+					LogLoginDto logLogin= new LogLoginDto();
+					SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					logLogin.setFechaLogin(formatter.format(fechaLogin));
+					BitacoraCOM.insertarBitacora(
+							Long.parseLong(login.getInstId()),
+							Integer.parseInt(login.getJornadaId()),
+							1,
+							login.getPerfil(),
+							Integer.parseInt(login.getSedeId()),
+							45,
+							0,
+							login.getUsuarioId(),
+							new Gson().toJson(logLogin));
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 				return view;
 			}
 			
@@ -399,6 +466,26 @@ public class ControllerLogin extends HttpServlet {
 				
 				if (login != null) {
 					Logger.print("0", "Login. Cierre de sesion de usuario "	+ login.getUsuarioId(), 0, 1, this.toString());
+					try{
+						Date fechaLogin   = (Date) req.getSession().getAttribute("fechaInicioSesion");
+						Date fechaLogOut = new Date(System.currentTimeMillis());
+						LogCierreSesionDto logLogOut= new LogCierreSesionDto();
+						Date diferencia = getDifferenceBetwenDates(fechaLogin, fechaLogOut);
+						SimpleDateFormat tiempoSesionFormato = new SimpleDateFormat("HH:mm:ss");
+						logLogOut.setTiempoSesion(tiempoSesionFormato.format(diferencia));
+						BitacoraCOM.insertarBitacora(
+								Long.parseLong(login.getInstId()),
+								Integer.parseInt(login.getJornadaId()),
+								1,
+								login.getPerfil(),
+								Integer.parseInt(login.getSedeId()),
+								45,
+								0,
+								login.getUsuarioId(),
+								new Gson().toJson(logLogOut));
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 				
 				removerObjetos(req);
@@ -475,6 +562,18 @@ public class ControllerLogin extends HttpServlet {
 			throw new ServletException(th);
 		}
 		
+	}
+	
+	public static Date getDifferenceBetwenDates(Date dateInicio, Date dateFinal) {
+	    long milliseconds = dateFinal.getTime() - dateInicio.getTime();
+	    int seconds = (int) (milliseconds / 1000) % 60;
+	    int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
+	    int hours = (int) ((milliseconds / (1000 * 60 * 60)) % 24);
+	    Calendar c = Calendar.getInstance();
+	    c.set(Calendar.SECOND, seconds);
+	    c.set(Calendar.MINUTE, minutes);
+	    c.set(Calendar.HOUR_OF_DAY, hours);
+	    return c.getTime();
 	}
 
 	public boolean registrar(String insertar) {
@@ -736,6 +835,25 @@ public class ControllerLogin extends HttpServlet {
 		view = inte;
 		Logger.print("0", "Login de usuario satisfactorio: " + log, 0, 1,
 				this.toString());
+		try{
+			Date fechaLogin = new Date(System.currentTimeMillis());
+			session.setAttribute("fechaInicioSesion",fechaLogin);
+			LogLoginDto logLogin= new LogLoginDto();
+			SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			logLogin.setFechaLogin(formatter.format(fechaLogin));
+			BitacoraCOM.insertarBitacora(
+					Long.parseLong(login.getInstId()),
+					Integer.parseInt(login.getJornadaId()),
+					1,
+					login.getPerfil(),
+					Integer.parseInt(login.getSedeId()),
+					45,
+					0,
+					login.getUsuarioId(),
+					new Gson().toJson(logLogin));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		return view;
 	}
 
