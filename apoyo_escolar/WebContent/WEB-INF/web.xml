@@ -4970,6 +4970,7 @@
 		<display-name>GuardarBitacoraReporte</display-name>
 		<servlet-name>GuardarBitacoraReporte</servlet-name>
 		<servlet-class>GuardarBitacoraReporte</servlet-class>
+		<load-on-startup>0</load-on-startup>
 	</servlet>
 
 	<!-- MAPEO -->
