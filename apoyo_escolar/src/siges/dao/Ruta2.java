@@ -43,20 +43,20 @@ public final class Ruta2 {
 	}	
 
 	public static String get(String ruta,String dir){
-		String ultimoCarater=ruta.substring(ruta.length() - 1);
-		if(!ultimoCarater.equals("\\") && !ultimoCarater.equals("/")){
-			if(ruta.contains("/")){
-				ruta = ruta+"/";
-			}else{
-				ruta = ruta+"\\";
-			}
+		System.out.println("RUTA: "+ruta + " DIR: "+dir);
+		java.util.ResourceBundle rb = java.util.ResourceBundle.getBundle("path");
+		int val = Integer.parseInt(rb.getString("path.contexto"));
+		if (val != 1) {
+			ruta = rb.getString("path.base").replace('.', sep);
+			// ruta = base;
 		}
-		if(ruta.substring(ruta.length()-1).equals("/")){
-			ruta+=dir.replace('.','/')+"/";
-		}else{
-			ruta+=dir.replace('.','\\')+"\\";
-		}	
-		return ruta;		
+
+		if (ruta.substring(ruta.length() - 1).equals("/")) {
+			ruta += dir.replace('.', '/') + "/";
+		} else {
+			ruta += dir.replace('.', '\\') + "\\";
+		}
+		return ruta;	
 	}	
 	
 		/**

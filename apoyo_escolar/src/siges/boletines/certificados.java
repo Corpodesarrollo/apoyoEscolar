@@ -192,16 +192,16 @@ public class certificados extends HttpServlet {
 				pst.close();
 
 				if (filtro.getId().equals("")) {
-					sede = (!filtro.getSede().equals("-9") ? "_Sede_"
+					sede = (!filtro.getSede().equals("-9") ? "_Sed_"
 							+ filtro.getSede().trim() : "");
-					jornada = (!filtro.getJornada().equals("-9") ? "_Jornada_"
+					jornada = (!filtro.getJornada().equals("-9") ? "_Jor_"
 							+ filtro.getJornada().trim() : "");
-					met = (!filtro.getMetodologia().equals("-9") ? "_Metodologia_"
+					met = (!filtro.getMetodologia().equals("-9") ? "_Met_"
 							+ filtro.getMetodologia()
 							: "");
-					grado = (!filtro.getGrado().equals("-9") ? "_Grado_"
+					grado = (!filtro.getGrado().equals("-9") ? "_Gra_"
 							+ filtro.getGrado() : "");
-					grupo = (!filtro.getGrupo().equals("-9") ? "_Grupo_"
+					grupo = (!filtro.getGrupo().equals("-9") ? "_Gru_"
 							+ filtro.getGrupo() : "");
 					id = "";
 				} else {
@@ -220,12 +220,11 @@ public class certificados extends HttpServlet {
 						+ grado
 						+ grupo
 						+ id
-						+ "_Fecha_"
-						+ f2.toString().replace(' ', '_').replace(':', '-')
-								.replace('.', '-');
-				archivo = "Certificado_" + nom + ".pdf";
-				archivopre = "Certificado_Preescolar_" + nom + ".pdf";
-				archivozip = "Certificado_" + nom + ".zip";
+						+ "_Fec_"
+						+ f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-');
+				archivo = "Cer_" + nom + ".pdf";
+				archivopre = "Cer_Pre_" + nom + ".pdf";
+				archivozip = "Cer_" + nom + ".zip";
 
 //				System.out .println("CERTIFICADOS: Insertar el reporte en datos_boletin");
 //				System.out.println("CERTIFICADOS: METODOLOGIA FILTRO:" + filtro.getMetodologia());
@@ -264,8 +263,7 @@ public class certificados extends HttpServlet {
 				pst.setString(posicion++,
 						!filtro.getId().equals("") ? filtro.getId() : "");
 
-				pst.setString(posicion++, f2.toString().replace(' ', '_')
-						.replace(':', '-').replace('.', '-'));
+				pst.setString(posicion++, f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-'));
 				pst.setString(posicion++, archivozip);
 				pst.setString(posicion++, archivo);
 				pst.setString(posicion++, archivopre);
@@ -360,6 +358,13 @@ public class certificados extends HttpServlet {
 		reporteVO.setRepTipo(ReporteVO._REP_CERTIFICADOS);
 		reporteVO.setRepOrden(ReporteVO.ORDEN_DESC);
 		request.getSession().setAttribute("reporteVO", reporteVO);
+				
+		/**
+		 * Se redirecciona a boletines para proceder con la genaración		 * 
+		 */
+		Certificado c = new Certificado(cursor,path);	  
+		c.procesar_solicitudes();// se dispara el procesamiento de solicitudes
+		
 		return s;// se va a reportes.do
 	}
 
@@ -624,6 +629,7 @@ public class certificados extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
@@ -637,6 +643,7 @@ public class certificados extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String s = process(request, response);
@@ -692,6 +699,7 @@ public class certificados extends HttpServlet {
 	/*
 	 * Cierra cursor
 	 */
+	@Override
 	public void destroy() {
 		try {
 			t.stop();

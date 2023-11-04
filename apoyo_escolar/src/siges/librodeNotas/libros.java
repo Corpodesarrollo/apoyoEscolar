@@ -139,7 +139,7 @@ public class libros extends HttpServlet {
 			return null;
 		}
 
-		ServletContext context = (ServletContext) request.getSession()
+		ServletContext context = request.getSession()
 				.getServletContext();
 		String contextoTotal = context.getRealPath("/");
 		// String path=context.getRealPath(rb3.getString("jaspers"));
@@ -178,19 +178,18 @@ public class libros extends HttpServlet {
 			if (!rs.next()) {
 				// System.out.println("LIBRONOTAS:ENTRA POR EL IF !rs.next(): ES DECIR LA CONSULTA NO ARROJO REGISTROS PUEDE CONTINUAR********************************");
 
-				met = (!filtro.getMetodologia().equals("-9") ? "Metodologia_"
+				met = (!filtro.getMetodologia().equals("-9") ? "Met_"
 						+ filtro.getMetodologia() : "");
-				grado = (!filtro.getGrado().equals("-9") ? "_Grado_"
+				grado = (!filtro.getGrado().equals("-9") ? "_Gra_"
 						+ filtro.getGrado() : "");
 
 				nom = met
 						+ grado
-						+ "_Fecha_"
-						+ f2.toString().replace(' ', '_').replace(':', '-')
-								.replace('.', '-');
-				archivo = "Libro_de_Notas_" + nom + ".pdf";
-				archivopre = "Libro_de_Notas_Preescolar_" + nom + ".pdf";
-				archivozip = "Libro_de_Notas_" + nom + ".zip";
+						+ "_Fec_"
+						+ f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-');
+				archivo = "Lib_de_Not_" + nom + ".pdf";
+				archivopre = "Lib_de_Not_Pre_" + nom + ".pdf";
+				archivozip = "Lib_de_Not_" + nom + ".zip";
 
 				System.out
 						.println("nnSe mando insertar el reporte en datos_libro!!!!");
@@ -212,8 +211,7 @@ public class libros extends HttpServlet {
 				pst.setLong(posicion++, 7);
 				pst.setString(posicion++, "");
 				pst.setString(posicion++, "");
-				pst.setString(posicion++, f2.toString().replace(' ', '_')
-						.replace(':', '-').replace('.', '-'));
+				pst.setString(posicion++, f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-'));
 				pst.setString(posicion++, archivozip);
 				pst.setString(posicion++, archivo);
 				pst.setString(posicion++, archivopre);
@@ -325,6 +323,12 @@ public class libros extends HttpServlet {
 		reporteVO.setRepOrden(ReporteVO.ORDEN_DESC);
 		request.getSession().setAttribute("reporteVO", reporteVO);
 
+		/**
+		 * Se redirecciona a boletines para proceder con la genaración		 * 
+		 */
+		Libro l = new Libro(cursor,contextoTotal,path);	  
+		l.procesar_solicitudes();// se dispara el procesamiento de solicitudes
+		
 		return s;
 
 	}
@@ -597,6 +601,7 @@ public class libros extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
@@ -610,6 +615,7 @@ public class libros extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String s = process(request, response);
@@ -666,6 +672,7 @@ public class libros extends HttpServlet {
 	/*
 	 * Cierra cursor
 	 */
+	@Override
 	public void destroy() {
 		try {
 			t.stop();

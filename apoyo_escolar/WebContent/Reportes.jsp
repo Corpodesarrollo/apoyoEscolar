@@ -1,7 +1,11 @@
-<%@page import="java.lang.reflect.Array"%>
+<%@ page import="java.lang.reflect.Array"%>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.IOException" %>
 <%@ page contentType="text/html; charset=windows-1252" language="java" errorPage="" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <head>
+
 <%@include file="parametros.jsp"%>
 <jsp:useBean id="reporteVO" class="siges.util.beans.ReporteVO" scope="session"/>
 	<script>
@@ -44,15 +48,54 @@
 		}else
 			document.listado.accion.value='0';
 	}
+	
+function validarArchivo(f1,f2) {
+            // URL del servlet con la ruta del archivo como parámetro
+            var url = 'ValidarArchivo.do?filepath='+f2;
+			var url2 = 'Descargar.do?filepath='+f2;
+            // Realiza la solicitud AJAX al servlet
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+
+            xhr.onload = function() {
+            // Extrae información específica del archivo HTML
+		    var parser = new DOMParser();
+		    var doc = parser.parseFromString(xhr.responseText, 'text/html');
+			var fila = doc.getElementsByTagName('tr')[0];
+			var celda = fila.getElementsByTagName('td')[0];
+			
+			// Obtener el contenido de texto de la celda
+			var valorDeLaCelda = celda.textContent;
+                if (xhr.status === 200) {
+                    var respuesta = JSON.parse(valorDeLaCelda);
+                    // Verifica si 'archivoExiste' es true o false
+                    if (respuesta.archivoExiste) {                     	
+                    	var link = document.createElement("a");
+    					link.href = url2;
+    					link.download = f1;
+            			link.click();
+                    } 
+                    else {alert('Señor usuario el archivo que intenta descargar no existe en el sistema o esta dañado. Intente generar nuevamente su reporte, si el problema persiste consulte con su administrador.');
+                    }
+                } else {alert('Error de red al realizar la solicitud.');
+                }
+            };
+
+            xhr.onerror = function() {
+                alert('Error de red al realizar la solicitud.');                
+            };
+
+            xhr.send();
+        }
 <c:forEach begin="0" items="${requestScope.lista}" var="fila" varStatus="st">
 	function r_<c:out value="${st.count}"/>(){
-		document.listado.dir.value='<c:out value="${fila[1]}"/>';
-		document.listado.tipo.value='<c:out value="${fila[2]}"/>';
+		document.listado.dir.value='<c:out value="${fila[1]}"/>';		
+		document.listado.tipo.value='<c:out value="${fila[2]}"/>';		
 		var urlPath = "<c:url value="/${fila[1]}"/>";
 		if(urlPath.indexOf("http") > -1){
 			urlPath = '<c:out value="${fila[1]}"/>';
-		}
-        document.listado.action= "./GuardarBitacoraReporte?archivo=<c:out value="${fila[0]}"/>&action=" + urlPath;
+		}		
+        document.listado.action= urlPath;
 		document.listado.submit();
 	}
 </c:forEach>
@@ -66,7 +109,7 @@
 			urlPath = '<c:out value="${fila[1]}"/>';
 		}
 		var blade="http://bladenodo4.redp.edu.co:7779";
-         document.listado.action= "./GuardarBitacoraReporte?archivo=<c:out value="${fila[0]}"/>&action=" + blade + urlPath;
+         document.listado.action= blade + urlPath;
 
         //document.listado.action= urlPath;
 		document.listado.submit();
@@ -159,8 +202,10 @@
 		<td class='Fila<c:out value="${st.count%2}"/>'><img border="0" src="<c:url value="/etc/img/${fila[2]}"/>.gif" alt="<c:out value="${fila[0]}"/>" align="middle" width="20" height="18"/><script>document.write("<c:out value="${fila[0]}"/>".substring(0,50)+"...");</script></td>
 		<td class='Fila<c:out value="${st.count%2}"/>'><script>document.write(estados[<c:out value="${fila[4]}"/>+1]);</script></td>
 		<td class='Fila<c:out value="${st.count%2}"/>'><c:out value="${fila[3]}"/></td>
-		<td class='Fila<c:out value="${st.count%2}"/>'>
-		<c:if test="${fila[4]==1}"><a href='javaScript:document.listado.accion.value=0;r_<c:out value="${st.count}"/>()'>Descargar</a></c:if>
+		<td class='Fila<c:out value="${st.count%2}"/>'>	    
+        <c:if test="${fila[4]==1}"><a href='#' onclick="validarArchivo('${fila[0]}','${fila[1]}');"/>Descargar</a></c:if>
+		<!--<c:if test="${fila[4]==1}"><a href='#' onclick="imprimirArchivo('${fila[0]}','${fila[1]}');"/>Descargar</a></c:if>-->		
+		<!--<c:if test="${fila[4]==1}"><a href='javaScript:document.listado.accion.value=0;r_<c:out value="${st.count}"/>()'>Descargar 1</a></c:if>-->
 		<c:if test="${fila[4]==1}"><a href='javaScript:document.listado.accion.value=0;r_<c:out value="${st.count}"/>_2()'>Descargar 2</a></c:if>
 
 		<c:if test="${fila[4]==2}"><a href='javaScript:msg_<c:out value="${st.count}"/>()'>Ver motivo</a></c:if>

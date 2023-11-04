@@ -1,25 +1,26 @@
 package siges.usuario.dao;
 
+import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.sql.ResultSet;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.text.SimpleDateFormat;
-import java.sql.PreparedStatement;
-import java.security.MessageDigest;
+
 import javax.servlet.http.HttpServletRequest;
 
-import siges.dao.Cursor;
-import siges.util.Mailer;
 import siges.common.vo.ItemVO;
+import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
+import siges.exceptions.InternalErrorException;
 import siges.login.beans.Login;
 import siges.perfil.dao.PerfilDAO;
 import siges.usuario.beans.Usuario;
-import siges.dao.OperacionesGenerales;
-import siges.exceptions.InternalErrorException;
+import siges.util.Mailer;
 
 
 /**
@@ -82,6 +83,7 @@ public class UsuarioDAO extends siges.dao.Dao {
 	/**
 	 * Funcinn: Cerrar conecciones<br>
 	 **/
+	@Override
 	public void cerrar() {
 		try {
 			/*
@@ -1220,6 +1222,7 @@ public class UsuarioDAO extends siges.dao.Dao {
 	 * @param String
 	 *            s
 	 **/
+	@Override
 	public void setMensaje(String s) {
 		mensaje += s;
 	}
@@ -1230,6 +1233,7 @@ public class UsuarioDAO extends siges.dao.Dao {
 	 * 
 	 * @return String
 	 **/
+	@Override
 	public String getMensaje() {
 		return mensaje;
 	}
@@ -1912,6 +1916,23 @@ public class UsuarioDAO extends siges.dao.Dao {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	    
+		String footerHtml = "</body> </html>";
+		
+		String cuerpoCorreo = headHtml + mensaje + footerHtml;
+		
+		return cuerpoCorreo;
+	}
+	
+	public String cuerpoCorreoGeneracionBoletin() {
+		
+		String headHtml = "<html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> </head> <body>";
+		
+		String mensaje = "<table><tr><td>" +
+	    				"<p>Apreciado(a) Secretario Acad&eacute;mico, {nombre}</p>" +
+	    				"<br/>"+
+	    				"<p>Le informamos que su reporte de tipo boletin solicitado para el colegio {institucion} {estado} </p>" +//esta listo para ser descargado	    				
+	    				"</td></tr></table>";
 	    
 		String footerHtml = "</body> </html>";
 		

@@ -1,39 +1,45 @@
 package siges.boletines;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+
 //	VERSION		FECHA		AUTOR			DESCRIPCION
 //		1.0		02/07/2020	JORGE CAMACHO	Se corrige la ortografía de los mensajes y la identación para hacer el debug más claro
 
 import java.util.List;
-import java.sql.ResultSet;
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.sql.PreparedStatement;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import siges.boletines.beans.Estudiante;
+import siges.boletines.beans.FiltroBeanReports;
+import siges.boletines.dao.ReporteLogrosDAO;
+import siges.common.vo.ItemVO;
+import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
+import siges.dao.Ruta;
+import siges.dao.Ruta2;
+import siges.dao.Util;
+import siges.exceptions.InternalErrorException;
+import siges.gestionAdministrativa.boletinPublico.vo.ParamsVO;
 
 //import com.jms.weblogic.EnviarJMSReporte;
 
 import siges.io.Zip;
-import siges.dao.Util;
-import siges.dao.Cursor;
-import siges.common.vo.ItemVO;
 import siges.login.beans.Login;
-import siges.dao.OperacionesGenerales;
-import siges.boletines.beans.Estudiante;
-import siges.boletines.dao.ReporteLogrosDAO;
-import siges.boletines.beans.FiltroBeanReports;
-import siges.exceptions.InternalErrorException;
-import siges.gestionAdministrativa.boletinPublico.vo.ParamsVO;
 
 
 /**
@@ -78,10 +84,12 @@ public class reportes extends HttpServlet {
 	private Collection list;
 	private String[] codigo;
 	private Boletin_ boletin;
+	private File reporte1_1;
+	private File reporte1_2;
 	private String buscarcodigo;
 	private static int parametro;
 	private ServletConfig config;
-	private ResourceBundle r, rb3;
+	private ResourceBundle r,rb, rb3;
 	private java.sql.Timestamp f2;
 	private FiltroBeanReports filtro;
 	private String s = "/Reportes.do";
@@ -93,7 +101,32 @@ public class reportes extends HttpServlet {
 	private String archivo, archivozip, archivopre;
 	private String s1 = "/boletines/ControllerBoletinFiltroEdit.do";
 	
+	ServletContext context;
+	String contextoTotal;
+	String path_jasper;
+	String path_logo;
+	String path_escudo;
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 
+		ServletContext context = config.getServletContext();
+		rb = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
+		contextoTotal = context.getRealPath("/");
+		path_jasper = Ruta2.get(context.getRealPath("/"), rb.getString("boletines_ruta_jaspers"));
+		path_logo = Ruta.get(context.getRealPath("/"), rb.getString("boletines_logos"));
+		path_escudo = Ruta.get(context.getRealPath("/"), rb.getString("boletines_imgs_inst"));
+		
+		super.init(config);
+		cursor = new Cursor();
+		if (!updateColaBolEstadoCero()) {
+			return;
+		}
+		Boletin boletin = new Boletin(cursor, contextoTotal, path_jasper, path_logo, path_escudo);
+		boletin.procesar_solicitudes();// se dispara el procesamiento de solicitudes
+		return;
+	}
+	
 	/**
 	 * Procesa la peticion HTTP
 	 * 
@@ -197,11 +230,11 @@ public class reportes extends HttpServlet {
 				rs.close();
 				pst.close();
 
-				sede = (!filtro.getSede().equals("-9") ? "_Sede_" + filtro.getSede().trim() : "");
-				jornada = (!filtro.getJornada().equals("-9") ? "_Jornada_" + filtro.getJornada().trim() : "");
-				met = (!filtro.getMetodologia().equals("-9") ? "_Metodologia_" + filtro.getMetodologia() : "");
-				grado = (!filtro.getGrado().equals("-9") ? "_Grado_" + filtro.getGrado() : "");
-				grupo = (!filtro.getGrupo().equals("-9") ? "_Grupo_" + filtro.getGrupo() : "");
+				sede = (!filtro.getSede().equals("-9") ? "_Sed_" + filtro.getSede().trim() : "");
+				jornada = (!filtro.getJornada().equals("-9") ? "_Jor_" + filtro.getJornada().trim() : "");
+				met = (!filtro.getMetodologia().equals("-9") ? "_Met_" + filtro.getMetodologia() : "");
+				grado = (!filtro.getGrado().equals("-9") ? "_Gra_" + filtro.getGrado() : "");
+				grupo = (!filtro.getGrupo().equals("-9") ? "_Gru_" + filtro.getGrupo() : "");
 				id = (!filtro.getId().equals("") ? "_Doc_" + filtro.getId() : "");
 				
 				// CAMBIO NOMBRE PERIODO
@@ -214,15 +247,15 @@ public class reportes extends HttpServlet {
 						+ met
 						+ grado
 						+ grupo
-						+ "_Periodo_"
+						+ "_Per_"
 						+ filtro.getPeriodonom().trim()
 						+ id
-						+ "_Fecha_"
-						+ f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-');
+						+ "_Fec_"
+						+ f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-');
 				
-				archivo = "Boletin_" + nom + ".pdf";
-				archivopre = "Boletin_Preescolar_" + nom + ".pdf";
-				archivozip = "Boletin_" + nom + ".zip";
+				archivo = "Bol_" + nom + ".pdf";
+				archivopre = "Bol_Pre_" + nom + ".pdf";
+				archivozip = "Bol_" + nom + ".zip";
 
 				// System.out
 				// .println("BOLETINES: Insertar el reporte en datos_boletin");
@@ -264,7 +297,7 @@ public class reportes extends HttpServlet {
 				pst.setLong(posicion++,	Long.parseLong(filtro.getPeriodo().trim()));																// DABOLPERIODO
 				pst.setString(posicion++, !filtro.getPeriodonom().trim().equals("") ? filtro.getPeriodonom().trim() : "");							// DABOLPERIODONOM
 				pst.setString(posicion++, !filtro.getId().equals("") ? filtro.getId() : "");														// DABOLCEDULA
-				pst.setString(posicion++, f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-'));										// DABOLFECHA
+				pst.setString(posicion++, f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-'));// DABOLFECHA
 				pst.setString(posicion++, archivozip);																								// DABOLNOMBREZIP
 				pst.setString(posicion++, archivo);																									// DABOLNOMBREPDF
 				pst.setString(posicion++, archivopre);																								// DABOLNOMBREPDFPRE
@@ -306,9 +339,10 @@ public class reportes extends HttpServlet {
 				pst.setLong(posicion++, dabolConsec);																								// DABOLCONSEC
 				pst.setString(posicion++, login.getLogSubTitBol());																					// DABOLTIPOREP
 
+				
 				pst.executeUpdate();
 
-				con.commit();
+//				con.commit();
 //				@MCuellar: MIG-REPORTES 
 //				String mensaje="15-"+dabolConsec.toString();
 //				System.out.println("Mensaje Cola: " + mensaje);
@@ -316,10 +350,12 @@ public class reportes extends HttpServlet {
 //				EnviarJMSReporte.enviarMensaje(mensaje);
 				
 				ponerReporte(modulo, login.getUsuarioId(), rb3.getString("boletines.PathBoletines") + archivozip + "", "zip", "" + archivozip, "-1", "ReporteInsertarEstado");// Estado -1
+				updateDatosBoletin("-1",archivozip , dabolConsec);// se forza el estado -1 para garantizar que la solicitud queda en cola para su generación
+				
 				// System.out.println("Se insertn el ZIP en Reporte con estado -1");
 				siges.util.Logger.print(
 						login.getUsuarioId(),
-						"Peticinn de Boletin:_Institucion:_"
+						"Petición de Boletin:_Institucion:_"
 								+ login.getInstId() + "_Usuario:_"
 								+ login.getUsuarioId() + "_NombreBoletin:_"
 								+ archivozip + "", 3, 1, this.toString());
@@ -344,7 +380,7 @@ public class reportes extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			ponerReporteMensaje("2", modulo, login.getUsuarioId(), rb3.getString("boletines.PathBoletines") + archivozip + "", "zip", "" + archivozip, "ReporteActualizarBoletin",
-					"Ocurrin excepcinn en el Hilo");
+					"Ocurrio excepción en el Hilo");
 		} finally {
 			try {
 				if (cursor != null)
@@ -357,7 +393,14 @@ public class reportes extends HttpServlet {
 			} catch (Exception e) {
 			}
 		}
-		
+		/**
+		 * Se redirecciona a boletines para proceder con la genaración		 * 
+		 */
+		Boletin boletin = new Boletin(cursor, contextoTotal, path_jasper, path_logo, path_escudo);
+		boletin.procesar_solicitudes();// se dispara el procesamiento de solicitudes
+		/**
+		 * Fin llamada Boletines
+		 */
 		return s;// se va a reportes.do
 		
 	}
@@ -590,6 +633,7 @@ public class reportes extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
@@ -603,6 +647,7 @@ public class reportes extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String s = process(request, response);
@@ -736,5 +781,74 @@ public class reportes extends HttpServlet {
 			}
 		}
 		return 0;
+	}
+	
+	/**
+	 * Funcinn: Ejecuta los prepared statements correspondientes para actualzar
+	 * el estado y ponerlo en la cola<BR>
+	 * 
+	 * @param String
+	 * @param String
+	 * @param String
+	 * @param String
+	 **/
+
+	public boolean updateColaBolEstadoCero() {
+		Connection con = null;
+		PreparedStatement pst = null;
+		int posicion = 1;
+
+		try {
+			con = cursor.getConnection();
+			pst = con.prepareStatement(rb.getString("boletines.updateEnCola"));
+			posicion = 1;
+			pst.executeUpdate();
+			pst.close();
+			// System.out.println("REPORTES BOLETINES: actualizn en cola los reportes boletines generando");
+			con.commit();
+		} catch (Exception e) {
+			System.out
+					.println("REPORTES BOLETINES: nOcurrin Excepcion al actualizar el estado a -1!");
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(con);
+			} catch (Exception e) {
+			}
+		}
+		return true;
+	}
+	
+	public void updateDatosBoletin(String nuevoestado, String nombreboletin,
+			long dabolConsec) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		int posicion = 1;
+
+		try {
+			con = cursor.getConnection();
+
+			pst = con.prepareStatement(rb3.getString("update_datos_boletin_new"));
+			posicion = 1;
+			pst.clearParameters();
+			pst.setLong(posicion++, Long.parseLong(nuevoestado));
+			pst.setString(posicion++, (nombreboletin));
+			pst.setLong(posicion++, dabolConsec);
+			pst.executeUpdate();
+			pst.close();
+			con.commit();
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(con);
+			} catch (Exception e) {
+			}
+		}
 	}
 }

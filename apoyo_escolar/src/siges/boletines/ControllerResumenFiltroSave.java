@@ -118,7 +118,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 	public String process(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
+		String contextoTotal ="";
 		Connection con = null;
 		PreparedStatement pst = null;
 		Collection list = new ArrayList();
@@ -178,9 +178,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 			requerido = Integer.parseInt(request
 					.getParameter("reporte_solicitado"));
 
-			ServletContext context = (ServletContext) request.getSession()
+			ServletContext context = request.getSession()
 					.getServletContext();
-			String contextoTotal = context.getRealPath("/");
+			contextoTotal = context.getRealPath("/");
 			String path = context.getRealPath("/boletines/reports");
 			String path1 = context.getRealPath("/etc/img");
 			String path2 = context.getRealPath("/private/escudo");
@@ -191,13 +191,18 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 			switch (requerido) {
 			case 1:
-				if (!resumen_Areas(request, vigencia, contextoTotal)) {
+				if (!resumen_Areas(request, vigencia, contextoTotal))					
 					return s;
+				else{
+					ReporteVO reporteVO = new ReporteVO();
+					reporteVO.setRepTipo(ReporteVO._REP_RESUMENES_AREA);
+					reporteVO.setRepOrden(ReporteVO.ORDEN_DESC);
+					request.getSession().setAttribute("reporteVO", reporteVO);
+					//Se redirecciona a boletines para proceder con la generación					 
+					ResumenArea rA = new ResumenArea(cursor,contextoTotal,path);	  
+					rA.procesar_solicitudes();// se dispara el procesamiento de solicitudes
 				}
-				ReporteVO reporteVO = new ReporteVO();
-				reporteVO.setRepTipo(ReporteVO._REP_RESUMENES_AREA);
-				reporteVO.setRepOrden(ReporteVO.ORDEN_DESC);
-				request.getSession().setAttribute("reporteVO", reporteVO);
+					
 				break;
 			case 2:
 				if (!resumen_Asignaturas(request, vigencia, contextoTotal)) {
@@ -226,17 +231,17 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				 * request.getParameter("periodo"));
 				 */
 				request.setAttribute("sedeMantenerFil",
-						(String) request.getParameter("sede"));
+						request.getParameter("sede"));
 				request.setAttribute("jornadaMantenerFil",
-						(String) request.getParameter("jornada"));
+						request.getParameter("jornada"));
 				request.setAttribute("metodologiaMantenerFil",
-						(String) request.getParameter("metodologia"));
+						request.getParameter("metodologia"));
 				request.setAttribute("gradoMantenerFil",
-						(String) request.getParameter("grado"));
+						request.getParameter("grado"));
 				request.setAttribute("grupoMantenerFil",
-						(String) request.getParameter("grupo"));
+						request.getParameter("grupo"));
 				request.setAttribute("periodoMantenerFil",
-						(String) request.getParameter("periodo"));
+						request.getParameter("periodo"));
 				Collection[] est = null;
 				int opcionconsulta = 1;
 				if (!resumen_ConsultaAsignaturas(request, vigencia,
@@ -406,8 +411,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 					util.cerrar();
 			} catch (Exception e) {
 			}
-		}
-
+		}		
 		return s;
 	}
 
@@ -493,16 +497,16 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				// .println("RESUMEN AREAS: ******nNO HAY NINGUNO CON LOS MISMOS PARAMETROS!...EN ESTADO CERO O -1!*********");
 				rs.close();
 				pst.close();
-				sede = (!filtroAreas.getSede().equals("-9") ? "_Sede_"
+				sede = (!filtroAreas.getSede().equals("-9") ? "_Sed_"
 						+ filtroAreas.getSede().trim() : "");
-				jornada = (!filtroAreas.getJornada().equals("-9") ? "_Jornada_"
+				jornada = (!filtroAreas.getJornada().equals("-9") ? "_Jor_"
 						+ filtroAreas.getJornada().trim() : "");
-				met = (!filtroAreas.getMetodologia().equals("-9") ? "_Metodologia_"
+				met = (!filtroAreas.getMetodologia().equals("-9") ? "_Met_"
 						+ filtroAreas.getMetodologia()
 						: "");
-				grado = (!filtroAreas.getGrado().equals("-9") ? "_Grado_"
+				grado = (!filtroAreas.getGrado().equals("-9") ? "_Gra_"
 						+ filtroAreas.getGrado() : "");
-				grupo = (!filtroAreas.getGrupo().equals("-9") ? "_Grupo_"
+				grupo = (!filtroAreas.getGrupo().equals("-9") ? "_Gru_"
 						+ filtroAreas.getGrupo() : "");
 
 				if (Long.parseLong(filtroAreas.getPeriodo().trim()) == 7) {
@@ -1000,9 +1004,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 								Object[] element2 = (Object[]) it2.next();
 
 								if (((String) element2[0])
-										.equals((String) element3[0])
+										.equals(element3[0])
 										&& ((String) element2[2])
-												.equals((String) element3[3])) {
+												.equals(element3[3])) {
 									areatmp = (String) element2[1];
 									break;
 								}
@@ -1309,19 +1313,19 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 					idasignaturas
 							.add(((String) element3[2] + "|" + (String) element3[1]));
 					Object[] objasig = new Object[3];
-					objasig[0] = (String) element3[2];
-					objasig[1] = (String) element3[1];
+					objasig[0] = element3[2];
+					objasig[1] = element3[1];
 
 					for (Iterator it2 = colgg[0].iterator(); it2.hasNext();) {
 						Object[] element2 = (Object[]) it2.next();
 
-						if (((String) element2[0]).equals((String) element3[0])
+						if (((String) element2[0]).equals(element3[0])
 								&& ((String) element2[2])
-										.equals((String) element3[3])) {
+										.equals(element3[3])) {
 							Object[] obj = new Object[2];
-							objasig[2] = (String) element2[1];
-							obj[0] = (String) element2[2];
-							obj[1] = (String) element2[1];
+							objasig[2] = element2[1];
+							obj[0] = element2[2];
+							obj[1] = element2[1];
 							areas.add(obj);
 							asignaturasrefarea.add(objasig);
 							break;
@@ -1719,9 +1723,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 												.next();
 
 										if (((String) element2[0])
-												.equals((String) element3[0])
+												.equals(element3[0])
 												&& ((String) element2[2])
-														.equals((String) element3[3])) {
+														.equals(element3[3])) {
 											areatmp = (String) element2[1];
 											break;
 										}
@@ -2059,21 +2063,21 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							idasignaturas
 									.add(((String) element3[2] + "|" + (String) element3[1]));
 							Object[] objasig = new Object[3];
-							objasig[0] = (String) element3[2];
-							objasig[1] = (String) element3[1];
+							objasig[0] = element3[2];
+							objasig[1] = element3[1];
 
 							for (Iterator it2 = colgg[0].iterator(); it2
 									.hasNext();) {
 								Object[] element2 = (Object[]) it2.next();
 
 								if (((String) element2[0])
-										.equals((String) element3[0])
+										.equals(element3[0])
 										&& ((String) element2[2])
-												.equals((String) element3[3])) {
+												.equals(element3[3])) {
 									Object[] obj = new Object[2];
-									objasig[2] = (String) element2[1];
-									obj[0] = (String) element2[2];
-									obj[1] = (String) element2[1];
+									objasig[2] = element2[1];
+									obj[0] = element2[2];
+									obj[1] = element2[1];
 									areas.add(obj);
 									asignaturasrefarea.add(objasig);
 									break;
@@ -2455,9 +2459,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 								Object[] element2 = (Object[]) it2.next();
 
 								if (((String) element2[0])
-										.equals((String) element3[0])
+										.equals(element3[0])
 										&& ((String) element2[2])
-												.equals((String) element3[3])) {
+												.equals(element3[3])) {
 									areatmp = (String) element2[1];
 									break;
 								}
@@ -2774,17 +2778,17 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				// .println("******nNO HAY NINGUNO CON LOS MISMOS PARAMETROS!...EN ESTADO CERO O -1!*********");
 				rs.close();
 				pst.close();
-				sede = (!filtroAsignaturas.getSede().equals("-9") ? "_Sede_"
+				sede = (!filtroAsignaturas.getSede().equals("-9") ? "_Sed_"
 						+ filtroAsignaturas.getSede().trim() : "");
-				jornada = (!filtroAsignaturas.getJornada().equals("-9") ? "_Jornada_"
+				jornada = (!filtroAsignaturas.getJornada().equals("-9") ? "_Jor_"
 						+ filtroAsignaturas.getJornada().trim()
 						: "");
-				met = (!filtroAsignaturas.getMetodologia().equals("-9") ? "_Metodologia_"
+				met = (!filtroAsignaturas.getMetodologia().equals("-9") ? "_Met_"
 						+ filtroAsignaturas.getMetodologia()
 						: "");
-				grado = (!filtroAsignaturas.getGrado().equals("-9") ? "_Grado_"
+				grado = (!filtroAsignaturas.getGrado().equals("-9") ? "_Gra_"
 						+ filtroAsignaturas.getGrado() : "");
-				grupo = (!filtroAsignaturas.getGrupo().equals("-9") ? "_Grupo_"
+				grupo = (!filtroAsignaturas.getGrupo().equals("-9") ? "_Gru_"
 						+ filtroAsignaturas.getGrupo() : "");
 
 				if (Long.parseLong(filtroAsignaturas.getPeriodo().trim()) == 7) {
@@ -3220,6 +3224,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
@@ -3233,6 +3238,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String s = process(request, response);
@@ -3288,6 +3294,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	/*
 	 * Cierra cursor
 	 */
+	@Override
 	public void destroy() {
 		if (cursor != null)
 			cursor.cerrar();

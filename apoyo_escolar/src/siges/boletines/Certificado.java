@@ -1,8 +1,14 @@
 package siges.boletines;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,13 +21,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperRunManager;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import integraciones.api.reportes.dto.ReporteParametroDto;
+import net.sf.jasperreports.engine.JRException;
 import siges.boletines.beans.FiltroBeanReports;
 import siges.boletines.dao.ReporteLogrosDAO;
 import siges.boletines.vo.DatosBoletinVO;
@@ -30,6 +39,7 @@ import siges.boletines.vo.ReporteVO;
 import siges.dao.Cursor;
 import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
+import siges.dao.Ruta2;
 import siges.exceptions.InternalErrorException;
 import siges.io.Zip;
 
@@ -45,15 +55,17 @@ import siges.io.Zip;
  * @version v 1.0 <BR>
  */
 
-public class Certificado extends Thread {
+public class Certificado{
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
 	private Thread t;
 	private String mensaje;
+	private String uriApiReport;
 	private boolean err;// variable que inidica si hay o no errores en la
 						// validacion de los datos del formulario
 	private ResourceBundle rPath, rbBol;
+	private ResourceBundle rb;
 	private Collection list;
 	private Object[] o;
 	private java.sql.Timestamp f2;
@@ -97,20 +109,22 @@ public class Certificado extends Thread {
 
 	/* Constructor de la clase */
 
-	public Certificado(Cursor c, String cont, String p, String p1, String p2,
-			File reporte1_1_, File reporte1_2_, int nn) {
-		super("HILO_REP_CERTFICADOS: " + nn);
+	//public Certificado(Cursor c, String cont, String p, String p1, String p2,File reporte1_1_, File reporte1_2_, int nn) {
+	public Certificado(Cursor c, String p) {
+	    rb=ResourceBundle.getBundle("siges.boletines.bundle.boletines");
+	    rPath = ResourceBundle.getBundle("path");
+	    rbBol = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
+		String contextoTotal=Ruta.get(context, rPath.getString("boletines.PathBoletin"));
+	  	String path=Ruta2.get(contextoTotal,rb.getString("boletines_ruta_jaspers"));
+	  	//String path_logos=Ruta.get(contextoTotal,rb.getString("boletines_logos"));
+	  	path_escudo=Ruta.get(contextoTotal,rb.getString("boletines_imgs_inst"));
+	  	reporte1_1=new File(path+rb.getString("certificados.reporte1_1"));	
+	  	reporte1_2=new File(path+rb.getString("certificados.reporte1_2"));
+			
 		cursor = c;
-		path = p;
-		path_logos = p1;
-		path_escudo = p2;
+		path = p;	
 
-		reporte1_1 = reporte1_1_;
-		reporte1_2 = reporte1_2_;
-
-		context = cont;
-		rPath = ResourceBundle.getBundle("path");
-		rbBol = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
+		context = contextoTotal;
 		// s=rb3.getString("valor_s");
 		// s1=rb3.getString("valor_s1");
 		// buscar=buscarjasper=insertar=existeboletin=null;
@@ -122,53 +136,54 @@ public class Certificado extends Thread {
 		bolDAO = new ReporteLogrosDAO(cursor);
 	}
 
-	public void run() {
-		Object[] o = new Object[2];
-		int posicion = 1;
-		String[][] array = null;
-		dormir = 0;
-		String cola = null;
-		String puest = "-999";
-		// report= new reportes();
-		try {
-			Thread.sleep(60000);
-			dormir = Integer.parseInt(rbBol.getString("boletines.Dormir"));
-
-			while (ocupado) {
-				System.out.println(getName() + ":Espera Thread");
-				sleep(dormir);
-			}
-
-			ocupado = true;
-			// System.out.println(getName()+":Entra Thread");
-			while (true) {
-				// VALIDACION SI EL HILO ESTA EN PARAMETRO
-				if (!bolDAO.activo()) {// es porque en la tabla vale 0
-					// System.out.println("**ESTA APAGADO**");
-					Thread.sleep(dormir);
-					continue;
-				}
-				// System.out
-				// .println("HILO REP CERTIFICADOS.: ENTRO A REVISAR SOLICITUDES, PARA ATENDERLAS");
-				procesar_solicitudes();
-
-			}
-		} catch (InterruptedException ex) {
-			System.out
-					.println(new Date()
-							+ " - HILO REP CERTIFICADOS.: EXECPCION EN HILO RUN,INTERRUPCION. SE CAYO HILO");
-			ex.printStackTrace();
-			// limpiarTablas(consecBol);
-		} catch (Exception ex) {
-			System.out
-					.println(new Date()
-							+ " - HILO REP CERTIFICADOS.: EXECPCION EN HILO RUN,EXCEPCION. SE CAYO HILO");
-			ex.printStackTrace();
-			// limpiarTablas(consecBol);
-		} finally {
-			ocupado = false;
-		}
-	}
+//	@Override
+//	public void run() {
+//		Object[] o = new Object[2];
+//		int posicion = 1;
+//		String[][] array = null;
+//		dormir = 0;
+//		String cola = null;
+//		String puest = "-999";
+//		// report= new reportes();
+//		try {
+//			Thread.sleep(60000);
+//			dormir = Integer.parseInt(rbBol.getString("boletines.Dormir"));
+//
+//			while (ocupado) {
+//				System.out.println(getName() + ":Espera Thread");
+//				sleep(dormir);
+//			}
+//
+//			ocupado = true;
+//			// System.out.println(getName()+":Entra Thread");
+//			while (true) {
+//				// VALIDACION SI EL HILO ESTA EN PARAMETRO
+//				if (!bolDAO.activo()) {// es porque en la tabla vale 0
+//					// System.out.println("**ESTA APAGADO**");
+//					Thread.sleep(dormir);
+//					continue;
+//				}
+//				// System.out
+//				// .println("HILO REP CERTIFICADOS.: ENTRO A REVISAR SOLICITUDES, PARA ATENDERLAS");
+//				procesar_solicitudes();
+//
+//			}
+//		} catch (InterruptedException ex) {
+//			System.out
+//					.println(new Date()
+//							+ " - HILO REP CERTIFICADOS.: EXECPCION EN HILO RUN,INTERRUPCION. SE CAYO HILO");
+//			ex.printStackTrace();
+//			// limpiarTablas(consecBol);
+//		} catch (Exception ex) {
+//			System.out
+//					.println(new Date()
+//							+ " - HILO REP CERTIFICADOS.: EXECPCION EN HILO RUN,EXCEPCION. SE CAYO HILO");
+//			ex.printStackTrace();
+//			// limpiarTablas(consecBol);
+//		} finally {
+//			ocupado = false;
+//		}
+//	}
 
 	public boolean procesar_solicitudes() {
 		ReporteVO reporte = null;
@@ -198,8 +213,6 @@ public class Certificado extends Thread {
 						continue;
 					}
 				}
-			} else {
-				Thread.sleep(dormir);
 			}
 			return true;
 		} catch (InterruptedException ex) {
@@ -275,13 +288,13 @@ public class Certificado extends Thread {
 		}
 
 	}
-
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean procesar(DatosBoletinVO rep, Map parameterscopy,
 			ReporteVO reporte) {
 
 		list = new ArrayList();
 		Zip zip = new Zip();
-		Collection list = new ArrayList();
+		Collection<String> list = new ArrayList<String>();
 		String archivosalida = null;
 		o = new Object[2];
 		int zise;
@@ -289,21 +302,17 @@ public class Certificado extends Thread {
 		bytes1 = null;
 		int boletin = 1;
 		Connection con = null;
+		uriApiReport = rbBol.getString("boletines_uri_api_reporte");
 		try {
 			bolDAO.limpiarTablas(rep.getDABOLCONSEC());
-			rep.setDABOLFECHAGEN(new java.sql.Timestamp(System
-					.currentTimeMillis()).toString());
+			rep.setDABOLFECHAGEN(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 			rep.setDABOLFECHAFIN("");
-			bolDAO.updateSolicitud(rep.getDABOLCONSEC(),
-					ParamsVO.ESTADO_REPORTE_EJE, rep.getDABOLFECHAGEN(),
-					rep.getDABOLFECHAFIN());
+			bolDAO.updateSolicitud(rep.getDABOLCONSEC(),ParamsVO.ESTADO_REPORTE_EJE, rep.getDABOLFECHAGEN(),rep.getDABOLFECHAFIN());
 			reporte.setEstado(ParamsVO.ESTADO_REPORTE_EJE);
-			reporte.setMensaje("HILO REP CERTIFICADOS:REPORTE EN EJECUCION, CONSEC: "
-					+ rep.getDABOLCONSEC());
+			reporte.setMensaje("HILO REP CERTIFICADOS:REPORTE EN EJECUCION, CONSEC: "+ rep.getDABOLCONSEC());
 			bolDAO.updateReporte(reporte);
 			if (rep.getDABOLCONSEC() > 0) {
-				int nivelGrado = bolDAO
-						.getNivelGrado((int) rep.getDABOLGRADO());
+				int nivelGrado = bolDAO	.getNivelGrado((int) rep.getDABOLGRADO());
 				if (nivelGrado == 1) {
 					if (rep.getDABOLTIPOEVALPREES() == 1) {
 						boletin = 0;
@@ -327,24 +336,25 @@ public class Certificado extends Thread {
 				rep = bolDAO.datosConv(rep, reporte);
 				if (bolDAO.validarDatosReporte(rep)) {
 					parameterscopy.put("CONVINST", rep.getDABOLCONVINST());
-					parameterscopy.put("CONVMEN", rep.getDABOLCONVMEN());
-					
+					parameterscopy.put("CONVMEN", rep.getDABOLCONVMEN());					
 					
 					long consecutivoConsultaExterna = this.getConsecutivoConsultasExternas();
 					this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "CER");
 					String pinConsultaExterna = "CER"+consecutivoConsultaExterna;
 					parameterscopy.put("PINCONSULTAEXTERNA", pinConsultaExterna);
 					
-					File reportFile = setFileJasper(rep);
-					System.out.println("HILO REP CERTIFICADOS JASPER: "
-							+ reportFile.getPath());
+					//20/07/2023
+					parameterscopy.put("FILE_SYSTEM", Ruta.get(context,""));// TODO imagen estudiante
+					
+					//File reportFile = setFileJasper(rep);
+					System.out.println("HILO REP CERTIFICADOS JASPER: Reemplazado por API"	);
 					con = bolDAO.getConnection();
-					if ((reportFile.getPath() != null)
-							&& (parameterscopy != null)
+					zise = 100000;
+					if ((parameterscopy != null)
 							&& (!parameterscopy.values().equals("0"))
 							&& (con != null)) {
-						bytes = JasperRunManager.runReportToPdf(
-								reportFile.getPath(), parameterscopy, con);
+//						bytes = JasperRunManager.runReportToPdf(
+//								reportFile.getPath(), parameterscopy, con);
 					}
 					if (con != null)
 						con.close();
@@ -352,25 +362,89 @@ public class Certificado extends Thread {
 					reporte.setMensaje("REPORTE EN EJECUCION, CONSEC: "
 							+ rep.getDABOLCONSEC());
 					bolDAO.updateReporte(reporte);
-					ponerArchivo(modulo, path, bytes, rep.getDABOLNOMBREPDF());
+					//ponerArchivo(modulo, path, bytes, rep.getDABOLNOMBREPDF());
 					archivosalida = Ruta.get(context,
 							rPath.getString("boletines.PathCertificado"));
 					list.add(archivosalida + rep.getDABOLNOMBREPDF());// pdf
-					zise = 100000;
-					if (zip.ponerZip(archivosalida, rep.getDABOLNOMBREZIP(),
-							zise, list)) {
-						rep.setDABOLFECHAFIN(new java.sql.Timestamp(System
-								.currentTimeMillis()).toString());
-						bolDAO.updateSolicitud(rep.getDABOLCONSEC(),
-								ParamsVO.ESTADO_REPORTE_GENOK,
-								rep.getDABOLFECHAGEN(), rep.getDABOLFECHAFIN());
-						reporte.setEstado(ParamsVO.ESTADO_REPORTE_GENOK);
-						reporte.setMensaje("REPORTE GENERADO SATISFACTORIAMENTE");
-						bolDAO.updateReporte(reporte);
-						this.updateConsultasExternas(consecutivoConsultaExterna, archivosalida, rep.getDABOLNOMBREZIP(), "zip", "CER");
-						bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+					/* consumo API para la generación del reporte */
+					try {
+						final URL url = new URL(uriApiReport);// url API
+																// report
+						final java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+						conn.setDoOutput(true);
+						conn.setRequestMethod("POST");
+						conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+						conn.setRequestProperty("Accept", "application/json");
+						OutputStreamWriter outputStreamWriter = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
+						ObjectMapper objectMapper = new ObjectMapper();
+						ReporteParametroDto param = new ReporteParametroDto();
+
+						param.setParams(parameterscopy);// parametros para
+														// el reporte
+						param.setTopic(1);// topic Certificados
+						param.setTemplate(rep.getDABOLTIPOREP() == ParamsVO.TIPO_REPORTE_ASIG?"certificado":"certificado_dim");
+						param.setFormat("pdf");
+						param.setFileName(rep.DABOLNOMBREPDF);						
+						param.setReportId(Integer.parseInt(String.valueOf(rep.getDABOLCONSEC())));
+						
+						param.setModulo(modulo);
+						param.setPath(archivosalida);
+						param.setNombrePDF(rep.getDABOLNOMBREPDF());
+						param.setArchivoSalida(archivosalida);
+						param.setNombreZIP(rep.getDABOLNOMBREZIP());
+						param.setZise(zise);
+						param.setList(list.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("@", "{", "}")));
+						param.setBolDAO(null);//objectMapper.writeValueAsString(bolDAO.toString()));
+						param.setReporteVO(objectMapper.writeValueAsString(rep));
+						param.setReporte(objectMapper.writeValueAsString(reporte));
+						param.setContext(context);
+						param.setConsecutivoConsultaExterna(consecutivoConsultaExterna);
+
+						String json = objectMapper.writeValueAsString(param);
+						System.out.println(json);
+
+						outputStreamWriter.write(json);
+						outputStreamWriter.flush();
+						outputStreamWriter.close();
+						// Obtener respuesta de la API
+						int responseCode = conn.getResponseCode();
+						BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+						String line;
+						StringBuilder response = new StringBuilder();
+						while ((line = reader.readLine()) != null) {
+							response.append(line);
+						}
+						reader.close();
+						// Procesar la respuesta
+						if (responseCode == HttpURLConnection.HTTP_OK) {
+							System.out.println("Respuesta de la API:" + response.toString());							
+							return true; // reporte en topic para ser generado de forma asincrona 
+						} else {
+							System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+						}
+						// Cerrar conexión
+						conn.disconnect();
 						return true;
+
+					} catch (JsonProcessingException e) {
+						e.printStackTrace();
 					}
+					/* fin consumo API */
+//					if (zip.ponerZip(archivosalida, rep.getDABOLNOMBREZIP(),
+//							zise, list)) {
+//						rep.setDABOLFECHAFIN(new java.sql.Timestamp(System
+//								.currentTimeMillis()).toString());
+//						bolDAO.updateSolicitud(rep.getDABOLCONSEC(),
+//								ParamsVO.ESTADO_REPORTE_GENOK,
+//								rep.getDABOLFECHAGEN(), rep.getDABOLFECHAFIN());
+//						reporte.setEstado(ParamsVO.ESTADO_REPORTE_GENOK);
+//						reporte.setMensaje("REPORTE GENERADO SATISFACTORIAMENTE");
+//						bolDAO.updateReporte(reporte);
+//						this.updateConsultasExternas(consecutivoConsultaExterna, archivosalida, rep.getDABOLNOMBREZIP(), "zip", "CER");
+//						bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+//						return true;
+//					}
 				}// fin de rs
 				else {
 					rep.setDABOLFECHAFIN(new java.sql.Timestamp(System
@@ -383,8 +457,7 @@ public class Certificado extends Thread {
 					bolDAO.updateReporte(reporte);
 					// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 					bolDAO.limpiarTablas(rep.getDABOLCONSEC());
-					// System.out
-					// .println("HILO REP CERTIFICADOS: NO SE HAY REGISTROS REPORTE");
+					// System.out.println("HILO REP CERTIFICADOS: NO SE HAY REGISTROS REPORTE");
 					return true;
 				}
 
@@ -392,14 +465,10 @@ public class Certificado extends Thread {
 		} catch (InternalErrorException e) {
 			e.printStackTrace();
 			try {
-				rep.setDABOLFECHAFIN(new java.sql.Timestamp(System
-						.currentTimeMillis()).toString());
-				bolDAO.updateSolicitud(rep.getDABOLCONSEC(),
-						ParamsVO.ESTADO_REPORTE_NOGEN, rep.getDABOLFECHAGEN(),
-						rep.getDABOLFECHAFIN());
+				rep.setDABOLFECHAFIN(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+				bolDAO.updateSolicitud(rep.getDABOLCONSEC(), ParamsVO.ESTADO_REPORTE_NOGEN, rep.getDABOLFECHAGEN(), rep.getDABOLFECHAFIN());
 				reporte.setEstado(ParamsVO.ESTADO_REPORTE_NOGEN);
-				reporte.setMensaje("OCURRIO ERROR GENERACION REPORTE, EXCEPCION: "
-						+ e.getMessage());
+				reporte.setMensaje("OCURRIO ERROR GENERACION REPORTE, EXCEPCION: " + e.getMessage());
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
@@ -412,14 +481,10 @@ public class Certificado extends Thread {
 		} catch (JRException e) {
 			e.printStackTrace();
 			try {
-				rep.setDABOLFECHAFIN(new java.sql.Timestamp(System
-						.currentTimeMillis()).toString());
-				bolDAO.updateSolicitud(rep.getDABOLCONSEC(),
-						ParamsVO.ESTADO_REPORTE_NOGEN, rep.getDABOLFECHAGEN(),
-						rep.getDABOLFECHAFIN());
+				rep.setDABOLFECHAFIN(new java.sql.Timestamp(System.currentTimeMillis()).toString());
+				bolDAO.updateSolicitud(rep.getDABOLCONSEC(), ParamsVO.ESTADO_REPORTE_NOGEN, rep.getDABOLFECHAGEN(),	rep.getDABOLFECHAFIN());
 				reporte.setEstado(ParamsVO.ESTADO_REPORTE_NOGEN);
-				reporte.setMensaje("OCURRIO ERROR GENERACION REPORTE, EXCEPCION: "
-						+ e.getMessage());
+				reporte.setMensaje("OCURRIO ERROR GENERACION REPORTE, EXCEPCION: " + e.getMessage());
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
@@ -813,34 +878,23 @@ public class Certificado extends Thread {
 		return reporte;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map setParametros(DatosBoletinVO bdt) {
 		Map parametros = new HashMap();
+		String archivoEscudo = bolDAO.getPathEscudo(new Long(bdt.getDABOLINST()));
 		if (bdt != null) {
 			parametros = new HashMap();
 			parametros.put("usuario", bdt.getDABOLUSUARIO());
-			escudo = new File(path_escudo + "e" + bdt.getDANE().trim() + ".gif");
-			// System.out.println("escudo: " + escudo.getPath());
-			if (escudo.exists()) {
-				parametros.put("ESCUDO_COLEGIO", path_escudo + "e"
-						+ bdt.getDANE().trim() + ".gif");
+			
+			escudo = new File(archivoEscudo);			
+			
+			if (escudo.exists()) {				
+				parametros.put("ESCUDO_COLEGIO", archivoEscudo);
 				parametros.put("ESCUDO_COLEGIO_EXISTE", new Integer(1));
-			} else {
-				escudo = new File(path_escudo + "e" + bdt.getDANE().trim()
-						+ ".GIF");
-				if (escudo.exists()) {
-					parametros.put("ESCUDO_COLEGIO", path_escudo + "e"
-							+ bdt.getDANE().trim() + ".GIF");
-					parametros.put("ESCUDO_COLEGIO_EXISTE", new Integer(1));
-				} else {
-					parametros.put("ESCUDO_COLEGIO_EXISTE", new Integer(1));
-					parametros.put("ESCUDO_COLEGIO",
-							path_escudo + rbBol.getString("imagen"));
-				}
-				// parameters.put("ESCUDO_COLEGIO_EXISTE",new Integer(0));
-			}
+			} else 
+				parametros.put("ESCUDO_COLEGIO_EXISTE", new Integer(0));
 
-			parametros.put("ESCUDO_SED",
-					path_escudo + rbBol.getString("imagen"));
+			parametros.put("ESCUDO_SED", path_escudo + rbBol.getString("imagen"));
 
 			parametros.put("PERIODO", new Integer((int) bdt.getDABOLPERIODO()));
 			parametros.put("VIGENCIA", new Integer(bdt.getDABOLVIGENCIA()));
@@ -862,6 +916,7 @@ public class Certificado extends Thread {
 			// parameters.put("SUBTITULO",bdt.getDABOLSUBTITULO());
 			// parametros.put("SUBTITULO","LOGROS Y DECRIPTORES");
 			parametros.put("RESOLUCION", bdt.getDABOLRESOLUCION());
+			parametros.put("INSTITUCIONCOD", new Long(bdt.getDABOLINST()));
 			parametros.put("INSTITUCION", bdt.getDABOLINSNOMBRE());
 			parametros.put("SEDE", bdt.getDABOLSEDNOMBRE());
 			parametros.put("JORNADA", bdt.getDABOLJORNOMBRE());

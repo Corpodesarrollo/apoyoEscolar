@@ -1,8 +1,14 @@
 package siges.boletines;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,13 +18,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperRunManager;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import integraciones.api.reportes.dto.ReporteParametroDto;
 import siges.boletines.beans.FiltroBeanConstancias;
 import siges.dao.Cursor;
 import siges.dao.OperacionesGenerales;
@@ -38,16 +46,17 @@ import siges.io.Zip;
  * @version v 1.0 <BR>
  */
 
-public class Constancia extends Thread {
+public class Constancia{
 
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
 	private Thread t;
 	private String mensaje;
+	private String uriApiReport;
 	private boolean err;// variable que inidica si hay o no errores en la
 						// validacion de los datos del formulario
-	private ResourceBundle r, rb3;
+	private ResourceBundle r, rb3, rbBol;
 	private Collection list;
 	private Object[] o;
 	private java.sql.Timestamp f2;
@@ -80,7 +89,6 @@ public class Constancia extends Thread {
 	public Constancia(Cursor c, FiltroBeanConstancias f, String cont, String a,
 			String apre, String azip, java.sql.Timestamp fecha, Map parameters,
 			String p, String p1, File reportF, File reportF1, int nn) {
-		super("hilo_constancia-" + nn);
 		cursor = c;
 		filtro = f;
 		archivopre = apre;
@@ -93,6 +101,7 @@ public class Constancia extends Thread {
 		context = cont;
 		r = ResourceBundle.getBundle("path");
 		rb3 = ResourceBundle.getBundle("siges.boletines.bundle.constancias");
+		rbBol = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
 		f2 = fecha;
 		copyparameters = parameters;
 		buscar = buscarjasper = insertar = existeconstancia = null;
@@ -103,56 +112,55 @@ public class Constancia extends Thread {
 		s1 = rb3.getString("valor_s1");
 	}
 
-	public void run() {
-		Object[] o = new Object[2];
-		int posicion = 1;
-		int dormir = 0;
-		String puest = "-999";
-		constancias1 = new constancias();
-
-		try {
-			Thread.sleep(5000);
-			dormir = Integer.parseInt(rb3.getString("constancias.Dormir"));
-			while (ocupado) {
-				// System.out.println(":entro " + reportFile.getPath());
-				sleep(dormir);
-			}
-			ocupado = true;
-			// System.out.println(getName()+":Entra Thread");
-			if (!procesamientoConstancia(f2, copyparameters)) {
-				// System.out
-				// .println("nNO TERMINn PROCESS... OCURRIn ERROR..MIRAR TRACE!");
-				ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
-						rb3.getString("constancias.PathConstancias")
-								+ archivozip + "", "zip7", "" + archivozip,
-						"ReporteActualizarBoletinPaila", "Problema en process");
-				updateReporte(archivozip, filtro.getUsuarioid(), "2");
-				return;
-			}
-			// System.out.println(getName() + ":Sale Thread");
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-			ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
-					rb3.getString("constancias.PathConstancias") + archivozip
-							+ "", "zip7", "" + archivozip,
-					"ReporteActualizarBoletin",
-					"Ocurrin Interrupted excepcinn en el Hilo:_" + ex);
-			updateReporte(archivozip, filtro.getUsuarioid(), "2");
-			limpiarTablas(filtro.getUsuarioid());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
-					rb3.getString("constancias.PathConstancias") + archivozip
-							+ "", "zip7", "" + archivozip,
-					"ReporteActualizarBoletin",
-					"Ocurrin Interrupted excepcinn en el Hilo:_" + ex);
-			updateReporte(archivozip, filtro.getUsuarioid(), "2");
-			limpiarTablas(filtro.getUsuarioid());
-		} finally {
-			ocupado = false;
-		}
-	}
-
+//	@Override
+//	public void run() {
+//		Object[] o = new Object[2];
+//		int posicion = 1;
+//		int dormir = 0;
+//		String puest = "-999";
+//		constancias1 = new constancias();
+//
+//		try {
+//			Thread.sleep(5000);
+//			dormir = Integer.parseInt(rb3.getString("constancias.Dormir"));
+//			while (ocupado) {
+//				// System.out.println(":entro " + reportFile.getPath());
+//				sleep(dormir);
+//			}
+//			ocupado = true;
+//			// System.out.println(getName()+":Entra Thread");
+//			if (!procesamientoConstancia(f2, copyparameters)) {
+//				// System.out
+//				// .println("nNO TERMINn PROCESS... OCURRIn ERROR..MIRAR TRACE!");
+//				ponerReporteMensaje("2", modulo, filtro.getUsuarioid(), rb3.getString("constancias.PathConstancias")
+//								+ archivozip + "", "zip7", "" + archivozip,	"ReporteActualizarBoletinPaila", "Problema en process");
+//				updateReporte(archivozip, filtro.getUsuarioid(), "2");
+//				return;
+//			}
+//			// System.out.println(getName() + ":Sale Thread");
+//		} catch (InterruptedException ex) {
+//			ex.printStackTrace();
+//			ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
+//					rb3.getString("constancias.PathConstancias") + archivozip
+//							+ "", "zip7", "" + archivozip,
+//					"ReporteActualizarBoletin",
+//					"Ocurrin Interrupted excepcinn en el Hilo:_" + ex);
+//			updateReporte(archivozip, filtro.getUsuarioid(), "2");
+//			limpiarTablas(filtro.getUsuarioid());
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//			ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
+//					rb3.getString("constancias.PathConstancias") + archivozip
+//							+ "", "zip7", "" + archivozip,
+//					"ReporteActualizarBoletin",
+//					"Ocurrin Interrupted excepcinn en el Hilo:_" + ex);
+//			updateReporte(archivozip, filtro.getUsuarioid(), "2");
+//			limpiarTablas(filtro.getUsuarioid());
+//		} finally {
+//			ocupado = false;
+//		}
+//	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean procesamientoConstancia(java.sql.Timestamp date,
 			Map parameterscopy) {
 		list = new ArrayList();
@@ -160,21 +168,19 @@ public class Constancia extends Thread {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Zip zip = new Zip();
-		Collection list = new ArrayList();
+		Collection<String> list = new ArrayList<String>();
 		String archivosalida = null;
 		Object[] o = new Object[2];
 		int zise;
 		int posicion = 1;
+		uriApiReport = rbBol.getString("boletines_uri_api_reporte");
 
 		try {
 			limpiarTablas(filtro.getUsuarioid());
 			// System.out
 			// .println("nSe limpiaron las tablas antes de ser llenadas!");
 			updateReporte(archivozip, filtro.getUsuarioid(), "0");
-			ponerReporteMensajeListo(modulo, filtro.getUsuarioid(),
-					rb3.getString("constancias.PathConstancias") + archivozip
-							+ "", "zip7", "" + archivozip,
-					"ReporteActualizarGenerando");
+			ponerReporteMensajeListo(modulo, filtro.getUsuarioid(),	rb3.getString("constancias.PathConstancias") + archivozip + "", "zip7", "" + archivozip, "ReporteActualizarGenerando");
 
 			if (!preparedstatementsconstancias(filtro)) {
 				// System.out
@@ -188,10 +194,10 @@ public class Constancia extends Thread {
 			pst.clearParameters();
 			pst.setLong(posicion++, Long.parseLong(filtro.getUsuarioid()));
 			rs = pst.executeQuery();
-			
-			
-			
-			
+			archivosalida = Ruta.get(context, r.getString("boletines.PathConstancia"));
+			list.add(archivosalida + archivo);
+			zise = 100000;				
+					
 			if (rs.next()) {
 				rs.close();
 				pst.close();
@@ -199,36 +205,88 @@ public class Constancia extends Thread {
 				this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "CON");
 				String pinConsultaExterna = "CON"+consecutivoConsultaExterna;
 				parameterscopy.put("PINCONSULTAEXTERNA", pinConsultaExterna);
-				// System.out
-				// .println("nnnnnnnnnnnnnnnnSE DEBE EJECUTAR ESTUDIANTE_ACTUALnnnnnnnnnnnnnnnnnnnnn");
-				if ((reportFile.getPath() != null) && (parameterscopy != null)&& (!parameterscopy.values().equals("0"))&& (con != null)) {
-					// System.out
-					// .println("***Se mandn ejecutar el jasper del estudiante actual**** "
-					// + reportFile.getPath());
-					bytes = JasperRunManager.runReportToPdf(
-							reportFile.getPath(), parameterscopy, con);
-				}
-				ponerReporteMensajeListo(modulo, filtro.getUsuarioid(),
-						rb3.getString("constancias.PathConstancias")
-								+ archivozip + "", "zip7", "" + archivozip,
-						"ReporteActualizarListo");
-				ponerArchivo(modulo, path, bytes, archivo);
-				archivosalida = Ruta.get(context,
-						r.getString("boletines.PathConstancia"));
-				list.add(archivosalida + archivo);
-				zise = 100000;
+				
+				
+				if ((parameterscopy != null)&& (!parameterscopy.values().equals("0"))&& (con != null)) {		
+					/* consumo API para la generación del reporte */
+					try {
+						final URL url = new URL(uriApiReport);// url API
+						// report
+						final java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+						conn.setDoOutput(true);
+						conn.setRequestMethod("POST");
+						conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+						conn.setRequestProperty("Accept", "application/json");
+						OutputStreamWriter outputStreamWriter = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
+						ObjectMapper objectMapper = new ObjectMapper();
+						ReporteParametroDto param = new ReporteParametroDto();
+						
+						param.setParams(parameterscopy);// parametros para
+						// el reporte
+						param.setTopic(2);// topic Constancias
+						param.setTemplate("encabezado_constancia");
+						param.setFormat("pdf");
+						param.setFileName(archivo);						
+						param.setReportId(Integer.parseInt(String.valueOf(filtro.getUsuarioid())));
+						
+						param.setModulo(modulo);
+						param.setPath(path);
+						param.setNombrePDF(archivo);
+						param.setArchivoSalida(archivosalida);
+						param.setNombreZIP(archivozip);
+						param.setZise(zise);
+						param.setList(list.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("@", "{", "}")));
+						param.setBolDAO(null);//objectMapper.writeValueAsString(bolDAO.toString()));
+						param.setReporteVO(null);
+						param.setReporte(null);
+						param.setContext(context);
+						param.setConsecutivoConsultaExterna(consecutivoConsultaExterna);
+						
+						String json = objectMapper.writeValueAsString(param);
+						System.out.println(json);
+						
+						outputStreamWriter.write(json);
+						outputStreamWriter.flush();
+						outputStreamWriter.close();
+						// Obtener respuesta de la API
+						int responseCode = conn.getResponseCode();
+						BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+						
+						String line;
+						StringBuilder response = new StringBuilder();
+						while ((line = reader.readLine()) != null) {
+							response.append(line);
+						}
+						reader.close();
+						// Procesar la respuesta
+						if (responseCode == HttpURLConnection.HTTP_OK) {
+							System.out.println("Respuesta de la API:" + response.toString());						
+							return true; // reporte en topic para ser generado de forma asincrona 
+						} else {
+							System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+						}
+						// Cerrar conexión
+						conn.disconnect();
+						return true;
+						
+					} catch (JsonProcessingException e) {
+						e.printStackTrace();
+					}
 
-				if (zip.ponerZip(archivosalida, archivozip, zise, list)) {
-					updateReporte(archivozip, filtro.getUsuarioid(), "1");
-					this.updateConsultasExternas(consecutivoConsultaExterna, archivosalida, archivozip, "zip", "CON");
-					limpiarTablas(filtro.getUsuarioid());
-					return true;
-				}
-			} else {
+				ponerReporteMensajeListo(modulo, filtro.getUsuarioid(),	rb3.getString("constancias.PathConstancias") + archivozip + "", "zip7", "" + archivozip, "ReporteActualizarListo");
+				//ponerArchivo(modulo, path, bytes, archivo);				
+				/* fin consumo API */
+//				if (zip.ponerZip(archivosalida, archivozip, zise, list)) {
+//					updateReporte(archivozip, filtro.getUsuarioid(), "1");
+//					this.updateConsultasExternas(consecutivoConsultaExterna, archivosalida, archivozip, "zip", "CON");
+//					limpiarTablas(filtro.getUsuarioid());
+//					return true;
+//				}
+			}
+			}else {
 				rs.close();
 				pst.close();
-				pst = con.prepareStatement(rb3
-						.getString("constancia_est_graduado"));
+				pst = con.prepareStatement(rb3.getString("constancia_est_graduado"));
 				posicion = 1;
 				pst.clearParameters();
 				pst.setLong(posicion++, Long.parseLong(filtro.getUsuarioid()));
@@ -243,32 +301,90 @@ public class Constancia extends Thread {
 					this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "CON");
 					String pinConsultaExterna = "CON"+consecutivoConsultaExterna;
 					parameterscopy.put("PINCONSULTAEXTERNA", pinConsultaExterna);
-					
-					if ((reportFile1.getPath() != null)
-							&& (parameterscopy != null)
-							&& (!parameterscopy.values().equals("0"))
-							&& (con != null)) {
-						// System.out
-						// .println("***Se mandn ejecutar el jasper del estudiante graduado****");
-						bytes1 = JasperRunManager.runReportToPdf(
-								reportFile1.getPath(), parameterscopy, con);
+					zise = 100000;
+					if ((parameterscopy != null)&& (!parameterscopy.values().equals("0"))&& (con != null)) {
+						/* consumo API para la generación del reporte */
+						try {
+							final URL url = new URL(uriApiReport);// url API
+							// report
+							final java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+							conn.setDoOutput(true);
+							conn.setRequestMethod("POST");
+							conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+							conn.setRequestProperty("Accept", "application/json");
+							OutputStreamWriter outputStreamWriter = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
+							ObjectMapper objectMapper = new ObjectMapper();
+							ReporteParametroDto param = new ReporteParametroDto();
+							
+							param.setParams(parameterscopy);// parametros para
+							// el reporte
+							param.setTopic(2);// topic Constancias
+							param.setTemplate("encabezado_constancia_graduado");
+							param.setFormat("pdf");
+							param.setFileName(archivo);						
+							param.setReportId(Integer.parseInt(String.valueOf(filtro.getUsuarioid())));
+							
+							param.setModulo(modulo);
+							param.setPath(path);
+							param.setNombrePDF(archivo);
+							param.setArchivoSalida(archivosalida);
+							param.setNombreZIP(archivozip);
+							param.setZise(zise);
+							param.setList(list.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("@", "{", "}")));
+							param.setBolDAO(null);//objectMapper.writeValueAsString(bolDAO.toString()));
+							param.setReporteVO(null);
+							param.setReporte(null);
+							param.setContext(context);
+							param.setConsecutivoConsultaExterna(consecutivoConsultaExterna);
+							
+							String json = objectMapper.writeValueAsString(param);
+							System.out.println(json);
+							
+							outputStreamWriter.write(json);
+							outputStreamWriter.flush();
+							outputStreamWriter.close();
+							// Obtener respuesta de la API
+							int responseCode = conn.getResponseCode();
+							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+							
+							String line;
+							StringBuilder response = new StringBuilder();
+							while ((line = reader.readLine()) != null) {
+								response.append(line);
+							}
+							reader.close();
+							// Procesar la respuesta
+							if (responseCode == HttpURLConnection.HTTP_OK) {
+								System.out.println("Respuesta de la API:" + response.toString());						
+								return true; // reporte en topic para ser generado de forma asincrona 
+							} else {
+								System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+							}
+							// Cerrar conexión
+							conn.disconnect();
+							return true;
+							
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}
+
 					}
 					ponerReporteMensajeListo(modulo, filtro.getUsuarioid(),
 							rb3.getString("constancias.PathConstancias")
 									+ archivozip + "", "zip7", "" + archivozip,
 							"ReporteActualizarListo");
-					ponerArchivo(modulo, path, bytes1, archivopre);
-					archivosalida = Ruta.get(context,
-							r.getString("boletines.PathConstancia"));
-					list.add(archivosalida + archivopre);
-					zise = 100000;
-
-					if (zip.ponerZip(archivosalida, archivozip, zise, list)) {
-						updateReporte(archivozip, filtro.getUsuarioid(), "1");
-						this.updateConsultasExternas(consecutivoConsultaExterna, archivosalida, archivozip, "zip", "CON");
-						limpiarTablas(filtro.getUsuarioid());
-						return true;
-					}
+					//ponerArchivo(modulo, path, bytes1, archivopre);
+//					archivosalida = Ruta.get(context,
+//							r.getString("boletines.PathConstancia"));
+//					list.add(archivosalida + archivopre);
+//					
+//
+//					if (zip.ponerZip(archivosalida, archivozip, zise, list)) {
+//						updateReporte(archivozip, filtro.getUsuarioid(), "1");
+//						this.updateConsultasExternas(consecutivoConsultaExterna, archivosalida, archivozip, "zip", "CON");
+//						limpiarTablas(filtro.getUsuarioid());
+//						return true;
+//					}
 				} else {
 					rs.close();
 					pst.close();
@@ -276,9 +392,9 @@ public class Constancia extends Thread {
 							rb3.getString("constancias.PathConstancias")
 									+ archivozip + "", "zip7", "" + archivozip,
 							"ReporteActualizarBoletinGenerando",
-							"nNo se encontraron registros para generar la constancia!");
+							"No se encontraron registros para generar la constancia!");
 					// System.out
-					// .println("nNo se encontraron registros para generar la constancia!");
+					// .println("No se encontraron registros para generar la constancia!");
 					updateReporte(archivozip, filtro.getUsuarioid(), "2");
 					limpiarTablas(filtro.getUsuarioid());
 					return true;
@@ -290,15 +406,6 @@ public class Constancia extends Thread {
 							+ "", "zip7", "" + archivozip,
 					"ReporteActualizarBoletinGenerando",
 					"Ocurrio una excepcion interna:_" + e);
-			updateReporte(archivozip, filtro.getUsuarioid(), "2");
-			limpiarTablas(filtro.getUsuarioid());
-			return false;
-		} catch (JRException e) {
-			ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
-					rb3.getString("constancias.PathConstancias") + archivozip
-							+ "", "zip7", "" + archivozip,
-					"ReporteActualizarBoletinGenerando",
-					"Ocurrio excepcion jasper:_" + e);
 			updateReporte(archivozip, filtro.getUsuarioid(), "2");
 			limpiarTablas(filtro.getUsuarioid());
 			return false;
@@ -827,7 +934,7 @@ public class Constancia extends Thread {
 	public void setMensaje(String s) {
 		if (!err) {
 			err = true;
-			mensaje = "VERIFIQUE LA SIGUIENTE informaciÃ³n: \n\n";
+			mensaje = "VERIFIQUE LA SIGUIENTE información: \n\n";
 		}
 		mensaje = "  - " + s + "\n";
 	}

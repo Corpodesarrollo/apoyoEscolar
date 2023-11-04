@@ -63,7 +63,7 @@ public class constancias extends HttpServlet {
 	private Integer doble = new Integer(java.sql.Types.DOUBLE);
 	private Integer caracter = new Integer(java.sql.Types.CHAR);
 	private Integer enterolargo = new Integer(java.sql.Types.BIGINT);
-	private ResourceBundle r, rb3;
+	private ResourceBundle r, rb3, rbBol;
 	private Collection list;
 	private Object[] o;
 	private java.sql.Timestamp f2;
@@ -113,8 +113,9 @@ public class constancias extends HttpServlet {
 		int posicion = 1;
 		r = ResourceBundle.getBundle("path");
 		rb3 = ResourceBundle.getBundle("siges.boletines.bundle.constancias");
+		rbBol = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
 		f2 = new java.sql.Timestamp(new java.util.Date().getTime());
-		String nom = null;
+		String nomC = null,nomP = null;
 		ant = "/boletines/GenerarConstancias.jsp";
 		sig = "/boletines/GenerarConstancias.jsp";
 		er = "/error.jsp";
@@ -138,23 +139,23 @@ public class constancias extends HttpServlet {
 			return null;
 		}
 
-		ServletContext context = (ServletContext) request.getSession()
+		ServletContext context = request.getSession()
 				.getServletContext();
 		String contextoTotal = context.getRealPath("/");
 		String path = Ruta2.get(context.getRealPath("/"), "boletines.reports");
 		String path_logo = Ruta.get(context.getRealPath("/"),
 				"private.img.logos");
-		String path_escudo = Ruta.get(context.getRealPath("/"),
-				"private.img.escudo");
+		String path_escudo = Ruta.get(context.getRealPath("/"),"private.escudo");
 		reportFile = new File(path + rb3.getString("rep"));
 		reportFile1 = new File(path + rb3.getString("reppre"));
 		parameters = new HashMap();
+		
 		int n = 1;
 
 		try {
 			con = cursor.getConnection();
 			reportesDAO = new ReporteLogrosDAO(cursor);
-			Estudiante estudianteSeleccionado = estudianteSeleccionado = reportesDAO.getDatosEstudiante2(filtro.getId());
+			Estudiante estudianteSeleccionado = reportesDAO.getDatosEstudiante2(filtro.getId());
 			if(login.getPerfil().equalsIgnoreCase("510") && estudianteSeleccionado != null){
 				
 				login.setInstId(""+estudianteSeleccionado.getEstInstitucion());
@@ -225,61 +226,71 @@ public class constancias extends HttpServlet {
 				pst.close();
 //				System.out.println("******nNO HAY NINGUN CONTANCIA GENERANDOSE!...*********");
 
-				String inst = filtro.getInstitucion().trim().replace(':', '-')
+				String inst = filtro.getInstitucion().trim().replace(':', '-').replace('Ñ', 'N')
 						.replace('.', '-').replace('n', 'a').replace('n', 'A')
 						.replace('n', 'e').replace('n', 'E').replace('n', 'i')
 						.replace('n', 'I').replace('n', 'o').replace('n', 'O')
 						.replace('n', 'u').replace('n', 'U').replace('n', 'n')
 						.replace('n', 'N').replace(' ', '_');
-				String id = (!filtro.getId().equals("") ? "_Num_Doc_Estudiante_"
+				String id = (!filtro.getId().equals("") ? "_Doc_Est_"
 						+ filtro.getId().trim()
 						: "");
-				String est = (!filtro.getEstudiante().equals("-9") ? "_Num_Doc_"
+				String est = (!filtro.getEstudiante().equals("-9") ? "_Doc_"
 						+ filtro.getEstudiante().trim()
 						: "");
-				nom = inst
+				nomC = //inst
+						est
+						//id
+						+ "_Fec_"
+						+ f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-');
+				nomP = inst
 						+ est
 						+ id
-						+ "_Fecha_"
-						+ f2.toString().replace(' ', '_').replace(':', '-')
-								.replace('.', '-');
+						+ "_Fec_"
+						+ f2.toString().substring(0, f2.toString().indexOf(".")).replace(' ', '_').replace(':', '-').replace('.', '-');
 
 				if (filtro.gettiporep().trim().equals("1")) {
-					archivo = "Constancia_" + nom + ".pdf";
-					archivopre = "Constancia_Preescolar_" + nom + ".pdf";
-					archivozip = "Constancia_" + nom + ".zip";
+					archivo = "Cons_" + nomC + ".pdf";
+					archivopre = "Cons_Pre_" + nomC + ".pdf";
+					archivozip = "Cons_" + nomC + ".zip";
 				} else {
-					archivo = "PazYsalvo_" + nom + ".pdf";
-					archivopre = "PazYsalvo_Preescolar_" + nom + ".pdf";
-					archivozip = "PazYsalvo_" + nom + ".zip";
-				}
-				escudo = new File(path_escudo + "e" + codigodane.trim()
-						+ ".gif");
-//				System.out.println("escudo: " + escudo);
+					archivo = "Paz_" + nomP + ".pdf";
+					archivopre = "Paz_Pre_" + nomP + ".pdf";
+					archivozip = "Paz_" + nomP + ".zip";
+				}	
+				String archivoEscudo = reportesDAO.getPathEscudo(Long.parseLong(login.getInstId()));
+				escudo = new File(archivoEscudo);
+				
 				if (escudo.exists())
-					parameters.put("LogoInstitucion", path_escudo + "e"
-							+ codigodane.trim() + ".gif");
+					parameters.put("LogoInstitucion", archivoEscudo);				
 				else
-					parameters.put("LogoInstitucion",
-							path_escudo + rb3.getString("imagen"));
+					parameters.put("LogoInstitucion", path_escudo + rb3.getString("imagen"));
 
-				parameters.put("usuario", ((String) login.getUsuarioId()));
-				parameters.put("LogoCundinamarca",
-						path_escudo + rb3.getString("imagen"));
-				parameters.put("efecto", ((String) filtro.getMotivo().trim()));
+				parameters.put("usuario", (login.getUsuarioId()));
+				parameters.put("LogoCundinamarca", path_escudo + rb3.getString("imagen"));
+				parameters.put("efecto", (filtro.getMotivo().trim()));
 				// System.out.println("tiporep: " + filtro.gettiporep().trim());
-				parameters.put("tipo", ((String) filtro.gettiporep().trim()));
+				parameters.put("tipo", (filtro.gettiporep().trim()));
+				
+				long consecutivoConsultaExterna = this.getConsecutivoConsultasExternas();
+				this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "CON");
+				String pinConsultaExterna = "CON"+consecutivoConsultaExterna;
+				parameters.put("PINCONSULTAEXTERNA", pinConsultaExterna);
 
 				ponerReporte(modulo, login.getUsuarioId(),
 						rb3.getString("constancias.PathConstancias")
 								+ archivozip + "", "zip7", "" + archivozip,
 						"-1", "ReporteInsertarEstado");
-//				System.out.println("Se insertn el ZIP en Reporte con estado -1");
-
-				t = new Thread(new Constancia(cursor, filtro, contextoTotal,
+				
+				Constancia constancia = new Constancia(cursor, filtro, contextoTotal,
 						archivo, archivopre, archivozip, f2, parameters, path,
-						path_logo, reportFile, reportFile1, n++));
-				t.start();
+						path_logo, reportFile, reportFile1, n++);
+				if (!constancia.procesamientoConstancia(f2, parameters)) {// se dispara el procesamiento de solicitudes				
+					ponerReporteMensaje("2", modulo, filtro.getUsuarioid(), rb3.getString("constancias.PathConstancias")
+									+ archivozip + "", "zip7", "" + archivozip,	"ReporteActualizarBoletinPaila", "Problema en process");
+					constancia.updateReporte(archivozip, filtro.getUsuarioid(), "2");
+				}
+
 				setMensaje(alert);
 				request.setAttribute("mensaje", getMensaje());
 			} else {
@@ -482,6 +493,7 @@ public class constancias extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
@@ -495,6 +507,7 @@ public class constancias extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String s = process(request, response);
@@ -550,6 +563,7 @@ public class constancias extends HttpServlet {
 	/*
 	 * Cierra cursor
 	 */
+	@Override
 	public void destroy() {
 		try {
 			t.stop();
@@ -590,5 +604,75 @@ public class constancias extends HttpServlet {
 			}
 		}
 		return vig;
+	}
+	/**
+	 * Obtiene el proximo consecutivo de la tabla CONSULTAS_EXTERNAS
+	 * 
+	 **/
+	public long getConsecutivoConsultasExternas() {
+		Connection con = null;
+		PreparedStatement pst = null;
+		int posicion = 1;
+		ResultSet rs = null;
+		long consecutivoConsultaExterna = 0;
+		try {
+			con = cursor.getConnection();
+			pst = con.prepareStatement(rbBol.getString("consecutivo_consulta_externa"));
+			pst.clearParameters();
+			rs = pst.executeQuery();
+			if (rs.next())
+				consecutivoConsultaExterna = rs.getLong(1);
+			rs.close();
+			pst.close();
+			
+			
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(con);
+			} catch (Exception e) {
+			}
+		}
+		return consecutivoConsultaExterna;
+	}
+	
+	/**
+	 * Ingresa un registro en la tabla de CONSULTAS_EXTERNAS
+	 * 
+	 **/
+	public void insertarConsultasExternas(long consecutivoConsultaExterna ,String rutaArchivo, String nombreArchivo, String extensionArchivo, String tipo) {
+		Connection con = null;
+		PreparedStatement pst = null;
+		int posicion = 1;
+
+		try {
+			con = cursor.getConnection();
+			
+			pst = con.prepareStatement(rbBol.getString("insertar_consulta_externa"));
+			posicion = 1;
+			pst.clearParameters();
+			pst.setString(posicion++, tipo);
+			pst.setLong(posicion++, consecutivoConsultaExterna);
+			pst.setString(posicion++, rutaArchivo);
+			pst.setString(posicion++, nombreArchivo);
+			pst.setString(posicion++, extensionArchivo);
+			pst.executeUpdate();
+			con.commit();
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(con);
+			} catch (Exception e) {
+			}
+		}
 	}
 }

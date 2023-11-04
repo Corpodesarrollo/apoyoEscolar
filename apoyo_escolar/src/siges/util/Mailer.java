@@ -1,32 +1,35 @@
 package siges.util;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import javax.mail.Session;
-import javax.mail.Multipart;
-import javax.mail.Transport;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-import javax.servlet.ServletException;
-
-import siges.common.vo.Params;
-import siges.dao.Cursor;
-import siges.dao.OperacionesGenerales;
-import siges.exceptions.InternalErrorException;
-import siges.institucion.correoLider.beans.ParamsMail;
-import siges.institucion.correoLider.dao.CorreoDAO;
-import siges.util.dao.utilDAO;
-
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import siges.dao.Cursor;
+import siges.institucion.correoLider.beans.ParamsMail;
+import siges.util.dao.utilDAO;
 
 
 /**
@@ -43,6 +46,9 @@ public class Mailer {
 	
 	private utilDAO utilDAO;
 	private Cursor cursor;
+	
+	private String uriApiToken, uriApiMail;
+	private ResourceBundle rbBol;
 	
 	public boolean getParametrosCorreo() {
 		
@@ -63,21 +69,7 @@ public class Mailer {
         
     }
 	
-	public void enviarCorreo(String strCorreo, String strAsunto, String strCuerpo)  throws MessagingException  {
-		
-				
-		/*
-		this.getParametrosCorreo(); 
-		final String clave = "Apoyo2016%";
-		Properties props = new Properties();
-		props.setProperty("mail.smtp.host", d_host);
-		props.setProperty("mail.smtp.auth", "true");
-		props.setProperty("mail.smtp.starttls.enable", "true");
-		props.setProperty("mail.smtp.submitter", d_fromAddress);
-		props.put("mail.smtp.port", d_port);
-		props.put("mail.smtp.socketFactory.port", d_port);
-		*/
-	
+	public void enviarCorreo(String strCorreo, String strAsunto, String strCuerpo)  throws MessagingException  {	
 		
 			
 		utilDAO=new utilDAO();	
@@ -191,9 +183,120 @@ public class Mailer {
 		
 	}
 	
+	public boolean notificacionReporte(String username, long inst, long sede, long jornada, MailDTO mail){
+		rbBol = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
+		uriApiMail = rbBol.getString("boletines_uri_api_send_email");
+		String bearerToken = getToken(username, inst, sede, jornada);
+		try{
+			if(!bearerToken.equals("")){
+				final URL url = new URL(uriApiMail);// url API
+				//String[] emails = {"jose.lopez@linktic.com"};
+		        //mail.setEmails(emails);
+				// report
+				final java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+				ObjectMapper objectMapper = new ObjectMapper();
+				objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+				StringBuilder response = new StringBuilder();
+				conn.setDoOutput(true);
+				conn.setRequestMethod("POST");
+				conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+				conn.setRequestProperty("Authorization", bearerToken);
+				conn.setRequestProperty("Accept", "application/json");
+				
+				// Crear un objeto JSON
+				String jsonInput = objectMapper.writeValueAsString(mail);				
+				
+				//System.out.println(jsonInput.toString());
 	
+				// Escribir la cadena JSON en el cuerpo de la solicitud
+	            try (OutputStream os = conn.getOutputStream();
+	                 OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8")) {
+	                osw.write(jsonInput);
+	                osw.flush();
+	            }
+	            // Leer la respuesta del servidor
+	            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+	                String line;
 
+	                while ((line = reader.readLine()) != null) {
+	                    response.append(line);
+	                }
+	            }
+	            // Cerrar la conexión
+	            conn.disconnect();
+				if(response.equals("true"))
+					return true; // se envio la notificación
+				} else {
+					return false; // no se envio la notificación
+				}
+			
+		}catch (JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+		return false;
+	}
 
+	public String getToken(String username, long inst, long sede, long jornada){// {username}/{ins}/{sede}/{jornada}
+		uriApiToken = rbBol.getString("boletines_uri_api_transversal_generate_token")
+				.replace("{username}", username)
+				.replace("{ins}", String.valueOf(inst))
+				.replace("{sede}", String.valueOf(sede))
+				.replace("{jornada}", String.valueOf(jornada));
+		 String token = "";
+		try{
+			final URL url = new URL(uriApiToken);// url API
+			// report
+			final java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+			conn.setRequestProperty("Accept", "application/json");
+			// Obtener respuesta de la API
+			int responseCode = conn.getResponseCode();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));		
+			
+            ObjectMapper objectMapper = new ObjectMapper();         
+
+			String line;
+			StringBuilder response = new StringBuilder();
+			while ((line = reader.readLine()) != null) {
+				response.append(line);
+			}
+			reader.close();
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				System.out.println("Respuesta de la API:" + response.toString()); 
+				JsonNode jsonNode = objectMapper.readTree(response.toString());
+				token = jsonNode.get("token").asText();
+			} else {
+				System.out.println("Error al llamar a la API de TOKEN. Código de respuesta:" + responseCode);
+			}
+			// Cerrar conexión
+			conn.disconnect();
+		}catch (JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+		return token;
+	}
 
 
 

@@ -6,12 +6,12 @@ package siges.boletines.dao;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,15 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperRunManager;
-
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
-
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperRunManager;
 import siges.boletines.ControllerAuditoriaReporte;
-
 import siges.boletines.beans.Estudiante;
 import siges.boletines.beans.FiltroBeanFormulario;
 import siges.boletines.beans.FiltroBeanReports;
@@ -38,11 +35,11 @@ import siges.boletines.vo.ReporteVO;
 import siges.common.vo.ItemVO;
 import siges.dao.Cursor;
 import siges.dao.Dao;
+import siges.dao.DataSourceManager;
 import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
 import siges.evaluacion.beans.NivelEvalVO;
 import siges.exceptions.InternalErrorException;
-import siges.io.Zip;
 import siges.login.beans.Login;
 
 /**
@@ -1305,6 +1302,7 @@ public class ReporteLogrosDAO extends Dao {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public List getTiposDoc() throws Exception {
 
 		Connection cn = null;
@@ -1807,6 +1805,7 @@ public Estudiante getDatosEstudiante2(String noDocumento) throws Exception{
 	
 	
 	
+	@Override
 	public int getNivelGrado(int grado) throws Exception {
 		Connection cn = null;
 		PreparedStatement st = null;
@@ -1980,6 +1979,7 @@ public Estudiante getDatosEstudiante2(String noDocumento) throws Exception{
 				db.setDABOLLOGROPEND(rs.getInt(pos++));
 				db.setDABOLFIRREC(rs.getInt(pos++));
 				db.setDABOLFIRDIR(rs.getInt(pos++));
+				db.setDABOLPUEEST(rs.getInt(pos++));
 				listdb.add(db);
 
 			}
@@ -2812,6 +2812,60 @@ public Estudiante getDatosEstudiante2(String noDocumento) throws Exception{
 	    
 	    return filtro;
 	    
+	}
+	
+	public String getPathEscudo(long institucion){
+		Statement ps = null;
+		ResultSet rs = null;
+		Connection cn = null;
+		PreparedStatement pst = null;
+		String nombreArchivoEscudo = null;
+		ResourceBundle rb = ResourceBundle.getBundle("common");
+		String rutaArchivo = null;
+		try {
+			cn = DataSourceManager.getConnection(1);
+			char separador = getSeparadorSO();
+			String path = rb.getString("escudo.PathEscudoNew");
+			rutaArchivo = path.replace('.', separador) + separador;
+			ps = cn.createStatement();
+			rs = ps.executeQuery("select NOMBRE_ARCHIVO from LOG_ESCUDO_INSTITUCION where INSTITUCION_ID = " + institucion);
+			if (rs.next()) {
+				nombreArchivoEscudo = rs.getString(1);
+			}
+			rs.close();
+			ps.close();
+			System.out.println("nombreArchivoEscudo: "+nombreArchivoEscudo);
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("ESCUDO ERROR: " + e);
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(ps);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (Exception e) {
+			}
+		}
+		return rutaArchivo + nombreArchivoEscudo;
+	}
+	
+	public static char getSeparadorSO() {
+
+		String sistemaOperativo = System.getProperty("os.name");
+		char result = '\\';
+
+		if (sistemaOperativo.startsWith("Windows")) {
+			result = '\\';
+        } else if (sistemaOperativo.startsWith("Linux")) {
+        	result = '/';
+        } else if (sistemaOperativo.startsWith("Mac")) {
+        	result = '/';
+        } else {
+            System.err.println("Sistema operativo no compatible");
+        }
+
+		return result;
 	}
 	
 	

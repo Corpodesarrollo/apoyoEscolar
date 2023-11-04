@@ -60,6 +60,7 @@ public class DatosBoletinVO{
 	public String DANE12;
 	
 	private int alllocalidad;
+	private int DABOLPUEEST;
 	
 	public int getAlllocalidad() {
 		return alllocalidad;
@@ -320,11 +321,10 @@ public class DatosBoletinVO{
 		DANE12 = dANE12;
 	}
 	
-	
-	
-	
-	
-	
-		
-	
+	public int getDABOLPUEEST() {
+		return DABOLPUEEST;
+	}
+	public void setDABOLPUEEST(int dABOLPUEEST) {
+		DABOLPUEEST = dABOLPUEEST;
+	}
 }

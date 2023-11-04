@@ -17,16 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.io.CopyUtils;
+import org.apache.commons.io.FileUtils;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JExcelApiExporter;
 import net.sf.jasperreports.engine.export.JExcelApiExporterParameter;
-
-import org.apache.commons.io.CopyUtils;
-import org.apache.commons.io.FileUtils;
-
 import siges.boletines.ControllerAuditoriaReporte;
 import siges.boletines.vo.DatosBoletinVO;
 import siges.common.vo.ItemVO;
@@ -94,6 +93,7 @@ public class RepResultadosAca extends Thread {
 		bolDAO = new RepResultadosAcaDAO(cursor);
 	}
 
+	@Override
 	public void run() {
 		dormir = 0;
 		try {
@@ -653,7 +653,7 @@ public class RepResultadosAca extends Thread {
 				
 				long end = System.currentTimeMillis();
 				
-				System.out.println("HILO REP RESULTADOS: FIN GENERAR REPORTE. DABOLCONSEC: " + rep.getDABOLCONSEC() + "Tiempo en millis: "+ (end-start));
+				System.out.println("HILO REP RESULTADOS: FIN GENERAR REPORTE. DABOLCONSEC: " + rep.getDABOLCONSEC() + " Tiempo en millis: "+ (end-start));
 
 			}
 		} catch (InternalErrorException e) {

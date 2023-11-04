@@ -51,20 +51,17 @@ public class ControllerResumenAsignatura extends HttpServlet {
 	private FiltroBeanReports filtro;
 	private Thread t;
 
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 
 		ServletContext context = config.getServletContext();
 		rb = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
 		String contextoTotal = context.getRealPath("/");
-		String path = Ruta2.get(context.getRealPath("/"),
-				rb.getString("boletines_ruta_jaspers"));
-		String path_logos = Ruta.get(context.getRealPath("/"),
-				rb.getString("boletines_logos"));
-		String path_escudos = Ruta.get(context.getRealPath("/"),
-				rb.getString("boletines_imgs_inst"));
+		String path = Ruta2.get(context.getRealPath("/"), rb.getString("boletines_ruta_jaspers"));
+		String path_logos = Ruta.get(context.getRealPath("/"), rb.getString("boletines_logos"));
+		String path_escudos = Ruta.get(context.getRealPath("/"), rb.getString("boletines_imgs_inst"));
 		reportFile = new File(path + rb.getString("repResumenAsignatura"));
-		reportFileConceptual = new File(path
-				+ rb.getString("repResumenAsignaturaConceptual"));
+		reportFileConceptual = new File(path + rb.getString("repResumenAsignaturaConceptual"));
 		reportFile1 = new File(path + rb.getString("repreResumenArea"));
 		/*
 		 * reportFile5=new File(path+rb.getString("rep5")); reportFile5_11=new
@@ -92,10 +89,13 @@ public class ControllerResumenAsignatura extends HttpServlet {
 					.println("n****NO ACTUALIZn LOS RESUMENES ASIG Q ESTABAN EN ESTADO CERO.. A ESTADO -1****!");
 			return;
 		}
-		t = new Thread(new ResumenAsignatura(cursor, contextoTotal, path,
-				path_logos, path_escudos, reportFile, reportFile1,
-				reportFileConceptual, n++));
-		t.start();
+//		t = new Thread(new ResumenAsignatura(cursor, contextoTotal, path,
+//				path_logos, path_escudos, reportFile, reportFile1,
+//				reportFileConceptual, n++));
+//		t.start();
+		
+		ResumenAsignatura rAsig = new ResumenAsignatura(cursor, contextoTotal, path);
+		rAsig.procesar_solicitudes();
 		return;
 	}
 

@@ -1,25 +1,20 @@
 package siges.boletines;
 
 import java.io.File;
-import java.sql.Time;
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ResourceBundle;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import siges.dao.OperacionesGenerales;
-import siges.dao.Util;
+
+import siges.boletines.beans.FiltroBeanReports;
 import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
 import siges.dao.Ruta2;
-import siges.boletines.Boletin_;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Connection;
-import siges.boletines.beans.FiltroBeanReports;
 
 /**
  * Nombre: <BR>
@@ -49,23 +44,18 @@ public class ControllerBoletin extends HttpServlet {
 	private File reporte4_1;
 	private File reporte4_2;
 	private FiltroBeanReports filtro;
-	private Thread t;
 
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 
 		ServletContext context = config.getServletContext();
 		rb = ResourceBundle.getBundle("siges.boletines.bundle.boletines");
 		String contextoTotal = context.getRealPath("/");
-		String path_jasper = Ruta2.get(context.getRealPath("/"),
-				rb.getString("boletines_ruta_jaspers"));
-		String path_logo = Ruta.get(context.getRealPath("/"),
-				rb.getString("boletines_logos"));
-		String path_escudo = Ruta.get(context.getRealPath("/"),
-				rb.getString("boletines_imgs_inst"));
-		reporte1_1 = new File(path_jasper
-				+ rb.getString("boletines.reporte1_1"));
-		reporte1_2 = new File(path_jasper
-				+ rb.getString("boletines.reporte1_2"));
+		String path_jasper = Ruta2.get(context.getRealPath("/"), rb.getString("boletines_ruta_jaspers"));
+		String path_logo = Ruta.get(context.getRealPath("/"), rb.getString("boletines_logos"));
+		String path_escudo = Ruta.get(context.getRealPath("/"), rb.getString("boletines_imgs_inst"));
+		reporte1_1 = new File(path_jasper + rb.getString("boletines.reporte1_1"));
+		reporte1_2 = new File(path_jasper + rb.getString("boletines.reporte1_2"));
 
 		int n = 1;
 		super.init(config);
@@ -73,9 +63,8 @@ public class ControllerBoletin extends HttpServlet {
 		if (!updateColaBolEstadoCero()) {
 			return;
 		}
-		t = new Thread(new Boletin(cursor, contextoTotal, path_jasper,
-				path_logo, path_escudo, reporte1_1, reporte1_2, n++));
-		t.start();
+		//Boletin boletin = new Boletin(cursor, contextoTotal, path_jasper,	path_logo, path_escudo, reporte1_1, reporte1_2, n++);
+		//boletin.procesar_solicitudes();// se dispara el procesamiento de solicitudes
 		return;
 	}
 

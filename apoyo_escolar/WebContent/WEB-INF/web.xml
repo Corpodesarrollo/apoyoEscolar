@@ -193,17 +193,17 @@
 <!-- 		<load-on-startup>3</load-on-startup> -->
 <!-- 	</servlet> -->
 
+
 <!-- 	<servlet> -->
 <!-- 		<servlet-name>PlantillasLinea</servlet-name> -->
 <!-- 		<servlet-class>siges.plantilla.Plantilla</servlet-class> -->
 <!-- 		<load-on-startup>4</load-on-startup> -->
 <!-- 	</servlet> -->
 
-
-<!--  	<servlet>
+  	<servlet>
 		<servlet-name>Boletin</servlet-name>
 		<servlet-class>siges.boletines.ControllerBoletin</servlet-class>
-		<load-on-startup>5</load-on-startup>
+<!-- 		<load-on-startup>5</load-on-startup> -->
 	</servlet>
 
 	<servlet>
@@ -224,10 +224,10 @@
 		<servlet-name>LibroNotas</servlet-name>
 		<servlet-class>siges.librodeNotas.ControllerLibro</servlet-class>
 		<load-on-startup>8</load-on-startup>
-	</servlet> -->
+	</servlet> 
 
 	<!-- LEVANTARLO -->
-<!--  	<servlet>
+  	<servlet>
 		<servlet-name>Certificado</servlet-name>
 		<servlet-class>siges.boletines.ControllerCertificado</servlet-class>
 		<load-on-startup>9</load-on-startup>
@@ -237,15 +237,15 @@
 		<servlet-name>Carne</servlet-name>
 		<servlet-class>siges.reporte.ControllerCarne</servlet-class>
 		<load-on-startup>10</load-on-startup>
-	</servlet> -->
+	</servlet>
 
 	<!-- LEVANTARLO -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>ResultadosAcademicos</servlet-name>
 		<servlet-class>siges.gestionAdministrativa.repResultadosAca.thread.ControllerRepResultadosAca
 		</servlet-class>
 		<load-on-startup>11</load-on-startup>
-	</servlet> -->
+	</servlet>
 
 	<!-- ERROR SERVLET NO ESTA EN LA RUTA -->
 	<!--  <servlet>
@@ -260,12 +260,12 @@
 <!-- 		<load-on-startup>13</load-on-startup> -->
 <!-- 	</servlet> -->
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>HiloEstadisticas</servlet-name> -->
-<!-- 		<servlet-class>siges.gestionAcademica.repEstadisticos.thread.ControllerRepEstadisticos -->
-<!-- 		</servlet-class> -->
-<!-- 		<load-on-startup>14</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>HiloEstadisticas</servlet-name>
+		<servlet-class>siges.gestionAcademica.repEstadisticos.thread.ControllerRepEstadisticos
+		</servlet-class>
+		<load-on-startup>14</load-on-startup>
+	</servlet>
 
 
 	<!--REPORTES COMPARATIVOS -->
@@ -463,8 +463,7 @@
 			<param-value>/pei/parametro/NuevoParametro.jsp</param-value>
 		</init-param>
 	</servlet>
-	<!-- /Parametro -->
-
+	<!-- /Parametro -->	
 	<!-- Consulta -->
 	<servlet>
 		<servlet-name>ConsultaSaveIdentificacionPEI</servlet-name>
@@ -3842,6 +3841,10 @@
 	<servlet>
 		<servlet-name>ControllerHeader</servlet-name>
 		<servlet-class>siges.util.ControllerHeader</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>Descargar</servlet-name>
+		<servlet-class>siges.util.Descargar</servlet-class>		
 	</servlet>
 	<!--/Util -->
 	<!--Institucion -->
@@ -4967,10 +4970,9 @@
 	<servlet>
 		<description>
 		</description>
-		<display-name>GuardarBitacoraReporte</display-name>
-		<servlet-name>GuardarBitacoraReporte</servlet-name>
-		<servlet-class>GuardarBitacoraReporte</servlet-class>
-		<load-on-startup>0</load-on-startup>
+		<display-name>ValidarArchivo</display-name>
+		<servlet-name>ValidarArchivo</servlet-name>
+		<servlet-class>siges.util.ValidarArchivo</servlet-class>
 	</servlet>
 
 	<!-- MAPEO -->
@@ -6198,6 +6200,14 @@
 		<url-pattern>/Reportes.do</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
+		<servlet-name>Descargar</servlet-name>
+		<url-pattern>/Descargar.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ValidarArchivo</servlet-name>
+		<url-pattern>/ValidarArchivo.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerMenu</servlet-name>
 		<url-pattern>/ControllerMenu.do</url-pattern>
 	</servlet-mapping>
@@ -6744,8 +6754,8 @@
 		<url-pattern>/ajax.do</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>GuardarBitacoraReporte</servlet-name>
-		<url-pattern>/GuardarBitacoraReporte</url-pattern>
+		<servlet-name>ValidarArchivo</servlet-name>
+		<url-pattern>/ValidarArchivo</url-pattern>
 	</servlet-mapping>
 
 

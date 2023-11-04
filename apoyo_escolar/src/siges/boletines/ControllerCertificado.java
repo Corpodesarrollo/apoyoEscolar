@@ -1,25 +1,20 @@
 package siges.boletines;
 
 import java.io.File;
-import java.sql.Time;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.ResourceBundle;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import siges.dao.OperacionesGenerales;
-import siges.dao.Util;
-import siges.dao.Cursor;
-import siges.dao.Ruta;
-import siges.dao.Ruta2;
-import siges.boletines.Boletin_;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Connection;
+
 import siges.boletines.beans.FiltroBeanReports;
+import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
+import siges.dao.Ruta2;
 
 /**
  *	Nombre:	<BR>
@@ -35,8 +30,6 @@ public class ControllerCertificado  extends HttpServlet{
   private static int i=0;
   private Boletin_ boletin;
   private ResourceBundle rb;
-//  private PreparedStatement pst=null;
-//  private ResultSet rs=null;
   private Cursor cursor;
   private File reporte1_1;
   private File reporte1_2;
@@ -47,32 +40,32 @@ public class ControllerCertificado  extends HttpServlet{
   private File reporte3_2;
   private File reporte4_1;  
   private File reporte4_2;
+  private String s = "/Reportes.do";
   private FiltroBeanReports filtro;
-  private Thread t;
+  ServletContext context=null;
+  //private Thread t;
     
-  public void init(ServletConfig config) throws ServletException{
+  @Override
+public void init(ServletConfig config) throws ServletException{
  	 
-    ServletContext context=config.getServletContext();
+    context=config.getServletContext();
     rb=ResourceBundle.getBundle("siges.boletines.bundle.boletines");
- 	String contextoTotal=context.getRealPath("/");
   	String path=Ruta2.get(context.getRealPath("/"),rb.getString("boletines_ruta_jaspers"));
-  	String path_logos=Ruta.get(context.getRealPath("/"),rb.getString("boletines_logos"));
-  	String path_escudo=Ruta.get(context.getRealPath("/"),rb.getString("boletines_imgs_inst"));
   	reporte1_1=new File(path+rb.getString("certificados.reporte1_1"));	
   	reporte1_2=new File(path+rb.getString("certificados.reporte1_2"));
   	
-  	int n=1;
-	  System.out.println(new Date()+" REPORTES CERTIFICADOS (new): APOYO ESCOLAR 2010 INICIANDO...");
+	  System.out.println(new Date()+" REPORTES CERTIFICADOS (new): APOYO ESCOLAR 2012 INICIANDO...");
 	  super.init(config);
 	  cursor=new Cursor();
 		if (!updateColaBolEstadoCero()){
 	 		   System.out.println(new Date()+" REPORTES CERTIFICADOS: NO ACTUALIZn LOS REPORTES Q ESTABAN EN ESTADO CERO.");
 	 		   return;
 	 		}	  
-	  t=new Thread(new Certificado(cursor,contextoTotal,path,path_logos,path_escudo,reporte1_1,reporte1_2,n++));	  
-	  t.start();
+	  Certificado c = new Certificado(cursor,path);	  
+	  c.procesar_solicitudes();// se dispara el procesamiento de solicitudes
+	  //t.start();
 	  return;
-  }		
+  }	  
   
 	/**
 	*	Funcinn: Ejecuta los prepared statements correspondientes para actualzar el estado y ponerlo en la cola<BR>

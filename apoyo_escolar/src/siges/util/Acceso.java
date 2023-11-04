@@ -1239,7 +1239,7 @@ public class Acceso {
 	 * @return boolean
 	 */
 	static public Login getUsuario(String a, String b, String[][] param, String perf, String inst, String sed, String jor) {
-		System.out.println(String.format("1242: Acceso - getUsuario -  ==> %s", Integer.parseInt(param[0][0])));
+
 		switch (Integer.parseInt(param[0][0])) {
 		case 0: //nivel central poa
 			return login0(a, b, param, perf);

@@ -1,39 +1,30 @@
 package siges.boletines;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
-import siges.dao.*;
-import siges.io.*;
-import siges.exceptions.InternalErrorException;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.util.*;
-import com.lowagie.text.pdf.*;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import java.awt.SystemColor;
-import java.io.*;
-import java.net.URLEncoder;
+import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.Statement;
-import javax.servlet.ServletOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ResourceBundle;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import siges.boletines.beans.FiltroBeanFormulario;
-import org.apache.commons.io.CopyUtils;
-import org.apache.commons.io.FileUtils;
-import siges.login.beans.Login;
-import siges.util.Logger;
-import siges.util.beans.ReporteVO;
 import siges.boletines.dao.ReporteLogrosDAO;
+import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
+import siges.dao.Util;
+import siges.io.Zip;
+import siges.login.beans.Login;
+import siges.util.beans.ReporteVO;
 ;
 
 
@@ -118,7 +109,7 @@ public class ControllerReporteFiltroSave extends HttpServlet{
 	 	 		return null;
 	 	 	}
 	 	 	
- 	  	ServletContext context=(ServletContext)request.getSession().getServletContext();
+ 	  	ServletContext context=request.getSession().getServletContext();
  	  	String contextoTotal=context.getRealPath("/");
   		parametro=Integer.parseInt(param);
   		
@@ -144,14 +135,14 @@ public class ControllerReporteFiltroSave extends HttpServlet{
 	   			    System.out.println("******nNO HAY NINGUNO CON LOS MISMOS PARAMETROS!...EN ESTADO CERO O -1!*********");
 	   			    rs.close();pst.close();
 
- 				        sede=(!filtro.getSede().equals("-9")?"_Sede_"+filtro.getSede().trim():"");
-	   				    jornada=(!filtro.getJornada().equals("-9")?"_Jornada_"+filtro.getJornada().trim():"");
-	   				    met=(!filtro.getMetodologia().equals("-9")?"_Metodologia_"+filtro.getMetodologia():"");
-	   				    grado=(!filtro.getGrado().equals("-9")?"_Grado_"+filtro.getGrado():"");
-	   				    grupo=(!filtro.getGrupo().equals("-9")?"_Grupo_"+filtro.getGrupo():"");
+ 				        sede=(!filtro.getSede().equals("-9")?"_Sed_"+filtro.getSede().trim():"");
+	   				    jornada=(!filtro.getJornada().equals("-9")?"_Jor_"+filtro.getJornada().trim():"");
+	   				    met=(!filtro.getMetodologia().equals("-9")?"_Met_"+filtro.getMetodologia():"");
+	   				    grado=(!filtro.getGrado().equals("-9")?"_Gra_"+filtro.getGrado():"");
+	   				    grupo=(!filtro.getGrupo().equals("-9")?"_Gru_"+filtro.getGrupo():"");
 	   				    id=(!filtro.getEstudiante().equals("-9")?"_Doc_"+filtro.getEstudiante():"");
 					   		   
-	   				    nom=sede+jornada+met+grado+grupo+id+"_Fecha_"+f2.toString().replace(' ','_').replace(':','-').replace('.','-');
+	   				    nom=sede+jornada+met+grado+grupo+id+"_Fec_"+f2.toString().replace(' ','_').replace(':','-').replace('.','-');
 	   				    archivo="Reporte_Logros_Pendientes_"+nom+".pdf";
 	   				    archivozip="Reporte_Logros_Pendientes_"+nom+".zip";
 					   			 
@@ -223,6 +214,7 @@ public class ControllerReporteFiltroSave extends HttpServlet{
 *	@param	HttpServletRequest request
 *	@param	HttpServletResponse response
 **/
+	@Override
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		doPost(request,response);
 	}
@@ -232,6 +224,7 @@ public class ControllerReporteFiltroSave extends HttpServlet{
 *	@param	HttpServletRequest request
 *	@param	HttpServletResponse response
 **/
+	@Override
 	public void doPost (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
   	String s=process(request, response);	
   	if(s!=null && !s.equals(""))
@@ -276,6 +269,7 @@ public class ControllerReporteFiltroSave extends HttpServlet{
 	*Cierra cursor
 	*
 	*/
+	@Override
 	public void destroy(){
    if(cursor!=null)cursor.cerrar();
  		cursor=null;				

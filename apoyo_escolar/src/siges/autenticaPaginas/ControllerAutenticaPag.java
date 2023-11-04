@@ -1,6 +1,7 @@
 package siges.autenticaPaginas;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,6 +53,7 @@ public class ControllerAutenticaPag extends HttpServlet {
 	private String log_;
 	private String contrasena;
 	private String contrasena2;
+	private String URLPag;
 
 	public String autenticacion(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
@@ -65,12 +67,13 @@ public class ControllerAutenticaPag extends HttpServlet {
 		String log = ((String) req.getParameter("login")).trim();
 		String password = ((String) req.getParameter("password")).trim();
 		session.setAttribute("numeroDocumento", log);
+		log = "226"; 
 
 		// VALIDACION NORMAL DE ACCESO
+		
 		String[][] params = AccesoPaginas.autorizado(log, password);
 
 		try {
-
 			if (params == null) {
 
 				params = AccesoPaginas.autorizadoEstudiante(log, password);
@@ -80,39 +83,34 @@ public class ControllerAutenticaPag extends HttpServlet {
 					login = AccesoPaginas.getUsuarioEstudiante(params);
 
 					if (login == null) {
-						Logger.print(log, "Login. No fue posible obtener los datos del estudiante: " + log, 0, 1,
-								this.toString());
+						Logger.print(log, "Login. No fue posible obtener los datos del estudiante: " + log, 0, 1, this.toString());
 						mensaje = ("No fue posible obtener los datos del estudiante");
 						req.setAttribute("mensaje", mensaje);
-						entregarRespuesta(res, "ERROR", log,
-								String.format("Login. No fue posible obtener los datos del estudiante: %s", log));
+						entregarRespuesta(res, "ERROR", log, String.format("Login. No fue posible obtener los datos del estudiante: %s", log));
 						view = log2;
 						return view;
 					}
 
 					session = req.getSession(true);
 					session.setAttribute("login", login);
-
 					removerObjetos(req);
 
-					Logger.print(log, "Login. Acceso de estudiante satisfactorio: " + login.getUsuarioId(), 0, 1,
-							this.toString());
-					entregarRespuesta(res, "NORMAL", login,
-							String.format("Login. Acceso de estudiante satisfactorio: %s", login.getUsuarioId()));
+					Logger.print(log, "Login. Acceso de estudiante satisfactorio: "+ session.toString(), 0, 1, this.toString());
+					//entregarRespuesta(res, "NORMAL", login, String.format("Login. Acceso de estudiante satisfactorio: %s", login.getUsuarioId()));
+					
 
 					// TODO: Revisar si es necesario en este punto el cambio de
 					// la contraseña temporal
 					view = inte;
-
+					crearIframe(URLPag, res);
+					
 					return view;
 
 				} else {
-					Logger.print(log, "Login. Los datos no corresponden a un usuario registrado: " + log, 0, 1,
-							this.toString());
+					Logger.print(log, "Login. Los datos no corresponden a un usuario registrado: " + log, 0, 1, this.toString());
 					mensaje = ("Los datos no corresponden a un usuario registrado");
 					req.setAttribute("mensaje", mensaje);
-					entregarRespuesta(res, "ERROR", log,
-							String.format("Login. Los datos no corresponden a un usuario registrado: %s", log));
+					entregarRespuesta(res, "ERROR", log, String.format("Login. Los datos no corresponden a un usuario registrado: %s", log));
 					view = log2;
 
 					return view;
@@ -133,10 +131,13 @@ public class ControllerAutenticaPag extends HttpServlet {
 					req.setAttribute("pass", password);
 					req.setAttribute("multiple", AccesoPaginas.getPerfiles(params));
 					view = log_;
-
+					
 					Logger.print(log, "Login. Autenticacinn exitosa." + log, 0, 1, this.toString());
-					entregarRespuesta(res, "NORMAL", AccesoPaginas.getPerfiles(params), "Login. Autenticacion exitosa.");
-
+					//entregarRespuesta(res, "NORMAL", AccesoPaginas.getPerfiles(params), "Login. Autenticacion exitosa.");
+					session = req.getSession(true);
+					session.setAttribute("login", login);
+					crearIframe(URLPag, res);
+					
 					return view;
 
 				}
@@ -172,10 +173,9 @@ public class ControllerAutenticaPag extends HttpServlet {
 					resp.put("LoginInst", req.getAttribute("LoginInst"));
 					resp.put("LoginJor", req.getAttribute("LoginJor"));
 					resp.put("multiple4", req.getAttribute("multiple4"));
-					// entregarRespuesta(res, "NORMAL", resp, "168: Login.
-					// Autenticacion exitosa.");
-					entregarRespuesta(res, "NORMAL", login, "168: Login. Autenticacion exitosa.");
-
+					
+					//entregarRespuesta(res, "NORMAL", login, "168: Login. Autenticacion exitosa.");
+					crearIframe(URLPag, res);
 					return view;
 				}
 
@@ -201,7 +201,11 @@ public class ControllerAutenticaPag extends HttpServlet {
 					resp.put("LoginInst", req.getAttribute("LoginInst"));
 					resp.put("LoginJor", req.getAttribute("LoginJor"));
 					resp.put("multiple4", req.getAttribute("multiple4"));
-					entregarRespuesta(res, "NORMAL", resp, "195: Login. Autenticacion exitosa.");
+					login = AccesoPaginas.getUsuario(log, password, params, null, null, null, null);
+					//entregarRespuesta(res, "NORMAL", resp, "195: Login. Autenticacion exitosa.");
+					session = req.getSession(true);
+					session.setAttribute("login", login);
+					crearIframe(URLPag, res);
 					return view;
 				}
 
@@ -221,7 +225,7 @@ public class ControllerAutenticaPag extends HttpServlet {
 
 				session = req.getSession(true);
 				session.setAttribute("login", login);
-				entregarRespuesta(res, "NORMAL", login, "215: Login. Autenticacion exitosa.");
+				//entregarRespuesta(res, "NORMAL", login, "215: Login. Autenticacion exitosa.");
 
 				removerObjetos(req);
 
@@ -234,6 +238,9 @@ public class ControllerAutenticaPag extends HttpServlet {
 
 				view = inte;
 				Logger.print(log, "Login. Autenticacinn exitosa." + log, 0, 1, this.toString());
+				
+				crearIframe(URLPag, res);
+				
 				return view;
 			}
 
@@ -245,6 +252,50 @@ public class ControllerAutenticaPag extends HttpServlet {
 		}
 	}
 
+	public String abrirSesion(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		HttpSession session = req.getSession();
+		String view = null;
+		String log = ((String) req.getParameter("login")).trim();
+		String password = ((String) req.getParameter("password")).trim();
+		String URLPagLocal = ((String) req.getParameter("URLPag")).trim();
+				
+		String[][] params = AccesoPaginas.autorizado(log, password);
+		
+		String mensaje = null;
+		
+		if (params == null) {
+			Logger.print("0", "Los datos no corresponden a un usuario registrado: " + log, 0, 1, this.toString());
+			mensaje = ("-Los datos no corresponden a un usuario registrado-");
+			req.setAttribute("mensaje", mensaje);
+			view = log2;
+			return view;
+		}
+		
+		Login login = AccesoPaginas.getUsuario(log, password, params, null, null, null, null);
+		
+		if (login == null) {
+			Logger.print("0", "No fue posible obtener los datos del usuario: " + log, 0, 1, this.toString());
+			mensaje = ("No fue posible obtener los datos del usuario");
+			req.setAttribute("mensaje", mensaje);
+			view = log2;
+			return view;
+		}
+		session = req.getSession(true);
+		session.setAttribute("login", login);
+		removerObjetos(req);
+		crearIframe(URLPagLocal, res);
+		
+		/*String cambio = req.getParameter("cambio");
+		if (cambio != null && cambio.equals("1")) {
+			req.setAttribute("serv", contrasena);
+		} else {
+			req.setAttribute("serv", home);
+		}*/
+		view = inte;
+		Logger.print("0", "Login de usuario satisfactorio: " + log, 0, 1, this.toString());
+		return view;
+	}
+	
 	public String cierreSesion(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		removerObjetos(req);
 		req.getSession().invalidate();
@@ -513,6 +564,8 @@ public class ControllerAutenticaPag extends HttpServlet {
 				return "/institucion/EstadisticosXLS.jsp";
 			case 12:
 				return olvidoContrasena(req);
+			case 13:
+				return abrirSesion(req, res);	
 			}
 
 			return view;
@@ -758,6 +811,7 @@ public class ControllerAutenticaPag extends HttpServlet {
 		String perf = seleccion[1];
 		String[][] params = AccesoPaginas.autorizado(log, password, jer, perf);
 		String mensaje = null;
+		
 		if (params == null) {
 			Logger.print("0", "Los datos no corresponden a un usuario registrado: " + log, 0, 1, this.toString());
 			mensaje = ("-Los datos no corresponden a un usuario registrado-");
@@ -765,7 +819,9 @@ public class ControllerAutenticaPag extends HttpServlet {
 			view = log2;
 			return view;
 		}
+		
 		Login login = AccesoPaginas.getUsuario(log, password, params, jer, null, null, null);
+		
 		if (login == null) {
 			Logger.print("0", "No fue posible obtener los datos del usuario: " + log, 0, 1, this.toString());
 			mensaje = ("No fue posible obtener los datos del usuario");
@@ -1053,5 +1109,37 @@ public class ControllerAutenticaPag extends HttpServlet {
 		}
 
 	}
+	
+	private void crearIframe(String URLPag, HttpServletResponse res){
+		
+		PrintWriter out;
+		try {
+			res.addHeader("Set-Cookie","SameSite=None; Secure");
+			res.setContentType("text/html; charset=UTF-8");
+			out = res.getWriter();
+			out.println(" <html> ");
+			out.println(" <head> ");
+			out.println(" <style> ");
+			out.println(" .loader-section{ width: 100vw; height: 100vh; max-width: 100%; position: fixed; top: 0; display: flex; justify-content: center; align-items: center; background-color: #ffffff; z-index:999; transition: all 1s 1s ease-out; opacity:1; } ");
+			out.println(" .loaded{ opacity:0; z-index:-1; } ");
+			out.println(" .loader { width: 120px; height: 120px; border: 13px solid #005cbb; border-bottom-color: transparent; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; } ");
+			out.println(" @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } ");
+			out.println(" </style> ");
+			out.println(" <script> setTimeout(function(){ window.location.href = '"+URLPag+"'; }, 3000); </script> ");
+			out.println(" </head> ");
+			out.println(" <body> ");
+			out.println(" <div class='loader-section' > ");
+			out.println(" <span class='loader'></span> ");
+			out.println(" </div> ");
+			out.println(" </body> ");
+			out.println(" </html> ");
+	    } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	}
+	
+	
 
 }

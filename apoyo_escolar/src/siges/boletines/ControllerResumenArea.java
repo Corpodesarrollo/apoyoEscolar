@@ -1,24 +1,20 @@
 package siges.boletines;
 
 import java.io.File;
-import java.sql.Time;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ResourceBundle;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import siges.dao.OperacionesGenerales;
-import siges.dao.Util;
+
+import siges.boletines.beans.FiltroBeanReports;
 import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
 import siges.dao.Ruta2;
-import siges.boletines.Boletin_;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Connection;
-import siges.boletines.beans.FiltroBeanReports;
 
 /**
  *	Nombre:	<BR>
@@ -51,9 +47,9 @@ public class ControllerResumenArea  extends HttpServlet{
   private File reportFilePreescolar5_sin_img;
   private File reportFileNuevoFormato;
   private FiltroBeanReports filtro;
-  private Thread t;
     
-  public void init(ServletConfig config) throws ServletException{
+  @Override
+public void init(ServletConfig config) throws ServletException{
  	 
     ServletContext context=config.getServletContext();
     rb=ResourceBundle.getBundle("siges.boletines.bundle.boletines");
@@ -85,9 +81,11 @@ public class ControllerResumenArea  extends HttpServlet{
 		if (!updateColaBoletinesEstadoCero()){
 	 		   //System.out.println("n****NO ACTUALIZn LOS RESUMENES AREA Q ESTABAN EN ESTADO CERO.. A ESTADO -1****!");
 	 		   return;
-	 		}	  
-	  t=new Thread(new ResumenArea(cursor,contextoTotal,path,path1_logos ,path_escudo,reportFile,reportFile1,n++));	  
-	  t.start();
+	 		}
+//	  t=new Thread(new ResumenArea(cursor,contextoTotal,path,path1_logos ,path_escudo,reportFile,reportFile1,n++));		  
+//	  t.start();
+	  ResumenArea rA = new ResumenArea(cursor,contextoTotal,path);	  
+	  rA.procesar_solicitudes();// se dispara el procesamiento de solicitudes
 	  return;
   }		
   

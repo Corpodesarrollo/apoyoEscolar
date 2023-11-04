@@ -5,31 +5,32 @@ package siges.gestionAdministrativa.boletinPublico.io;
 
 
 import java.io.File;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Calendar;
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.io.FileOutputStream;
-import java.util.ResourceBundle;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.FileUtils;
-
-import siges.io.Zip;
+import siges.boletines.dao.ReporteLogrosDAO;
+import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
 import siges.dao.Ruta2;
-import siges.dao.OperacionesGenerales;
-import siges.gestionAdministrativa.boletinPublico.vo.ParamsVO;
-import siges.gestionAdministrativa.boletinPublico.vo.DatosBoletinVO;
 import siges.gestionAdministrativa.boletinPublico.dao.BoletinPublicoDAO;
-import siges.gestionAdministrativa.boletinPublico.vo.ResultadoConsultaVO;
+import siges.gestionAdministrativa.boletinPublico.vo.DatosBoletinVO;
+import siges.gestionAdministrativa.boletinPublico.vo.ParamsVO;
 import siges.gestionAdministrativa.boletinPublico.vo.PlantillaBoletionPubVO;
+import siges.gestionAdministrativa.boletinPublico.vo.ResultadoConsultaVO;
+import siges.io.Zip;
 
 
 /**
@@ -43,7 +44,8 @@ public class ConsultaPublicoIO {
 	private ResourceBundle rb = null;
 	private BoletinPublicoDAO boletinPublicoDAO = null;
 	private SimpleDateFormat formaFecha = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss.SSS");
-
+	private ReporteLogrosDAO reporteDAO;
+	private Cursor cursor;// objeto que maneja las sentencias sql
 	/**
 	 * Constructor
 	 * 
@@ -51,7 +53,8 @@ public class ConsultaPublicoIO {
 	 *            Objet de acceso a datos
 	 */
 	public ConsultaPublicoIO(BoletinPublicoDAO boletinDAO) {
-		
+		cursor = new Cursor();
+		reporteDAO = new ReporteLogrosDAO(cursor);
 		this.boletinPublicoDAO = boletinDAO;
 		rb = ResourceBundle.getBundle("siges.gestionAdministrativa.boletinPublico.bundle.boletinPublico");
 	}
@@ -227,7 +230,7 @@ public class ConsultaPublicoIO {
 			String path_Imagen_sed, String archivosalida, String rutaExcelRelativo, String path_jasper) throws Exception {
 
 		ResultadoConsultaVO resultado = new ResultadoConsultaVO();
-
+		String archivoEscudo = reporteDAO.getPathEscudo(new Long(bdt.getDABOLINST()));
 		Map parameters = new HashMap();
 
 		File escudo = null;
@@ -242,20 +245,13 @@ public class ConsultaPublicoIO {
 
 			parameters.put("usuario", bdt.getDABOLUSUARIO());
 
-			escudo = new File(pathImagen + "e" + bdt.getDANE().trim() + ".gif");
-
-			if (escudo.exists()) {
-				parameters.put("ESCUDO_COLEGIO", pathImagen + "e" + bdt.getDANE().trim() + ".gif");
+			escudo = new File(archivoEscudo);			
+			
+			if (escudo.exists()) {				
+				parameters.put("ESCUDO_COLEGIO", archivoEscudo);
 				parameters.put("ESCUDO_COLEGIO_EXISTE", new Integer(1));
-			} else {
-				escudo = new File(pathImagen + "e" + bdt.getDANE().trim() + ".GIF");
-				if (escudo.exists()) {
-					parameters.put("ESCUDO_COLEGIO", pathImagen + "e" + bdt.getDANE().trim() + ".GIF");
-					parameters.put("ESCUDO_COLEGIO_EXISTE", new Integer(1));
-				} else {
-					parameters.put("ESCUDO_COLEGIO_EXISTE", new Integer(0));
-				}
-			}
+			} else 
+				parameters.put("ESCUDO_COLEGIO_EXISTE", new Integer(0));
 
 			parameters.put("ESCUDO_SED",path_Imagen_sed + rb.getString("imagen"));
 			parameters.put("PERIODO", new Integer((int) bdt.getDABOLPERIODO()));

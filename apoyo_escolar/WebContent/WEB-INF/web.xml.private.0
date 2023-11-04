@@ -7,30 +7,32 @@
 	<context-param>
 		<param-name>home</param-name>
 		<param-value>/bienvenida.do</param-value>
+		<description>direccion de la pagina de bienvenida</description>
 	</context-param>
 	<context-param>
 		<param-name>login</param-name>
 		<param-value>/login.jsp</param-value>
+		<description>pagina para que se logeen</description>
 	</context-param>
 	<context-param>
 		<param-name>login2</param-name>
 		<param-value>/login2.jsp</param-value>
+		<description>pagina para que se logeen 2</description>
 	</context-param>
 	<context-param>
 		<param-name>inicio</param-name>
 		<param-value>/Inicio.dos</param-value>
-	</context-param>
-	<context-param>
-		<param-name>autenticaPag</param-name>
-		<param-value>/autenticaPaginas</param-value>
+		<description>pagina para que se logen</description>
 	</context-param>
 	<context-param>
 		<param-name>menu</param-name>
 		<param-value>/menu.jsp</param-value>
+		<description>El menu</description>
 	</context-param>
 	<context-param>
 		<param-name>error</param-name>
 		<param-value>/error.jsp</param-value>
+		<description>direccion de la pagina de mensajes de error</description>
 	</context-param>
 	<context-param>
 		<param-name>integrador</param-name>
@@ -60,18 +62,6 @@
 		<param-value>/siges/gestionAdministrativa/boletinPublico/Save.jsp
 		</param-value>
 	</context-param>
-	<context-param>
-		<param-name>servOlvidoContrasenaPublico</param-name>
-		<param-value>/usuario/OlvidoContrasena.do</param-value>
-	</context-param>
-	<context-param>
-		<param-name>mensaje2</param-name>
-		<param-value>/mensaje2.jsp</param-value>
-	</context-param>
-	<context-param>
-		<param-name>olvidoContrasena</param-name>
-		<param-value>/usuario/OlvidoContrasena.jsp</param-value>
-	</context-param>
 
 
 	<!--filtro Servicios -->
@@ -94,10 +84,6 @@
 		<init-param>
 			<param-name>inicio</param-name>
 			<param-value>/Inicio.dos</param-value>
-		</init-param>
-		<init-param>
-			<param-name>autenticaPag</param-name>
-			<param-value>/autenticaPaginas</param-value>
 		</init-param>
 		<init-param>
 			<param-name>error</param-name>
@@ -144,9 +130,9 @@
 	</filter-mapping>
 	<!--/Mapeo de filtro -->
 
-	<!-- Servlets utilizados en el Apéndice A, para mostrar la forma en que 
-		se instala y configura Tomcat para servir páginas JSP e invocar servlets -->
-	<!-- nivel de debug: 0=login (acceso error y logout) 1=cambio de contraseña 
+	<!-- Servlets utilizados en el ApÃ©ndice A, para mostrar la forma en que 
+		se instala y configura Tomcat para servir pÃ¡ginas JSP e invocar servlets -->
+	<!-- nivel de debug: 0=login (acceso error y logout) 1=cambio de contraseÃ±a 
 		2=consulta a base de datos (DML) 3=Generacion de reporte 4=Acceso a recurso 
 		estatico (archivo) 5=Acceso a servicio del sistema (opcion del menu superior,lateral 
 		o carpeta) 6=Insercion de registro (DML) 7=actualizacion de registro(DML) 
@@ -181,26 +167,26 @@
 
 	<!--SERVLETS QUE SE ALTERNAN EN LOS WARS -->
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>Recolector</servlet-name> -->
-<!-- 		<servlet-class>siges.util.ControllerRecolector</servlet-class> -->
-<!-- 		<load-on-startup>1</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>Recolector</servlet-name>
+		<servlet-class>siges.util.ControllerRecolector</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>HiloIntegracioMatr</servlet-name> -->
-<!-- 		<servlet-class>siges.util.ControllerHiloIntegracioMatr</servlet-class> -->
-<!-- 		<load-on-startup>3</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>HiloIntegracioMatr</servlet-name>
+		<servlet-class>siges.util.ControllerHiloIntegracioMatr</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>PlantillasLinea</servlet-name> -->
-<!-- 		<servlet-class>siges.plantilla.Plantilla</servlet-class> -->
-<!-- 		<load-on-startup>4</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>PlantillasLinea</servlet-name>
+		<servlet-class>siges.plantilla.Plantilla</servlet-class>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
 
 
-<!--  	<servlet>
+	<servlet>
 		<servlet-name>Boletin</servlet-name>
 		<servlet-class>siges.boletines.ControllerBoletin</servlet-class>
 		<load-on-startup>5</load-on-startup>
@@ -224,10 +210,10 @@
 		<servlet-name>LibroNotas</servlet-name>
 		<servlet-class>siges.librodeNotas.ControllerLibro</servlet-class>
 		<load-on-startup>8</load-on-startup>
-	</servlet> -->
+	</servlet>
 
 	<!-- LEVANTARLO -->
-<!--  	<servlet>
+	<servlet>
 		<servlet-name>Certificado</servlet-name>
 		<servlet-class>siges.boletines.ControllerCertificado</servlet-class>
 		<load-on-startup>9</load-on-startup>
@@ -237,84 +223,64 @@
 		<servlet-name>Carne</servlet-name>
 		<servlet-class>siges.reporte.ControllerCarne</servlet-class>
 		<load-on-startup>10</load-on-startup>
-	</servlet> -->
+	</servlet>
 
 	<!-- LEVANTARLO -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>ResultadosAcademicos</servlet-name>
 		<servlet-class>siges.gestionAdministrativa.repResultadosAca.thread.ControllerRepResultadosAca
 		</servlet-class>
 		<load-on-startup>11</load-on-startup>
-	</servlet> -->
+	</servlet>
 
-	<!-- ERROR SERVLET NO ESTA EN LA RUTA -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>Rotacion2</servlet-name>
 		<servlet-class>siges.rotacion2.Rotacion2Thread</servlet-class>
 		<load-on-startup>12</load-on-startup>
-	</servlet> -->
+	</servlet>
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>Logros_Pendientes</servlet-name> -->
-<!-- 		<servlet-class>siges.boletines.ControllerReporte</servlet-class> -->
-<!-- 		<load-on-startup>13</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>Logros_Pendientes</servlet-name>
+		<servlet-class>siges.boletines.ControllerReporte</servlet-class>
+		<load-on-startup>13</load-on-startup>
+	</servlet>
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>HiloEstadisticas</servlet-name> -->
-<!-- 		<servlet-class>siges.gestionAcademica.repEstadisticos.thread.ControllerRepEstadisticos -->
-<!-- 		</servlet-class> -->
-<!-- 		<load-on-startup>14</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>HiloEstadisticas</servlet-name>
+		<servlet-class>siges.gestionAcademica.repEstadisticos.thread.ControllerRepEstadisticos
+		</servlet-class>
+		<load-on-startup>14</load-on-startup>
+	</servlet>
 
 
 	<!--REPORTES COMPARATIVOS -->
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>Comparativos</servlet-name> -->
-<!-- 		<servlet-class>siges.gestionAdministrativa.comparativos.thread.ControllerComparativo -->
-<!-- 		</servlet-class> -->
-<!-- 		<load-on-startup>15</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>Comparativos</servlet-name>
+		<servlet-class>siges.gestionAdministrativa.comparativos.thread.ControllerComparativo
+		</servlet-class>
+		<load-on-startup>15</load-on-startup>
+	</servlet>
 
 	<!--/ REPORTES COMPARATIVOS -->
 
 
-	<!--REPORTES PUESTOS -->
- 
-<!-- <servlet> -->
-<!--  <servlet-name>Puestos</servlet-name> -->
-<!--  <servlet-class>siges.gestionAdministrativa.RepPuestoEstudiante.thread.ControllerReportes</servlet-class> -->
-<!--  <load-on-startup>16</load-on-startup> -->
-<!-- </servlet> -->
- 
-<!--/ REPORTES PUESTOS-->
-
 	<!--/ HILO MENSAJES Y CIERRE PERIODO PROGRAMADO -->
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>HiloTareasMsjPerPrg</servlet-name> -->
-<!-- 		<servlet-class>siges.adminParamsInst.thread.ControllerMensajesCierreProgramado -->
-<!-- 		</servlet-class> -->
-<!-- 		<load-on-startup>16</load-on-startup> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>HiloTareasMsjPerPrg</servlet-name>
+		<servlet-class>siges.adminParamsInst.thread.ControllerMensajesCierreProgramado
+		</servlet-class>
+		<load-on-startup>16</load-on-startup>
+	</servlet>
 
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>ResultadosCompVigAnterior</servlet-name> -->
-<!-- 		<servlet-class>siges.gestionAdministrativa.repResultadosAca.thread.ControllerRepResultadosComVigAnterior -->
-<!-- 		</servlet-class> -->
-<!-- 		<load-on-startup>17</load-on-startup> -->
-<!-- 	</servlet> -->
-	
-
-
-	<!--/SERVLETS QUE SE ALTERNAN EN LOS WARS -->
-
-	<!-- PEI junio 2010 -->
-	<!-- Registro -->
- 
-<!--/ REPORTES PUESTOS-->
+	<servlet>
+		<servlet-name>ResultadosCompVigAnterior</servlet-name>
+		<servlet-class>siges.gestionAdministrativa.repResultadosAca.thread.ControllerRepResultadosComVigAnterior
+		</servlet-class>
+		<load-on-startup>17</load-on-startup>
+	</servlet>
 
 	<!--/SERVLETS QUE SE ALTERNAN EN LOS WARS -->
 
@@ -341,64 +307,6 @@
 			<param-value>/pei/registro/NuevoDesarrolloAdministrativo.jsp
 			</param-value>
 		</init-param>
-		<!-- Ajustes Junio 2013 -->
-		<init-param>
-			<param-name>FICHA_CURRICULO_LISTA</param-name>
-			<param-value>/pei/registro/ListaCurriculo.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_CURRICULO_NUEVO</param-name>
-			<param-value>/pei/registro/NuevoCurriculo.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_CRITERIO_EVALUACION_LISTA</param-name>
-			<param-value>/pei/registro/ListaCriterioEvaluacion.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_CRITERIO_EVALUACION_NUEVO</param-name>
-			<param-value>/pei/registro/NuevoCriterioEvaluacion.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_CIUDADANIA_LISTA</param-name>
-			<param-value>/pei/registro/ListaCiudadania.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_CIUDADANIA_NUEVO</param-name>
-			<param-value>/pei/registro/NuevoCiudadania.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_PROYECTO40HORAS_LISTA</param-name>
-			<param-value>/pei/registro/ListaProyecto40Horas.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_PROYECTO40HORAS_NUEVO</param-name>
-			<param-value>/pei/registro/NuevoProyecto40Horas.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_POBLACIONES_LISTA</param-name>
-			<param-value>/pei/registro/ListaPoblaciones.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_POBLACIONES_NUEVO</param-name>
-			<param-value>/pei/registro/NuevoPoblaciones.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_PRIMERA_INFANCIA_LISTA</param-name>
-			<param-value>/pei/registro/ListaPrimeraInfancia.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_PRIMERA_INFANCIA_NUEVO</param-name>
-			<param-value>/pei/registro/NuevoPrimeraInfancia.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_AJUSTE_LISTA</param-name>
-			<param-value>/pei/registro/ListaAjuste.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_AJUSTE_NUEVO</param-name>
-			<param-value>/pei/registro/NuevoAjuste.jsp</param-value>
-		</init-param>
-		<!-- Fin Ajustes Junio 2013 -->
 		<init-param>
 			<param-name>FICHA_PROGRAMA_SENA_LISTA</param-name>
 			<param-value>/pei/registro/ListaProgramaSENA.jsp</param-value>
@@ -475,26 +383,6 @@
 		<jsp-file>/pei/registro/SaveHorizonte.jsp</jsp-file>
 	</servlet>
 	<servlet>
-		<servlet-name>ConsultaSaveCurriculoPEI</servlet-name>
-		<jsp-file>/pei/registro/SaveCurriculo.jsp</jsp-file>
-	</servlet>
-	<servlet>
-		<servlet-name>ConsultaSaveCriterioEvaluacionPEI</servlet-name>
-		<jsp-file>/pei/registro/SaveCriterioEvaluacion.jsp</jsp-file>
-	</servlet>
-	<servlet>
-		<servlet-name>ConsultaSaveCiudadaniaPEI</servlet-name>
-		<jsp-file>/pei/registro/SaveCiudadania.jsp</jsp-file>
-	</servlet>
-	<servlet>
-		<servlet-name>ConsultaSaveProyecto40HorasPEI</servlet-name>
-		<jsp-file>/pei/registro/SaveProyecto40Horas.jsp</jsp-file>
-	</servlet>
-	<servlet>
-		<servlet-name>ConsultaSavePoblacionesPEI</servlet-name>
-		<jsp-file>/pei/registro/SavePoblaciones.jsp</jsp-file>
-	</servlet>
-	<servlet>
 		<servlet-name>ConsultaSaveDesarrolloCurricularPEI</servlet-name>
 		<jsp-file>/pei/registro/SaveDesarrolloCurricular.jsp</jsp-file>
 	</servlet>
@@ -546,11 +434,10 @@
 		<servlet-name>ControllerRotacion2Guardar</servlet-name>
 		<servlet-class>siges.rotacion2.ControllerGuardar</servlet-class>
 	</servlet>
-	<!-- ERROR - el servlet no esta en esa ruta -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>ControllerRotacion2Nuevo</servlet-name>
 		<servlet-class>siges.rotacion2.ControllerNuevo</servlet-class>
-	</servlet> -->
+	</servlet>
 	<!--/rotacion2 de horarios -->
 
 	<!--rotacion de horarios -->
@@ -570,11 +457,10 @@
 		<servlet-name>ControllerRotacionGuardar</servlet-name>
 		<servlet-class>siges.rotacion.ControllerGuardar</servlet-class>
 	</servlet>
-	<!-- ERROR servlet no esta en esa ruta -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>ControllerRotacionNuevo</servlet-name>
 		<servlet-class>siges.rotacion.ControllerNuevo</servlet-class>
-	</servlet>-->
+	</servlet>
 	<servlet>
 		<servlet-name>ControllerRotacionAjax</servlet-name>
 		<servlet-class>siges.rotacion.Ajax</servlet-class>
@@ -803,7 +689,6 @@
 	</servlet>
 	<!--/PARTICIPACION PARAMETROS -->
 
-
 	<!--POA Reportes -->
 	<servlet>
 		<servlet-name>ReportesPOANuevo</servlet-name>
@@ -878,14 +763,6 @@
 		<init-param>
 			<param-name>FICHA_ACTIVIDAD_SIN</param-name>
 			<param-value>/poa/seguimientoSED/FiltroSin.jsp</param-value>
-		</init-param>
-	</servlet>
-	<servlet>
-		<servlet-name>CalendarioFiltro</servlet-name>
-		<servlet-class>parametros.calendario.service.Filtro</servlet-class>
-		<init-param>
-			<param-name>FICHA_CALENDARIO</param-name>
-			<param-value>/parametros/calendario/Filtro.jsp</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
@@ -1107,11 +984,6 @@
 			</param-value>
 		</init-param>
 		<init-param>
-			<param-name>FICHA_FILTRO_REPORTES_COLEGIO</param-name>
-			<param-value>/siges/gestionAdministrativa/comparativos/FiltroReportesColegio.jsp
-			</param-value>
-		</init-param>
-		<init-param>
 			<param-name>REPORTES</param-name>
 			<param-value>/Reportes.do</param-value>
 		</init-param>
@@ -1137,32 +1009,6 @@
 		</init-param>
 	</servlet>
 	<!--/Reportes comparativos -->
-	
-	
-	 <!--Reportes RepPuestoEstudiante-->
-<!--   <servlet> -->
-<!--     <servlet-name>RepPuestoEstudiante</servlet-name> -->
-<!--      <servlet-class>siges.gestionAdministrativa.RepPuestoEstudiante.service.Nuevo</servlet-class> -->
-<!--   	  <init-param><param-name>FICHA_FILTRO_REPORTES</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/FiltroReportes.jsp</param-value></init-param> -->
-<!-- 	  <init-param><param-name>FICHA_FILTRO_REPORTES2</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/FiltroReportes2.jsp</param-value></init-param> -->
-<!-- 	  <init-param><param-name>FICHA_FILTRO_REPORTES3</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/FiltroReportes3.jsp</param-value></init-param> -->
-<!-- 	  <init-param><param-name>FICHA_FILTRO_REPORTES4</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/FiltroReportes4.jsp</param-value></init-param> -->
-<!-- 	  <init-param><param-name>FICHA_FILTRO_REPORTES5</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/FiltroReportes5.jsp</param-value></init-param> -->
-<!-- 	  <init-param><param-name>FICHA_FILTRO_REPORTES6</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/FiltroReportes6.jsp</param-value></init-param> -->
-<!-- 	  <init-param><param-name>FICHA_FILTRO_REPORTES7</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/FiltroReportes7.jsp</param-value></init-param> -->
-<!-- 	  <init-param><param-name>REPORTES</param-name><param-value>/Reportes.do</param-value></init-param> -->
-<!--   </servlet> -->
-  <servlet>
-    <servlet-name>RepPuestoEstudianteAjax</servlet-name>
-     <servlet-class>siges.gestionAdministrativa.RepPuestoEstudiante.service.Ajax</servlet-class>
-  	  <init-param><param-name>LISTA_AJAX</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/Ajax.jsp</param-value></init-param>
-	  <init-param><param-name>LISTA_ASIG</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/Asig.jsp</param-value></init-param>
-	  <init-param><param-name>LISTA_COL</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/Col.jsp</param-value></init-param>
-	  <init-param><param-name>LISTA_GRADOS</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/Grados.jsp</param-value></init-param>
-	  <init-param><param-name>RANGO</param-name><param-value>/siges/gestionAdministrativa/RepPuestoEstudiante/Rango.jsp</param-value></init-param>
-  </servlet>
- <!--/Reportes RepPuestoEstudiante-->
- 
 
 	<!--GESTION ADMINISTRATIVA -->
 
@@ -1190,14 +1036,6 @@
 			<param-value>/poa/consulta/Nuevo.jsp</param-value>
 		</init-param>
 	</servlet>
-	<servlet>
-		<servlet-name>ConsultaCalendarioNuevo</servlet-name>
-		<servlet-class>parametros.calendario.service.Nuevo</servlet-class>
-		<init-param>
-			<param-name>FICHA_CONSULTA</param-name>
-			<param-value>/poa/consulta/Nuevo.jsp</param-value>
-		</init-param>
-	</servlet>	
 	<servlet>
 		<servlet-name>ConsultaPOAFiltro</servlet-name>
 		<servlet-class>poa.consulta.service.Filtro</servlet-class>
@@ -1355,10 +1193,6 @@
 	</servlet>
 
 	<!--/POA APROBAR CAMBIOS -->
-	
-	
-	
-	
 
 	<!--*****************************FIN MODULO POA ******************************* -->
 
@@ -1764,8 +1598,8 @@
 
 
 
-	<!-- ERORR SERVLET NO ESTA EN LA RUTA EPORTES ARTICULACION Freddy (14-05-09) -->
-	<!--  <servlet>
+	<!-- REPORTES ARTICULACION Freddy (14-05-09) -->
+	<servlet>
 		<servlet-name>ReporteFiltro</servlet-name>
 		<servlet-class>articulacion.artReportesSED.service.Filtro
 		</servlet-class>
@@ -1803,9 +1637,8 @@
 			<param-name>s</param-name>
 			<param-value>/Reportes.do</param-value>
 		</init-param>
-	</servlet> -->
-	<!-- ERRPOR SERVLET NO ESTA EN LA RUTA -->
-	<!--  <servlet>
+	</servlet>
+	<servlet>
 		<servlet-name>ReporteAjax</servlet-name>
 		<servlet-class>articulacion.artReportesSED.service.Ajax
 		</servlet-class>
@@ -1813,7 +1646,7 @@
 			<param-name>FICHA_FILTRO</param-name>
 			<param-value>/articulacion/artReportesSED/Ajax.jsp</param-value>
 		</init-param>
-	</servlet> -->
+	</servlet>
 	<servlet>
 		<servlet-name>ReportePopUp</servlet-name>
 		<servlet-class>articulacion.artEncuesta.service.PopUp</servlet-class>
@@ -1865,15 +1698,6 @@
 			<param-name>FICHA_FILTRO_EVAL2</param-name>
 			<param-value>/articulacion/artPlantillaFinal/FiltroEval2.jsp
 			</param-value>
-		</init-param>
-	</servlet>
-	<servlet>
-		<servlet-name>LOADCIRCULARES</servlet-name>
-		<servlet-class>siges.gestionAdministrativa.agenda.service.UploadCirculares
-		</servlet-class>
-		<init-param>
-			<param-name>FICHA_CIRCULARES</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/circulares/Nuevo.jsp</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
@@ -2370,17 +2194,6 @@
 			</param-value>
 		</init-param>
 	</servlet>
-	
-	 <servlet>
-  <servlet-name>AprobacionInscripciones</servlet-name>
-  <servlet-class>siges.gestionAdministrativa.inscripcion.service.Nuevo
-  </servlet-class>
-  <init-param>
-   <param-name>FICHA_NUEVO</param-name>
-   <param-value>/siges/gestionAdministrativa/inscripcion/Nuevo.jsp
-   </param-value>
-  </init-param>
- </servlet>
 
 	<servlet>
 		<servlet-name>FiltroPlantillaArticulacion</servlet-name>
@@ -2402,8 +2215,8 @@
 			</param-value>
 		</init-param>
 	</servlet>
-	<!-- ERROR SERVLET NO ESTA EN ESA RUTA -->
-	<!--  <servlet>
+
+	<servlet>
 		<servlet-name>ControllerPlantillaArticulacionSave</servlet-name>
 		<servlet-class>articulacion.plantillaArticulacion.saves.ControllerPlantillaSave
 		</servlet-class>
@@ -2412,7 +2225,7 @@
 			<param-value>/articulacion/plantillaArticulacion/PlantillaGuardar.jsp
 			</param-value>
 		</init-param>
-	</servlet> -->
+	</servlet>
 
 	<!--/Plantilla articulacion -->
 	<!-- AsigTutor -->
@@ -2972,31 +2785,31 @@
 
 
 	<!--CorreoLider -->
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>ControllerCorreoLider</servlet-name> -->
-<!-- 		<servlet-class>siges.institucion.correoLider.ControllerCorreoLider -->
-<!-- 		</servlet-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>FICHA_CORREO</param-name> -->
-<!-- 			<param-value>/institucion/correoLider/NuevoCorreo.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 	</servlet> -->
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>AjaxCorreoLider</servlet-name> -->
-<!-- 		<servlet-class>siges.institucion.correoLider.Ajax</servlet-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>FICHA_CORREO</param-name> -->
-<!-- 			<param-value>/institucion/correoLider/Ajax.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 	</servlet> -->
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>FileCorreoLider</servlet-name> -->
-<!-- 		<servlet-class>siges.institucion.correoLider.File</servlet-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>FICHA_CORREO</param-name> -->
-<!-- 			<param-value>/institucion/correoLider/File.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>ControllerCorreoLider</servlet-name>
+		<servlet-class>siges.institucion.correoLider.ControllerCorreoLider
+		</servlet-class>
+		<init-param>
+			<param-name>FICHA_CORREO</param-name>
+			<param-value>/institucion/correoLider/NuevoCorreo.jsp</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>AjaxCorreoLider</servlet-name>
+		<servlet-class>siges.institucion.correoLider.Ajax</servlet-class>
+		<init-param>
+			<param-name>FICHA_CORREO</param-name>
+			<param-value>/institucion/correoLider/Ajax.jsp</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>FileCorreoLider</servlet-name>
+		<servlet-class>siges.institucion.correoLider.File</servlet-class>
+		<init-param>
+			<param-name>FICHA_CORREO</param-name>
+			<param-value>/institucion/correoLider/File.jsp</param-value>
+		</init-param>
+	</servlet>
 	<!--/CorreoLider -->
 
 	<!--REPORTES DE NUTRICION -->
@@ -3037,11 +2850,10 @@
 		<servlet-name>ControllerCerrarConflictoEditar</servlet-name>
 		<servlet-class>siges.conflictoCerrar.ControllerEditar</servlet-class>
 	</servlet>
-	<!-- ERROR SERLVET NO ESTA EN LA RUTA -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>ControllerCerrarConflictoFiltro</servlet-name>
 		<servlet-class>siges.conflictoCerrar.ControllerFiltro</servlet-class>
-	</servlet> -->
+	</servlet>
 	<!--/conflictocerrar -->
 
 	<!--Plantillas en batch -->
@@ -3237,38 +3049,38 @@
 
 
 	<!--REPORTES ESTADISTICOS -->
-	<!--  <servlet>-->
-<!-- 		<servlet-name>ControllerEstadisticasFiltroEdit</servlet-name> -->
-<!-- 		<servlet-class>siges.reporte.ControllerFiltroEdit</servlet-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>sig</param-name> -->
-<!-- 			<param-value>/reporte/filtroAsistencia.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>sig2</param-name> -->
-<!-- 			<param-value>/reporte/filtroEvaluacionLogro.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>sig3</param-name> -->
-<!-- 			<param-value>/reporte/filtroEvaluacionAsignatura.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>sig4</param-name> -->
-<!-- 			<param-value>/reporte/filtroEvaluacionArea.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>sig5</param-name> -->
-<!-- 			<param-value>/reporte/filtroEvaluacionLogroGrupo.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>sig6</param-name> -->
-<!-- 			<param-value>/reporte/filtroDescriptor2.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>ant</param-name> -->
-<!-- 			<param-value>/index.jsp</param-value> -->
-<!-- 		</init-param> -->
-<!-- 	</servlet> -->
+	<servlet>
+		<servlet-name>ControllerEstadisticasFiltroEdit</servlet-name>
+		<servlet-class>siges.reporte.ControllerFiltroEdit</servlet-class>
+		<init-param>
+			<param-name>sig</param-name>
+			<param-value>/reporte/filtroAsistencia.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sig2</param-name>
+			<param-value>/reporte/filtroEvaluacionLogro.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sig3</param-name>
+			<param-value>/reporte/filtroEvaluacionAsignatura.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sig4</param-name>
+			<param-value>/reporte/filtroEvaluacionArea.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sig5</param-name>
+			<param-value>/reporte/filtroEvaluacionLogroGrupo.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sig6</param-name>
+			<param-value>/reporte/filtroDescriptor2.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ant</param-name>
+			<param-value>/index.jsp</param-value>
+		</init-param>
+	</servlet>
 	<servlet>
 		<servlet-name>ControllerEstadisticasFiltroSave</servlet-name>
 		<servlet-class>siges.reporte.ControllerFiltroSave</servlet-class>
@@ -3658,10 +3470,6 @@
 		</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>OlvidoContrasena</servlet-name>
-		<servlet-class>siges.usuario.ControllerOlvidoContrasena</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>ControllerUsuarioFiltroEdit</servlet-name>
 		<servlet-class>siges.usuario.ControllerFiltroEdit</servlet-class>
 	</servlet>
@@ -3681,18 +3489,11 @@
 		<servlet-name>ControllerFiltroPermiso</servlet-name>
 		<servlet-class>siges.permisos.ControllerFiltro</servlet-class>
 	</servlet>
-	<!-- ERROR SERVLET NO ESTA EN LA RUTA -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>ControllerPermisosNuevoEdit</servlet-name>
 		<servlet-class>siges.permisos.ControllerNuevoEdit</servlet-class>
-	</servlet> -->
+	</servlet>
 	<!--/NuevoPermisos -->
-	<!-- Bitacora -->
-		<servlet>
-			<servlet-name>ControllerBitacora</servlet-name>
-			<servlet-class>siges.permisos.ControllerBitacora</servlet-class>
-		</servlet>
-	<!-- /Bitacora -->
 	<!--Comision -->
 	<servlet>
 		<servlet-name>ComisionFiltroEdit</servlet-name>
@@ -3797,18 +3598,6 @@
 		<init-param>
 			<param-name>sig9</param-name>
 			<param-value>/personal/NuevoFoto.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>sig10</param-name>
-			<param-value>/personal/ListaCarga.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>sig12</param-name>
-			<param-value>/personal/NuevoCargaGrupos.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ajax1</param-name>
-			<param-value>/personal/AjaxListaCarga.jsp</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ant</param-name>
@@ -3936,12 +3725,6 @@
 		<servlet-class>siges.login.ControllerLogin</servlet-class>
 	</servlet>
 	<!--/Login -->
-	<!--Login Paginas-->
-	<servlet>
-		<servlet-name>ControllerAutenticaPag</servlet-name>
-		<servlet-class>siges.autenticaPaginas.ControllerAutenticaPag</servlet-class>
-	</servlet>
-	<!--/Login Paginas-->
 
 	<!-- CARNE -->
 	<servlet>
@@ -4077,12 +3860,11 @@
 			<param-value>/boletines/GenerarConstancias.jsp</param-value>
 		</init-param>
 	</servlet>
-	<!-- ERROR SERVLET NO ESTA EN LA RUTA -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>ControllerBoletinFiltroSave</servlet-name>
 		<servlet-class>siges.boletines.ControllerBoletinFiltroSave
 		</servlet-class>
-	</servlet> -->
+	</servlet>
 	<!--/reportes -->
 
 	<!--Evaluacion -->
@@ -4199,44 +3981,13 @@
 		<servlet-name>ControllerNuevoSave</servlet-name>
 		<servlet-class>siges.estudiante.ControllerNuevoSave</servlet-class>
 	</servlet>
-	
-	<!-- ADICIONAR ESTUDIANTES -->
-	<servlet>
-	  <servlet-name>ControllerFiltroAdd</servlet-name>
-	  <servlet-class>siges.estudiante.ControllerFiltroAdd</servlet-class>
-	</servlet>
-	<servlet>
-	  <servlet-name>ControllerFiltroRegistrar</servlet-name>
-	  <servlet-class>siges.estudiante.ControllerFiltroRegistrar</servlet-class>
-	</servlet>
-	<!-- /ADICIONAR ESTUDIANTES -->
-	
-	<!-- OPERACIONES -->
-	<servlet>
-	  <servlet-name>ControllerOperacion</servlet-name>
-	  <servlet-class>siges.operacion.ControllerOperacion</servlet-class>
-	</servlet>
-
-<!-- INACTIVAR ESTUDIANTES -->
-	<servlet>
-	  <servlet-name>ControllerFiltroInactivar</servlet-name>
-	  <servlet-class>siges.estudiante.ControllerFiltroInactivar</servlet-class>
-	</servlet>
-	<servlet>
-	  <servlet-name>ControllerFiltroRegistrarInactivar</servlet-name>
-	  <servlet-class>siges.estudiante.ControllerFiltroRegistrarInactivar</servlet-class>
-	</servlet>
-	<!-- /INACTIVAR ESTUDIANTES -->
-
-	
 	<!--/Estudiante -->
 	<!--Dato Maestro -->
-	<!-- ERROR SERVLET NO ESTA EN LA RUTA -->
-	<!--  <servlet>
+	<servlet>
 		<servlet-name>DatoMaestroConsultaEdit</servlet-name>
 		<servlet-class>siges.datoMaestro.DatoMaestroConsultaEdit
 		</servlet-class>
-	</servlet> -->
+	</servlet>
 	<servlet>
 		<servlet-name>DatoMaestroEditarEdit</servlet-name>
 		<servlet-class>siges.datoMaestro.DatoMaestroEditarEdit</servlet-class>
@@ -4254,14 +4005,6 @@
 		<servlet-class>siges.datoMaestro.DatoMaestroSeleccionEdit
 		</servlet-class>
 	</servlet>
-	<servlet>
-		<servlet-name>Calendario</servlet-name>
-		<servlet-class>parametros.calendario.service.Nuevo</servlet-class>
-		<init-param>
-			<param-name>FICHA_CALENDARIO</param-name>
-			<param-value>/parametros/calendario/Nuevo.jsp</param-value>
-		</init-param>
-	</servlet>	
 	<servlet>
 		<servlet-name>DatoMaestroNuevoEdit</servlet-name>
 		<servlet-class>siges.datoMaestro.DatoMaestroNuevoEdit</servlet-class>
@@ -4630,7 +4373,7 @@
 			</param-value>
 		</init-param>
 	</servlet>
-		<servlet>
+	<servlet>
 		<servlet-name>RegNotasVigenciaAjax</servlet-name>
 		<servlet-class>siges.gestionAcademica.regNotasVigencia.service.Ajax
 		</servlet-class>
@@ -4640,36 +4383,7 @@
 			</param-value>
 		</init-param>
 	</servlet>
-	
-	<!-- BEGIN Inscripcion -->
-	
-
-	<servlet>
-  <servlet-name>Inscripcion</servlet-name>
-  <servlet-class>siges.gestionAdministrativa.inscripcion.service.Nuevo
-  </servlet-class>
-  <init-param>
-   <param-name>FICHA_INSCRIPCION</param-name>
-   <param-value>/siges/gestionAdministrativa/inscripcion/Filtro.jsp
-   </param-value>
-  </init-param>
-  <init-param>
-   <param-name>FICHA_INSCRIPCION</param-name>
-   <param-value>/siges/gestionAdministrativa/inscripcion/NuevoInscripcion.jsp
-   </param-value>
-  </init-param>
- </servlet>
-  <servlet>
-  <servlet-name>InscripcionAjax</servlet-name>
-  <servlet-class>siges.gestionAdministrativa.inscripcion.service.Ajax
-  </servlet-class>
-  <init-param>
-   <param-name>FICHA_AJAX</param-name>
-   <param-value>/siges/gestionAdministrativa/inscripcion/Ajax.jsp
-   </param-value>
-  </init-param>
- </servlet>
-<!-- END Inscripcion -->
+	<!--/Plan de estudios Nuevo -->
 
 
 	<!--/GESTION ACADEMICA -->
@@ -4795,74 +4509,6 @@
 		</init-param>
 	</servlet>
 	<!--/Reportes carnes -->
-	
-	<!--Gestión de Actividades -->
-	<servlet>
-		<servlet-name>GestionActividades</servlet-name>
-		<servlet-class>siges.gestionAdministrativa.gestionActividades.service.Nuevo
-		</servlet-class>
-		<init-param>
-			<param-name>FICHA_GESTION_ACTIVIDADES</param-name>
-			<param-value>/siges/gestionAdministrativa/gestionActividades/Nuevo.jsp
-			</param-value>
-		</init-param>
-	</servlet>
-	<!--/Gestión de Actividades -->
-	
-	<!-- Agenda -->
-	<servlet>
-		<servlet-name>Agenda</servlet-name>
-			<servlet-class>siges.gestionAdministrativa.agenda.service.Nuevo
-		</servlet-class>
-		<init-param>
-			<param-name>FICHA_TAREAS</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/tareas/Nuevo.jsp
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_CIRCULARES</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/circulares/Nuevo.jsp
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_PERMISOS</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/permisos/Nuevo.jsp
-			</param-value>
-		</init-param>
-	</servlet>
-	
-	<servlet>
-		<servlet-name>AgendaAjax</servlet-name>
-		<servlet-class>siges.gestionAdministrativa.agenda.service.Ajax
-		</servlet-class>
-		<init-param>
-			<param-name>LISTA_AJAX</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/tareas/Ajax.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_TAREAS</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/tareas/AjaxNuevo.jsp</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FICHA_CIRCULARES</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/circulares/Ajax.jsp</param-value>
-		</init-param>
-	</servlet>
-	
-	
-	<servlet>
-		<servlet-name>AgendaAjaxNuevo</servlet-name>
-		<servlet-class>siges.gestionAdministrativa.agenda.service.AjaxNuevo
-		</servlet-class>
-		<init-param>
-			<param-name>FICHA_TAREAS</param-name>
-			<param-value>/siges/gestionAdministrativa/agenda/tareas/AjaxNuevo.jsp</param-value>
-		</init-param>
-	</servlet>
-	<!-- /Agenda -->
-	
-	
-	
 
 	<!--Reportes Resultados Academicos -->
 	<servlet>
@@ -4874,11 +4520,6 @@
 			<param-value>/siges/gestionAdministrativa/repResultadosAca/FiltroReportes.jsp
 			</param-value>
 		</init-param>
-		<init-param>
-			<param-name>FICHA_FILTRO_REPORTES_COLEGIO</param-name>
-			<param-value>/siges/gestionAdministrativa/repResultadosAca/FiltroReportesColegio.jsp
-			</param-value>
-		</init-param>		
 		<init-param>
 			<param-name>FICHA_FILTRO_COMPRENDIMIENTOACADEMICO</param-name>
 			<param-value>/siges/gestionAdministrativa/repResultadosAca/FiltroRendimientoVigenciaAnterior.jsp
@@ -4899,8 +4540,6 @@
 			</param-value>
 		</init-param>
 	</servlet>
-	
-	
 
 	<!--/Reportes Resultados Academicos -->
 
@@ -4964,13 +4603,6 @@
 		<servlet-class>siges.gestionAdministrativa.HistoricoEst.ajax
 		</servlet-class>
 	</servlet>
-	<servlet>
-		<description>
-		</description>
-		<display-name>GuardarBitacoraReporte</display-name>
-		<servlet-name>GuardarBitacoraReporte</servlet-name>
-		<servlet-class>GuardarBitacoraReporte</servlet-class>
-	</servlet>
 
 	<!-- MAPEO -->
 
@@ -5009,14 +4641,6 @@
 		<url-pattern>/pei/consulta/SaveHorizonte.jsp</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>ConsultaSaveCurriculoPEI</servlet-name>
-		<url-pattern>/pei/consulta/SaveCurriculo.jsp</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ConsultaSaveCriterioEvaluacionPEI</servlet-name>
-		<url-pattern>/pei/consulta/SaveCriterioEvaluacion.jsp</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
 		<servlet-name>ConsultaSaveDesarrolloCurricularPEI</servlet-name>
 		<url-pattern>/pei/consulta/SaveDesarrolloCurricular.jsp</url-pattern>
 	</servlet-mapping>
@@ -5038,7 +4662,8 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ConsultaSaveDesarrolloAdministrativoPEI</servlet-name>
-		<url-pattern>/pei/consulta/SaveDesarrolloAdministrativo.jsp</url-pattern>
+		<url-pattern>/pei/consulta/SaveDesarrolloAdministrativo.jsp
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ConsultaSaveRegistroPEI</servlet-name>
@@ -5070,11 +4695,10 @@
 		<servlet-name>ControllerRotacionGuardar</servlet-name>
 		<url-pattern>/rotacion/ControllerGuardar.do</url-pattern>
 	</servlet-mapping>
-	<!-- ERROR SE COMENTAREO POR QUE SE COMENTO LA DEFINICION DEL SERVLET -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerRotacionNuevo</servlet-name>
 		<url-pattern>/rotacion/ControllerNuevo.do</url-pattern>
-	</servlet-mapping>-->
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerRotacionAjax</servlet-name>
 		<url-pattern>/rotacion/Ajax.do</url-pattern>
@@ -5095,11 +4719,10 @@
 		<servlet-name>ControllerRotacion2Guardar</servlet-name>
 		<url-pattern>/rotacion2/ControllerGuardar.do</url-pattern>
 	</servlet-mapping>
-	<!-- ERROR SE COMENTO POR QUE SE COMENTO LA DIFINICION -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerRotacion2Nuevo</servlet-name>
 		<url-pattern>/rotacion2/ControllerNuevo.do</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<!--/rotacion2 de horarios -->
 	<!--////CAMBIOS ROTACION JOHNB 29-03-10 -->
 
@@ -5114,7 +4737,6 @@
 		<url-pattern>/participacion/reportes/Ajax.do</url-pattern>
 	</servlet-mapping>
 	<!--/PARTICIPACION Reportes -->
-	
 
 	<!--PARTICIPACION Lideres -->
 	<servlet-mapping>
@@ -5160,7 +4782,6 @@
 	</servlet-mapping>
 	<!--/PARTICIPACION PARAMETROS -->
 
-
 	<!--POA Reportes -->
 	<servlet-mapping>
 		<servlet-name>ReportesPOANuevo</servlet-name>
@@ -5190,11 +4811,6 @@
 		<url-pattern>/poa/seguimientoSED/Ajax.do</url-pattern>
 	</servlet-mapping>
 	<!--/POA SeguimientoSED -->
-	
-	<servlet-mapping>
-		<servlet-name>CalendarioFiltro</servlet-name>
-		<url-pattern>/parametros/calendario/Filtro.do</url-pattern>
-	</servlet-mapping>
 
 	<!--POA Seguimiento -->
 	<servlet-mapping>
@@ -5263,21 +4879,23 @@
 	<!--Actualizar Matricula -->
 	<servlet-mapping>
 		<servlet-name>ActualizarMatricula</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/actualizacionMatricula/ActualizacionMatricula.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/actualizacionMatricula/ActualizacionMatricula.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Actualizar Matricula -->
 
 	<!--Reportes comparativos -->
 	<servlet-mapping>
 		<servlet-name>ReportesComparativos</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/reportesComparativos.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/reportesComparativos.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ReportesComparativosAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/reportesComparativosAjax.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/reportesComparativosAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Reportes comparativos -->
-	
 
 	<!--/GESTION ADMINISTRATIVA -->
 
@@ -5288,6 +4906,7 @@
 		<url-pattern>/recursos/imagen.jpg</url-pattern>
 	</servlet-mapping>
 	<!--/MOSTRAR_FOTOGRAFIA -->
+
 	<!--POA Consulta -->
 	<servlet-mapping>
 		<servlet-name>ConsultaPOANuevo</servlet-name>
@@ -5310,11 +4929,6 @@
 		<url-pattern>/poa/consulta/Ajax.do</url-pattern>
 	</servlet-mapping>
 	<!--/POA Consulta -->
-	
-	<servlet-mapping>
-		<servlet-name>Calendario</servlet-name>
-		<url-pattern>/parametros/calendario/CalendarioFiltro.do</url-pattern>
-	</servlet-mapping>
 
 	<!--POA Aprobacion -->
 	<servlet-mapping>
@@ -5345,8 +4959,6 @@
 		<url-pattern>/poa/planeacion/Ajax.do</url-pattern>
 	</servlet-mapping>
 	<!--/POA Planeacion -->
-	
-	
 
 	<!--POA Solicitud Cambios -->
 	<servlet-mapping>
@@ -5394,14 +5006,16 @@
 	</servlet-mapping>
 	<!--/ADMINNAVEGADOR -->
 
-	<!--REPORTES HORARIOS ARTICULACION (por:Wilmar Gómez - 30/10/2007) -->
+	<!--REPORTES HORARIOS ARTICULACION (por:Wilmar GÃ³mez - 30/10/2007) -->
 	<servlet-mapping>
 		<servlet-name>ControllerRepHorariosArtFiltroEdit</servlet-name>
-		<url-pattern>/articulacion/repHorariosArt/ControllerRepHorariosArtFiltroEdit.do</url-pattern>
+		<url-pattern>/articulacion/repHorariosArt/ControllerRepHorariosArtFiltroEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerRepHorariosArtFiltroSave</servlet-name>
-		<url-pattern>/articulacion/repHorariosArt/ControllerRepHorariosArtFiltroSave.do</url-pattern>
+		<url-pattern>/articulacion/repHorariosArt/ControllerRepHorariosArtFiltroSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>repHorariosArtAjax</servlet-name>
@@ -5412,41 +5026,49 @@
 	<!--REPORTES PLAN ESTUDIOS ARTICULACION (por:Wilmar Gomez - 15/04/2008) -->
 	<servlet-mapping>
 		<servlet-name>ControllerRepPlanEstudiosArtFiltroEdit</servlet-name>
-		<url-pattern>/articulacion/repPlanEstudiosArt/ControllerRepPlanEstudiosArtFiltroEdit.do</url-pattern>
+		<url-pattern>/articulacion/repPlanEstudiosArt/ControllerRepPlanEstudiosArtFiltroEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerRepPlanEstudiosArtFiltroSave</servlet-name>
-		<url-pattern>/articulacion/repPlanEstudiosArt/ControllerRepPlanEstudiosArtFiltroSave.do</url-pattern>
+		<url-pattern>/articulacion/repPlanEstudiosArt/ControllerRepPlanEstudiosArtFiltroSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>repPlanEstudiosArtAjax</servlet-name>
-		<url-pattern>/articulacion/repPlanestudiosArt/ajaxRepArt.do</url-pattern>
+		<url-pattern>/articulacion/repPlanestudiosArt/ajaxRepArt.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/REPORTES PLAN ESTUDIOS ARTICULACION -->
 
 	<!--REPORTES ESTUDIANTES ARTICULACION (por:Wilmar Gomez - 17/04/2008) -->
 	<servlet-mapping>
 		<servlet-name>ControllerRepEstudiantesArtFiltroEdit</servlet-name>
-		<url-pattern>/articulacion/repEstudiantesArt/ControllerRepEstudiantesArtFiltroEdit.do</url-pattern>
+		<url-pattern>/articulacion/repEstudiantesArt/ControllerRepEstudiantesArtFiltroEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerRepEstudiantesArtFiltroSave</servlet-name>
-		<url-pattern>/articulacion/repEstudiantesArt/ControllerRepEstudiantesArtFiltroSave.do</url-pattern>
+		<url-pattern>/articulacion/repEstudiantesArt/ControllerRepEstudiantesArtFiltroSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>repEstudiantesArtAjax</servlet-name>
-		<url-pattern>/articulacion/repEstudiantesArt/ajaxRepArt.do</url-pattern>
+		<url-pattern>/articulacion/repEstudiantesArt/ajaxRepArt.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/REPORTES ESTUDIANTES ARTICULACION -->
 
 	<!--REPORTES INFORMES ARTICULACION (por:Wilmar Gomez - 17/04/2008) -->
 	<servlet-mapping>
 		<servlet-name>ControllerRepInformesArtFiltroEdit</servlet-name>
-		<url-pattern>/articulacion/repInformesArt/ControllerRepInformesArtFiltroEdit.do</url-pattern>
+		<url-pattern>/articulacion/repInformesArt/ControllerRepInformesArtFiltroEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerRepInformesArtFiltroSave</servlet-name>
-		<url-pattern>/articulacion/repInformesArt/ControllerRepInformesArtFiltroSave.do</url-pattern>
+		<url-pattern>/articulacion/repInformesArt/ControllerRepInformesArtFiltroSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>repInformesArtAjax</servlet-name>
@@ -5471,16 +5093,14 @@
 
 
 	<!-- REPORTE ARTICULACION Freddy (14-05-09) -->
-	<!-- ERROR SE COMENTO POR QUE SE COMENTO LA DEFINICION -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ReporteFiltro</servlet-name>
 		<url-pattern>/articulacion/artReportesSED/Filtro.do</url-pattern>
-	</servlet-mapping> -->
-	<!--  ERROR SE COMENTO POR QUE SE COMENTO LA DEFINICION -->
-	<!--  <servlet-mapping>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ReporteAjax</servlet-name>
 		<url-pattern>/articulacion/artReportesSED/Ajax.do</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ReportePopUp</servlet-name>
 		<url-pattern>/articulacion/artReportesSED/PopUp.do</url-pattern>
@@ -5490,14 +5110,10 @@
 	<!-- ADMINPLANESTUDIOS -->
 	<servlet-mapping>
 		<servlet-name>AdminPlanEstudiosFiltro</servlet-name>
-		<url-pattern>/articulacion/artAdminPlanEstudios/Filtro.do</url-pattern>
+		<url-pattern>/articulacion/artAdminPlanEstudios/Filtro.do
+		</url-pattern>
 	</servlet-mapping>
 	<!-- /ADMINPLANESTUDIOS -->
-	
-	<servlet-mapping>
-		<servlet-name>LOADCIRCULARES</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/LoadFiles.do</url-pattern>
-	</servlet-mapping>
 
 	<!-- EVALUACIONFINAL -->
 	<servlet-mapping>
@@ -5506,7 +5122,8 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PlantillaFinalFiltroImp</servlet-name>
-		<url-pattern>/articulacion/artPlantillaFinal/FiltroImp.do</url-pattern>
+		<url-pattern>/articulacion/artPlantillaFinal/FiltroImp.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PlantillaFinalAjax</servlet-name>
@@ -5567,7 +5184,8 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>MotivoRetiro</servlet-name>
-		<url-pattern>/articulacion/retiroEstudiantes/MotivoRetiro.do</url-pattern>
+		<url-pattern>/articulacion/retiroEstudiantes/MotivoRetiro.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Retiro Estudiantes -->
 
@@ -5636,31 +5254,27 @@
 		<url-pattern>/articulacion/escValorativa/Filtro.do</url-pattern>
 	</servlet-mapping>
 	<!--/Escala-Valorativa -->
-	
-	<servlet-mapping>
-  <servlet-name>AprobacionInscripciones</servlet-name>
-  <url-pattern>/siges/gestionAdministrativa/inscripcion/Nuevo.do</url-pattern>
- </servlet-mapping>
 
 	<!--Plantilla Articulacion -->
 	<servlet-mapping>
 		<servlet-name>PlantillaArticulacionNuevo</servlet-name>
-		<url-pattern>/articulacion/plantillaArticulacion/Nuevo.do</url-pattern>
+		<url-pattern>/articulacion/plantillaArticulacion/Nuevo.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>FiltroPlantillaArticulacion</servlet-name>
-		<url-pattern>/articulacion/plantillaArticulacion/Filtro.do</url-pattern>
+		<url-pattern>/articulacion/plantillaArticulacion/Filtro.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PlantillaAjax</servlet-name>
 		<url-pattern>/articulacion/plantillaArticulacion/Ajax.do</url-pattern>
 	</servlet-mapping>
-	<!-- ERROR SE COMENTAREO POR QUE SE COMENTO LA DEFINICION -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerPlantillaArticulacionSave</servlet-name>
 		<url-pattern>/articulacion/plantillaArticulacion/ControllerPlantillaSave.do
 		</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<!--/Plantilla Articulacion -->
 	<!-- AsigTutor -->
 	<servlet-mapping>
@@ -5876,11 +5490,13 @@
 	<!--REPORTES DE HORARIOS -->
 	<servlet-mapping>
 		<servlet-name>ControllerReporteHorarioFiltroEdit</servlet-name>
-		<url-pattern>/articulacion/reporteHorario/ControllerReporteHorarioFiltroEdit.do</url-pattern>
+		<url-pattern>/articulacion/reporteHorario/ControllerReporteHorarioFiltroEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerReporteHorarioFiltroSave</servlet-name>
-		<url-pattern>/articulacion/reporteHorario/ControllerReporteHorarioFiltroSave.do</url-pattern>
+		<url-pattern>/articulacion/reporteHorario/ControllerReporteHorarioFiltroSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/REPORTES DE HORARIOS -->
 
@@ -5889,28 +5505,30 @@
 	<!--REPORTES DE LIDERES -->
 	<servlet-mapping>
 		<servlet-name>ControllerReporteLiderFiltroEdit</servlet-name>
-		<url-pattern>/reporteLider/ControllerReporteLiderFiltroEdit.do</url-pattern>
+		<url-pattern>/reporteLider/ControllerReporteLiderFiltroEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerReporteLiderFiltroSave</servlet-name>
-		<url-pattern>/reporteLider/ControllerReporteLiderFiltroSave.do</url-pattern>
+		<url-pattern>/reporteLider/ControllerReporteLiderFiltroSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/REPORTES DE LIDERES -->
 
 
 	<!--correoLider -->
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>ControllerCorreoLider</servlet-name> -->
-<!-- 		<url-pattern>/institucion/correoLider/Nuevo.do</url-pattern> -->
-<!-- 	</servlet-mapping> -->
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>AjaxCorreoLider</servlet-name> -->
-<!-- 		<url-pattern>/institucion/correoLider/Ajax.do</url-pattern> -->
-<!-- 	</servlet-mapping> -->
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>FileCorreoLider</servlet-name> -->
-<!-- 		<url-pattern>/institucion/correoLider/File.do</url-pattern> -->
-<!-- 	</servlet-mapping> -->
+	<servlet-mapping>
+		<servlet-name>ControllerCorreoLider</servlet-name>
+		<url-pattern>/institucion/correoLider/Nuevo.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AjaxCorreoLider</servlet-name>
+		<url-pattern>/institucion/correoLider/Ajax.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FileCorreoLider</servlet-name>
+		<url-pattern>/institucion/correoLider/File.do</url-pattern>
+	</servlet-mapping>
 	<!--/correoLider -->
 	<!--CERTIFICADOS Y CONSTANCIAS -->
 	<servlet-mapping>
@@ -5945,11 +5563,13 @@
 	<!--REPORTES DE NUTRICION -->
 	<servlet-mapping>
 		<servlet-name>ControllerRutaReporteFiltroEdit</servlet-name>
-		<url-pattern>/ruta/reportes/ControllerReporteFiltroEdit.do</url-pattern>
+		<url-pattern>/ruta/reportes/ControllerReporteFiltroEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerRutaReporteFiltroSave</servlet-name>
-		<url-pattern>/ruta/reportes/ControllerReporteFiltroSave.do</url-pattern>
+		<url-pattern>/ruta/reportes/ControllerReporteFiltroSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--REPORTES DE NUTRICION -->
 
@@ -5979,11 +5599,10 @@
 		<servlet-name>ControllerCerrarConflictoEditar</servlet-name>
 		<url-pattern>/conflictoCerrar/ControllerEditar.do</url-pattern>
 	</servlet-mapping>
-	<!-- ERROR SE COMENTAREO POR QUE SE COMENTO LA DEFINICION -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerCerrarConflictoFiltro</servlet-name>
 		<url-pattern>/conflictoCerrar/ControllerFiltro.do</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<!--/conflictocerrar -->
 	<!--conflictoreportes -->
 	<servlet-mapping>
@@ -6070,10 +5689,10 @@
 
 
 	<!--REPORTES ESTADISTICOS -->
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>ControllerEstadisticasFiltroEdit</servlet-name> -->
-<!-- 		<url-pattern>/reporte/ControllerFiltroEdit.do</url-pattern> -->
-<!-- 	</servlet-mapping> -->
+	<servlet-mapping>
+		<servlet-name>ControllerEstadisticasFiltroEdit</servlet-name>
+		<url-pattern>/reporte/ControllerFiltroEdit.do</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerEstadisticasFiltroSave</servlet-name>
 		<url-pattern>/reporte/ControllerFiltroSave.do</url-pattern>
@@ -6098,7 +5717,7 @@
 		<servlet-name>ControllerParametroSave</servlet-name>
 		<url-pattern>/parametro/ControllerParametroSave.do</url-pattern>
 	</servlet-mapping>
-	<!--/Administración Parametros -->
+	<!--/AdministraciÃ³n Parametros -->
 
 	<!--LIBRO DE NOTAS -->
 	<servlet-mapping>
@@ -6125,11 +5744,13 @@
 	<!--Importar Evaluacion -->
 	<servlet-mapping>
 		<servlet-name>ControllerImportar1Edit</servlet-name>
-		<url-pattern>/importar/evaluacion/ControllerImportarEdit.do</url-pattern>
+		<url-pattern>/importar/evaluacion/ControllerImportarEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerImportar1Save</servlet-name>
-		<url-pattern>/importar/evaluacion/ControllerImportarSave.do</url-pattern>
+		<url-pattern>/importar/evaluacion/ControllerImportarSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ImportarComportamientoNuevo</servlet-name>
@@ -6151,11 +5772,13 @@
 	<!--Plantilla Evaluacion -->
 	<servlet-mapping>
 		<servlet-name>ControllerPlantilla1Edit</servlet-name>
-		<url-pattern>/plantilla/evaluacion/ControllerPlantillaEdit.do</url-pattern>
+		<url-pattern>/plantilla/evaluacion/ControllerPlantillaEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerPlantilla1Save</servlet-name>
-		<url-pattern>/plantilla/evaluacion/ControllerPlantillaSave.do</url-pattern>
+		<url-pattern>/plantilla/evaluacion/ControllerPlantillaSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PlantillaComportamientoNuevo</servlet-name>
@@ -6163,22 +5786,26 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerPlantilla1Ajax</servlet-name>
-		<url-pattern>/plantilla/evaluacion/ControllerPlantillaAjax.do</url-pattern>
+		<url-pattern>/plantilla/evaluacion/ControllerPlantillaAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--Plantilla -->
 
 	<!--Plantilla Bateria -->
 	<servlet-mapping>
 		<servlet-name>ControllerPlantilla2Edit</servlet-name>
-		<url-pattern>/plantilla/bateria/ControllerPlantillaEdit.do</url-pattern>
+		<url-pattern>/plantilla/bateria/ControllerPlantillaEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerPlantilla2Save</servlet-name>
-		<url-pattern>/plantilla/bateria/ControllerPlantillaSave.do</url-pattern>
+		<url-pattern>/plantilla/bateria/ControllerPlantillaSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerPlantilla2Ajax</servlet-name>
-		<url-pattern>/plantilla/bateria/ControllerPlantillaAjax.do</url-pattern>
+		<url-pattern>/plantilla/bateria/ControllerPlantillaAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--Plantilla -->
 
@@ -6243,11 +5870,13 @@
 	<!--Organizacion -->
 	<servlet-mapping>
 		<servlet-name>ControllerOrganizacionEdit</servlet-name>
-		<url-pattern>/institucion/organizacion/ControllerOrganizacionEdit.do</url-pattern>
+		<url-pattern>/institucion/organizacion/ControllerOrganizacionEdit.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerOrganizacionSave</servlet-name>
-		<url-pattern>/institucion/organizacion/ControllerOrganizacionSave.do</url-pattern>
+		<url-pattern>/institucion/organizacion/ControllerOrganizacionSave.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Organizacion -->
 
@@ -6271,12 +5900,6 @@
 		<url-pattern>/Inicio.dos</url-pattern>
 	</servlet-mapping>
 	<!--/Login -->
-	<!--Login Paginas-->
-	<servlet-mapping>
-		<servlet-name>ControllerAutenticaPag</servlet-name>
-		<url-pattern>/autenticaPaginas</url-pattern>
-	</servlet-mapping>
-	<!--/Login Paginas-->
 	<!--Reportes -->
 	<servlet-mapping>
 		<servlet-name>reportes</servlet-name>
@@ -6286,19 +5909,18 @@
 		<servlet-name>ControllerFiltroCarnetEdit</servlet-name>
 		<url-pattern>/reporte/ControllerFiltroEdit.do</url-pattern>
 	</servlet-mapping>
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerFiltroCarnetSave</servlet-name>
 		<url-pattern>/reporte/ControllerFiltroSave.do</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ControllerBoletinFiltroEdit</servlet-name>
 		<url-pattern>/boletines/ControllerBoletinFiltroEdit.do</url-pattern>
 	</servlet-mapping>
-	<!-- ERROR SE COMENTO POR QUE SE COMENTO LA DEFINICION -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerBoletinFiltroSave</servlet-name>
 		<url-pattern>/boletines/ControllerBoletinFiltroSave.do</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<!--Reportes -->
 
 	<!-- CARNES -->
@@ -6331,10 +5953,6 @@
 		<url-pattern>/usuario/GuardarContrasena.do</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>OlvidoContrasena</servlet-name>
-		<url-pattern>/usuario/OlvidoContrasena.do</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
 		<servlet-name>ControllerUsuarioFiltroEdit</servlet-name>
 		<url-pattern>/usuario/ControllerUsuarioFiltroEdit.do</url-pattern>
 	</servlet-mapping>
@@ -6354,18 +5972,11 @@
 		<servlet-name>ControllerFiltroPermiso</servlet-name>
 		<url-pattern>/permisos/ControllerFiltroPermiso.do</url-pattern>
 	</servlet-mapping>
-	<!-- ERROR SE COMENTO POR QUE SE COMENTO LA DEFINICION -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>ControllerPermisosNuevoEdit</servlet-name>
 		<url-pattern>/permisos/ControllerPermisosNuevoEdit.do</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<!--/NuevoPermisos -->
-	<!-- Bitacora -->
-		<servlet-mapping>
-			<servlet-name>ControllerBitacora</servlet-name>
-			<url-pattern>/permisos/ControllerBitacora.do</url-pattern>
-		</servlet-mapping>
-	<!-- Bitacora -->
 	<!--Comision -->
 	<servlet-mapping>
 		<servlet-name>ComisionNuevoEdit</servlet-name>
@@ -6430,18 +6041,6 @@
 		<servlet-name>ControllerFiltroSave</servlet-name>
 		<url-pattern>/estudiante/ControllerFiltroSave.do</url-pattern>
 	</servlet-mapping>
-	<!-- ADICIONAR ESTUDIANTES -->
-	<servlet-mapping><servlet-name>ControllerFiltroAdd</servlet-name><url-pattern>/estudiante/ControllerFiltroAdd.do</url-pattern></servlet-mapping>
-	<servlet-mapping><servlet-name>ControllerFiltroRegistrar</servlet-name><url-pattern>/estudiante/ControllerFiltroRegistrar.do</url-pattern></servlet-mapping>
-	<!-- /ADICIONAR ESTUDIANTES -->
-	<!-- INACTIVAR ESTUDIANTES -->
-	<servlet-mapping><servlet-name>ControllerFiltroInactivar</servlet-name><url-pattern>/estudiante/ControllerFiltroInactivar.do</url-pattern></servlet-mapping>
-	<servlet-mapping><servlet-name>ControllerFiltroRegistrarInactivar</servlet-name><url-pattern>/estudiante/ControllerFiltroRegistrarInactivar.do</url-pattern></servlet-mapping>
-	<!-- /INACTIVAR ESTUDIANTES -->
-	<!-- OPERACIONES -->
-	<servlet-mapping><servlet-name>ControllerOperacion</servlet-name><url-pattern>/operacion/ControllerOperacion.do</url-pattern></servlet-mapping>
-
-	
 	<!--/Estudiante -->
 	<!--SUBIR FOTOGRAFIA -->
 	<servlet-mapping>
@@ -6450,19 +6049,14 @@
 	</servlet-mapping>
 	<!--/SUBIR FOTOGRAFIA -->
 	<!--Dato maestro -->
-	<!-- ERROR SE COMENTO POR QUE SE COMENTO LA DIFINICION -->
-	<!--  <servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>DatoMaestroConsultaEdit</servlet-name>
 		<url-pattern>/datoMaestro/DatoMaestroConsultaEdit.do</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>DatoMaestroSeleccionEdit</servlet-name>
 		<url-pattern>/datoMaestro/DatoMaestroSeleccionEdit.do</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>Calendario</servlet-name>
-		<url-pattern>/calendario/CrearCalendario.do</url-pattern>
-	</servlet-mapping>	
 	<servlet-mapping>
 		<servlet-name>DatoMaestroListaEdit</servlet-name>
 		<url-pattern>/datoMaestro/DatoMaestroListaEdit.do</url-pattern>
@@ -6578,29 +6172,15 @@
 	<!--Registro de Notas Vigencia -->
 	<servlet-mapping>
 		<servlet-name>RegNotasVigencia</servlet-name>
-		<url-pattern>/siges/gestionAcademica/RegNotasVigencia/RegNotas.do</url-pattern>
+		<url-pattern>/siges/gestionAcademica/RegNotasVigencia/RegNotas.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RegNotasVigenciaAjax</servlet-name>
-		<url-pattern>/siges/gestionAcademica/RegNotasVigencia/RegNotasAjax.do</url-pattern>
+		<url-pattern>/siges/gestionAcademica/RegNotasVigencia/RegNotasAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/ Registro de Notas Vigencia -->
-	
-	 <!--Registro de Notas Vigencia -->
- <servlet-mapping>
-  <servlet-name>Inscripcion</servlet-name>
-  <url-pattern>/siges/gestionAdministrativa/inscripcion/Inscripcion.do</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>InscripcionAjax</servlet-name>
-  <url-pattern>/siges/gestionAdministrativa/inscripcion/InscripcionAjax.do</url-pattern>
- </servlet-mapping>
- <!--/ Registro de Notas Vigencia -->
-	
-	
-	
-	
-	
 	<!--/GESTION ACADEMICA -->
 
 
@@ -6609,7 +6189,8 @@
 	<!--Cierre Vigencia -->
 	<servlet-mapping>
 		<servlet-name>CierreVigencia</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/cierreVigencia/CierreVigencia.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/cierreVigencia/CierreVigencia.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 
@@ -6631,33 +6212,39 @@
 	<!--Plantilla Boletion -->
 	<servlet-mapping>
 		<servlet-name>PlantillaBoletin</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/plantillaBoletin/PlantillaBoletin.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/plantillaBoletin/PlantillaBoletin.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PlantillaBoletinAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/plantillaBoletin/PlantillaBoletinAjax.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/plantillaBoletin/PlantillaBoletinAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Plantilla Boletion -->
 
 	<!--Plantilla Boletion Publico -->
 	<servlet-mapping>
 		<servlet-name>PlantillaBoletinPublico</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/padreFliaPublico/Nuevo.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/padreFliaPublico/Nuevo.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PlantillaBoletinPublicoAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/padreFliaPublico/Ajax.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/padreFliaPublico/Ajax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Plantilla Boletion Publico -->
 
 	<!--Padre de familia Boletion -->
 	<servlet-mapping>
 		<servlet-name>PadreFaliaBoletion</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/padreFlia/Nuevo.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/padreFlia/Nuevo.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PadreFaliaBoletionAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/padreFlia/Ajax.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/padreFlia/Ajax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--Padre de familia Boletion -->
 
@@ -6668,65 +6255,37 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ReportesCarnesAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/repCarnesAjax.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/repCarnesAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Reportes carnes -->
 
 	<!--Reportes resultados academicos -->
 	<servlet-mapping>
 		<servlet-name>ReportesResultadosAca</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/repResultadosAca.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/repResultadosAca.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ReportesResultadosAcaAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/repResultadosAcaAjax.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/repResultadosAcaAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/Reportes resultados academicos -->
-	
-	<!--Gestion de actividades -->
-	<servlet-mapping>
-		<servlet-name>GestionActividades</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/gestActividades.do</url-pattern>
-	</servlet-mapping>
-	<!--/Gestion de actividades -->
-	
-	<!-- Agenda -->
-	<servlet-mapping>
-		<servlet-name>Agenda</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/agenda.do</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>AgendaAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/Ajax.do</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>AgendaAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/AjaxNuevo.do</url-pattern>
-	</servlet-mapping>
-	<!--/Agenda -->
-	
-	 <servlet-mapping>
-  <servlet-name>InscripcionAjax</servlet-name>
-  <url-pattern>/siges/gestionAdministrativa/inscripcion/Ajax.do</url-pattern>
- </servlet-mapping>
-	
+
 
 	<!--Enviar Mensajes -->
 	<servlet-mapping>
 		<servlet-name>EnviarMensajes</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/enviarMensajes.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/enviarMensajes.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>EnviarMensajesAjax</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/enviarMensajesAjax.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/enviarMensajesAjax.do
+		</url-pattern>
 	</servlet-mapping>
 	<!--/ENviar Mensajes -->
-	
-	
-	<!--Reportes puesto estudiantes-->
-<!--   <servlet-mapping><servlet-name>RepPuestoEstudiante</servlet-name><url-pattern>/siges/gestionAdministrativa/repPuestoEstudiante.do</url-pattern></servlet-mapping> -->
-   <servlet-mapping><servlet-name>RepPuestoEstudianteAjax</servlet-name><url-pattern>/siges/gestionAdministrativa/repPuestoEstudianteAjax.do</url-pattern></servlet-mapping>
-   <!--/Reportes puestos-->
 
 	<!--/GESTION ADMINISTRATIVA -->
 
@@ -6736,15 +6295,12 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>HistoricoEstudiante</servlet-name>
-		<url-pattern>/siges/gestionAdministrativa/HistoricoEst/HistoricoEstudiante.do</url-pattern>
+		<url-pattern>/siges/gestionAdministrativa/HistoricoEst/HistoricoEstudiante.do
+		</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ajax</servlet-name>
 		<url-pattern>/ajax.do</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>GuardarBitacoraReporte</servlet-name>
-		<url-pattern>/GuardarBitacoraReporte</url-pattern>
 	</servlet-mapping>
 
 
@@ -6785,7 +6341,7 @@
 		<res-ref-name>jdbc/matriculas</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
-	</resource-ref> 
+	</resource-ref>
 	<!--/Recursos JNDI -->
 	<!--Configuracion -->
 	<session-config>
@@ -6793,8 +6349,5 @@
 	</session-config>
 	<!--/Configuracion -->
 </web-app>
-
-<!-- CODIGOS DE REPORTE -1=En cola 0=GENERANDO 1= LISTO 2=No se pudo generear -->
-
 
 <!-- CODIGOS DE REPORTE -1=En cola 0=GENERANDO 1= LISTO 2=No se pudo generear -->

@@ -1,25 +1,20 @@
 package siges.librodeNotas;
 
 import java.io.File;
-import java.sql.Time;
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ResourceBundle;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import siges.dao.OperacionesGenerales;
-import siges.dao.Util;
-import siges.dao.Cursor;
-import siges.dao.Ruta;
-import siges.dao.Ruta2;
+
 import siges.boletines.Boletin_;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Connection;
 import siges.boletines.beans.FiltroBeanReports;
+import siges.dao.Cursor;
+import siges.dao.OperacionesGenerales;
+import siges.dao.Ruta2;
 
 /**
  *	Nombre:	<BR>
@@ -50,14 +45,13 @@ public class ControllerLibro  extends HttpServlet{
   private FiltroBeanReports filtro;
   private Thread t;
     
-  public void init(ServletConfig config) throws ServletException{
+  @Override
+public void init(ServletConfig config) throws ServletException{
  	 
     ServletContext context=config.getServletContext();
     rb=ResourceBundle.getBundle("siges.librodeNotas.bundle.libros");
  	String contextoTotal=context.getRealPath("/");
   	String path=Ruta2.get(context.getRealPath("/"),rb.getString("libros_ruta_jaspers"));
-  	String path_logos=Ruta.get(context.getRealPath("/"),rb.getString("boletines_logos"));
-  	String path_escudos=Ruta.get(context.getRealPath("/"),rb.getString("boletines_imgs_inst"));
   	reporte1_1=new File(path+rb.getString("libros.reporte1_1"));	
   	reporte1_2=new File(path+rb.getString("libros.reporte1_2"));
   	
@@ -69,8 +63,8 @@ public class ControllerLibro  extends HttpServlet{
 //	 		   System.out.println(new Date()+" REPORTES LIBROS: NO ACTUALIZn LOS REPORTES Q ESTABAN EN ESTADO CERO.");
 	 		   return;
 	 		}	  
-	  t=new Thread(new Libro(cursor,contextoTotal,path,path_logos,path_escudos,reporte1_1,reporte1_2,n++));	  
-	  t.start();
+	  Libro l = new Libro(cursor,contextoTotal,path);	  
+	  l.procesar_solicitudes();// se dispara el procesamiento de solicitudes
 	  return;
   }		
   

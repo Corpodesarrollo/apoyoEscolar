@@ -1,6 +1,16 @@
 package siges.gestionAdministrativa.boletinPublico.dao;
 
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+
 //	VERSION		FECHA		AUTOR			DESCRIPCION
 //		1.0		20/05/2020	JORGE CAMACHO	Se modificó el método getTipoEval_() para corregir el cálculo de la vigencia
 //		2.0		02/07/2020	JORGE CAMACHO	En el método inserrDatosBoletin() se eliminó el método getTipoEval_() y se reemplazó por el método getTipoEvaPreescolar()
@@ -9,32 +19,23 @@ package siges.gestionAdministrativa.boletinPublico.dao;
 
 
 import java.util.List;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.text.SimpleDateFormat;
 
-import siges.dao.Dao;
-import siges.dao.Cursor;
 import siges.common.vo.ItemVO;
-import siges.login.beans.Login;
+import siges.dao.Cursor;
+import siges.dao.Dao;
 import siges.dao.DataSourceManager;
 import siges.dao.OperacionesGenerales;
-import siges.plantilla.beans.NivelEvalVO;
 import siges.exceptions.InternalErrorException;
-import siges.gestionAdministrativa.boletinPublico.vo.ParamsVO;
-import siges.gestionAdministrativa.boletinPublico.vo.TipoEvalVO;
 import siges.gestionAdministrativa.boletin.vo.PlantillaBoletionVO;
-import siges.gestionAdministrativa.boletinPublico.vo.EstudianteVO;
-import siges.gestionAdministrativa.boletinPublico.vo.DatosBoletinVO;
 import siges.gestionAdministrativa.boletinPublico.vo.ConsultaExterma;
+import siges.gestionAdministrativa.boletinPublico.vo.DatosBoletinVO;
+import siges.gestionAdministrativa.boletinPublico.vo.EstudianteVO;
+import siges.gestionAdministrativa.boletinPublico.vo.ParamsVO;
 import siges.gestionAdministrativa.boletinPublico.vo.PlantillaBoletionPubVO;
+import siges.gestionAdministrativa.boletinPublico.vo.TipoEvalVO;
+import siges.login.beans.Login;
+import siges.plantilla.beans.NivelEvalVO;
 
 
 /**
@@ -512,6 +513,7 @@ public class BoletinPublicoDAO extends Dao {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public List getSede(long codInst) throws Exception {
 		// System.out.println("BoletinPublico: getSede");
 
@@ -556,6 +558,7 @@ public class BoletinPublicoDAO extends Dao {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public List getTiposDoc() throws Exception {
 
 		Connection cn = null;
@@ -948,6 +951,7 @@ public class BoletinPublicoDAO extends Dao {
 		return tipoEvalVO;
 	}
 
+	@Override
 	public int getNivelGrado(int grado) throws Exception {
 		Connection cn = null;
 		PreparedStatement st = null;
@@ -1196,10 +1200,10 @@ public class BoletinPublicoDAO extends Dao {
 		
 		try {
 
-			nom = "_Periodo_" + filtro.getPlabolperido() + "_" + filtro.getPlabolnumdoc() + "_Fecha_" + f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-');
-			archivo = "Boletin_" + nom + ".pdf";
-			archivopre = "Boletin_Preescolar_" + nom + ".pdf";
-			archivozip = "Boletin_" + nom + ".zip";
+			nom = "_Per_" + filtro.getPlabolperido() + "_" + filtro.getPlabolnumdoc() + "_Fec_" + f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-');
+			archivo = "Bol_" + nom + ".pdf";
+			archivopre = "Bol_Pre_" + nom + ".pdf";
+			archivozip = "Bol_" + nom + ".zip";
 
 			cn = cursor.getConnection();
 
@@ -1417,6 +1421,7 @@ public class BoletinPublicoDAO extends Dao {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public String getResolInst(Connection cn, long inst) throws Exception {
 		// System.out.println("BOLETINES: ENTRO RESOL INST DAO");
 

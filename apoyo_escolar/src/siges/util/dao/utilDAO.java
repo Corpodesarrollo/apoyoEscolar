@@ -644,4 +644,56 @@ public class utilDAO {
 		}
 		return mail;
 	}
+	
+	public String getMailNotinicationReportes(String numDocumUsuario) {		
+		String mailNotificacion = "";
+		int posicion = 1;
+		Connection cn = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		try {
+			cn = DataSourceManager.getConnection(1);
+			pst = cn.prepareStatement(rb.getString("mail.reportes.notificaciones"));
+			pst.setString(posicion++, numDocumUsuario);
+			rs = pst.executeQuery();
+			if (rs.next()) {				
+				mailNotificacion = rs.getString(1);
+			}
+		} catch (Exception e) {
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (Exception e) {
+			}
+		}
+		return mailNotificacion;
+	}
+	public String getPersonaFullName(String numDocumUsuario) {		
+		String mailNotificacion = "";
+		int posicion = 1;
+		Connection cn = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		try {
+			cn = DataSourceManager.getConnection(1);
+			pst = cn.prepareStatement(rb.getString("mail.reportes.persona.notificaciones"));
+			pst.setString(posicion++, numDocumUsuario);
+			rs = pst.executeQuery();
+			if (rs.next()) {				
+				mailNotificacion = rs.getString(1);
+			}
+		} catch (Exception e) {
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (Exception e) {
+			}
+		}
+		return mailNotificacion;
+	}	
+     
 }
