@@ -355,17 +355,26 @@ public class Nuevo extends Service {
 				
 				for(int i=0;i<asignaturas.size();i++){
 					ItemVO obj = asignaturas.get(i);
-					if(obj.getCodigo()==logro.getLogMetodologia()){
+					if(obj.getCodigo()==logro.getLogAsignatura()){
 						log.setAsignatura(obj.getNombre());
 						break;
 					}
 				}
 
-				log.setAsignatura(logro.getLogAbreviatura());
 				log.setComentario(logro.getLogDescripcion());
-				log.setGrado(logro.getLogGrado());
+				
+				List<ItemVO> grados = indicadoresDAO.getListaGrado(logro.getLogInstitucion(),logro.getLogMetodologia());
+				
+				for(int i=0;i<grados.size();i++){
+					ItemVO obj = grados.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setGrado(obj.getNombre());
+						break;
+					}
+				}
+				
 				log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
-				log.setLogro(String.valueOf(logro.getLogCodigo()));
+				log.setLogro(logro.getLogNombre());
 				
 				List<ItemVO> metodologias = indicadoresDAO
 						.getListaMetodologia(logro.getLogInstitucion());
@@ -470,6 +479,7 @@ public class Nuevo extends Service {
 					}
 				}
 				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
+				log.setDescripcion(desc.getDesDescripcion());
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
@@ -514,17 +524,24 @@ public class Nuevo extends Service {
 				
 				for(int i=0;i<asignaturas.size();i++){
 					ItemVO obj = asignaturas.get(i);
-					if(obj.getCodigo()==logro.getLogMetodologia()){
+					if(obj.getCodigo()==logro.getLogAsignatura()){
 						log.setAsignatura(obj.getNombre());
 						break;
 					}
 				}
 
-				log.setAsignatura(logro.getLogAbreviatura());
 				log.setComentario(logro.getLogDescripcion());
-				log.setGrado(logro.getLogGrado());
+				List<ItemVO> grados = indicadoresDAO.getListaGrado(logro.getLogInstitucion(),logro.getLogMetodologia());
+				
+				for(int i=0;i<grados.size();i++){
+					ItemVO obj = grados.get(i);
+					if(obj.getCodigo()==logro.getLogMetodologia()){
+						log.setGrado(obj.getNombre());
+						break;
+					}
+				}
 				log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
-				log.setLogro(String.valueOf(logro.getLogCodigo()));
+				log.setLogro(logro.getLogNombre());
 				
 				List<ItemVO> metodologias = indicadoresDAO
 						.getListaMetodologia(logro.getLogInstitucion());
@@ -655,7 +672,7 @@ public class Nuevo extends Service {
 					}
 				}
 				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
-				
+				log.setDescripcion(desc.getDesDescripcion());
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
 			}catch(Exception e){

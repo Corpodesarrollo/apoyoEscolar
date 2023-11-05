@@ -1,7 +1,10 @@
 package util;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LogAsignaturaDto {
 
+	@SerializedName("identificador de registro")
 	private String identificadorRegistro;
 	private String vigencia;
 	private String metodologia;
@@ -10,6 +13,8 @@ public class LogAsignaturaDto {
 	private String abreviatura;
 	private String orden;
 	private String grados;
+	private String asignatura;
+	
 	public String getIdentificadorRegistro() {
 		return identificadorRegistro;
 	}
@@ -57,6 +62,12 @@ public class LogAsignaturaDto {
 	}
 	public void setGrados(String grados) {
 		this.grados = grados;
+	}
+	public String getAsignatura() {
+		return asignatura;
+	}
+	public void setAsignatura(String asignatura) {
+		this.asignatura = asignatura;
 	}
 	
 	

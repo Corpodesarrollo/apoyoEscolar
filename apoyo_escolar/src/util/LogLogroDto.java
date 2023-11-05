@@ -1,11 +1,13 @@
 package util;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LogLogroDto {
-	
+	@SerializedName("identificador de registro")
 	private String identificadorRegistro;
 	private String vigencia;
 	private String metodología;
-	private int grado;
+	private String grado;
 	private String asignatura;
 	private int periodoInicial;
 	private int periodoFinal;
@@ -13,6 +15,7 @@ public class LogLogroDto {
 	private String abreviatura;
 	private int orden;
 	private String comentario;
+	@SerializedName("tipo de cargue")
 	private String tipoCargue;
 	public String getIdentificadorRegistro() {
 		return identificadorRegistro;
@@ -32,12 +35,7 @@ public class LogLogroDto {
 	public void setMetodología(String metodología) {
 		this.metodología = metodología;
 	}
-	public int getGrado() {
-		return grado;
-	}
-	public void setGrado(int grado) {
-		this.grado = grado;
-	}
+	
 	public String getAsignatura() {
 		return asignatura;
 	}
@@ -85,6 +83,12 @@ public class LogLogroDto {
 	}
 	public void setTipoCargue(String tipoCargue) {
 		this.tipoCargue = tipoCargue;
+	}
+	public String getGrado() {
+		return grado;
+	}
+	public void setGrado(String grado) {
+		this.grado = grado;
 	}
 
 

@@ -1,7 +1,10 @@
 package util;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LogAreaDto {
 
+	@SerializedName("identificador de registro")
 	private String identificadorRegistro;
 	private String vigencia;
 	private String metodologia;

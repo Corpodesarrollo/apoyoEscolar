@@ -281,14 +281,14 @@ public class Nuevo extends Service {
 				String jsonString="";
 				BitacoraCOM com = new BitacoraCOM();
 				try{
-					
+					PlanDeEstudiosVO planE = planDeEstudiosDAO.getPlanEstudios(plan);
 					LogPlanEstudioDto log = new LogPlanEstudioDto();
-					log.setCriterioEvaluacion(plan.getPlaCriterio());
-					log.setPlanesApoyo(plan.getPlaPlanEspecial());
-					log.setIdentificadorRegistro(plan.getPlaProcedimiento());
-					log.setMetodología(plan.getPlaMetodologiaNombre());
-					log.setPlanesApoyo(plan.getPlaPlanEspecial());
-					log.setProcedimientoEvaluacion(plan.getPlaProcedimiento());
+					log.setCriterioEvaluacion(planE.getPlaCriterio());
+					log.setPlanesApoyo(planE.getPlaPlanEspecial());
+					log.setIdentificadorRegistro(planE.getPlaProcedimiento());
+					log.setMetodología(planE.getPlaMetodologiaNombre());
+					log.setPlanesApoyo(planE.getPlaPlanEspecial());
+					log.setProcedimientoEvaluacion(planE.getPlaProcedimiento());
 					
 					List<ItemVO> vigencias = planDeEstudiosDAO.getListaVigenciaInst(Long.valueOf(usuVO.getInstId()));
 					
@@ -468,6 +468,58 @@ public class Nuevo extends Service {
 			session.removeAttribute("areaPlanVO");
 			request.setAttribute(ParamsVO.SMS,
 					"El Ã¡rea fue eliminada satisfactoriamente");
+			
+			try {
+				AreaVO areaE = planDeEstudiosDAO.getArea(area);
+				//insercion de bitacora
+				String jsonString="";
+				BitacoraCOM com = new BitacoraCOM();
+				try{
+					
+					LogAreaDto log = new LogAreaDto();
+					log.setAbreviatura(area.getAreAbreviatura());
+					
+					List<ItemVO> areas = planDeEstudiosDAO.getListaAreaBase();
+					for(int i=0;i<areas.size();i++){
+						ItemVO obj = areas.get(i);
+						if(obj.getCodigo()==area.getAreCodigo()){
+							log.setArea(obj.getNombre());
+							break;
+						}
+					}
+					
+					Gson gson = new Gson();
+					String jsonGrados = gson.toJson(areaE.getAreGrado());
+					log.setGrados(jsonGrados);
+					log.setIdentificadorRegistro(String.valueOf(areaE.getAreCodigo()));
+					
+					List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
+					for(int i=0;i<metodologias.size();i++){
+						ItemVO obj = metodologias.get(i);
+						if(obj.getCodigo()==areaE.getAreMetodologia()){
+							log.setMetodologia(obj.getNombre());
+							break;
+						}
+					}
+					log.setNombre(areaE.getAreNombre());
+					log.setOrden(String.valueOf(areaE.getAreOrden()));
+					List<ItemVO> vigencias = planDeEstudiosDAO.getListaVigenciaInst(Long.valueOf(usuVO.getInstId()));
+					for(int i=0;i<vigencias.size();i++){
+						ItemVO obj = vigencias.get(i);
+						if(obj.getCodigo()==areaE.getAreVigencia()){
+							log.setVigencia(obj.getNombre());
+							break;
+						}
+					}
+					gson = new Gson();
+					jsonString = gson.toJson(log);
+					
+					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							63, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
+				}catch(Exception e){
+					
+				}	
+		
 		} catch (Exception e) {
 			request.setAttribute(ParamsVO.SMS,
 					"El Ã¡rea no fue eliminada: " + e.getMessage());
@@ -484,7 +536,16 @@ public class Nuevo extends Service {
 				
 				LogAreaDto log = new LogAreaDto();
 				log.setAbreviatura(area.getAreAbreviatura());
-				log.setArea(String.valueOf(area.getAreCodigo()));
+				
+				List<ItemVO> areas = planDeEstudiosDAO.getListaAreaBase();
+				for(int i=0;i<areas.size();i++){
+					ItemVO obj = areas.get(i);
+					if(obj.getCodigo()==area.getAreCodigo()){
+						log.setArea(obj.getNombre());
+						break;
+					}
+				}
+				
 				Gson gson = new Gson();
 				String jsonGrados = gson.toJson(area.getAreGrado());
 				log.setGrados(jsonGrados);
@@ -755,6 +816,57 @@ public class Nuevo extends Service {
 			session.removeAttribute("asignaturaPlanVO");
 			request.setAttribute(ParamsVO.SMS,
 					"El asignatura fue eliminada satisfactoriamente");
+			
+
+			try {
+				AsignaturaVO asignaturaE = planDeEstudiosDAO.getAsignatura(asignatura);
+				//insercion de bitacora
+				String jsonString="";
+				BitacoraCOM com = new BitacoraCOM();
+				try{
+					
+					LogAsignaturaDto log = new LogAsignaturaDto();
+					log.setAbreviatura(asignaturaE.getAsiAbreviatura());
+					log.setAsignatura(asignaturaE.getAsiNombre());
+					List<ItemVO> areas = planDeEstudiosDAO.getListaAreaBase();
+					for(int i=0;i<areas.size();i++){
+						ItemVO obj = areas.get(i);
+						if(obj.getCodigo()==asignaturaE.getAsiArea()){
+							log.setArea(obj.getNombre());
+							break;
+						}
+					}
+					
+					Gson gson = new Gson();
+					String jsonGrados = gson.toJson(asignaturaE.getAsiGrado());
+					log.setGrados(jsonGrados);
+					log.setIdentificadorRegistro(String.valueOf(asignaturaE.getAsiCodigo()));
+					List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
+					for(int i=0;i<metodologias.size();i++){
+						ItemVO obj = metodologias.get(i);
+						if(obj.getCodigo()==asignaturaE.getAsiMetodologia()){
+							log.setMetodologia(obj.getNombre());
+							break;
+						}
+					}
+					log.setNombre(asignaturaE.getAsiNombre());
+					log.setOrden(String.valueOf(asignaturaE.getAsiOrden()));
+					List<ItemVO> vigencias = planDeEstudiosDAO.getListaVigenciaInst(Long.valueOf(usuVO.getInstId()));
+					for(int i=0;i<vigencias.size();i++){
+						ItemVO obj = vigencias.get(i);
+						if(obj.getCodigo()==asignaturaE.getAsiVigencia()){
+							log.setVigencia(obj.getNombre());
+							break;
+						}
+					}
+					gson = new Gson();
+					jsonString = gson.toJson(log);
+					
+					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+							63, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
+				}catch(Exception e){
+					
+				}	
 		} catch (Exception e) {
 			request.setAttribute(ParamsVO.SMS,
 					"El asignatura no fue eliminada: " + e.getMessage());
@@ -777,7 +889,16 @@ public class Nuevo extends Service {
 				
 				LogAsignaturaDto log = new LogAsignaturaDto();
 				log.setAbreviatura(asignatura.getAsiAbreviatura());
-				log.setArea(String.valueOf(asignatura.getAsiArea()));;
+				log.setAsignatura(asignatura.getAsiNombre());
+				List<ItemVO> areas = planDeEstudiosDAO.getListaAreaBase();
+				for(int i=0;i<areas.size();i++){
+					ItemVO obj = areas.get(i);
+					if(obj.getCodigo()==asignatura.getAsiArea()){
+						log.setArea(obj.getNombre());
+						break;
+					}
+				}
+				
 				Gson gson = new Gson();
 				String jsonGrados = gson.toJson(asignatura.getAsiGrado());
 				log.setGrados(jsonGrados);

@@ -1,12 +1,18 @@
 package util;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LogPlanEstudioDto {
 
+	@SerializedName("identificador de registro")
 	private String IdentificadorRegistro;
 	private String vigencia;
 	private String metodología;
+	@SerializedName("criterio de evaluacion")
 	private String criterioEvaluacion;
+	@SerializedName("procedimiento de evaluacion")
 	private String procedimientoEvaluacion;
+	@SerializedName("planes de apoyo")
 	private String planesApoyo;
 	
 	public String getIdentificadorRegistro() {

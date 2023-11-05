@@ -1,20 +1,29 @@
 package util;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LogDescriptorDto {
+	@SerializedName("identificador de registro")
 	private	String identificadorRegistro;
 	private String vigencia;
 	private String metodología;
 	private String docente;
 	private int grado;
 	private String area;
+	@SerializedName("periodo inicial")
 	private int periodoInicial;
+	@SerializedName("periodo final")
 	private int periodoFinal;
 	private String logro;
 	private String abreviatura;
 	private int orden;
 	private String comentario;
+	@SerializedName("tipo de descriptor")
 	private String tipoDescriptor; 
+	@SerializedName("tipo de origen de dato")
 	private String tipoOrigenDato;
+	private String descripcion;
+	
 	public String getIdentificadorRegistro() {
 		return identificadorRegistro;
 	}
@@ -98,6 +107,12 @@ public class LogDescriptorDto {
 	}
 	public void setTipoOrigenDato(String tipoOrigenDato) {
 		this.tipoOrigenDato = tipoOrigenDato;
+	}
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 	
