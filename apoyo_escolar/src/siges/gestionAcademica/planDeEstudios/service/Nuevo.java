@@ -4,6 +4,7 @@
 package siges.gestionAcademica.planDeEstudios.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -32,6 +33,7 @@ import util.BitacoraCOM;
 import util.LogAreaDto;
 import util.LogAsignaturaDto;
 import util.LogDescriptorDto;
+import util.LogGradoDto;
 import util.LogPlanEstudioDto;
 
 /**
@@ -276,17 +278,26 @@ public class Nuevo extends Service {
 			plan.setPlaInstitucion(Long.parseLong(params[0]));
 			plan.setPlaMetodologia(Integer.parseInt(params[1]));
 			plan.setPlaVigencia(Integer.parseInt(params[2]));
+			PlanDeEstudiosVO planE = planDeEstudiosDAO.getPlanEstudios(plan);
 			planDeEstudiosDAO.eliminarPlanDeEstudios(plan);
 				//insercion de bitacora
 				String jsonString="";
 				BitacoraCOM com = new BitacoraCOM();
 				try{
-					PlanDeEstudiosVO planE = planDeEstudiosDAO.getPlanEstudios(plan);
+					
 					LogPlanEstudioDto log = new LogPlanEstudioDto();
 					log.setCriterioEvaluacion(planE.getPlaCriterio());
 					log.setPlanesApoyo(planE.getPlaPlanEspecial());
-					log.setIdentificadorRegistro(planE.getPlaProcedimiento());
-					log.setMetodología(planE.getPlaMetodologiaNombre());
+					log.setIdentificadorRegistro(planE.getPlaInstitucion());
+					List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
+					for(int i=0;i<metodologias.size();i++){
+						ItemVO obj = metodologias.get(i);
+						if(obj.getCodigo()==planE.getPlaMetodologia()){
+							log.setMetodologia(obj.getNombre());
+							break;
+						}
+					}
+					
 					log.setPlanesApoyo(planE.getPlaPlanEspecial());
 					log.setProcedimientoEvaluacion(planE.getPlaProcedimiento());
 					
@@ -328,8 +339,17 @@ public class Nuevo extends Service {
 				LogPlanEstudioDto log = new LogPlanEstudioDto();
 				log.setCriterioEvaluacion(plan.getPlaCriterio());
 				log.setPlanesApoyo(plan.getPlaPlanEspecial());
-				log.setIdentificadorRegistro(plan.getPlaProcedimiento());
-				log.setMetodología(plan.getPlaMetodologiaNombre());
+				log.setIdentificadorRegistro(plan.getPlaInstitucion());
+				
+				List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
+				for(int i=0;i<metodologias.size();i++){
+					ItemVO obj = metodologias.get(i);
+					if(obj.getCodigo()==plan.getPlaMetodologia()){
+						log.setMetodologia(obj.getNombre());
+						break;
+					}
+				}
+				
 				log.setPlanesApoyo(plan.getPlaPlanEspecial());
 				log.setProcedimientoEvaluacion(plan.getPlaProcedimiento());
 				
@@ -464,18 +484,18 @@ public class Nuevo extends Service {
 			area.setAreMetodologia(Integer.parseInt(params[1]));
 			area.setAreVigencia(Integer.parseInt(params[2]));
 			area.setAreCodigo(Long.parseLong(params[3]));
+			AreaVO areaE = planDeEstudiosDAO.getArea(area);
 			planDeEstudiosDAO.eliminarArea(area);
 			session.removeAttribute("areaPlanVO");
 			request.setAttribute(ParamsVO.SMS,
 					"El Ã¡rea fue eliminada satisfactoriamente");
 			
 			try {
-				AreaVO areaE = planDeEstudiosDAO.getArea(area);
+				
 				//insercion de bitacora
 				String jsonString="";
 				BitacoraCOM com = new BitacoraCOM();
-				try{
-					
+		
 					LogAreaDto log = new LogAreaDto();
 					log.setAbreviatura(area.getAreAbreviatura());
 					
@@ -547,7 +567,13 @@ public class Nuevo extends Service {
 				}
 				
 				Gson gson = new Gson();
-				String jsonGrados = gson.toJson(area.getAreGrado());
+				List<Long> gradosLog = new ArrayList<>();
+				for(int i=0;i<area.getAreGrado().length;i++){
+					if(area.getAreGrado()[i]!=-1){
+						gradosLog.add(area.getAreGrado()[i]);
+					}
+				}
+				String jsonGrados = gson.toJson(gradosLog);
 				log.setGrados(jsonGrados);
 				log.setIdentificadorRegistro(String.valueOf(area.getAreCodigo()));
 				
@@ -816,9 +842,7 @@ public class Nuevo extends Service {
 			session.removeAttribute("asignaturaPlanVO");
 			request.setAttribute(ParamsVO.SMS,
 					"El asignatura fue eliminada satisfactoriamente");
-			
 
-			try {
 				AsignaturaVO asignaturaE = planDeEstudiosDAO.getAsignatura(asignatura);
 				//insercion de bitacora
 				String jsonString="";
@@ -838,8 +862,25 @@ public class Nuevo extends Service {
 					}
 					
 					Gson gson = new Gson();
-					String jsonGrados = gson.toJson(asignaturaE.getAsiGrado());
+					
+					List<LogGradoDto> gradosLog = new ArrayList<>();
+					LogGradoDto grado;
+					String gradoS;
+					String [] infoGrado;
+					for(int i=0;i<asignatura.getAsiGrado().length;i++){
+						if(asignatura.getAsiGrado()[i]!="-1"){
+							gradoS = asignatura.getAsiGrado()[i];
+							infoGrado = gradoS.split(":");
+							grado = new LogGradoDto();
+							grado.setGrado(infoGrado[0]);
+							grado.setIntensidadHoraria(infoGrado[1]);
+							grado.setEstado(infoGrado[2]);
+							gradosLog.add(grado);
+						}
+					}
+					String jsonGrados = gson.toJson(gradosLog);
 					log.setGrados(jsonGrados);
+
 					log.setIdentificadorRegistro(String.valueOf(asignaturaE.getAsiCodigo()));
 					List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
 					for(int i=0;i<metodologias.size();i++){
@@ -900,7 +941,22 @@ public class Nuevo extends Service {
 				}
 				
 				Gson gson = new Gson();
-				String jsonGrados = gson.toJson(asignatura.getAsiGrado());
+				List<LogGradoDto> gradosLog = new ArrayList<>();
+				LogGradoDto grado;
+				String gradoS;
+				String [] infoGrado;
+				for(int i=0;i<asignatura.getAsiGrado().length;i++){
+					if(asignatura.getAsiGrado()[i]!="-1"){
+						gradoS = asignatura.getAsiGrado()[i];
+						infoGrado = gradoS.split(":");
+						grado = new LogGradoDto();
+						grado.setGrado(infoGrado[0]);
+						grado.setIntensidadHoraria(infoGrado[1]);
+						grado.setEstado(infoGrado[2]);
+						gradosLog.add(grado);
+					}
+				}
+				String jsonGrados = gson.toJson(gradosLog);
 				log.setGrados(jsonGrados);
 				log.setIdentificadorRegistro(String.valueOf(asignatura.getAsiCodigo()));
 				List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));

@@ -338,6 +338,8 @@ public class Nuevo extends Service {
 			logro.setLogCodigoJerarquia(Long.parseLong(params[0]));
 			logro.setLogCodigo(Long.parseLong(params[1]));
 			logro.setLogVigencia(Integer.parseInt(params[2]));
+			
+			LogroVO logroE = indicadoresDAO.getLogro(logro);
 			indicadoresDAO.eliminarLogro(logro);
 			//insercion de bitacora
 			BitacoraCOM com = new BitacoraCOM();
@@ -346,57 +348,57 @@ public class Nuevo extends Service {
 				
 				
 				LogLogroDto log = new LogLogroDto();
-				log.setAbreviatura(logro.getLogAbreviatura());
+				log.setAbreviatura(logroE.getLogAbreviatura());
 				
 				List<ItemVO> asignaturas = indicadoresDAO.getListaAsignatura(
-						logro.getLogInstitucion(),
-						logro.getLogMetodologia(),
-						logro.getLogVigencia(), logro.getLogGrado());
+						logroE.getLogInstitucion(),
+						logroE.getLogMetodologia(),
+						logroE.getLogVigencia(), logroE.getLogGrado());
 				
 				for(int i=0;i<asignaturas.size();i++){
 					ItemVO obj = asignaturas.get(i);
-					if(obj.getCodigo()==logro.getLogAsignatura()){
+					if(obj.getCodigo()==logroE.getLogAsignatura()){
 						log.setAsignatura(obj.getNombre());
 						break;
 					}
 				}
 
-				log.setComentario(logro.getLogDescripcion());
+				log.setComentario(logroE.getLogDescripcion());
 				
-				List<ItemVO> grados = indicadoresDAO.getListaGrado(logro.getLogInstitucion(),logro.getLogMetodologia());
+				List<ItemVO> grados = indicadoresDAO.getListaGrado(logroE.getLogInstitucion(),logroE.getLogMetodologia());
 				
 				for(int i=0;i<grados.size();i++){
 					ItemVO obj = grados.get(i);
-					if(obj.getCodigo()==logro.getLogMetodologia()){
+					if(obj.getCodigo()==logroE.getLogMetodologia()){
 						log.setGrado(obj.getNombre());
 						break;
 					}
 				}
 				
-				log.setIdentificadorRegistro(String.valueOf(logro.getLogCodigo()));
-				log.setLogro(logro.getLogNombre());
+				log.setIdentificadorRegistro(String.valueOf(logroE.getLogCodigo()));
+				log.setLogro(logroE.getLogNombre());
 				
 				List<ItemVO> metodologias = indicadoresDAO
-						.getListaMetodologia(logro.getLogInstitucion());
+						.getListaMetodologia(logroE.getLogInstitucion());
 
 				for(int i=0;i<metodologias.size();i++){
 					ItemVO obj = metodologias.get(i);
-					if(obj.getCodigo()==logro.getLogMetodologia()){
+					if(obj.getCodigo()==logroE.getLogMetodologia()){
 						log.setMetodología(obj.getNombre());
 						break;
 					}
 				}
 				
 				
-				log.setOrden(logro.getLogOrden());
-				log.setPeriodoFinal(logro.getLogPeriodoFin());
-				log.setPeriodoInicial(logro.getLogPeriodoIni());
+				log.setOrden(logroE.getLogOrden());
+				log.setPeriodoFinal(logroE.getLogPeriodoFin());
+				log.setPeriodoInicial(logroE.getLogPeriodoIni());
 				log.setTipoCargue("individual");
-				log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());
+				log.setVigencia(logroE.getLogPeriodoIni()+" - "+logroE.getLogPeriodoFin());
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
-				com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+				com.insertarBitacora(logroE.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
 						1301, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
 			}catch(Exception e){
 				
@@ -422,6 +424,7 @@ public class Nuevo extends Service {
 			desc.setDesCodigoJerarquia(Long.parseLong(params[0]));
 			desc.setDesCodigo(Long.parseLong(params[1]));
 			desc.setDesVigencia(Integer.parseInt(params[2]));
+			DescriptorVO descE = indicadoresDAO.getDescriptor(desc);
 			indicadoresDAO.eliminarDescriptor(desc);
 			//insercion de bitacora
 			String jsonString="";
@@ -430,56 +433,65 @@ public class Nuevo extends Service {
 				
 				
 				LogDescriptorDto log = new LogDescriptorDto();
-				log.setAbreviatura(desc.getDesAbreviatura());
+				log.setAbreviatura(descE.getDesAbreviatura());
 				
-				List<ItemVO> areas = indicadoresDAO.getListaArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado());
+				List<ItemVO> areas = indicadoresDAO.getListaArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado());
 				
 				for(int i=0;i<areas.size();i++){
 					ItemVO obj = areas.get(i);
-					if(obj.getCodigo()==desc.getDesArea()){
+					if(obj.getCodigo()==descE.getDesArea()){
 						log.setArea(obj.getNombre());
 						break;
 					}
 				}
 
-				log.setComentario(desc.getDesDescripcion());
-				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado(), desc.getDesArea());
+				log.setComentario(descE.getDesDescripcion());
+				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado(), descE.getDesArea());
 				
 				for(int i=0;i<docentes.size();i++){
 					ItemVO obj = docentes.get(i);
-					if(obj.getCodigo()==desc.getDesArea()){
+					if(obj.getCodigo()==descE.getDesArea()){
 						log.setDocente(obj.getNombre());
 						break;
 					}
 				}
-				log.setGrado(desc.getDesGrado());
-				log.setIdentificadorRegistro(String.valueOf(desc.getDesCodigo()));
+				
+				List<ItemVO> grados = indicadoresDAO.getListaGrado(descE.getDesInstitucion(),descE.getDesMetodologia());
+				for(int i=0;i<grados.size();i++){
+					ItemVO obj = grados.get(i);
+					if(obj.getCodigo()==descE.getDesGrado()){
+						log.setGrado(obj.getNombre());
+						break;
+					}
+				}
+				
+				log.setIdentificadorRegistro(String.valueOf(descE.getDesCodigo()));
 				
 				List<ItemVO> metodologias = indicadoresDAO
-						.getListaMetodologia(desc.getDesInstitucion());
+						.getListaMetodologia(descE.getDesInstitucion());
 
 				for(int i=0;i<metodologias.size();i++){
 					ItemVO obj = metodologias.get(i);
-					if(obj.getCodigo()==desc.getDesMetodologia()){
+					if(obj.getCodigo()==descE.getDesMetodologia()){
 						log.setMetodología(obj.getNombre());
 						break;
 					}
 				}
 				
-				log.setOrden(desc.getDesOrden());
-				log.setPeriodoFinal(desc.getDesPeriodoFin());
-				log.setPeriodoInicial(desc.getDesPeriodoIni());
+				log.setOrden(descE.getDesOrden());
+				log.setPeriodoFinal(descE.getDesPeriodoFin());
+				log.setPeriodoInicial(descE.getDesPeriodoIni());
 				List<ItemVO> tDescriptor = indicadoresDAO.getListaTipoDescriptor();
 				
 				for(int i=0;i<tDescriptor.size();i++){
 					ItemVO obj = docentes.get(i);
-					if(obj.getCodigo()==desc.getDesArea()){
+					if(obj.getCodigo()==descE.getDesArea()){
 						log.setTipoDescriptor(obj.getNombre());
 						break;
 					}
 				}
-				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
-				log.setDescripcion(desc.getDesDescripcion());
+				log.setVigencia(descE.getDesPeriodoIni()+" - "+descE.getDesPeriodoFin());
+				log.setDescripcion(descE.getDesDescripcion());
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
@@ -645,7 +657,8 @@ public class Nuevo extends Service {
 						break;
 					}
 				}
-				log.setGrado(desc.getDesGrado());
+				Integer grado = (Integer)desc.getDesGrado();
+				log.setGrado(grado.toString());
 				log.setIdentificadorRegistro(String.valueOf(desc.getDesCodigo()));
 				
 				List<ItemVO> metodologias = indicadoresDAO

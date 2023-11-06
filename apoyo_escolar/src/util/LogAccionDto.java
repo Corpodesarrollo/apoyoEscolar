@@ -133,4 +133,17 @@ public class LogAccionDto {
 		return this.direccionResidencia;
 	}
 
+	@SerializedName("Acción")
+	private String accion;
+
+	public void setAccion(String accion)
+	{
+		this.accion=accion;
+	}
+
+	public String getAccion()
+	{
+		return this.accion;
+	}
+
 }

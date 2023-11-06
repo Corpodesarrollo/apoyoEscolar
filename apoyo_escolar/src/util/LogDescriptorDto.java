@@ -8,7 +8,7 @@ public class LogDescriptorDto {
 	private String vigencia;
 	private String metodología;
 	private String docente;
-	private int grado;
+	private String grado;
 	private String area;
 	@SerializedName("periodo inicial")
 	private int periodoInicial;
@@ -48,10 +48,11 @@ public class LogDescriptorDto {
 	public void setDocente(String docente) {
 		this.docente = docente;
 	}
-	public int getGrado() {
+	
+	public String getGrado() {
 		return grado;
 	}
-	public void setGrado(int grado) {
+	public void setGrado(String grado) {
 		this.grado = grado;
 	}
 	public String getArea() {

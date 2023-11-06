@@ -9,7 +9,9 @@ public class LogLogroDto {
 	private String metodología;
 	private String grado;
 	private String asignatura;
+	@SerializedName("periodo inicial")
 	private int periodoInicial;
+	@SerializedName("periodo final")
 	private int periodoFinal;
 	private String logro;
 	private String abreviatura;

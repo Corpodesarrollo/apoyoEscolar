@@ -67,4 +67,17 @@ public class LogDetalleAccionEstudianteDto {
 	{
 		return this.informacionMeritos;
 	}
+
+	@SerializedName("Acción")
+	private String accion;
+
+	public void setAccion(String accion)
+	{
+		this.accion=accion;
+	}
+
+	public String getAccion()
+	{
+		return this.accion;
+	}
 }

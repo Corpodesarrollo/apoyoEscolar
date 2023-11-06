@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -31,6 +32,8 @@ import siges.io.Zip;
 import siges.login.beans.Login;
 import siges.util.Logger;
 import siges.util.beans.ReporteVO;
+import siges.common.vo.FiltroCommonVO;
+import siges.common.vo.ItemVO;
 import util.BitacoraCOM;
 import util.LogAccionDto;
 import util.LogDetalleAccionEstudianteDto;
@@ -38,11 +41,11 @@ import util.LogEstudianteDto;
 
 /**
  * Nombre: ControllerFiltroSave<BR>
- * DescripciÃ³n: Controla la negociacion de busqueda para la vista de resultados <BR>
- * Funciones de la pÃ¡gina: Busca los datos y redirige el control a la vista de
+ * Descripción: Controla la negociacion de busqueda para la vista de resultados <BR>
+ * Funciones de la página: Busca los datos y redirige el control a la vista de
  * resultados <BR>
  * Entidades afectadas: Estudiante <BR>
- * Fecha de modificaciÃ³n: 20/07/2005 <BR>
+ * Fecha de modificación: 20/07/2005 <BR>
  * 
  * @author Latined <BR>
  * @version v 1.0 <BR>
@@ -94,7 +97,7 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 		try {
 			estudianteDAO = new EstudianteDAO(cursor);
 			if (!asignarBeans(request)) {
-				setMensaje("Error capturando datos de sesiÃ³n para el usuario");
+				setMensaje("Error capturando datos de sesión para el usuario");
 				request.setAttribute("mensaje", mensaje);
 				return er;
 			}
@@ -120,8 +123,8 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 
 	public void registrarAlumno(HttpServletRequest request)
 			throws ServletException, IOException {
-		//1. Validamos si el estudiantes ya estÃ¡ registrado.
-		boolean resultado;
+		//1. Validamos si el estudiantes ya está registrado.
+		boolean resultado = false;
 		String mensaje="";
 		HashMap<Long, String> validarEstudiante = estudianteDAO.getEstudianteRestriccion(filtro.getTipoDocumento(),filtro.getId());
 		Long idResultado = null;
@@ -134,6 +137,7 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 				idResultado = obj.getKey();
 				msgResultado = obj.getValue();
 			}
+			String accion = "Adición de estudiante";
 			if(idResultado != null){
 				int tipoAccion = 1;
 				switch(String.valueOf(idResultado)){
@@ -142,6 +146,7 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 						resultado = estudianteDAO.updateGrupoAlumno(filtro);
 						mensaje = " El estudiante fue actualizado satisfactoriamente.";
 						tipoAccion=1;
+						accion = "Actualización de estudiante";
 						break;
 					case "2": 
 						resultado = estudianteDAO.registrarAlumno(filtro);
@@ -151,36 +156,76 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 				}
 				try
 				{
-					LogEstudianteDto log = new LogEstudianteDto();
-					log.setNumeroIdentificacion(filtro.getId());
-					log.setEstado("Activo");
-					LogAccionDto logAccion= new LogAccionDto();
-					logAccion.setFechaExpedicion(basica.getEstfechanac().toString());
-					logAccion.setDepartamentoExpedicion(basica.getEstexpdoccoddep());
-					logAccion.setCorreoInstitucional(basica.getEstlugnaccodmun());
-					logAccion.setDepartamentoNacimiento(basica.getEstlugnaccoddep());
-					logAccion.setDepartamentoNacimiento(basica.getEstlugnaccoddep());
-					logAccion.setTelefono1(basica.getEsttelefono());
-					logAccion.setTelefono2(basica.getEsttelefono());
-					logAccion.setDireccionResidencia(basica.getEstdireccion());
-					LogDetalleAccionEstudianteDto detalle= new LogDetalleAccionEstudianteDto();
-					log.setLogAccion(detalle);
-					log.setNombreInstitucion(login.getInst());
-					log.setSede(filtro.getSede());
-					log.setJornada(filtro.getJornada());
-					log.setGrado(filtro.getGrado());
-					log.setGrupo(filtro.getGrupo());
-					BitacoraCOM.insertarBitacora(
-							Long.parseLong(login.getInstId()), 
-							Integer.parseInt(login.getJornadaId()),
-							2 ,
-							login.getPerfil(), 
-							Integer.parseInt(login.getSede()), 
-							0, 
-							tipoAccion, 
-							login.getUsuarioId(), 
-							new Gson().toJson(log)
-							);
+					if (resultado) {
+						LogEstudianteDto log = new LogEstudianteDto();
+						List<ItemVO> tiposDoc = estudianteDAO.getTiposDoc();
+						for(int i=0;i<tiposDoc.size();i++){
+							ItemVO obj = tiposDoc.get(i);
+							if(obj.getCodigo()==Long.parseLong(filtro.getTipoDocumento())){
+								log.setTipodocumento(obj.getNombre());
+								break;
+							}
+						}
+						log.setNumeroIdentificacion(filtro.getId());
+						log.setNombreCompleto(filtro.getNombre1()+' '+filtro.getNombre2()+' '+filtro.getApellido1()+' '+filtro.getApellido2());
+						log.setEstado("Activo");
+						LogDetalleAccionEstudianteDto logAccion= new LogDetalleAccionEstudianteDto();
+						logAccion.setAccion(accion);
+						log.setLogAccion(logAccion);
+						
+						List<ItemVO> instituciones = estudianteDAO.getListaInst(Long.parseLong(login.getLocId()));
+						for(int i=0;i<instituciones.size();i++){
+							ItemVO obj = instituciones.get(i);
+							if(obj.getCodigo()==filtro.getInstitucion()){
+								log.setNombreInstitucion(obj.getNombre());
+								break;
+							}
+						}
+						List<ItemVO> sedes = estudianteDAO.getListaSede(filtro.getInstitucion());
+						for(int i=0;i<sedes.size();i++){
+							ItemVO obj = sedes.get(i);
+							if(obj.getCodigo()==Long.parseLong(filtro.getSede())){
+								log.setSede(obj.getNombre());
+								break;
+							}
+						}
+						List<ItemVO> jornadas = estudianteDAO.getListaJornd(filtro.getInstitucion(), Long.parseLong(filtro.getSede()));
+						for(int i=0;i<jornadas.size();i++){
+							ItemVO obj = jornadas.get(i);
+							if(obj.getCodigo()==Long.parseLong(filtro.getJornada())){
+								log.setJornada(obj.getNombre());
+								break;
+							}
+						}
+						FiltroCommonVO filtrosVO = new FiltroCommonVO();
+						filtrosVO.setFilinst(Integer.parseInt(filtro.getInstitucion().toString()));
+						filtrosVO.setFilsede(Integer.parseInt(filtro.getSede().toString()));
+						filtrosVO.setFiljornd(Integer.parseInt(filtro.getJornada()));
+						filtrosVO.setFilmetod(Integer.parseInt(filtro.getMetodologia()));
+						List<ItemVO> grados = estudianteDAO.getListaGrado(filtrosVO);
+						for(int i=0;i<grados.size();i++){
+							ItemVO obj = grados.get(i);
+							if(obj.getCodigo()==Long.parseLong(filtro.getGrado())){
+								log.setGrado(obj.getNombre());
+								break;
+							}
+						}
+						filtrosVO.setFilgrado(Integer.parseInt(filtro.getGrado()));
+						List<ItemVO> grupos = estudianteDAO.getListaGrupo(filtrosVO);
+						for(int i=0;i<grupos.size();i++){
+							ItemVO obj = grupos.get(i);
+							if(obj.getCodigo()==Long.parseLong(filtro.getFilgrupo())){
+								log.setGrupo(obj.getNombre());
+								break;
+							}
+						}
+						Gson gson = new Gson();
+						String jsonString = gson.toJson(log);
+						BitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 2, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								1000, tipoAccion, login.getUsuarioId(), jsonString);
+					}
 				}catch(Exception e){
 					e.printStackTrace();
 					System.out.println("Error " + this + ":" + e.toString());

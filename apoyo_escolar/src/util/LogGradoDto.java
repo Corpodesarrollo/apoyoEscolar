@@ -1,0 +1,30 @@
+package util;
+
+import com.google.gson.annotations.SerializedName;
+
+public class LogGradoDto {
+	private String grado;
+	@SerializedName("intensidad horaria")
+	private String intensidadHoraria;
+	private String estado;
+	public String getGrado() {
+		return grado;
+	}
+	public void setGrado(String grado) {
+		this.grado = grado;
+	}
+	public String getIntensidadHoraria() {
+		return intensidadHoraria;
+	}
+	public void setIntensidadHoraria(String intensidadHoraria) {
+		this.intensidadHoraria = intensidadHoraria;
+	}
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	
+	
+}

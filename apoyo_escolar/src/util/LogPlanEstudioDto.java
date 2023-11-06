@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName;
 public class LogPlanEstudioDto {
 
 	@SerializedName("identificador de registro")
-	private String IdentificadorRegistro;
+	private long IdentificadorRegistro;
 	private String vigencia;
-	private String metodología;
+	private String metodologia;
 	@SerializedName("criterio de evaluacion")
 	private String criterioEvaluacion;
 	@SerializedName("procedimiento de evaluacion")
@@ -15,10 +15,11 @@ public class LogPlanEstudioDto {
 	@SerializedName("planes de apoyo")
 	private String planesApoyo;
 	
-	public String getIdentificadorRegistro() {
+	
+	public long getIdentificadorRegistro() {
 		return IdentificadorRegistro;
 	}
-	public void setIdentificadorRegistro(String identificadorRegistro) {
+	public void setIdentificadorRegistro(long identificadorRegistro) {
 		IdentificadorRegistro = identificadorRegistro;
 	}
 	public String getVigencia() {
@@ -27,11 +28,12 @@ public class LogPlanEstudioDto {
 	public void setVigencia(String vigencia) {
 		this.vigencia = vigencia;
 	}
-	public String getMetodología() {
-		return metodología;
+	
+	public String getMetodologia() {
+		return metodologia;
 	}
-	public void setMetodología(String metodología) {
-		this.metodología = metodología;
+	public void setMetodologia(String metodologia) {
+		this.metodologia = metodologia;
 	}
 	public String getCriterioEvaluacion() {
 		return criterioEvaluacion;
