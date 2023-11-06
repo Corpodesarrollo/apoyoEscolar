@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -47,6 +49,7 @@ import siges.dao.Ruta;
 import siges.dao.Ruta2;
 import siges.exceptions.InternalErrorException;
 import siges.io.Zip;
+import siges.util.dao.utilDAO;
 
 /**
  * Nombre: ResumenArea<BR>
@@ -62,6 +65,8 @@ import siges.io.Zip;
  */
 
 public class ResumenArea {
+	
+	private utilDAO utilDAO = new utilDAO();
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
@@ -561,6 +566,7 @@ public class ResumenArea {
 						updateDatosBoletin("2", nombreBol, "0", usuarioBol);
 						updateReporte(nombreBol, usuarioBol, "2");
 						limpiarTablas(consecBol);
+						utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 						e.printStackTrace();
 					}
 					
@@ -584,6 +590,7 @@ public class ResumenArea {
 					updateDatosBoletin("2", nombreBol, "0", usuarioBol);
 					updateReporte(nombreBol, usuarioBol, "2");
 					limpiarTablas(consecBol);
+					utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(),2, "porque no se encontraron registros para la generaci&oacuten");
 					return true;
 				}
 				rs.close();
@@ -706,6 +713,7 @@ public class ResumenArea {
 					updateDatosBoletin("2", nombreBol, "0", usuarioBol);
 					updateReporte(nombreBol, usuarioBol, "2");
 					limpiarTablas(consecBol);
+					utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(),2, "porque no se encontraron registros para la generaci&oacuten");
 					return true;
 				}
 				rs.close();
@@ -721,6 +729,12 @@ public class ResumenArea {
 					usuarioBol);
 			updateReporte(nombreBol, usuarioBol, "2");
 			limpiarTablas(consecBol);
+			try {
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 			return false;
 		} catch (JRException e) {
 			e.printStackTrace();
@@ -731,6 +745,12 @@ public class ResumenArea {
 					usuarioBol);
 			updateReporte(nombreBol, usuarioBol, "2");
 			limpiarTablas(consecBol);
+			try {
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 			return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -741,6 +761,12 @@ public class ResumenArea {
 					usuarioBol);
 			updateReporte(nombreBol, usuarioBol, "2");
 			limpiarTablas(consecBol);
+			try {
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 			return false;
 		} catch (java.lang.OutOfMemoryError e) {
 			e.printStackTrace();
@@ -753,6 +779,12 @@ public class ResumenArea {
 					usuarioBol);
 			updateReporte(nombreBol, usuarioBol, "2");
 			limpiarTablas(consecBol);
+			try {
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -763,6 +795,12 @@ public class ResumenArea {
 					usuarioBol);
 			updateReporte(nombreBol, usuarioBol, "2");
 			limpiarTablas(consecBol);
+			try {
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_RESUMEN, dbt.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),dbt.getDABOLINST(), dbt.getDABOLSEDE(),dbt.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 			return false;
 		} finally {
 			try {

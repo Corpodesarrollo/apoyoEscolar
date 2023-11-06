@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -18,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import siges.common.vo.FiltroCommonVO;
-import siges.common.vo.ItemVO;
 import siges.dao.Cursor;
 import siges.dao.Ruta;
 import siges.dao.Ruta2;
@@ -33,7 +30,6 @@ import siges.login.beans.Login;
 import siges.util.Logger;
 import siges.util.beans.ReporteVO;
 import util.BitacoraCOM;
-import util.LogDetalleAccionEstudianteDto;
 import util.LogEstudianteDto;
 
 /**
@@ -124,44 +120,32 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 		if(estudianteDAO.getEstudiante(filtro.getTipoDocumento(),filtro.getId())){
 			//2. Si existe debemos actualizarle la ubicacion
 			resultado = estudianteDAO.inactivarGrupoAlumno(filtro);
-			mensaje = " El estudiante fue actualizado satisfactoriamente.";
 			try
 			{
-				if (resultado) {
-					LogEstudianteDto log = new LogEstudianteDto();
-					List<ItemVO> tiposDoc = estudianteDAO.getTiposDoc();
-					for(int i=0;i<tiposDoc.size();i++){
-						ItemVO obj = tiposDoc.get(i);
-						if(obj.getCodigo()==Long.parseLong(filtro.getTipoDocumento())){
-							log.setTipodocumento(obj.getNombre());
-							break;
-						}
-					}
-					log.setNumeroIdentificacion(filtro.getId());
-					log.setEstado("Activo");
-					LogDetalleAccionEstudianteDto logAccion= new LogDetalleAccionEstudianteDto();
-					logAccion.setAccion("Inactivación de estudiante");
-					log.setLogAccion(logAccion);
-					
-					List<ItemVO> instituciones = estudianteDAO.getListaInst(Long.parseLong(login.getLocId()));
-					for(int i=0;i<instituciones.size();i++){
-						ItemVO obj = instituciones.get(i);
-						if(obj.getCodigo()==filtro.getInstitucion()){
-							log.setNombreInstitucion(obj.getNombre());
-							break;
-						}
-					}
-					Gson gson = new Gson();
-					String jsonString = gson.toJson(log);
-					BitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
-							Integer.parseInt(login.getJornadaId()), 2, 
-							login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-							1001, 2, login.getUsuarioId(), jsonString);
-				}
+				LogEstudianteDto log = new LogEstudianteDto();
+				log.setNumeroIdentificacion(filtro.getId());
+				log.setEstado("Inactivo");
+				log.setNombreInstitucion(login.getInst());
+				log.setSede(filtro.getSede());
+				log.setJornada(filtro.getJornada());
+				log.setGrado(filtro.getGrado());
+				log.setGrupo(filtro.getGrupo());
+				BitacoraCOM.insertarBitacora(
+						Long.parseLong(login.getInstId()), 
+						Integer.parseInt(login.getJornadaId()),
+						2 ,
+						login.getPerfil(), 
+						Integer.parseInt(login.getSede()), 
+						0, 
+						2, 
+						login.getUsuarioId(), 
+						new Gson().toJson(log)
+						);
 			}catch(Exception e){
 				e.printStackTrace();
 				System.out.println("Error " + this + ":" + e.toString());
 			}
+			mensaje = " El estudiante fue actualizado satisfactoriamente.";
 		}else{
 			//2. Si no existe, lo registramos
 			resultado=true;

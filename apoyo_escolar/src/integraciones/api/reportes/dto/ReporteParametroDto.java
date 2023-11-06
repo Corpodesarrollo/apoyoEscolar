@@ -33,7 +33,45 @@ public class ReporteParametroDto implements Serializable{
 	private long consecutivoConsultaExterna;
 	private String context;
 	
+	//datos para notificaciones
+	private long sedeId;
+	private long jornadaId;
+	private long institucionId; 
+	private String institucion;
 	
+		
+	public long getSedeId() {
+		return sedeId;
+	}
+
+	public void setSedeId(long sedeId) {
+		this.sedeId = sedeId;
+	}
+
+	public long getJornadaId() {
+		return jornadaId;
+	}
+
+	public void setJornadaId(long jornadaId) {
+		this.jornadaId = jornadaId;
+	}
+
+	public long getInstitucionId() {
+		return institucionId;
+	}
+
+	public void setInstitucionId(long institucionId) {
+		this.institucionId = institucionId;
+	}
+
+	public String getInstitucion() {
+		return institucion;
+	}
+
+	public void setInstitucion(String institucion) {
+		this.institucion = institucion;
+	}
+
 	public String getModulo() {
 		return modulo;
 	}

@@ -119,6 +119,22 @@ public class ControllerFiltroAdd extends HttpServlet {
 			request.setAttribute("filtroGrupoF", estudianteDAO.getFiltro(
 					rb.getString("filtroSedeJornadaGradoGrupoInstitucion"),
 					list));
+			Gson gson = new Gson();
+			String jsonString = gson.toJson(list);
+			try {
+				HttpSession session = request.getSession();
+				Login usuVO = (Login) session.getAttribute("login");
+				
+				BitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+										Integer.parseInt(usuVO.getJornadaId()), 2, 
+										usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+										30, 4/*Consulta Generada*/, usuVO.getUsuarioId(), jsonString);
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println("Error " + this + ":" + e.toString());
+				Logger.print(login.getUsuarioId(), "Ingreso de HOJAS DE VIDA (Bitacora), módulo de Adicionar Estudiante. ",
+						7, 1, this.toString());
+			}
 			
 		} catch (Exception e) {
 			System.out.println("Error " + this + ":" + e.toString());

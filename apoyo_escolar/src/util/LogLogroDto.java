@@ -5,17 +5,25 @@ import com.google.gson.annotations.SerializedName;
 public class LogLogroDto {
 	@SerializedName("identificador de registro")
 	private String identificadorRegistro;
+	@SerializedName("Vigencia")
 	private String vigencia;
-	private String metodología;
+	@SerializedName("Metodología")
+	private String metodologia;
+	@SerializedName("Grado")
 	private String grado;
+	@SerializedName("Asignatura")
 	private String asignatura;
-	@SerializedName("periodo inicial")
+	@SerializedName("Periodo inicial")
 	private int periodoInicial;
-	@SerializedName("periodo final")
+	@SerializedName("Periodo final")
 	private int periodoFinal;
+	@SerializedName("Logro")
 	private String logro;
+	@SerializedName("Abreviatura")
 	private String abreviatura;
+	@SerializedName("Orden")
 	private int orden;
+	@SerializedName("Comentario")
 	private String comentario;
 	@SerializedName("tipo de cargue")
 	private String tipoCargue;
@@ -30,12 +38,6 @@ public class LogLogroDto {
 	}
 	public void setVigencia(String vigencia) {
 		this.vigencia = vigencia;
-	}
-	public String getMetodología() {
-		return metodología;
-	}
-	public void setMetodología(String metodología) {
-		this.metodología = metodología;
 	}
 	
 	public String getAsignatura() {
@@ -91,6 +93,12 @@ public class LogLogroDto {
 	}
 	public void setGrado(String grado) {
 		this.grado = grado;
+	}
+	public String getMetodologia() {
+		return metodologia;
+	}
+	public void setMetodologia(String metodologia) {
+		this.metodologia = metodologia;
 	}
 
 

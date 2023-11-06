@@ -6,13 +6,15 @@ public class LogPlanEstudioDto {
 
 	@SerializedName("identificador de registro")
 	private long IdentificadorRegistro;
+	@SerializedName("Vigencia")
 	private String vigencia;
+	@SerializedName("Metodología")
 	private String metodologia;
-	@SerializedName("criterio de evaluacion")
+	@SerializedName("Criterio de evaluacion")
 	private String criterioEvaluacion;
-	@SerializedName("procedimiento de evaluacion")
+	@SerializedName("Procedimiento de evaluacion")
 	private String procedimientoEvaluacion;
-	@SerializedName("planes de apoyo")
+	@SerializedName("Planes de apoyo")
 	private String planesApoyo;
 	
 	

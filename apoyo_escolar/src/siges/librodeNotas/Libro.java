@@ -43,6 +43,7 @@ import siges.dao.Ruta;
 import siges.dao.Ruta2;
 import siges.exceptions.InternalErrorException;
 import siges.io.Zip;
+import siges.util.dao.utilDAO;
 
 /**
  * Nombre: Boletin<BR>
@@ -57,6 +58,8 @@ import siges.io.Zip;
  */
 
 public class Libro {
+	
+	private utilDAO utilDAO = new utilDAO();
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
@@ -476,6 +479,7 @@ public class Libro {
 					bolDAO.updateReporte(reporte);
 					// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 					bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+					utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_LIBRO_NOTAS, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(),2, "porque no se encontraron registros para la generaci&oacuten");
 					// System.out
 					// .println("HILO REP LIBROS: NO SE HAY REGISTROS REPORTE");
 					return true;
@@ -496,6 +500,7 @@ public class Libro {
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_LIBRO_NOTAS, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -515,6 +520,7 @@ public class Libro {
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_LIBRO_NOTAS, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -533,6 +539,7 @@ public class Libro {
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_LIBRO_NOTAS, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -554,6 +561,7 @@ public class Libro {
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_LIBRO_NOTAS, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -572,6 +580,7 @@ public class Libro {
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_LIBRO_NOTAS, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -836,7 +845,7 @@ public class Libro {
 			parametros.put("INSTITUCION", bdt.getDABOLINSNOMBRE());
 			parametros.put("SEDE", bdt.getDABOLSEDNOMBRE());
 			parametros.put("JORNADA", bdt.getDABOLJORNOMBRE());
-			parametros.put("DANE", bdt.getDANE());
+			parametros.put("DANE", bdt.getDANE12());
 			long consecutivoConsultaExterna = this.getConsecutivoConsultasExternas();
 			this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "LIB");
 			String pinConsultaExterna = "LIB"+consecutivoConsultaExterna;

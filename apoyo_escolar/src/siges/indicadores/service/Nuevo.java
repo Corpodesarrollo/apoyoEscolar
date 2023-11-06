@@ -369,7 +369,7 @@ public class Nuevo extends Service {
 				
 				for(int i=0;i<grados.size();i++){
 					ItemVO obj = grados.get(i);
-					if(obj.getCodigo()==logroE.getLogMetodologia()){
+					if(obj.getCodigo()==logroE.getLogGrado()){
 						log.setGrado(obj.getNombre());
 						break;
 					}
@@ -384,7 +384,7 @@ public class Nuevo extends Service {
 				for(int i=0;i<metodologias.size();i++){
 					ItemVO obj = metodologias.get(i);
 					if(obj.getCodigo()==logroE.getLogMetodologia()){
-						log.setMetodología(obj.getNombre());
+						log.setMetodologia(obj.getNombre());
 						break;
 					}
 				}
@@ -435,37 +435,54 @@ public class Nuevo extends Service {
 				LogDescriptorDto log = new LogDescriptorDto();
 				log.setAbreviatura(descE.getDesAbreviatura());
 				
-				List<ItemVO> areas = indicadoresDAO.getListaArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado());
-				
-				for(int i=0;i<areas.size();i++){
-					ItemVO obj = areas.get(i);
-					if(obj.getCodigo()==descE.getDesArea()){
-						log.setArea(obj.getNombre());
-						break;
+				try{
+					List<ItemVO> areas = indicadoresDAO.getListaArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado());
+					
+					for(int i=0;i<areas.size();i++){
+						ItemVO obj = areas.get(i);
+						if(obj.getCodigo()==descE.getDesArea()){
+							log.setArea(obj.getNombre());
+							break;
+						}
 					}
+				}catch(Exception e){
+					
 				}
 
 				log.setComentario(descE.getDesDescripcion());
-				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado(), descE.getDesArea());
 				
-				for(int i=0;i<docentes.size();i++){
-					ItemVO obj = docentes.get(i);
-					if(obj.getCodigo()==descE.getDesArea()){
-						log.setDocente(obj.getNombre());
-						break;
+				try{
+				
+					List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado(), descE.getDesArea());
+					
+					for(int i=0;i<docentes.size();i++){
+						ItemVO obj = docentes.get(i);
+						if(obj.getCodigo()==descE.getDesArea()){
+							log.setDocente(obj.getNombre());
+							break;
+						}
 					}
+				
+				}catch(Exception e){
+					
 				}
 				
-				List<ItemVO> grados = indicadoresDAO.getListaGrado(descE.getDesInstitucion(),descE.getDesMetodologia());
-				for(int i=0;i<grados.size();i++){
-					ItemVO obj = grados.get(i);
-					if(obj.getCodigo()==descE.getDesGrado()){
-						log.setGrado(obj.getNombre());
-						break;
-					}
-				}
+				try{
 				
+					List<ItemVO> grados = indicadoresDAO.getListaGrado(descE.getDesInstitucion(),descE.getDesMetodologia());
+					for(int i=0;i<grados.size();i++){
+						ItemVO obj = grados.get(i);
+						if(obj.getCodigo()==descE.getDesGrado()){
+							log.setGrado(obj.getNombre());
+							break;
+						}
+					}
+				}catch(Exception e){
+					
+				}
 				log.setIdentificadorRegistro(String.valueOf(descE.getDesCodigo()));
+				
+				try{
 				
 				List<ItemVO> metodologias = indicadoresDAO
 						.getListaMetodologia(descE.getDesInstitucion());
@@ -478,23 +495,37 @@ public class Nuevo extends Service {
 					}
 				}
 				
+				}catch(Exception e){
+					
+				}
+				
 				log.setOrden(descE.getDesOrden());
 				log.setPeriodoFinal(descE.getDesPeriodoFin());
 				log.setPeriodoInicial(descE.getDesPeriodoIni());
+				
+				try{
+				
 				List<ItemVO> tDescriptor = indicadoresDAO.getListaTipoDescriptor();
 				
 				for(int i=0;i<tDescriptor.size();i++){
-					ItemVO obj = docentes.get(i);
+					ItemVO obj = tDescriptor.get(i);
 					if(obj.getCodigo()==descE.getDesArea()){
 						log.setTipoDescriptor(obj.getNombre());
 						break;
 					}
+				}
+				}catch(Exception e){
+					
 				}
 				log.setVigencia(descE.getDesPeriodoIni()+" - "+descE.getDesPeriodoFin());
 				log.setDescripcion(descE.getDesDescripcion());
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
+			}catch(Exception e){
+				
+			}
+			try{
 				com.insertarBitacora(desc.getDesInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
 						1301, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
 			}catch(Exception e){
@@ -547,7 +578,7 @@ public class Nuevo extends Service {
 				
 				for(int i=0;i<grados.size();i++){
 					ItemVO obj = grados.get(i);
-					if(obj.getCodigo()==logro.getLogMetodologia()){
+					if(obj.getCodigo()==logro.getLogGrado()){
 						log.setGrado(obj.getNombre());
 						break;
 					}
@@ -561,7 +592,7 @@ public class Nuevo extends Service {
 				for(int i=0;i<metodologias.size();i++){
 					ItemVO obj = metodologias.get(i);
 					if(obj.getCodigo()==logro.getLogMetodologia()){
-						log.setMetodología(obj.getNombre());
+						log.setMetodologia(obj.getNombre());
 						break;
 					}
 				}
@@ -637,6 +668,7 @@ public class Nuevo extends Service {
 				LogDescriptorDto log = new LogDescriptorDto();
 				log.setAbreviatura(desc.getDesAbreviatura());
 				
+				try{
 				List<ItemVO> areas = indicadoresDAO.getListaArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado());
 				
 				for(int i=0;i<areas.size();i++){
@@ -646,21 +678,41 @@ public class Nuevo extends Service {
 						break;
 					}
 				}
+				}catch(Exception e){
+					
+				}
 
 				log.setComentario(desc.getDesDescripcion());
+				try{
 				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado(), desc.getDesArea());
 				
 				for(int i=0;i<docentes.size();i++){
 					ItemVO obj = docentes.get(i);
-					if(obj.getCodigo()==desc.getDesArea()){
+					if(obj.getCodigo()==desc.getDesDocente()){
 						log.setDocente(obj.getNombre());
 						break;
 					}
 				}
-				Integer grado = (Integer)desc.getDesGrado();
-				log.setGrado(grado.toString());
+				}catch(Exception e){
+					
+				}
+				try{
+				List<ItemVO> grados = indicadoresDAO.getListaGrado(desc.getDesInstitucion(), desc.getDesMetodologia());
+				
+				for(int i=0;i<grados.size();i++){
+					ItemVO obj = grados.get(i);
+					if(obj.getCodigo()==desc.getDesGrado()){
+						log.setGrado(obj.getNombre());
+						break;
+					}
+				}
+				}catch(Exception e){
+					
+				}
+				
 				log.setIdentificadorRegistro(String.valueOf(desc.getDesCodigo()));
 				
+				try{
 				List<ItemVO> metodologias = indicadoresDAO
 						.getListaMetodologia(desc.getDesInstitucion());
 
@@ -671,18 +723,25 @@ public class Nuevo extends Service {
 						break;
 					}
 				}
+				}catch(Exception e){
+					
+				}
 				
 				log.setOrden(desc.getDesOrden());
 				log.setPeriodoFinal(desc.getDesPeriodoFin());
 				log.setPeriodoInicial(desc.getDesPeriodoIni());
+				try{
 				List<ItemVO> tDescriptor = indicadoresDAO.getListaTipoDescriptor();
 				
 				for(int i=0;i<tDescriptor.size();i++){
-					ItemVO obj = docentes.get(i);
+					ItemVO obj = tDescriptor.get(i);
 					if(obj.getCodigo()==desc.getDesArea()){
 						log.setTipoDescriptor(obj.getNombre());
 						break;
 					}
+				}
+				}catch(Exception e){
+					
 				}
 				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
 				log.setDescripcion(desc.getDesDescripcion());

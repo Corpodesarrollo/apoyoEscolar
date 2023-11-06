@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
-
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -43,9 +41,6 @@ import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
 import siges.exceptions.InternalErrorException;
 import siges.io.Zip;
-import siges.usuario.dao.UsuarioDAO;
-import siges.util.MailDTO;
-import siges.util.Mailer;
 import siges.util.dao.utilDAO;
 
 /**
@@ -63,8 +58,7 @@ import siges.util.dao.utilDAO;
 
 public class Boletin{
 	
-	private utilDAO utilDAO;
-	
+	private utilDAO utilDAO = new utilDAO();
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
@@ -435,10 +429,10 @@ public class Boletin{
 					bolDAO.updateSolicitud(rep.getDABOLCONSEC(), ParamsVO.ESTADO_REPORTE_NOGEN, rep.getDABOLFECHAGEN(),	rep.getDABOLFECHAFIN());
 					reporte.setEstado(ParamsVO.ESTADO_REPORTE_NOGEN);
 					reporte.setMensaje("NO SE GENERO REPORTE, MOTIVO: NO SE ENCONTRARON REGISTROS PARA LA GENERACION");
-					enviarNotificaciones(rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(),2, "porque no se encontraron registros para la generaci&oacuten");
 							//rep.getDABOLUSUARIO(), parameterscopy.get("INSTITUCION").toString(), 2, "porque no se encontraron registros para la generaci&oacuten;");// FIXME se quita la opcion de envio de correo, para validar la ejecución del Hilo
 					bolDAO.updateReporte(reporte);
 					bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+					utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_BOLETIN, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(),2, "porque no se encontraron registros para la generaci&oacuten");
 					return true;
 				}
 
@@ -453,7 +447,7 @@ public class Boletin{
 				reporte.setMensaje("OCURRIO ERROR GENERACION REPORTE, EXCEPCION: " + e.getMessage());
 				bolDAO.updateReporte(reporte);
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
-				enviarNotificaciones(rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_BOLETIN, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -471,7 +465,7 @@ public class Boletin{
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el
 				// boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
-				enviarNotificaciones(rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_BOLETIN, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -489,7 +483,7 @@ public class Boletin{
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el
 				// boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
-				enviarNotificaciones(rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_BOLETIN, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -508,7 +502,7 @@ public class Boletin{
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el
 				// boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
-				enviarNotificaciones(rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_BOLETIN, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -526,7 +520,7 @@ public class Boletin{
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el
 				// boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
-				enviarNotificaciones(rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_BOLETIN, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -744,33 +738,6 @@ public class Boletin{
 		return reporte;
 	}
 	
-	private void enviarNotificaciones(String usuarioId, String institucion,long instCod, long sede, long jornada, int tipoNotificacion, String detalleError) throws MessagingException{
-		Mailer mailer = new Mailer();
-		utilDAO = new utilDAO();
-		Cursor cursor = new Cursor();
-		
-		String[] emails = {utilDAO.getMailNotinicationReportes(usuarioId)};
-		
-		UsuarioDAO objDatosUsuario = new UsuarioDAO(cursor);
-		String strCuerpo= objDatosUsuario.cuerpoCorreoGeneracionBoletin().replace("{nombre}", utilDAO.getPersonaFullName(usuarioId)).replace("{institucion}", institucion);
-		MailDTO mailDto = new MailDTO();
-		mailDto.setEmails(emails);
-		mailDto.setSubject("Generación de Reportes");
-		
-		switch (tipoNotificacion) {
-			case 1:// generacion reporte
-				mailDto.setContent(strCuerpo.replace("{estado}", detalleError));
-				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
-				break;
-			case 2:// no generado
-				mailDto.setContent(strCuerpo.replace("{estado}", "no pudo ser generado, "+detalleError));
-				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
-				break;	
-	
-		}
-		
-	}
-	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map setParametros(DatosBoletinVO bdt) {
 		Map parametros = new HashMap();
@@ -845,6 +812,8 @@ public class Boletin{
 			
 			parametros.put("MOSTRAR_PUESTO_ESTUDIANTE",new Integer(bdt.getDABOLPUEEST()));
 			parametros.put("GRADO",bdt.getDABOLGRADO());
+			
+			parametros.put("DANE", bdt.getDANE());
 		}
 		return parametros;
 	}

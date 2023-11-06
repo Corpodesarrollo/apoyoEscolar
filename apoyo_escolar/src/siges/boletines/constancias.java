@@ -276,6 +276,12 @@ public class constancias extends HttpServlet {
 				this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "CON");
 				String pinConsultaExterna = "CON"+consecutivoConsultaExterna;
 				parameters.put("PINCONSULTAEXTERNA", pinConsultaExterna);
+				
+				parameters.put("INSTITUCION", login.getInst());
+				parameters.put("INSTITUCIONCOD", login.getInstId());
+				
+				parameters.put("SEDECOD", login.getSedeId());
+				parameters.put("JORNADACOD", login.getJornadaId());
 
 				ponerReporte(modulo, login.getUsuarioId(),
 						rb3.getString("constancias.PathConstancias")
@@ -285,7 +291,7 @@ public class constancias extends HttpServlet {
 				Constancia constancia = new Constancia(cursor, filtro, contextoTotal,
 						archivo, archivopre, archivozip, f2, parameters, path,
 						path_logo, reportFile, reportFile1, n++);
-				if (!constancia.procesamientoConstancia(f2, parameters)) {// se dispara el procesamiento de solicitudes				
+				if (!constancia.procesamientoConstancia(f2, parameters,Long.valueOf(login.getSedeId()), Long.valueOf(login.getJornadaId()),Long.valueOf(login.getInstId()), login.getInst())) {// se dispara el procesamiento de solicitudes				
 					ponerReporteMensaje("2", modulo, filtro.getUsuarioid(), rb3.getString("constancias.PathConstancias")
 									+ archivozip + "", "zip7", "" + archivozip,	"ReporteActualizarBoletinPaila", "Problema en process");
 					constancia.updateReporte(archivozip, filtro.getUsuarioid(), "2");

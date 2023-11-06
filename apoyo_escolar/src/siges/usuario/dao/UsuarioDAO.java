@@ -1931,7 +1931,7 @@ public class UsuarioDAO extends siges.dao.Dao {
 		String mensaje = "<table><tr><td>" +
 	    				"<p>Apreciado(a) Secretario Acad&eacute;mico, {nombre}</p>" +
 	    				"<br/>"+
-	    				"<p>Le informamos que su reporte de tipo boletin solicitado para el colegio {institucion} {estado} </p>" +//esta listo para ser descargado	    				
+	    				"<p>Le informamos que su reporte de tipo {tipoReporte} solicitado para el colegio {institucion} {estado} </p>" +//esta listo para ser descargado	    				
 	    				"</td></tr></table>";
 	    
 		String footerHtml = "</body> </html>";

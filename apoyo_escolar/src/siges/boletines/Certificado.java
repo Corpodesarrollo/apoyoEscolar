@@ -42,6 +42,7 @@ import siges.dao.Ruta;
 import siges.dao.Ruta2;
 import siges.exceptions.InternalErrorException;
 import siges.io.Zip;
+import siges.util.dao.utilDAO;
 
 /**
  * Nombre: Boletin<BR>
@@ -56,6 +57,8 @@ import siges.io.Zip;
  */
 
 public class Certificado{
+	
+	private utilDAO utilDAO = new utilDAO();;
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
@@ -458,6 +461,7 @@ public class Certificado{
 					// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 					bolDAO.limpiarTablas(rep.getDABOLCONSEC());
 					// System.out.println("HILO REP CERTIFICADOS: NO SE HAY REGISTROS REPORTE");
+					utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CERTIFICADO, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(),2, "porque no se encontraron registros para la generaci&oacuten");
 					return true;
 				}
 
@@ -472,6 +476,7 @@ public class Certificado{
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CERTIFICADO, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -488,6 +493,7 @@ public class Certificado{
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CERTIFICADO, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -507,6 +513,7 @@ public class Certificado{
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CERTIFICADO, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -529,8 +536,9 @@ public class Certificado{
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CERTIFICADO, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
+				// TODO Auto-generated catch block				
 				e1.printStackTrace();
 			}
 			return false;
@@ -548,6 +556,7 @@ public class Certificado{
 				bolDAO.updateReporte(reporte);
 				// siges.util.Logger.print(usuarioBol,"Excepcinn al generar el boletin:_Institucion:_"+filtro.getInsitucion()+"_Usuario:_"+usuarioBol+"_NombreBoletin:_"+nombreBol+"",3,1,this.toString());
 				bolDAO.limpiarTablas(rep.getDABOLCONSEC());
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CERTIFICADO, rep.getDABOLUSUARIO(),parameterscopy.get("INSTITUCION").toString(),rep.getDABOLINST(), rep.getDABOLSEDE(),rep.getDABOLJORNADA(), 2, "porque se presento un error, consulte con su administrador");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

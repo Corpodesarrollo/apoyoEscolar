@@ -13,13 +13,19 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 
+import javax.mail.MessagingException;
+
 import org.apache.commons.io.FileUtils;
 
+import siges.dao.Cursor;
 import siges.dao.DataSourceManager;
 import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
 import siges.exceptions.InternalErrorException;
 import siges.institucion.correoLider.beans.ParamsMail;
+import siges.usuario.dao.UsuarioDAO;
+import siges.util.MailDTO;
+import siges.util.Mailer;
 
 public class utilDAO {
 	private ResourceBundle rb;
@@ -31,6 +37,14 @@ public class utilDAO {
 	private static final int REPORTES_PLAN = 5;
 	private static final int INFO_ESTUDIANTES = 6;
 	private static final int REPORTES_ESTADISTICOS = 7;
+
+	public static final int TIPO_BOLETIN = 1;
+	public static final int TIPO_CONSTANCIA = 2;
+	public static final int TIPO_PAZ_SALVO = 3;
+	public static final int TIPO_CERTIFICADO = 4;
+	public static final int TIPO_RESUMEN = 5;
+	public static final int TIPO_LIBRO_NOTAS = 6;
+
 	private String mensaje;
 	private String path;
 
@@ -54,8 +68,7 @@ public class utilDAO {
 		ResultSet rs = null;
 		try {
 			cn = DataSourceManager.getConnection(1);
-			pst = cn.prepareStatement(rb
-					.getString("recolector.consultaTiempos"));
+			pst = cn.prepareStatement(rb.getString("recolector.consultaTiempos"));
 			rs = pst.executeQuery();
 			if (rs.next()) {
 				params = new long[4];
@@ -210,9 +223,7 @@ public class utilDAO {
 							try {
 								FileUtils.forceDelete(f);
 							} catch (IOException e) {
-								System.out
-										.println("RECOLECTOR: Error borrando "
-												+ c[j][0] + ": " + e);
+								System.out.println("RECOLECTOR: Error borrando " + c[j][0] + ": " + e);
 							}
 							;
 							m++;
@@ -220,14 +231,11 @@ public class utilDAO {
 					}
 					System.out.println("RECOLECTOR: Archivos borrados =" + m);
 					for (int i = 0; i < nConsultas; i++) {
-						pst = cn.prepareStatement(rb.getString("delete" + tipo
-								+ "" + i));
+						pst = cn.prepareStatement(rb.getString("delete" + tipo + "" + i));
 						pst.setInt(1, valor);
 						n = pst.executeUpdate();
 						pst.close();
-						System.out
-								.println("RECOLECTOR: Registros borrados: en "
-										+ i + "=" + n);
+						System.out.println("RECOLECTOR: Registros borrados: en " + i + "=" + n);
 					}
 				}
 				break;
@@ -266,18 +274,15 @@ public class utilDAO {
 			File f = null;
 			if (solicitudes != null && solicitudes.length > 0) {
 				for (int j = 0; j < solicitudes.length; j++) {
-					f = new File(Ruta.get(path, baseBatch + "."
-							+ solicitudes[j]));
+					f = new File(Ruta.get(path, baseBatch + "." + solicitudes[j]));
 					if (f != null && f.exists() && f.isDirectory()) {
 						try {
 							FileUtils.cleanDirectory(f);
 						} catch (IOException e) {
 						}
 						;
-						System.out.println("RECOLECTOR: Institucion borrada="
-								+ solicitudes[j]);
-						pst = cn.prepareStatement(rb
-								.getString("updateSolicitudes"));
+						System.out.println("RECOLECTOR: Institucion borrada=" + solicitudes[j]);
+						pst = cn.prepareStatement(rb.getString("updateSolicitudes"));
 						pst.setString(1, solicitudes[j]);
 						pst.executeUpdate();
 						pst.close();
@@ -354,8 +359,7 @@ public class utilDAO {
 		return null;
 	}
 
-	public String[][] getFiltroMatriz(Collection a)
-			throws InternalErrorException {
+	public String[][] getFiltroMatriz(Collection a) throws InternalErrorException {
 		Object[] o;
 		if (a != null && !a.isEmpty()) {
 			int i = 0, j = -1;
@@ -405,10 +409,8 @@ public class utilDAO {
 	 * @param running
 	 * @return
 	 */
-	public String[] getParametrosHiloIntegracion(boolean running)
-			throws Exception {
-		SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-				"dd/MM/yyyy HH:mm:ss.SSS");
+	public String[] getParametrosHiloIntegracion(boolean running) throws Exception {
+		SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
 		// System.out.println(sdf.format(new java.util.Date()) +
 		// " getParametrosHiloIntegracion ");
 		if (!running)
@@ -419,8 +421,7 @@ public class utilDAO {
 		ResultSet rs = null;
 		try {
 			cn = DataSourceManager.getConnection(1);
-			pst = cn.prepareStatement(rb
-					.getString("integracionHilo.consultaTiempos"));
+			pst = cn.prepareStatement(rb.getString("integracionHilo.consultaTiempos"));
 			rs = pst.executeQuery();
 			if (rs.next()) {
 				params = new String[4];
@@ -449,10 +450,8 @@ public class utilDAO {
 	 * @throws Exception
 	 */
 	public int callProcedimientoHiloIntegracion() throws Exception {
-		SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-				"dd/MM/yyyy HH:mm:ss.SSS");
-		System.out.println(sdf.format(new java.util.Date())
-				+ " callProcedimientoHiloIntegracion ");
+		SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+		System.out.println(sdf.format(new java.util.Date()) + " callProcedimientoHiloIntegracion ");
 
 		Connection cn = null;
 		CallableStatement cst = null;
@@ -484,8 +483,7 @@ public class utilDAO {
 			pst.close();
 
 			System.out.println("Crear SEQUENCE con valor " + codJerarquia);
-			pst = cn.prepareStatement("CREATE SEQUENCE CODIGO_JERARQUIA START WITH "
-					+ codJerarquia
+			pst = cn.prepareStatement("CREATE SEQUENCE CODIGO_JERARQUIA START WITH " + codJerarquia
 					+ " MAXVALUE 999999999999999999999999999 MINVALUE 1 NOCYCLE NOCACHE NOORDER");
 			posicion = 1;
 			pst.executeUpdate();
@@ -511,18 +509,15 @@ public class utilDAO {
 			pst.close();
 
 			// 3.Crear
-			System.out.println("Nuevo codigo para sequences Institucion :"
-					+ codInstitucion);
-			pst = cn.prepareStatement("CREATE SEQUENCE CODIGO_INSTITUCION START WITH "
-					+ codInstitucion
+			System.out.println("Nuevo codigo para sequences Institucion :" + codInstitucion);
+			pst = cn.prepareStatement("CREATE SEQUENCE CODIGO_INSTITUCION START WITH " + codInstitucion
 					+ " MAXVALUE 999999999999999999999999999 MINVALUE 1 NOCYCLE NOCACHE NOORDER");
 
 			posicion = 1;
 			pst.executeUpdate();
 			pst.close();
 
-			pst = cn.prepareStatement(rb
-					.getString("integracionHilo.getVigenciaActual"));
+			pst = cn.prepareStatement(rb.getString("integracionHilo.getVigenciaActual"));
 			rs = pst.executeQuery();
 			if (rs.next()) {
 				vig = rs.getInt(1);
@@ -531,19 +526,17 @@ public class utilDAO {
 			// pst.close();
 
 			String fechaIncio = sdf.format(new java.util.Date());
-			setMensaje("PROCESANDO: \n Actualizar Matriculas con vigencia "
-					+ vig + "  [fecha inicio " + fechaIncio + "]");
+			setMensaje(
+					"PROCESANDO: \n Actualizar Matriculas con vigencia " + vig + "  [fecha inicio " + fechaIncio + "]");
 			System.out.println("vigencia actual " + vig);
 
 			cst = cn.prepareCall(rb.getString("integracionHilo.procedimiento"));
 			cst.setInt(1, vig);
 			cst.executeUpdate();
-			setMensaje("PROCESO FINALIZADO: \n [fecha inicio:" + fechaIncio
-					+ "   -  fecha fin:" + sdf.format(new java.util.Date())
-					+ "]");
+			setMensaje("PROCESO FINALIZADO: \n [fecha inicio:" + fechaIncio + "   -  fecha fin:"
+					+ sdf.format(new java.util.Date()) + "]");
 
-			System.out.println(sdf.format(new java.util.Date())
-					+ " Sin problema en callProcedimientoHiloIntegracion");
+			System.out.println(sdf.format(new java.util.Date()) + " Sin problema en callProcedimientoHiloIntegracion");
 
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
@@ -569,8 +562,7 @@ public class utilDAO {
 	 * @throws Exception
 	 */
 	public void setMensaje(String msj) throws Exception {
-		SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-				"dd/MM/yyyy HH:mm:ss.SSS");
+		SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
 		// System.out.println(sdf.format(new java.util.Date())
 		// + " getParametrosHiloIntegracion ");
 
@@ -596,17 +588,13 @@ public class utilDAO {
 			}
 		}
 	}
-	
-	
-	
+
 	public ParamsMail getParamsMail() throws Exception {
 		Connection cn = null;
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		ParamsMail mail = null;
-		
-		
-		
+
 		try {
 			cn = DataSourceManager.getConnection(1);
 			st = cn.prepareStatement(rb.getString("getParamsCorreo"));
@@ -626,7 +614,7 @@ public class utilDAO {
 				if (rs.getString(1).equals("PORT")) {
 					mail.setPort(rs.getString(2));
 				}
-				
+
 			}
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
@@ -644,8 +632,89 @@ public class utilDAO {
 		}
 		return mail;
 	}
-	
-	public String getMailNotinicationReportes(String numDocumUsuario) {		
+
+	public void enviarNotificaciones(Integer tipoReporte, String usuarioId, String institucion, long instCod, long sede,
+			long jornada, int tipoNotificacion, String detalleError) throws MessagingException {
+		Mailer mailer = new Mailer();
+		Cursor cursor = new Cursor();
+
+		String[] emails = { getMailNotificationReportes(usuarioId) };
+
+		UsuarioDAO objDatosUsuario = new UsuarioDAO(cursor);
+		String strCuerpo = objDatosUsuario.cuerpoCorreoGeneracionBoletin()
+				.replace("{nombre}", getPersonaFullName(usuarioId)).replace("{institucion}", institucion);
+		MailDTO mailDto = new MailDTO();
+		mailDto.setEmails(emails);
+		mailDto.setSubject("Generación de Reportes");
+
+		switch (tipoReporte) {
+		case 1: // TIPO BOLETIN
+			switch (tipoNotificacion) {
+			case 1:// generacion reporte
+				mailDto.setContent(strCuerpo.replace("{estado}", detalleError).replace("{tipoReporte}", "boletin"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			case 2:// no generado
+				mailDto.setContent(
+						strCuerpo.replace("{estado}", "no pudo ser generado, ").replace("{tipoReporte}", "boletin"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			}
+			break;
+		case 2:// TIPO CONSTANCIA
+			switch (tipoNotificacion) {
+			case 1:// generacion reporte
+				mailDto.setContent(strCuerpo.replace("{estado}", detalleError).replace("{tipoReporte}", "constancia"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			case 2:// no generado
+				mailDto.setContent(
+						strCuerpo.replace("{estado}", "no pudo ser generado, ").replace("{tipoReporte}", "constancia"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			}
+		case 4:// TIPO_CERTIFICADO
+			switch (tipoNotificacion) {
+			case 1:// generacion reporte
+				mailDto.setContent(strCuerpo.replace("{estado}", detalleError).replace("{tipoReporte}", "certificado"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			case 2:// no generado
+				mailDto.setContent(strCuerpo.replace("{estado}", "no pudo ser generado, ").replace("{tipoReporte}",
+						"certificado"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			}
+		case 5:// TIPO_RESUMEN
+			switch (tipoNotificacion) {
+			case 1:// generacion reporte
+				mailDto.setContent(strCuerpo.replace("{estado}", detalleError).replace("{tipoReporte}", "resumen"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			case 2:// no generado
+				mailDto.setContent(
+						strCuerpo.replace("{estado}", "no pudo ser generado, ").replace("{tipoReporte}", "resumen"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			}
+		case 6:// TIPO_LIBRO_NOTAS
+			switch (tipoNotificacion) {
+			case 1:// generacion reporte
+				mailDto.setContent(
+						strCuerpo.replace("{estado}", detalleError).replace("{tipoReporte}", "libro de notas"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			case 2:// no generado
+				mailDto.setContent(strCuerpo.replace("{estado}", "no pudo ser generado, ").replace("{tipoReporte}",
+						"libro de notas"));
+				mailer.notificacionReporte(usuarioId, instCod, sede, jornada, mailDto);
+				break;
+			}
+		}
+
+	}
+
+	public String getMailNotificationReportes(String numDocumUsuario) {
 		String mailNotificacion = "";
 		int posicion = 1;
 		Connection cn = null;
@@ -656,7 +725,7 @@ public class utilDAO {
 			pst = cn.prepareStatement(rb.getString("mail.reportes.notificaciones"));
 			pst.setString(posicion++, numDocumUsuario);
 			rs = pst.executeQuery();
-			if (rs.next()) {				
+			if (rs.next()) {
 				mailNotificacion = rs.getString(1);
 			}
 		} catch (Exception e) {
@@ -670,7 +739,8 @@ public class utilDAO {
 		}
 		return mailNotificacion;
 	}
-	public String getPersonaFullName(String numDocumUsuario) {		
+
+	public String getPersonaFullName(String numDocumUsuario) {
 		String mailNotificacion = "";
 		int posicion = 1;
 		Connection cn = null;
@@ -681,7 +751,7 @@ public class utilDAO {
 			pst = cn.prepareStatement(rb.getString("mail.reportes.persona.notificaciones"));
 			pst.setString(posicion++, numDocumUsuario);
 			rs = pst.executeQuery();
-			if (rs.next()) {				
+			if (rs.next()) {
 				mailNotificacion = rs.getString(1);
 			}
 		} catch (Exception e) {
@@ -694,6 +764,6 @@ public class utilDAO {
 			}
 		}
 		return mailNotificacion;
-	}	
-     
+	}
+
 }

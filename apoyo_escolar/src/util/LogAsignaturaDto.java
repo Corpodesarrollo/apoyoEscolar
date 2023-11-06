@@ -4,15 +4,23 @@ import com.google.gson.annotations.SerializedName;
 
 public class LogAsignaturaDto {
 
-	@SerializedName("identificador de registro")
+	@SerializedName("Identificador de registro")
 	private String identificadorRegistro;
+	@SerializedName("Vigencia")
 	private String vigencia;
+	@SerializedName("Metodología")
 	private String metodologia;
+	@SerializedName("Area")
 	private String area;
+	@SerializedName("Nombre")
 	private String nombre;
+	@SerializedName("Abreviatura")
 	private String abreviatura;
+	@SerializedName("Orden")
 	private String orden;
+	@SerializedName("Grados")
 	private String grados;
+	@SerializedName("Asignatura")
 	private String asignatura;
 	
 	public String getIdentificadorRegistro() {

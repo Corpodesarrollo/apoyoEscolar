@@ -3,7 +3,7 @@ package util;
 import com.google.gson.annotations.SerializedName;
 
 public class LogAbrirGrupoDto extends LogCerrarPeriodoDto{
-	@SerializedName("Metodologia")
+	@SerializedName("Metodología")
 	private String metodologia;
 	
 	public void setMetodologia(String metodologia){

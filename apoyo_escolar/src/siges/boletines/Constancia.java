@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -33,6 +35,7 @@ import siges.dao.OperacionesGenerales;
 import siges.dao.Ruta;
 import siges.exceptions.InternalErrorException;
 import siges.io.Zip;
+import siges.util.dao.utilDAO;
 
 /**
  * Nombre: Constancia<BR>
@@ -48,6 +51,8 @@ import siges.io.Zip;
 
 public class Constancia{
 
+	private utilDAO utilDAO = new utilDAO();
+	
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
@@ -161,8 +166,7 @@ public class Constancia{
 //		}
 //	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public boolean procesamientoConstancia(java.sql.Timestamp date,
-			Map parameterscopy) {
+	public boolean procesamientoConstancia(java.sql.Timestamp date, Map parameterscopy, long sedeId, long jornadaId,long institicionId, String institucion) {
 		list = new ArrayList();
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -241,6 +245,12 @@ public class Constancia{
 						param.setReporte(null);
 						param.setContext(context);
 						param.setConsecutivoConsultaExterna(consecutivoConsultaExterna);
+						
+						//datos para notificaciones
+						param.setSedeId(sedeId);
+						param.setJornadaId(jornadaId);
+						param.setInstitucionId(institicionId);
+						param.setInstitucion(institucion);
 						
 						String json = objectMapper.writeValueAsString(param);
 						System.out.println(json);
@@ -337,6 +347,12 @@ public class Constancia{
 							param.setContext(context);
 							param.setConsecutivoConsultaExterna(consecutivoConsultaExterna);
 							
+							//datos para notificaciones
+							param.setSedeId(sedeId);
+							param.setJornadaId(jornadaId);
+							param.setInstitucionId(institicionId);
+							param.setInstitucion(institucion);
+							
 							String json = objectMapper.writeValueAsString(param);
 							System.out.println(json);
 							
@@ -397,6 +413,7 @@ public class Constancia{
 					// .println("No se encontraron registros para generar la constancia!");
 					updateReporte(archivozip, filtro.getUsuarioid(), "2");
 					limpiarTablas(filtro.getUsuarioid());
+					utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CONSTANCIA, filtro.getUsuarioid(),parameterscopy.get("INSTITUCION").toString(),Long.parseLong(parameterscopy.get("INSTITUCIONCOD").toString()), Long.parseLong(parameterscopy.get("SEDECOD").toString()),Long.parseLong(parameterscopy.get("JORNADACOD").toString()),2, "porque no se encontraron registros para la generaci&oacuten");
 					return true;
 				}
 			}
@@ -408,6 +425,15 @@ public class Constancia{
 					"Ocurrio una excepcion interna:_" + e);
 			updateReporte(archivozip, filtro.getUsuarioid(), "2");
 			limpiarTablas(filtro.getUsuarioid());
+			try {				
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CONSTANCIA, filtro.getUsuarioid(),parameterscopy.get("INSTITUCION").toString(),Long.parseLong(parameterscopy.get("INSTITUCIONCOD").toString()), Long.parseLong(parameterscopy.get("SEDECOD").toString()),Long.parseLong(parameterscopy.get("JORNADACOD").toString()),2, "porque se presento un error, consulte con su administrador");				
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return false;
 		} catch (SQLException e) {
 			ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
@@ -417,6 +443,15 @@ public class Constancia{
 					"Ocurrio excepcion SQL:_" + e);
 			updateReporte(archivozip, filtro.getUsuarioid(), "2");
 			limpiarTablas(filtro.getUsuarioid());
+			try {
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CONSTANCIA, filtro.getUsuarioid(),parameterscopy.get("INSTITUCION").toString(),Long.parseLong(parameterscopy.get("INSTITUCIONCOD").toString()), Long.parseLong(parameterscopy.get("SEDECOD").toString()),Long.parseLong(parameterscopy.get("JORNADACOD").toString()),2, "porque se presento un error, consulte con su administrador");
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return false;
 		} catch (Exception e) {
 			ponerReporteMensaje("2", modulo, filtro.getUsuarioid(),
@@ -426,6 +461,15 @@ public class Constancia{
 							+ e);
 			updateReporte(archivozip, filtro.getUsuarioid(), "2");
 			limpiarTablas(filtro.getUsuarioid());
+			try {
+				utilDAO.enviarNotificaciones(siges.util.dao.utilDAO.TIPO_CONSTANCIA, filtro.getUsuarioid(),parameterscopy.get("INSTITUCION").toString(),Long.parseLong(parameterscopy.get("INSTITUCIONCOD").toString()), Long.parseLong(parameterscopy.get("SEDECOD").toString()),Long.parseLong(parameterscopy.get("JORNADACOD").toString()),2, "porque se presento un error, consulte con su administrador");
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (MessagingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return false;
 		} finally {
 			try {
@@ -437,8 +481,6 @@ public class Constancia{
 		}
 		return true;
 	}
-	
-	
 	
 	public void insertarConsultasExternas(long consecutivoConsultaExterna ,String rutaArchivo, String nombreArchivo, String extensionArchivo, String tipo) {
 		Connection con = null;

@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
 import siges.adminParamsInst.dao.AdminParametroInstDAO;
 import siges.adminParamsInst.vo.InstParVO;
 import siges.common.vo.Params;
@@ -103,6 +105,11 @@ public class ControllerEvaluacionSave extends HttpServlet {
 			login = (Login) session.getAttribute("login");
 			filtroEvaluacion = (FiltroBeanEvaluacion) session
 					.getAttribute("filtroEvaluacion");
+			
+			Gson gson = new Gson();
+			String jsonString = gson.toJson(filtroEvaluacion);
+			System.out.println("FER " + jsonString + " FER");
+			
 			if (filtroEvaluacion != null) {
 				filtroEvaluacion.setMunicipio(login.getMunId());
 				filtroEvaluacion.setLocalidad(login.getLocId());

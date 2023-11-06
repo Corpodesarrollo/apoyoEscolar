@@ -3,7 +3,7 @@ package util;
 import com.google.gson.annotations.SerializedName;
 
 public class LogAccionDto {
-	@SerializedName("Fecha de expedicion")
+	@SerializedName("Fecha de expedición")
 	private String fechaExpedicion;
 
 	public void setFechaExpedicion(String fechaExpedicion)
