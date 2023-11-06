@@ -261,13 +261,12 @@ public class ControllerAbrirSave extends HttpServlet{
 					Logger.print(login.getUsuarioId(),
 					        "Cerrar Periodo Inst:"+login.getInstId()+" Sede:"+sede+" Jornada:"+jor+" Periodo:"+periodo,
 					        7,1,this.toString());
-					
 					try {
 						LogCerrarPeriodoDto logPeriodo= new LogCerrarPeriodoDto();
 						logPeriodo.setInstitucion(login.getInst());
 						logPeriodo.setSede(login.getSede());
 						logPeriodo.setJornada(login.getJornada());
-						logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+						logPeriodo.setPeriodo(periodo);
 						BitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornada()),
