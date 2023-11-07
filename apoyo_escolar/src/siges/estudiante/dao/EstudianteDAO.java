@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -36,6 +37,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JExcelApiExporter;
 import net.sf.jasperreports.engine.export.JExcelApiExporterParameter;
+import siges.common.vo.ItemVO;
 import siges.dao.Cursor;
 import siges.dao.Dao;
 import siges.dao.OperacionesGenerales;
@@ -48,6 +50,7 @@ import siges.estudiante.beans.Convivencia;
 import siges.estudiante.beans.Familiar;
 import siges.estudiante.beans.FiltroBean;
 import siges.estudiante.beans.Salud;
+import siges.evaluacion.beans.FiltroBeanEvaluacion;
 import siges.exceptions.InternalErrorException;
 import siges.login.beans.Login;
 //import weblogic.descriptor.descriptorgen.descriptorgen;
@@ -4219,4 +4222,5 @@ public class EstudianteDAO extends Dao {
 		}
 		return true;
 	}
+	
 }

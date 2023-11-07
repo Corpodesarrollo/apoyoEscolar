@@ -17,8 +17,10 @@ import com.google.gson.Gson;
 
 import siges.adminParamsInst.dao.AdminParametroInstDAO;
 import siges.adminParamsInst.vo.InstParVO;
+import siges.common.vo.ItemVO;
 import siges.common.vo.Params;
 import siges.dao.Cursor;
+import siges.estudiante.dao.EstudianteDAO;
 import siges.evaluacion.beans.FiltroBeanEvaluacion;
 import siges.evaluacion.beans.FiltroComportamiento;
 import siges.evaluacion.beans.ParamsVO;
@@ -27,6 +29,9 @@ import siges.evaluacion.dao.Evaluacion2DAO;
 import siges.evaluacion.dao.EvaluacionDAO;
 import siges.login.beans.Login;
 import siges.util.Logger;
+import util.BitacoraCOM;
+import util.EstudianteEvalDto;
+import util.LogEvaluacionDto;
 
 /**
  * Nombre: ControllerEvaluacionSave<BR>
@@ -103,13 +108,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 			}
 			// traer de session los beans de datos
 			login = (Login) session.getAttribute("login");
-			filtroEvaluacion = (FiltroBeanEvaluacion) session
-					.getAttribute("filtroEvaluacion");
-			
-			Gson gson = new Gson();
-			String jsonString = gson.toJson(filtroEvaluacion);
-			System.out.println("FER " + jsonString + " FER");
-			
+			filtroEvaluacion = (FiltroBeanEvaluacion) session.getAttribute("filtroEvaluacion");
 			if (filtroEvaluacion != null) {
 				filtroEvaluacion.setMunicipio(login.getMunId());
 				filtroEvaluacion.setLocalidad(login.getLocId());
@@ -142,7 +141,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				return er;
 			}
 			tipo = Integer.parseInt((String) request.getParameter("tipo"));
-			// System.out.println("En el Save="+tipo+"//"+boton);
+			//System.out.println("En el Save="+tipo+"//"+boton);
 			if (boton.equals("Buscar")) {
 				switch (tipo) {
 				case 1:// logro
@@ -171,64 +170,57 @@ public class ControllerEvaluacionSave extends HttpServlet {
 					return (sigComp);
 				}
 			}
+			
 			if (boton.equals("Aceptar")) {
 				switch (tipo) {
 				case 1:// logros
 					if (!insertarLogro(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
-					} else
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
-					return sig0 += "?tipo=" + tipo;
+					} else{
+						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
+					}
 				case ParamsVO.EVAL_ASI:// asig
-					if (!insertarAsignatura(request, login, filtroEvaluacion))
+					if (!insertarAsignatura(request, login, filtroEvaluacion)){
 						request.setAttribute("mensaje", mensaje);
-					else
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
-					return sig0 += "?tipo=" + tipo;
+					} else{
+						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
+						BitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 2, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								30, 4, login.getUsuarioId(), this.stringEvalAsignatura(notasOld, filtroEvaluacion));
+					}
 				case 3:// desc
 					if (!insertarDescriptor(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
 					}
-					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_ARE:// area
 					if (!insertarArea(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
 					}
-					return sig0 += "?tipo=" + tipo;
 				case 5:// recuperacion
 					if (!insertarRecuperacion(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
-					} else
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
-					return sig0 += "?tipo=" + tipo;
+					} else{
+						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
+					}
 				case ParamsVO.EVAL_PRE:// PREESCOLAR
-					if (!insertarPreescolar(request, login,
-							filtroComportamiento)) {
+					if (!insertarPreescolar(request, login, filtroComportamiento)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
 					}
-					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_COMP:
-					if (!insertarComportamiento(request, login,
-							filtroComportamiento)) {
+					if (!insertarComportamiento(request, login, filtroComportamiento)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
 					}
-					return sig0 += "?tipo=" + tipo;
 				}
+				return sig0 += "?tipo=" + tipo;
 			}
 			if (boton.equals("Cancelar")) {
 				borrarBeans(request);
@@ -238,6 +230,37 @@ public class ControllerEvaluacionSave extends HttpServlet {
 			e.printStackTrace();
 		}
 		return sig0 += "?tipo=" + tipo;
+	}
+	
+	private String stringEvalAsignatura(List<EstudianteEvalDto> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
+		try {
+			LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
+			List<LogEvaluacionDto> list = new ArrayList<LogEvaluacionDto>();
+			String[] notas = filtroEvaluacion.getNota();
+			for (EstudianteEvalDto nota : notasOld) {
+				LogEvaluacionDto dto = new LogEvaluacionDto();
+				dto.setNumeroIdentificacion(nota.getNumeroIdentificacion());
+				dto.setNombreCompleto(nota.getNombreCompleto());
+				dto.setGrado(filtroEvaluacion.getGrado_());
+				dto.setGrupo(filtroEvaluacion.getGrupo_());
+				dto.setPeriodo(Integer.parseInt(filtroEvaluacion.getPeriodo()));
+				dto.setMateria(filtroEvaluacion.getAsignatura_());
+				dto.setNotaAnterior(nota.getNota());
+				for (String newNota: notas) {
+					String[] param = newNota.replace('|', ':').split(":");
+					if (nota.getCodigo()==Long.parseLong(param[0].trim())) {
+						dto.setNotaActualizada(Float.parseFloat(param[1].trim()));
+						dto.setNotaRecuperada(Float.parseFloat(param[2].trim()));
+					}
+				}
+				list.add(dto);
+			}
+			Gson gson = new Gson();
+			return gson.toJson(list);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
 	}
 
 	/**
