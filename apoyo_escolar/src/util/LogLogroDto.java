@@ -7,7 +7,7 @@ public class LogLogroDto {
 	private String identificadorRegistro;
 	@SerializedName("Vigencia")
 	private String vigencia;
-	@SerializedName("Metodología")
+	@SerializedName("Metodolog&iacute;a")
 	private String metodologia;
 	@SerializedName("Grado")
 	private String grado;

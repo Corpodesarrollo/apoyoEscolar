@@ -16,7 +16,7 @@ public class LogInformacionMeritosDto {
 		return this.tipoDeAspectoPositivo;
 	}
 
-	@SerializedName("Técnica de reconocimiento")
+	@SerializedName("T&eacute;cnica de reconocimiento")
 	private String tecnicaDeReconocimiento;
 
 	public void setTecnicaDeReconocimiento(String tecnicaDeReconocimiento)
@@ -29,7 +29,7 @@ public class LogInformacionMeritosDto {
 		return this.tecnicaDeReconocimiento;
 	}
 
-	@SerializedName("Área de conocimiento o asignatura")
+	@SerializedName("&Aacute;rea de conocimiento o asignatura")
 	private String areaDeConocimientoOAsignatura;
 
 	public void setAreaDeConocimientoOAsignatura(String areaDeConocimientoOAsignatura)
@@ -42,7 +42,7 @@ public class LogInformacionMeritosDto {
 		return this.areaDeConocimientoOAsignatura;
 	}
 
-	@SerializedName("Descripción, observación o recomendación")
+	@SerializedName("Descripci&oacute;n, observaci&oacute;n o recomendaci&oacute;n")
 	private String descripcionObservacionORecomendacion;
 
 	public void setDescripcionObservacionORecomendacion(String descripcionObservacionORecomendacion)

@@ -3,7 +3,7 @@ package util;
 import com.google.gson.annotations.SerializedName;
 
 public class LogSeccionFamiliarDto {
-	@SerializedName("Sección Parentesco")
+	@SerializedName("Secci&oacute;n Parentesco")
 	private String seccionParentesco;
 
 	public void setSeccionParentesco(String seccionParentesco)
@@ -29,7 +29,7 @@ public class LogSeccionFamiliarDto {
 		return this.tipoDocumento;
 	}
 
-	@SerializedName("N° de identificación")
+	@SerializedName("N° de identificaci&oacute;n")
 	private String noDeIdentificacion;
 
 	public void setNoDeIdentificacion(String noDeIdentificacion)
@@ -120,7 +120,7 @@ public class LogSeccionFamiliarDto {
 		return this.esAcudiente;
 	}
 
-	@SerializedName("Teléfono")
+	@SerializedName("Tel&eacute;fono")
 	private String teléfono;
 
 	public void setTeléfono(String teléfono)

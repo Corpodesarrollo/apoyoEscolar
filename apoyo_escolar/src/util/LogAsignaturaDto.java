@@ -8,7 +8,7 @@ public class LogAsignaturaDto {
 	private String identificadorRegistro;
 	@SerializedName("Vigencia")
 	private String vigencia;
-	@SerializedName("Metodología")
+	@SerializedName("Metodolog&iacute;a")
 	private String metodologia;
 	@SerializedName("Area")
 	private String area;

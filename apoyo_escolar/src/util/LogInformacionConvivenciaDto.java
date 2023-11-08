@@ -29,7 +29,7 @@ public class LogInformacionConvivenciaDto {
 		return this.periodo;
 	}
 
-	@SerializedName("Tipo de situación")
+	@SerializedName("Tipo de situaci&oacute;n")
 	private String tipoDeSituacion;
 
 	public void setTipoDeSituacion(String tipoDeSituacion)
@@ -68,7 +68,7 @@ public class LogInformacionConvivenciaDto {
 		return this.lugar;
 	}
 
-	@SerializedName("Quién informo del evento")
+	@SerializedName("Qui&eacute;n informo del evento")
 	private String quiénInformoDelEvento;
 
 	public void setQuiénInformoDelEvento(String quiénInformoDelEvento)

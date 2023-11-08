@@ -3,7 +3,7 @@ package util;
 import com.google.gson.annotations.SerializedName;
 
 public class LogObservadorEstudianteDto extends LogEstudianteDto{
-	@SerializedName("Log de acción")
+	@SerializedName("Log de acci&oacute;n")
 	private LogDetalleAccionEstudianteDto logAccionDetalle;
 	
 	public void setLogAccionDetalle(LogDetalleAccionEstudianteDto logAccionDetalle)

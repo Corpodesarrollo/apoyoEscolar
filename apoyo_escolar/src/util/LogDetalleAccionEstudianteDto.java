@@ -3,7 +3,7 @@ package util;
 import com.google.gson.annotations.SerializedName;
 
 public class LogDetalleAccionEstudianteDto {
-	@SerializedName("Log de Acción")
+	@SerializedName("Log de Acci&oacute;n")
 	private LogAccionDto logAccion;
 
 	public void setLogAccion(LogAccionDto logAccion)
@@ -16,7 +16,7 @@ public class LogDetalleAccionEstudianteDto {
 		return this.logAccion;
 	}
 
-	@SerializedName("Sección familiar")
+	@SerializedName("Secci&oacute;n familiar")
 	private String seccionFamiliar;
 
 	public void setSeccionFamiliar(String seccionFamiliar)
@@ -29,7 +29,7 @@ public class LogDetalleAccionEstudianteDto {
 		return this.seccionFamiliar;
 	}
 
-	@SerializedName("Sección salud")
+	@SerializedName("Secci&oacute;n salud")
 	private String seccionSalud;
 
 	public void setSeccionSalud(String seccionSalud)
@@ -55,7 +55,7 @@ public class LogDetalleAccionEstudianteDto {
 		return this.informacionConvivencia;
 	}
 
-	@SerializedName("Información sobre méritos, capacidades y/o talentos excepcionales")
+	@SerializedName("Informaci&oacute;n sobre m&eacute;ritos, capacidades y/o talentos excepcionales")
 	private String informacionMeritos;
 
 	public void setInformacionMeritos(String informacionMeritos)
@@ -68,7 +68,7 @@ public class LogDetalleAccionEstudianteDto {
 		return this.informacionMeritos;
 	}
 
-	@SerializedName("Acción")
+	@SerializedName("Acci&oacute;n")
 	private String accion;
 
 	public void setAccion(String accion)
