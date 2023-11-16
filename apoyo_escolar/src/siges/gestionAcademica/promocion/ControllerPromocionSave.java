@@ -49,6 +49,7 @@ public class ControllerPromocionSave extends HttpServlet{
 	private CierreVigenciaDAO cierreVigenciaDAO=new CierreVigenciaDAO(new Cursor());
 	private Login usuVO;
 	private PromocionDAO evaluacionDAO;
+	private BitacoraCOM bitacoraCOM;
 
 	/**
 *	Procesa la peticion HTTP
@@ -275,6 +276,11 @@ public class ControllerPromocionSave extends HttpServlet{
 	public boolean insertarPromocion(HttpServletRequest request,Login login,FiltroPromocion filtroEvaluacion)throws ServletException, IOException{
 		System.out.println(new Date() + ":: insertarPromocion+" );
 		Collection[] col=new Collection[6];
+		
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		
 		int[] zz = {0,1};
 		try{
 		
@@ -337,14 +343,14 @@ public class ControllerPromocionSave extends HttpServlet{
 				logPeriodo.setAsignatura(filtroEvaluacion.getAsignatura());
 				logPeriodo.setPorcentaje(filtroEvaluacion.getPorcentaje()[0]);
 				logPeriodo.setArea(filtroEvaluacion.getArea());				
-				BitacoraCOM.insertarBitacora(
+				bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
 						Integer.parseInt(login.getJornada()),
 						4 ,
 						login.getPerfil(), 
 						Integer.parseInt(login.getSedeId()),
 						1112, 
-						2, login.getUsuario(), new Gson().toJson(logPeriodo));
+						2, loginBitacora, new Gson().toJson(logPeriodo));
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();

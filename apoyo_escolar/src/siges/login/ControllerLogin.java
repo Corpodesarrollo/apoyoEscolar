@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -62,6 +64,7 @@ public class ControllerLogin extends HttpServlet {
 	private String log_;
 	private String contrasena;
 	private String contrasena2;
+	private BitacoraCOM bitacoraCOM;
 
 	public String autenticacion(HttpServletRequest req) throws Exception {
 		
@@ -75,6 +78,10 @@ public class ControllerLogin extends HttpServlet {
 		String log = ((String) req.getParameter("login")).trim();
 		String password = ((String) req.getParameter("password")).trim();
 		session.setAttribute("numeroDocumento", log);
+		session.setAttribute("loginBitacora", log+'-'+Acceso.md5(password));
+		
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
 		
 		// VALIDACION NORMAL DE ACCESO
 		String[][] params = Acceso.autorizado(log, password);
@@ -108,7 +115,7 @@ public class ControllerLogin extends HttpServlet {
 						LogLoginDto logLogin= new LogLoginDto();
 						SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						logLogin.setFechaLogin(formatter.format(fechaLogin));
-						BitacoraCOM.insertarBitacora(
+						bitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()),
 								Integer.parseInt(login.getJornadaId()),
 								1,
@@ -116,7 +123,7 @@ public class ControllerLogin extends HttpServlet {
 								Integer.parseInt(login.getSedeId()),
 								45,
 								0,
-								login.getUsuarioId(),
+								loginBitacora,
 								new Gson().toJson(logLogin));
 					}catch(Exception e){
 						e.printStackTrace();
@@ -188,7 +195,7 @@ public class ControllerLogin extends HttpServlet {
 						LogLoginDto logLogin= new LogLoginDto();
 						SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						logLogin.setFechaLogin(formatter.format(fechaLogin));
-						BitacoraCOM.insertarBitacora(
+						bitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()),
 								Integer.parseInt(login.getJornadaId()),
 								1,
@@ -196,7 +203,7 @@ public class ControllerLogin extends HttpServlet {
 								Integer.parseInt(login.getSedeId()),
 								45,
 								0,
-								login.getUsuarioId(),
+								loginBitacora,
 								new Gson().toJson(logLogin));
 					}catch(Exception e){
 						e.printStackTrace();
@@ -255,7 +262,7 @@ public class ControllerLogin extends HttpServlet {
 					LogLoginDto logLogin= new LogLoginDto();
 					SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					logLogin.setFechaLogin(formatter.format(fechaLogin));
-					BitacoraCOM.insertarBitacora(
+					bitacoraCOM.insertarBitacora(
 							Long.parseLong(login.getInstId()),
 							Integer.parseInt(login.getJornadaId()),
 							1,
@@ -263,7 +270,7 @@ public class ControllerLogin extends HttpServlet {
 							Integer.parseInt(login.getSedeId()),
 							45,
 							0,
-							login.getUsuarioId(),
+							loginBitacora,
 							new Gson().toJson(logLogin));
 				}catch(Exception e){
 					e.printStackTrace();
@@ -439,12 +446,16 @@ public class ControllerLogin extends HttpServlet {
 	 */
 	public String process(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		
+		HttpSession session = req.getSession();
 		inte = getServletContext().getInitParameter("main");
 		home = getServletContext().getInitParameter("home");
 		log2 = getServletContext().getInitParameter("login");
 		log_ = getServletContext().getInitParameter("login2");
 		contrasena = getServletContext().getInitParameter("contrasena");
 		contrasena2 = getServletContext().getInitParameter("contrasena2");
+		
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
 
 		String view = "";
 		String key = req.getParameter("key");
@@ -473,7 +484,7 @@ public class ControllerLogin extends HttpServlet {
 						Date diferencia = getDifferenceBetwenDates(fechaLogin, fechaLogOut);
 						SimpleDateFormat tiempoSesionFormato = new SimpleDateFormat("HH:mm:ss");
 						logLogOut.setTiempoSesion(tiempoSesionFormato.format(diferencia));
-						BitacoraCOM.insertarBitacora(
+						bitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()),
 								Integer.parseInt(login.getJornadaId()),
 								1,
@@ -481,7 +492,7 @@ public class ControllerLogin extends HttpServlet {
 								Integer.parseInt(login.getSedeId()),
 								45,
 								0,
-								login.getUsuarioId(),
+								loginBitacora,
 								new Gson().toJson(logLogOut));
 					}catch(Exception e){
 						e.printStackTrace();
@@ -794,6 +805,10 @@ public class ControllerLogin extends HttpServlet {
 
 	public String seleccionAcceso(HttpServletRequest req) throws Exception {
 		HttpSession session = req.getSession();
+		
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		
 		String view = null;
 		String log = ((String) req.getParameter("login")).trim();
 		String password = ((String) req.getParameter("password")).trim();
@@ -841,7 +856,7 @@ public class ControllerLogin extends HttpServlet {
 			LogLoginDto logLogin= new LogLoginDto();
 			SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			logLogin.setFechaLogin(formatter.format(fechaLogin));
-			BitacoraCOM.insertarBitacora(
+			bitacoraCOM.insertarBitacora(
 					Long.parseLong(login.getInstId()),
 					Integer.parseInt(login.getJornadaId()),
 					1,
@@ -849,7 +864,7 @@ public class ControllerLogin extends HttpServlet {
 					Integer.parseInt(login.getSedeId()),
 					45,
 					0,
-					login.getUsuarioId(),
+					loginBitacora,
 					new Gson().toJson(logLogin));
 		}catch(Exception e){
 			e.printStackTrace();

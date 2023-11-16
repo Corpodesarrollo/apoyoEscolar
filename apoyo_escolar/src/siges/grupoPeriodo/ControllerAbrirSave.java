@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -46,6 +47,7 @@ public class ControllerAbrirSave extends HttpServlet{
 	private int z;
 	private int entero=java.sql.Types.INTEGER;
 	private int cadena=java.sql.Types.VARCHAR;
+	private BitacoraCOM bitacoraCOM;
 	//private Login login;
 	//private AbrirGrupo abrirGrupo;
 
@@ -172,6 +174,11 @@ public class ControllerAbrirSave extends HttpServlet{
 	*	@return	boolean
 	**/
 	public boolean abrirGrupo(HttpServletRequest request,Login login,AbrirGrupo abrirGrupo){
+		
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		
 		if(!grupoPeriodoDAO.abrirGrupo(login.getInstId(),abrirGrupo,login.getLogNivelEval())){
 			setMensaje(grupoPeriodoDAO.getMensaje());
 			return false;
@@ -194,14 +201,14 @@ public class ControllerAbrirSave extends HttpServlet{
 			logGrupo.setGrado(abrirGrupo.getGrado());
 			logGrupo.setGrupo(abrirGrupo.getGrupo());
 			logGrupo.setPeriodo(abrirGrupo.getPeriodo());
-			BitacoraCOM.insertarBitacora(
+			bitacoraCOM.insertarBitacora(
 					Long.parseLong(login.getInstId()), 
 					Integer.parseInt(login.getJornada()),
 					4 ,
 					login.getPerfil(), 
 					Integer.parseInt(login.getSedeId()),
 					1112, 
-					1, login.getUsuario(), new Gson().toJson(logGrupo));
+					1, loginBitacora, new Gson().toJson(logGrupo));
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -220,6 +227,11 @@ public class ControllerAbrirSave extends HttpServlet{
 		String jor=cierreVO.getCieJor();
 		String estadoInicial=cierreVO.getCieEsta();
 		cierreVO.setCieInst(login.getInstId());
+		
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		
 		/*** CAMBIOS MCUELLAR 28-11-2011
 		 * Este cambio para obligar al usuario a reabrir los periodos posteriores y que el sistema recalcule correctamente.****/
 		Collection periodosList = (Collection) request.getSession().getAttribute("periodosAbiertosList");
@@ -261,20 +273,21 @@ public class ControllerAbrirSave extends HttpServlet{
 					Logger.print(login.getUsuarioId(),
 					        "Cerrar Periodo Inst:"+login.getInstId()+" Sede:"+sede+" Jornada:"+jor+" Periodo:"+periodo,
 					        7,1,this.toString());
+					
 					try {
 						LogCerrarPeriodoDto logPeriodo= new LogCerrarPeriodoDto();
 						logPeriodo.setInstitucion(login.getInst());
 						logPeriodo.setSede(login.getSede());
 						logPeriodo.setJornada(login.getJornada());
-						logPeriodo.setPeriodo(periodo);
-						BitacoraCOM.insertarBitacora(
+						logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+						bitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornada()),
 								4 ,
 								login.getPerfil(), 
 								Integer.parseInt(login.getSedeId()),
 								1112, 
-								2, login.getUsuario(), new Gson().toJson(logPeriodo));
+								2, loginBitacora, new Gson().toJson(logPeriodo));
 					} catch (Exception e) {
 						// TODO: handle exception
 						e.printStackTrace();
@@ -324,6 +337,11 @@ public class ControllerAbrirSave extends HttpServlet{
 			String jor=cierreVO.getCieJor();
 			String estadoInicial=cierreVO.getCieEsta();
 			cierreVO.setCieInst(login.getInstId());
+			
+			HttpSession session = request.getSession();
+			bitacoraCOM = new BitacoraCOM();
+			String loginBitacora = (String)session.getAttribute("loginBitacora");
+			
 			if(!grupoPeriodoDAO.cerrarPeriodoTotal(cierreVO, login.getLogNivelEval())){
 			    setMensaje(grupoPeriodoDAO.getMensaje());
 			    return false;
@@ -337,14 +355,14 @@ public class ControllerAbrirSave extends HttpServlet{
 				logPeriodo.setSede(login.getSede());
 				logPeriodo.setJornada(login.getJornada());
 				logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
-				BitacoraCOM.insertarBitacora(
+				bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
 						Integer.parseInt(login.getJornada()),
 						4 ,
 						login.getPerfil(), 
 						Integer.parseInt(login.getSedeId()),
 						1112, 
-						2, login.getUsuario(), new Gson().toJson(logPeriodo));
+						2, loginBitacora, new Gson().toJson(logPeriodo));
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();

@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -58,6 +59,8 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 	// VARIABLE PARA GENERAR REPORTE
 	private HttpServletRequest request;
 	private String er;
+	
+	private BitacoraCOM bitacoraCOM;
 
 	/**
 	 * Procesa la peticion HTTP
@@ -115,6 +118,9 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 	public void registrarAlumno(HttpServletRequest request)
 			throws ServletException, IOException {
 		//1. Validamos si el estudiantes ya está registrado.
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
 		boolean resultado;
 		String mensaje="";
 		if(estudianteDAO.getEstudiante(filtro.getTipoDocumento(),filtro.getId())){
@@ -130,7 +136,7 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 				log.setJornada(filtro.getJornada());
 				log.setGrado(filtro.getGrado());
 				log.setGrupo(filtro.getGrupo());
-				BitacoraCOM.insertarBitacora(
+				bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
 						Integer.parseInt(login.getJornadaId()),
 						2 ,
@@ -138,7 +144,7 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 						Integer.parseInt(login.getSede()), 
 						0, 
 						2, 
-						login.getUsuarioId(), 
+						loginBitacora, 
 						new Gson().toJson(log)
 						);
 			}catch(Exception e){

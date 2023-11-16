@@ -25,7 +25,6 @@ import siges.evaluacion.beans.ParamsVO;
 import siges.evaluacion.beans.TipoEvalVO;
 import siges.exceptions.InternalErrorException;
 import siges.login.beans.Login;
-import util.EstudianteEvalDto;
 
 /**
  * @author USUARIO
@@ -39,7 +38,6 @@ public class EvaluacionDAO extends Dao {
 	public String buscar;
 
 	private ResourceBundle rb2;
-	private ResourceBundle rb3;
 	private ResourceBundle rb;
 
 	private java.text.SimpleDateFormat sdf;
@@ -51,7 +49,6 @@ public class EvaluacionDAO extends Dao {
 		sdf.setLenient(false);
 		rb = ResourceBundle.getBundle("siges.evaluacion.bundle.evaluacion");
 		rb2 = ResourceBundle.getBundle("siges.observacion.bundle.observacion");
-		rb3 = ResourceBundle.getBundle("siges.plantilla.bundle.plantilla");
 	}
 	
 	public FiltroBeanEvaluacion getCodigoJerarquiaGrupo(FiltroBeanEvaluacion filtro){
@@ -4507,61 +4504,4 @@ public class EvaluacionDAO extends Dao {
 		}
 	}
 
-	public List<EstudianteEvalDto> getNotasPorAsignaturaPorVigencia(FiltroBeanEvaluacion f) {
-		Connection cn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		List list = new ArrayList();
-		int posicion = 0;
-		try {
-			cn = cursor.getConnection();
-			ps = cn.prepareStatement(rb3.getString("plantilla.NotaAsignaturaEstudiante"+ f.getPeriodo()));
-			ps.setLong(1, Long.parseLong(f.getJerarquiagrupo()));
-			ps.setLong(2, Long.parseLong(f.getJerarquiaAreaAsig()));
-			ps.setLong(3, Long.parseLong(f.getVigencia()));
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				posicion = 1;
-				EstudianteEvalDto n = new EstudianteEvalDto();
-				n.setCodigo(rs.getLong(posicion++));
-				n.setNumeroIdentificacion(rs.getString(posicion++));
-				n.setNombreCompleto(rs.getString(posicion++));
-				n.setNota(rs.getFloat(posicion++));
-				list.add(n);
-			}
-			rs.close();
-			ps.close();
-		} catch (InternalErrorException in) {
-			setMensaje("No se puede estabecer conexinn con la base de datos: ");
-			return null;
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
-			try {
-				cn.rollback();
-			} catch (SQLException s) {
-			}
-			setMensaje("Error intentando obtener notas de Asig. Posible problema: ");
-			switch (sqle.getErrorCode()) {
-			default:
-				setMensaje(sqle.getMessage().replace('\'', '`')
-						.replace('"', 'n'));
-			}
-			return null;
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			return null;
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				OperacionesGenerales.closeResultSet(rs);
-				OperacionesGenerales.closeStatement(ps);
-				OperacionesGenerales.closeConnection(cn);
-				cursor.cerrar();
-			} catch (InternalErrorException inte) {
-			}
-		}
-		return list;
-	}
-	
 }

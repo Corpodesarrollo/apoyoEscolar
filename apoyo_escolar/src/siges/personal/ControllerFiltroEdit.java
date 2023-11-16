@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -45,6 +46,7 @@ public class ControllerFiltroEdit extends HttpServlet {
 	private Login login;//
 	private ResourceBundle rb;
 	PersonalDAO personalDAO;
+	private BitacoraCOM bitacoraCOM;
 
 	/**
 	 * Procesa la peticion HTTP
@@ -62,6 +64,10 @@ public class ControllerFiltroEdit extends HttpServlet {
 		String ant;
 		String er;
 		String home;
+		
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
 
 		int tipo;
 		sig = getServletConfig().getInitParameter("sig");
@@ -119,10 +125,10 @@ public class ControllerFiltroEdit extends HttpServlet {
 		// System.out.println("Entra formualrio login.getPerfil()" +
 		// login.getPerfil());
 		asignarPersona(request);
-		BitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+		bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
 				Integer.parseInt(login.getJornadaId()), 2, 
 				login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-				121, 4/*Consulta Generada*/, login.getUsuarioId(), new Gson().toJson(list));
+				121, 4, loginBitacora, new Gson().toJson(list));
 		return sig2;
 	}
 

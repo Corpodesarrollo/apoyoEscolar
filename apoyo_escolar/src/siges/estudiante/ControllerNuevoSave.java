@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -62,6 +63,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	private Cursor cursor;					// objeto que maneja las sentencias sql
 	private String mensaje;					// mensaje en caso de error
 	private EstudianteDAO estudianteDAO;
+	private BitacoraCOM bitacoraCOM;
 	
 	
 	private static final int TIPO_BASICA = 1;
@@ -338,7 +340,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		setMensaje("La información fue actualizada satisfactoriamente");
 		request.getSession().removeAttribute("academicaVO");
 		request.getSession().removeAttribute("academicaVO2");
-		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(academicaVO2));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(academicaVO2), loginBitacora);
 	}
 
 	public void actualizarRegistroAsistencia(HttpServletRequest request,
@@ -358,7 +363,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		setMensaje("La información fue actualizada satisfactoriamente");
 		request.getSession().removeAttribute("asistenciaVO");
 		request.getSession().removeAttribute("asistenciaVO2");
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(asistenciaVO2));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(asistenciaVO2), loginBitacora);
 	}
 
 	public void insertarRegistroAcademica(HttpServletRequest request,
@@ -373,7 +381,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().removeAttribute("academicaVO2");
 		setMensaje("La información fue ingresada satisfactoriamente");
 		LogInformacionMeritosDto logMeritos = new LogInformacionMeritosDto();
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(academicaVO));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(academicaVO), loginBitacora);
 	}
 
 	public void insertarRegistroAsistencia(HttpServletRequest request,
@@ -388,7 +399,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().removeAttribute("asistenciaVO");
 		request.getSession().removeAttribute("asistenciaVO2");
 		setMensaje("La información fue ingresada satisfactoriamente");
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(asistenciaVO));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(asistenciaVO), loginBitacora);
 	}
 
 	public void insertarRegistroConvivencia(HttpServletRequest request,
@@ -414,7 +428,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		logConvivenvia.setTipoDeEvento(convivencia.getCondescripcion());
 		logConvivenvia.setLugar("");
 		logConvivenvia.setQuiénInformoDelEvento("");
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logConvivenvia));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logConvivenvia), loginBitacora);
 	}
 
 	/**
@@ -499,7 +516,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		logAccion.setDireccionResidencia(basica2.getEstdireccion());
 		logDetalle.setLogAccion(logAccion);
 		logEstudiante.setLogAccion(logDetalle);	
-		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(logEstudiante));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(logEstudiante), loginBitacora);
 	}
 
 	public void actualizarRegistroFamiliar(HttpServletRequest request,
@@ -548,7 +568,10 @@ public class ControllerNuevoSave extends HttpServlet {
 			logFamiliar.setEsAcudiente("SI");
 			lstLogFAmiliar.add(logFamiliar);		
 		}
-		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(lstLogFAmiliar));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(lstLogFAmiliar), loginBitacora);
 	}
 
 	public void actualizarRegistroSalud(HttpServletRequest request,
@@ -575,7 +598,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		logSalud.setAlergia(salud2.getSalalergias());
 		logSalud.setEnfermedades(salud2.getSalenfermedades());
 		logSalud.setMedicamentos(salud2.getSalmedicamentos());
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logSalud));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logSalud), loginBitacora);
 	}
 
 	public void actualizarRegistroAtencion(HttpServletRequest request,
@@ -596,7 +622,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		// recargarBeans(request);
 		request.getSession().removeAttribute("nuevoAtencion");
 		request.getSession().removeAttribute("nuevoAtencion2");
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(atencion2));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(atencion2), loginBitacora);
 	}
 
 	public void actualizarRegistroConvivencia(HttpServletRequest request,
@@ -624,7 +653,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		logConvivenvia.setTipoDeEvento(convivencia2.getCondescripcion());
 		logConvivenvia.setLugar("");
 		logConvivenvia.setQuiénInformoDelEvento("");
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logConvivenvia));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logConvivenvia), loginBitacora);
 	}
 
 	/**
@@ -672,7 +704,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		logAccion.setDireccionResidencia(basica.getEstdireccion());
 		logDetalle.setLogAccion(logAccion);
 		logEstudiante.setLogAccion(logDetalle);		
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logEstudiante));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logEstudiante), loginBitacora);
 	}
 	
 	
@@ -742,7 +777,10 @@ public class ControllerNuevoSave extends HttpServlet {
 			logFamiliar.setEsAcudiente("SI");
 			lstLogFAmiliar.add(logFamiliar);		
 		}
-		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(lstLogFAmiliar));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 2, new Gson().toJson(lstLogFAmiliar), loginBitacora);
 	}
 	
 	
@@ -770,7 +808,10 @@ public class ControllerNuevoSave extends HttpServlet {
 		logSalud.setAlergia(salud.getSalalergias());
 		logSalud.setEnfermedades(salud.getSalenfermedades());
 		logSalud.setMedicamentos(salud.getSalmedicamentos());
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logSalud));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(logSalud), loginBitacora);
 	}
 
 	public void insertarRegistroAtencion(HttpServletRequest request,
@@ -787,12 +828,15 @@ public class ControllerNuevoSave extends HttpServlet {
 		request.getSession().removeAttribute("nuevoAtencion");
 		request.getSession().removeAttribute("nuevoAtencion2");
 		setMensaje("La información fue ingresada satisfactoriamente");	
-		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(atencion));
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		this.insertarBitacora(login, 2, 28, 1, new Gson().toJson(atencion), loginBitacora);
 	}
 
-	private void insertarBitacora(Login usuVO, int modulo,int submodulo, int tipoLog,String jsonString){
+	private void insertarBitacora(Login usuVO, int modulo,int submodulo, int tipoLog,String jsonString, String loginBitacora){
 		try {
-			BitacoraCOM.insertarBitacora(
+			bitacoraCOM.insertarBitacora(
 					Long.parseLong(usuVO.getInstId()),
 					Integer.parseInt( usuVO.getJornadaId()), 
 					submodulo, 
@@ -800,7 +844,7 @@ public class ControllerNuevoSave extends HttpServlet {
 					Integer.parseInt(usuVO.getSedeId()), 
 					submodulo, 
 					tipoLog, 
-					usuVO.getUsuarioId(), 
+					loginBitacora, 
 					jsonString);
 		} catch (Exception e) {
 			// TODO: handle exception

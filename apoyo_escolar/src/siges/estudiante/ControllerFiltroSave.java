@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -70,6 +71,7 @@ public class ControllerFiltroSave extends HttpServlet {
 	private String path2;
 	private final String modulo = "57";
 	private java.sql.Timestamp f2;
+	private BitacoraCOM bitacoraCOM;
 
 	/**
 	 * Procesa la peticion HTTP
@@ -110,6 +112,10 @@ public class ControllerFiltroSave extends HttpServlet {
 		reportFile = new File(path
 				+ rb.getString("jasper_estudiantes_x_grupos"));
 		f2 = new java.sql.Timestamp(new java.util.Date().getTime());
+		
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
 
 		try {
 			estudianteDAO = new EstudianteDAO(cursor);
@@ -146,7 +152,7 @@ public class ControllerFiltroSave extends HttpServlet {
 					log.setJornada(basica.getEstjor());
 					log.setGrado(basica.getEstgra());
 					log.setGrupo(basica.getEstgrupo());
-					BitacoraCOM.insertarBitacora(
+					bitacoraCOM.insertarBitacora(
 							Long.parseLong(login.getInstId()), 
 							Integer.parseInt(login.getJornadaId()),
 							2 ,
@@ -154,7 +160,7 @@ public class ControllerFiltroSave extends HttpServlet {
 							Integer.parseInt(login.getSede()), 
 							0, 
 							3, 
-							login.getUsuarioId(), 
+							loginBitacora, 
 							new Gson().toJson(log)
 							);
 				}catch(Exception e){

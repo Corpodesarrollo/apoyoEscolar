@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import siges.dao.Cursor;
 import siges.dao.Util;
@@ -40,7 +41,9 @@ public class ControllerFiltroSave extends HttpServlet {
 	private PersonalDAO personalDAO;//
 	private Util util;
 	private ResourceBundle rb;
-
+	
+	private BitacoraCOM bitacoraCOM;	
+	
 	/**
 	 * Procesa la peticion HTTP
 	 * 
@@ -69,6 +72,11 @@ public class ControllerFiltroSave extends HttpServlet {
 		home = getServletContext().getInitParameter("home");
 		rb = ResourceBundle.getBundle("siges.personal.bundle.personal");
 		cursor = new Cursor();
+		
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		
 		err = false;
 		mensaje = null;
 		try {
@@ -153,7 +161,7 @@ public class ControllerFiltroSave extends HttpServlet {
 				boton = "";
 				try
 				{
-					BitacoraCOM.insertarBitacora(
+					bitacoraCOM.insertarBitacora(
 							Long.parseLong(login.getInstId()), 
 							Integer.parseInt(login.getJornadaId()),
 							2 ,
@@ -161,7 +169,7 @@ public class ControllerFiltroSave extends HttpServlet {
 							Integer.parseInt(login.getSede()), 
 							20002, 
 							3, 
-							login.getUsuarioId(), 
+							loginBitacora, 
 							""
 							);
 				}catch(Exception e){

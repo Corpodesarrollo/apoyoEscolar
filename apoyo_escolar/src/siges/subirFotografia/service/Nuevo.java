@@ -69,6 +69,7 @@ public class Nuevo extends Service{
 	private String []tipos={"image/jpeg","image/pjpeg"};
 	private ResourceBundle rb;
 	String contextoTotal;
+	private BitacoraCOM bitacoraCOM;
 	
 	
 	public String[] process(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
@@ -291,6 +292,11 @@ public class Nuevo extends Service{
 	public void guardarSubirPersonal(HttpServletRequest request, HttpSession session, Login usuVO,Iterator i,Personal personal) throws Exception {
 		FileItem item = null;
 		SubirFotografiaVO subirFotografiaVO=null;
+		
+		HttpSession session2 = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session2.getAttribute("loginBitacora");
+		
 		try {
 			subirFotografiaVO=new SubirFotografiaVO(); 
 			if(personal!=null){
@@ -314,7 +320,7 @@ public class Nuevo extends Service{
 							    String encodedString = new String(encoded,StandardCharsets.US_ASCII);
 								log.setFoto(encodedString);;
 								log.setFecha(LocalDateTime.now().toString());
-								BitacoraCOM.insertarBitacora(
+								bitacoraCOM.insertarBitacora(
 										Long.parseLong(usuVO.getInstId()), 
 										Integer.parseInt(usuVO.getJornadaId()),
 										2 ,
@@ -322,7 +328,7 @@ public class Nuevo extends Service{
 										Integer.parseInt(usuVO.getSede()), 
 										20001, 
 										2, 
-										usuVO.getUsuarioId(), 
+										loginBitacora, 
 										new Gson().toJson(log)
 										);
 							}catch(Exception e){

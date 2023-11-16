@@ -88,6 +88,8 @@ public class ControllerNuevoSave extends HttpServlet {
 
 	private static final int TIPO_CARGA = 8;
 	
+	private BitacoraCOM bitacoraCOM;
+	
 	//private static final int TIPO_GRUPOS_GUARDAR = 13;
 
 	/**
@@ -570,6 +572,10 @@ public class ControllerNuevoSave extends HttpServlet {
 			int GRADO = 1;
 			int CARGA = 2;
 			
+			HttpSession session = request.getSession();
+			bitacoraCOM = new BitacoraCOM();
+			String loginBitacora = (String)session.getAttribute("loginBitacora");
+			
 			Iterator iteradorGrados = listaGrados.iterator();
 			Iterator iteradorAsignaturas = listaAsignaturas.iterator();
 			
@@ -615,7 +621,7 @@ public class ControllerNuevoSave extends HttpServlet {
 								cargaDto.setAsignatura(asignatura[0].toString());
 								cargaDto.setGrado(grado[0].toString());
 								cargaDto.setHoras(parametro.toString());								
-								BitacoraCOM.insertarBitacora(
+								bitacoraCOM.insertarBitacora(
 										Long.parseLong(login.getInstId()), 
 										Integer.parseInt(login.getJornadaId()),
 										2 ,
@@ -623,7 +629,7 @@ public class ControllerNuevoSave extends HttpServlet {
 										Integer.parseInt(login.getSede()), 
 										20002, 
 										3, 
-										login.getUsuarioId(), 
+										loginBitacora, 
 										new Gson().toJson(cargaDto)
 										);
 							}catch(Exception e){
@@ -664,7 +670,7 @@ public class ControllerNuevoSave extends HttpServlet {
 			}
 			try
 			{
-				BitacoraCOM.insertarBitacora(
+				bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
 						Integer.parseInt(login.getJornadaId()),
 						2 ,
@@ -672,7 +678,7 @@ public class ControllerNuevoSave extends HttpServlet {
 						Integer.parseInt(login.getSede()), 
 						20003, 
 						1, 
-						login.getUsuarioId(), 
+						loginBitacora, 
 						new Gson().toJson(lstCargaDto)
 						);
 			}catch(Exception e){
@@ -989,7 +995,10 @@ public class ControllerNuevoSave extends HttpServlet {
 	}
 
 	public void updateEmail(HttpServletRequest request, String pernumdoc,
-			String peremail,Login login) throws ServletException, IOException {
+		String peremail,Login login) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
 		System.out.println("updateEmail");
 		if (!personalDAO.updatePersonal(pernumdoc, peremail)) {
 			setMensaje(personalDAO.getMensaje());
@@ -1001,7 +1010,7 @@ public class ControllerNuevoSave extends HttpServlet {
 			LogPersonalDto log = new LogPersonalDto();
 			log.setCorreo(peremail);
 			log.setFecha(LocalDateTime.now().toString());
-			BitacoraCOM.insertarBitacora(
+			bitacoraCOM.insertarBitacora(
 					Long.parseLong(login.getInstId()), 
 					Integer.parseInt(login.getJornadaId()),
 					2 ,
@@ -1009,7 +1018,7 @@ public class ControllerNuevoSave extends HttpServlet {
 					Integer.parseInt(login.getSede()), 
 					20002, 
 					2, 
-					login.getUsuarioId(), 
+					loginBitacora, 
 					new Gson().toJson(log)
 					);
 		}catch(Exception e){

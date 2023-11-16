@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -65,6 +66,8 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 	// VARIABLE PARA GENERAR REPORTE
 	private HttpServletRequest request;
 	private String er;
+	
+	private BitacoraCOM bitacoraCOM;
 
 	/**
 	 * Procesa la peticion HTTP
@@ -129,6 +132,11 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 		HashMap<Long, String> validarEstudiante = estudianteDAO.getEstudianteRestriccion(filtro.getTipoDocumento(),filtro.getId());
 		Long idResultado = null;
 		String msgResultado = null;
+		
+		HttpSession session = request.getSession();
+		bitacoraCOM = new BitacoraCOM();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		
 		if(validarEstudiante != null){
 			Set<Map.Entry<Long,String>> mapa = validarEstudiante.entrySet();
 			Iterator<Map.Entry<Long,String>> ite = mapa.iterator();
@@ -221,10 +229,10 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 						}
 						Gson gson = new Gson();
 						String jsonString = gson.toJson(log);
-						BitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornadaId()), 2, 
 								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-								30, 4, login.getUsuarioId(), jsonString);
+								30, 4, loginBitacora, jsonString);
 					}
 				}catch(Exception e){
 					e.printStackTrace();

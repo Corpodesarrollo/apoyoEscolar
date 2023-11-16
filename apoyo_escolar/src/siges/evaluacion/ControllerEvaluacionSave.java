@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
@@ -17,10 +18,8 @@ import com.google.gson.Gson;
 
 import siges.adminParamsInst.dao.AdminParametroInstDAO;
 import siges.adminParamsInst.vo.InstParVO;
-import siges.common.vo.ItemVO;
 import siges.common.vo.Params;
 import siges.dao.Cursor;
-import siges.estudiante.dao.EstudianteDAO;
 import siges.evaluacion.beans.FiltroBeanEvaluacion;
 import siges.evaluacion.beans.FiltroComportamiento;
 import siges.evaluacion.beans.ParamsVO;
@@ -59,6 +58,8 @@ public class ControllerEvaluacionSave extends HttpServlet {
 	private EvaluacionDAO evaluacionDAO;//
 
 	private Evaluacion2DAO evaluacion2DAO;//
+	
+	private BitacoraCOM bitacoraCOM;
 
 	private ResourceBundle rb;
 
@@ -98,6 +99,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 		mensaje = null;
 		evaluacionDAO = new EvaluacionDAO(cursor);
 		evaluacion2DAO = new Evaluacion2DAO(cursor);
+		bitacoraCOM = new BitacoraCOM();
 		try {
 			boton = (request.getParameter("cmd") != null) ? request
 					.getParameter("cmd") : new String("");
@@ -108,7 +110,8 @@ public class ControllerEvaluacionSave extends HttpServlet {
 			}
 			// traer de session los beans de datos
 			login = (Login) session.getAttribute("login");
-			filtroEvaluacion = (FiltroBeanEvaluacion) session.getAttribute("filtroEvaluacion");
+			filtroEvaluacion = (FiltroBeanEvaluacion) session
+					.getAttribute("filtroEvaluacion");
 			if (filtroEvaluacion != null) {
 				filtroEvaluacion.setMunicipio(login.getMunId());
 				filtroEvaluacion.setLocalidad(login.getLocId());
@@ -141,7 +144,11 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				return er;
 			}
 			tipo = Integer.parseInt((String) request.getParameter("tipo"));
-			//System.out.println("En el Save="+tipo+"//"+boton);
+			String loginBitacora = (String)session.getAttribute("loginBitacora");
+			
+			String vaina = bitacoraCOM.insertarBitacora(0L, 0, 0, "0", 0, 0, 1, loginBitacora, "PRUEBA FER "+loginBitacora);
+			System.out.println("xFER "+vaina+" FERx");
+			// System.out.println("En el Save="+tipo+"//"+boton);
 			if (boton.equals("Buscar")) {
 				switch (tipo) {
 				case 1:// logro
@@ -170,57 +177,64 @@ public class ControllerEvaluacionSave extends HttpServlet {
 					return (sigComp);
 				}
 			}
-			
 			if (boton.equals("Aceptar")) {
 				switch (tipo) {
 				case 1:// logros
 					if (!insertarLogro(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
-					} else{
-						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
-					}
+					} else
+						request.setAttribute("mensaje",
+								"Los datos fueron registrados satisfactoriamente");
+					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_ASI:// asig
-					if (!insertarAsignatura(request, login, filtroEvaluacion)){
+					if (!insertarAsignatura(request, login, filtroEvaluacion))
 						request.setAttribute("mensaje", mensaje);
-					} else{
-						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
-						BitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
-								Integer.parseInt(login.getJornadaId()), 2, 
-								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-								30, 4, login.getUsuarioId(), this.stringEvalAsignatura(notasOld, filtroEvaluacion));
-					}
+					else
+						request.setAttribute("mensaje",
+								"Los datos fueron registrados satisfactoriamente");
+					return sig0 += "?tipo=" + tipo;
 				case 3:// desc
 					if (!insertarDescriptor(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje",
+								"Los datos fueron registrados satisfactoriamente");
 					}
+					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_ARE:// area
 					if (!insertarArea(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje",
+								"Los datos fueron registrados satisfactoriamente");
 					}
+					return sig0 += "?tipo=" + tipo;
 				case 5:// recuperacion
 					if (!insertarRecuperacion(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
-					} else{
-						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
-					}
+					} else
+						request.setAttribute("mensaje",
+								"Los datos fueron registrados satisfactoriamente");
+					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_PRE:// PREESCOLAR
-					if (!insertarPreescolar(request, login, filtroComportamiento)) {
+					if (!insertarPreescolar(request, login,
+							filtroComportamiento)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje",
+								"Los datos fueron registrados satisfactoriamente");
 					}
+					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_COMP:
-					if (!insertarComportamiento(request, login, filtroComportamiento)) {
+					if (!insertarComportamiento(request, login,
+							filtroComportamiento)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
-						request.setAttribute("mensaje", "Los datos fueron registrados satisfactoriamente");
+						request.setAttribute("mensaje",
+								"Los datos fueron registrados satisfactoriamente");
 					}
+					return sig0 += "?tipo=" + tipo;
 				}
-				return sig0 += "?tipo=" + tipo;
 			}
 			if (boton.equals("Cancelar")) {
 				borrarBeans(request);
@@ -231,7 +245,8 @@ public class ControllerEvaluacionSave extends HttpServlet {
 		}
 		return sig0 += "?tipo=" + tipo;
 	}
-	
+
+
 	private String stringEvalAsignatura(List<EstudianteEvalDto> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
 		try {
 			LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
@@ -262,6 +277,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 			return e.getMessage();
 		}
 	}
+
 
 	/**
 	 * Busca los estudiantes y descriptores para la evaluciacion de descriptores
