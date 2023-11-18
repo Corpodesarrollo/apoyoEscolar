@@ -4970,6 +4970,14 @@
 	<servlet>
 		<description>
 		</description>
+		<display-name>GuardarBitacoraReporte</display-name>
+		<servlet-name>GuardarBitacoraReporte</servlet-name>
+		<servlet-class>GuardarBitacoraReporte</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
 		<display-name>ValidarArchivo</display-name>
 		<servlet-name>ValidarArchivo</servlet-name>
 		<servlet-class>siges.util.ValidarArchivo</servlet-class>
@@ -6752,6 +6760,10 @@
 	<servlet-mapping>
 		<servlet-name>ajax</servlet-name>
 		<url-pattern>/ajax.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>GuardarBitacoraReporte</servlet-name>
+		<url-pattern>/GuardarBitacoraReporte</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ValidarArchivo</servlet-name>
