@@ -89,13 +89,13 @@ function validarArchivo(f1,f2) {
         }
 <c:forEach begin="0" items="${requestScope.lista}" var="fila" varStatus="st">
 	function r_<c:out value="${st.count}"/>(){
-		document.listado.dir.value='<c:out value="${fila[1]}"/>';
-		document.listado.tipo.value='<c:out value="${fila[2]}"/>';
+		document.listado.dir.value='<c:out value="${fila[1]}"/>';		
+		document.listado.tipo.value='<c:out value="${fila[2]}"/>';		
 		var urlPath = "<c:url value="/${fila[1]}"/>";
 		if(urlPath.indexOf("http") > -1){
 			urlPath = '<c:out value="${fila[1]}"/>';
-		}
-        document.listado.action= "./GuardarBitacoraReporte?archivo=<c:out value="${fila[0]}"/>&action=" + urlPath;
+		}		
+        document.listado.action= urlPath;
 		document.listado.submit();
 	}
 </c:forEach>
@@ -109,7 +109,7 @@ function validarArchivo(f1,f2) {
 			urlPath = '<c:out value="${fila[1]}"/>';
 		}
 		var blade="http://bladenodo4.redp.edu.co:7779";
-         document.listado.action= "./GuardarBitacoraReporte?archivo=<c:out value="${fila[0]}"/>&action=" + blade + urlPath;
+         document.listado.action= blade + urlPath;
 
         //document.listado.action= urlPath;
 		document.listado.submit();
