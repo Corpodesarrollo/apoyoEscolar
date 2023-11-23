@@ -146,8 +146,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 			tipo = Integer.parseInt((String) request.getParameter("tipo"));
 			String loginBitacora = (String)session.getAttribute("loginBitacora");
 			
-			String vaina = bitacoraCOM.insertarBitacora(0L, 0, 0, "0", 0, 0, 1, loginBitacora, "PRUEBA FER "+loginBitacora);
-			System.out.println("xFER "+vaina+" FERx");
+
 			// System.out.println("En el Save="+tipo+"//"+boton);
 			if (boton.equals("Buscar")) {
 				switch (tipo) {
@@ -178,6 +177,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				}
 			}
 			if (boton.equals("Aceptar")) {
+				List<String[]> notasOld = (List<String[]>)session.getAttribute("filtroResultado");
 				switch (tipo) {
 				case 1:// logros
 					if (!insertarLogro(request, login, filtroEvaluacion)) {
@@ -187,11 +187,16 @@ public class ControllerEvaluacionSave extends HttpServlet {
 								"Los datos fueron registrados satisfactoriamente");
 					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_ASI:// asig
-					if (!insertarAsignatura(request, login, filtroEvaluacion))
+					if (!insertarAsignatura(request, login, filtroEvaluacion)){
 						request.setAttribute("mensaje", mensaje);
-					else
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
+					} else {
+						String jsonBitacora = stringEvalAsignatura(notasOld, filtroEvaluacion);
+						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 2, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								30, 4, loginBitacora, jsonBitacora);
+						request.setAttribute("mensaje","Los datos fueron registrados satisfactoriamente");
+					}
 					return sig0 += "?tipo=" + tipo;
 				case 3:// desc
 					if (!insertarDescriptor(request, login, filtroEvaluacion)) {
@@ -247,28 +252,44 @@ public class ControllerEvaluacionSave extends HttpServlet {
 	}
 
 
-	private String stringEvalAsignatura(List<EstudianteEvalDto> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
+	private String stringEvalAsignatura(List<String[]> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
 		try {
-			LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
 			List<LogEvaluacionDto> list = new ArrayList<LogEvaluacionDto>();
-			String[] notas = filtroEvaluacion.getNota();
-			for (EstudianteEvalDto nota : notasOld) {
-				LogEvaluacionDto dto = new LogEvaluacionDto();
-				dto.setNumeroIdentificacion(nota.getNumeroIdentificacion());
-				dto.setNombreCompleto(nota.getNombreCompleto());
-				dto.setGrado(filtroEvaluacion.getGrado_());
-				dto.setGrupo(filtroEvaluacion.getGrupo_());
-				dto.setPeriodo(Integer.parseInt(filtroEvaluacion.getPeriodo()));
-				dto.setMateria(filtroEvaluacion.getAsignatura_());
-				dto.setNotaAnterior(nota.getNota());
-				for (String newNota: notas) {
-					String[] param = newNota.replace('|', ':').split(":");
-					if (nota.getCodigo()==Long.parseLong(param[0].trim())) {
-						dto.setNotaActualizada(Float.parseFloat(param[1].trim()));
-						dto.setNotaRecuperada(Float.parseFloat(param[2].trim()));
+			String[] newNotas = filtroEvaluacion.getNota();
+			String[] newAusencias = filtroEvaluacion.getNota();
+			List<String[]> nuevasNotas = new ArrayList<>();
+			for (String nota : newNotas) {
+				String[] data = nota.replace('|', ':').split(":");
+				nuevasNotas.add(data);
+			}
+			for (String[] old : notasOld) {
+				LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
+				logEvaluacionDto.setNumeroIdentificacion(old[1]);
+				logEvaluacionDto.setNombreCompleto(old[4]+' '+old[5]+' '+old[2]+' '+old[3]);
+				logEvaluacionDto.setGrado(filtroEvaluacion.getGrado_());
+				logEvaluacionDto.setGrupo(filtroEvaluacion.getGrupo_());
+				logEvaluacionDto.setPeriodo(Integer.parseInt(filtroEvaluacion.getPeriodo()));
+				logEvaluacionDto.setMateria(filtroEvaluacion.getAsignatura_());
+				if (old[6] != null && !old[6].equals("")) {
+					logEvaluacionDto.setNotaAnterior(Float.parseFloat(old[6]));	
+				}else{
+					logEvaluacionDto.setNotaAnterior(null);
+				}
+				for (String[] nuev : nuevasNotas) {
+					if (nuev[0].equals(old[0])) {
+						if (nuev.length > 1 && !nuev[1].equals("")) {
+							logEvaluacionDto.setNotaActualizada(Float.parseFloat(nuev[1]));
+						} else{
+							logEvaluacionDto.setNotaActualizada(null);
+						}
+						if (nuev.length > 2 && !nuev[2].equals("")) {
+							logEvaluacionDto.setNotaRecuperada(Float.parseFloat(nuev[2]));
+						} else{
+							logEvaluacionDto.setNotaRecuperada(null);
+						}
 					}
 				}
-				list.add(dto);
+				list.add(logEvaluacionDto);
 			}
 			Gson gson = new Gson();
 			return gson.toJson(list);

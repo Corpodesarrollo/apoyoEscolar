@@ -344,6 +344,8 @@ public class Nuevo extends Service {
 			//insercion de bitacora
 			BitacoraCOM com = new BitacoraCOM();
 			String jsonString="";
+			HttpSession session2 = request.getSession();
+			String loginBitacora = (String)session2.getAttribute("loginBitacora");
 			try{
 				
 				
@@ -399,7 +401,7 @@ public class Nuevo extends Service {
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
 				com.insertarBitacora(logroE.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-						1301, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
+						1301, 3, loginBitacora, jsonString);
 			}catch(Exception e){
 				
 			}
@@ -429,6 +431,8 @@ public class Nuevo extends Service {
 			//insercion de bitacora
 			String jsonString="";
 			BitacoraCOM com = new BitacoraCOM();
+			HttpSession session2 = request.getSession();
+			String loginBitacora = (String)session2.getAttribute("loginBitacora");
 			try{
 				
 				
@@ -527,7 +531,7 @@ public class Nuevo extends Service {
 			}
 			try{
 				com.insertarBitacora(desc.getDesInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-						1301, 3/*eliminacion*/, usuVO.getUsuarioId(), jsonString);
+						1301, 3, loginBitacora, jsonString);
 			}catch(Exception e){
 				
 			}
@@ -554,6 +558,8 @@ public class Nuevo extends Service {
 			//insercion de bitacora
 			BitacoraCOM com = new BitacoraCOM();
 			String jsonString="";
+			HttpSession session2 = request.getSession();
+			String loginBitacora = (String)session2.getAttribute("loginBitacora");
 			try{
 				
 				
@@ -606,6 +612,7 @@ public class Nuevo extends Service {
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
+				
 			}catch(Exception e){
 				
 			}
@@ -615,7 +622,7 @@ public class Nuevo extends Service {
 				indicadoresDAO.actualizarLogro(logro);
 				try{
 					com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							1301, 2/*modificacion*/, usuVO.getUsuarioId(), jsonString);
+							1301, 2, loginBitacora, jsonString);
 				}catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -623,7 +630,7 @@ public class Nuevo extends Service {
 				indicadoresDAO.ingresarLogro(logro);
 				try{
 					com.insertarBitacora(logro.getLogInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							1301, 1/*registro*/, usuVO.getUsuarioId(), jsonString);
+							1301, 1, loginBitacora, jsonString);
 				}catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -662,6 +669,8 @@ public class Nuevo extends Service {
 			//insercion de bitacora
 			String jsonString="";
 			BitacoraCOM com = new BitacoraCOM();
+			HttpSession session2 = request.getSession();
+			String loginBitacora = (String)session2.getAttribute("loginBitacora");
 			try{
 				
 				
@@ -755,7 +764,7 @@ public class Nuevo extends Service {
 				indicadoresDAO.actualizarDescriptor(desc);
 				try{
 					com.insertarBitacora(desc.getDesInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							1301, 2/*modificacion*/, usuVO.getUsuarioId(), jsonString);
+							1301, 2, loginBitacora, jsonString);
 				}catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -763,7 +772,7 @@ public class Nuevo extends Service {
 				indicadoresDAO.ingresarDescriptor(desc);
 				try{
 					com.insertarBitacora(desc.getDesInstitucion(), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							1301, 1/*insercion*/, usuVO.getUsuarioId(), jsonString);
+							1301, 1, loginBitacora, jsonString);
 				}catch (Exception e) {
 					// TODO: handle exception
 				}

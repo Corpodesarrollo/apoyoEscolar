@@ -25,7 +25,7 @@ public class BitacoraCOM {
 	public String insertarBitacora(long colegio,int jornada,int modulo,String perfil,int sede,int submodulo,int tipoLog,String usuario, String descripcion){
 		String retorno = "";
 		try {
-			String[] loginBit = usuario.split("-");
+			String[] loginBit = usuario.split("-");						
 			String token = this.getToken(loginBit[0], loginBit[1]);
 			
 			String URL = rb.getString("ruta.bitacora")+"/api/apoyo/consultas/insertarBitacora/";
