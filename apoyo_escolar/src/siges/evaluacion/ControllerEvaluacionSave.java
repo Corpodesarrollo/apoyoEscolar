@@ -192,9 +192,9 @@ public class ControllerEvaluacionSave extends HttpServlet {
 					} else {
 						String jsonBitacora = stringEvalAsignatura(notasOld, filtroEvaluacion);
 						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
-								Integer.parseInt(login.getJornadaId()), 2, 
+								Integer.parseInt(login.getJornadaId()), 3, 
 								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-								30, 4, loginBitacora, jsonBitacora);
+								2202, 1, loginBitacora, jsonBitacora);
 						request.setAttribute("mensaje","Los datos fueron registrados satisfactoriamente");
 					}
 					return sig0 += "?tipo=" + tipo;

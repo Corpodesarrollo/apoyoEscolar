@@ -203,11 +203,11 @@ public class ControllerAbrirSave extends HttpServlet{
 			logGrupo.setPeriodo(abrirGrupo.getPeriodo());
 			bitacoraCOM.insertarBitacora(
 					Long.parseLong(login.getInstId()), 
-					Integer.parseInt(login.getJornada()),
-					4 ,
+					Integer.parseInt(login.getJornadaId()),
+					4,
 					login.getPerfil(), 
 					Integer.parseInt(login.getSedeId()),
-					1112, 
+					1114, 
 					1, loginBitacora, new Gson().toJson(logGrupo));
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -282,11 +282,11 @@ public class ControllerAbrirSave extends HttpServlet{
 						logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
 						bitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()), 
-								Integer.parseInt(login.getJornada()),
-								4 ,
+								Integer.parseInt(login.getJornadaId()),
+								4,
 								login.getPerfil(), 
 								Integer.parseInt(login.getSedeId()),
-								1112, 
+								1114, 
 								2, loginBitacora, new Gson().toJson(logPeriodo));
 					} catch (Exception e) {
 						// TODO: handle exception
@@ -318,6 +318,9 @@ public class ControllerAbrirSave extends HttpServlet{
 		String jor=cierreVO.getCieJor();
 		String estadoInicial=cierreVO.getCieEsta();
 		cierreVO.setCieInst(login.getInstId());
+		bitacoraCOM = new BitacoraCOM();
+		HttpSession session = request.getSession();
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
 		int tipo=Integer.parseInt(estadoInicial);
 		if(!grupoPeriodoDAO.abrirPeriodo(cierreVO, login.getLogNivelEval())){
 			setMensaje(grupoPeriodoDAO.getMensaje());
@@ -328,6 +331,24 @@ public class ControllerAbrirSave extends HttpServlet{
 		Logger.print(login.getUsuarioId(),
 		        "Abrir Periodo Inst:"+login.getInstId()+" Sede:"+sede+" Jornada:"+jor+" Periodo:"+periodo,
 		        7,1,this.toString());
+		try {
+			LogCerrarPeriodoDto logPeriodo= new LogCerrarPeriodoDto();
+			logPeriodo.setInstitucion(login.getInst());
+			logPeriodo.setSede(login.getSede());
+			logPeriodo.setJornada(login.getJornada());
+			logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+			bitacoraCOM.insertarBitacora(
+					Long.parseLong(login.getInstId()), 
+					Integer.parseInt(login.getJornadaId()),
+					4,
+					login.getPerfil(), 
+					Integer.parseInt(login.getSedeId()),
+					1114, 
+					2, loginBitacora, new Gson().toJson(logPeriodo));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 		return true;
 	}
 	
@@ -357,11 +378,11 @@ public class ControllerAbrirSave extends HttpServlet{
 				logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
 				bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
-						Integer.parseInt(login.getJornada()),
-						4 ,
+						Integer.parseInt(login.getJornadaId()),
+						4,
 						login.getPerfil(), 
 						Integer.parseInt(login.getSedeId()),
-						1112, 
+						1114, 
 						2, loginBitacora, new Gson().toJson(logPeriodo));
 			} catch (Exception e) {
 				// TODO: handle exception

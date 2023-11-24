@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
 import siges.common.service.Service;
 import siges.common.vo.ItemVO;
 import siges.common.vo.Params;
@@ -23,6 +25,7 @@ import siges.observacion.vo.ObservacionEstudianteVO;
 import siges.observacion.vo.ObservacionGrupoVO;
 import siges.observacion.vo.ObservacionPeriodoVO;
 import siges.observacion.vo.ParamsVO;
+import util.BitacoraCOM;
 
 /**
  * 25/11/2007
@@ -41,6 +44,8 @@ public class Nuevo extends Service {
 	private String FICHA_OBSERVACION_ASIGNATURA2;
 	private String FICHA_OBSERVACION_ESTUDIANTE;
 	private String FICHA_OBSERVACION_ESTUDIANTE2;
+	
+	private BitacoraCOM bitacoraCOM;
 
 	private ObservacionDAO observacionDAO;
 
@@ -67,6 +72,10 @@ public class Nuevo extends Service {
 				.getInitParameter("FICHA_OBSERVACION_ESTUDIANTE");
 		FICHA_OBSERVACION_ESTUDIANTE2 = config
 				.getInitParameter("FICHA_OBSERVACION_ESTUDIANTE2");
+		
+		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		bitacoraCOM = new BitacoraCOM();
+		Gson gson = new Gson();
 
 		Login usuVO = (Login) session.getAttribute("login");
 		int CMD = getCmd(request, session);
@@ -78,6 +87,8 @@ public class Nuevo extends Service {
 
 		ObservacionEstudianteVO observacionEstudianteVO = null;
 
+		String busqueda = "";
+		String guardar = "";
 		FICHA = FICHA_OBSERVACION_PERIODO;
 		switch (TIPO) {
 		case ParamsVO.FICHA_OBSERVACION_PERIODO:
@@ -92,10 +103,12 @@ public class Nuevo extends Service {
 				break;
 			case ParamsVO.CMD_BUSCAR:
 				periodoBuscar(request, session, usuVO, observacionPeriodoVO);
+				busqueda = gson.toJson(request.getAttribute("listaObservacionPeriodo"));
 				FICHA = FICHA_OBSERVACION_PERIODO2;
 				break;
 			case ParamsVO.CMD_GUARDAR:
 				periodoGuardar(request, session, usuVO, observacionPeriodoVO);
+				guardar = gson.toJson(observacionPeriodoVO.getObsObservacion());
 				FICHA = FICHA_OBSERVACION_PERIODO;
 				break;
 			}
@@ -111,10 +124,12 @@ public class Nuevo extends Service {
 				break;
 			case ParamsVO.CMD_BUSCAR:
 				grupoBuscar(request, session, usuVO, observacionGrupoVO);
+				busqueda = gson.toJson(request.getAttribute("listaObservacionGrupo"));
 				FICHA = FICHA_OBSERVACION_GRUPO2;
 				break;
 			case ParamsVO.CMD_GUARDAR:
 				grupoGuardar(request, session, usuVO, observacionGrupoVO);
+				guardar = gson.toJson(observacionGrupoVO.getObsObservacion());
 				FICHA = FICHA_OBSERVACION_GRUPO;
 				break;
 			}
@@ -130,13 +145,13 @@ public class Nuevo extends Service {
 				FICHA = FICHA_OBSERVACION_ASIGNATURA;
 				break;
 			case ParamsVO.CMD_BUSCAR:
-				asignaturaBuscar(request, session, usuVO,
-						observacionAsignaturaVO);
+				asignaturaBuscar(request, session, usuVO, observacionAsignaturaVO);
+				busqueda = gson.toJson(request.getAttribute("listaObservacionAsignatura"));
 				FICHA = FICHA_OBSERVACION_ASIGNATURA2;
 				break;
 			case ParamsVO.CMD_GUARDAR:
-				asignaturaGuardar(request, session, usuVO,
-						observacionAsignaturaVO);
+				asignaturaGuardar(request, session, usuVO, observacionAsignaturaVO);
+				guardar = gson.toJson(observacionAsignaturaVO.getObsObservacion());
 				FICHA = FICHA_OBSERVACION_ASIGNATURA;
 				break;
 			}
@@ -152,18 +167,31 @@ public class Nuevo extends Service {
 				FICHA = FICHA_OBSERVACION_ESTUDIANTE;
 				break;
 			case ParamsVO.CMD_BUSCAR:
-				estudianteBuscar(request, session, usuVO,
-						observacionEstudianteVO);
+				estudianteBuscar(request, session, usuVO, observacionEstudianteVO);
+				busqueda = gson.toJson(request.getAttribute("listaObservacionEstudiante"));
 				FICHA = FICHA_OBSERVACION_ESTUDIANTE2;
 				break;
 			case ParamsVO.CMD_GUARDAR:
-				estudianteGuardar(request, session, usuVO,
-						observacionEstudianteVO);
+				estudianteGuardar(request, session, usuVO, observacionEstudianteVO);
+				guardar = gson.toJson(observacionEstudianteVO.getObsObservacion());
 				FICHA = FICHA_OBSERVACION_ESTUDIANTE;
 				break;
 			}
 			break;
 		}
+		if (CMD == 2) {
+			bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+					Integer.parseInt(usuVO.getJornadaId()), 4, 
+					usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+					1114, 4, loginBitacora, busqueda);
+		}
+		if (CMD == 3) {
+			bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+					Integer.parseInt(usuVO.getJornadaId()), 4, 
+					usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+					1114, 1, loginBitacora, guardar);
+		}
+		
 		dispatcher[0] = String.valueOf(ParamsVO.FORWARD);
 		dispatcher[1] = FICHA;
 		return dispatcher;

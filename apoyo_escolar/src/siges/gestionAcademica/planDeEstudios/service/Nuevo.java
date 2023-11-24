@@ -316,7 +316,7 @@ public class Nuevo extends Service {
 					Gson gson = new Gson();
 					jsonString = gson.toJson(log);
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 3, loginBitacora, jsonString);
+							61, 3, loginBitacora, jsonString);
 				}catch(Exception e){
 					
 				}	
@@ -1007,7 +1007,7 @@ public class Nuevo extends Service {
 				planDeEstudiosDAO.ingresarAsignatura(asignatura);
 				try{
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 2, loginBitacora, jsonString);
+							63, 1, loginBitacora, jsonString);
 				}catch (Exception e) {
 					// TODO: handle exception
 				}

@@ -152,17 +152,6 @@ public class ControllerFiltroSave extends HttpServlet {
 					log.setJornada(basica.getEstjor());
 					log.setGrado(basica.getEstgra());
 					log.setGrupo(basica.getEstgrupo());
-					bitacoraCOM.insertarBitacora(
-							Long.parseLong(login.getInstId()), 
-							Integer.parseInt(login.getJornadaId()),
-							2 ,
-							login.getPerfil(), 
-							Integer.parseInt(login.getSede()), 
-							0, 
-							3, 
-							loginBitacora, 
-							new Gson().toJson(log)
-							);
 				}catch(Exception e){
 					e.printStackTrace();
 					System.out.println("Error " + this + ":" + e.toString());

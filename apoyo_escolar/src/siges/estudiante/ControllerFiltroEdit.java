@@ -120,7 +120,7 @@ public class ControllerFiltroEdit extends HttpServlet {
 				bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
 										Integer.parseInt(usuVO.getJornadaId()), 2, 
 										usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-										30, 4, loginBitacora, jsonString);
+										1000, 2, loginBitacora, jsonString);
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error " + this + ":" + e.toString());

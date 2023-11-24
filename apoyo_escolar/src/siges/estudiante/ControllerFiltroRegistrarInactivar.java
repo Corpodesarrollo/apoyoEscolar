@@ -139,10 +139,10 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 				bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
 						Integer.parseInt(login.getJornadaId()),
-						2 ,
+						2,
 						login.getPerfil(), 
-						Integer.parseInt(login.getSede()), 
-						0, 
+						Integer.parseInt(login.getSedeId()), 
+						1001, 
 						2, 
 						loginBitacora, 
 						new Gson().toJson(log)

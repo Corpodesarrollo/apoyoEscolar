@@ -232,7 +232,7 @@ public class ControllerFiltroRegistrar extends HttpServlet {
 						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornadaId()), 2, 
 								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-								30, 4, loginBitacora, jsonString);
+								1000, 1, loginBitacora, jsonString);
 					}
 				}catch(Exception e){
 					e.printStackTrace();
