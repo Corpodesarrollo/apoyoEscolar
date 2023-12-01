@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -34,7 +35,9 @@ public class GuardarBitacoraReporte extends HttpServlet {
 		String jsonString="";
 		BitacoraCOM com = new BitacoraCOM();
 		try{
-			Login login = (Login)request.getSession().getAttribute("login");
+			HttpSession session = request.getSession();
+			Login login = (Login)session.getAttribute("login");
+			String loginBitacora = (String)session.getAttribute("loginBitacora");
 //			Login login = new Login();
 //			login.setInstId("1");
 //			login.setJornadaId("1");
@@ -47,14 +50,14 @@ public class GuardarBitacoraReporte extends HttpServlet {
 			Gson gson = new Gson();
 			jsonString = gson.toJson(desc);
 			com.insertarBitacora(Long.valueOf(login.getInstId()), Integer.parseInt(login.getJornadaId()), 4, login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-					1002, 6/*Descarga de documentos*/, login.getUsuarioId(), jsonString);	
+					1002, 6/*Descarga de documentos*/, loginBitacora, jsonString);	
 		}catch(Exception e){
-			
+			response.getWriter().write(e.getMessage());
 		}
 		String newURL = response.encodeRedirectURL(request.getParameter("action"));
 		response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 		response.setHeader("Location", newURL);
-		response.getWriter().write("HOLA MUNDO");
+//		response.getWriter().write("HOLA MUNDO");
 	}
 
 	/**
