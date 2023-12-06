@@ -35,6 +35,7 @@ import util.LogAsignaturaDto;
 import util.LogDescriptorDto;
 import util.LogGradoDto;
 import util.LogPlanEstudioDto;
+import utils.system;
 
 /**
  * 27/10/2009
@@ -376,7 +377,7 @@ public class Nuevo extends Service {
 				planDeEstudiosDAO.actualizarPlanDeEstudios(plan);
 				try{
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 2, loginBitacora, jsonString);
+							61, 2, loginBitacora, jsonString);
 				}catch(Exception e){
 					
 				}
@@ -385,7 +386,7 @@ public class Nuevo extends Service {
 				planDeEstudiosDAO.ingresarPlanDeEstudios(plan);
 				try{
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-						63, 1, loginBitacora, jsonString);
+						61, 1, loginBitacora, jsonString);
 				}catch(Exception e){
 					
 				}
@@ -541,7 +542,7 @@ public class Nuevo extends Service {
 					jsonString = gson.toJson(log);
 					
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 3, loginBitacora, jsonString);
+							61, 3, loginBitacora, jsonString);
 				}catch(Exception e){
 					
 				}	
@@ -613,7 +614,7 @@ public class Nuevo extends Service {
 				try{
 					
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 2, loginBitacora, jsonString);
+							61, 2, loginBitacora, jsonString);
 				}catch(Exception e){
 					
 				}	
@@ -622,7 +623,7 @@ public class Nuevo extends Service {
 				try{
 					
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 1, loginBitacora, jsonString);
+							61, 1, loginBitacora, jsonString);
 				}catch(Exception e){
 					
 				}	
@@ -857,6 +858,8 @@ public class Nuevo extends Service {
 				BitacoraCOM com = new BitacoraCOM();
 				HttpSession session2 = request.getSession();
 				String loginBitacora = (String)session2.getAttribute("loginBitacora");
+				Gson gson = new Gson();
+				
 				try{
 					
 					LogAsignaturaDto log = new LogAsignaturaDto();
@@ -870,26 +873,6 @@ public class Nuevo extends Service {
 							break;
 						}
 					}
-					
-					Gson gson = new Gson();
-					
-					List<LogGradoDto> gradosLog = new ArrayList<>();
-					LogGradoDto grado;
-					String gradoS;
-					String [] infoGrado;
-					for(int i=0;i<asignatura.getAsiGrado().length;i++){
-						if(asignatura.getAsiGrado()[i]!="-1"){
-							gradoS = asignatura.getAsiGrado()[i];
-							infoGrado = gradoS.split(":");
-							grado = new LogGradoDto();
-							grado.setGrado(infoGrado[0]);
-							grado.setIntensidadHoraria(infoGrado[1]);
-							grado.setEstado(infoGrado[2]);
-							gradosLog.add(grado);
-						}
-					}
-					String jsonGrados = gson.toJson(gradosLog);
-					log.setGrados(jsonGrados);
 
 					log.setIdentificadorRegistro(String.valueOf(asignaturaE.getAsiCodigo()));
 					List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
@@ -910,11 +893,10 @@ public class Nuevo extends Service {
 							break;
 						}
 					}
-					gson = new Gson();
 					jsonString = gson.toJson(log);
 					
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 3, loginBitacora, jsonString);
+							61, 3, loginBitacora, jsonString);
 				}catch(Exception e){
 					
 				}	
@@ -927,78 +909,75 @@ public class Nuevo extends Service {
 	public boolean asignaturaGuardar(HttpServletRequest request,
 			HttpSession session, Login usuVO, AsignaturaVO asignatura)
 			throws ServletException {
-		String mspon = "";
-		String mspon1 = "";
-		String mspon2 = "";
-		String mspon3 = "";
-
-		try {
+			String mspon = "";
+			String mspon1 = "";
+			String mspon2 = "";
+			String mspon3 = "";
+		try{
 			//insercion de bitacora
-			String jsonString="";
-			BitacoraCOM com = new BitacoraCOM();
-			HttpSession session2 = request.getSession();
-			String loginBitacora = (String)session2.getAttribute("loginBitacora");
-			try{
-				
-				LogAsignaturaDto log = new LogAsignaturaDto();
-				log.setAbreviatura(asignatura.getAsiAbreviatura());
-				log.setAsignatura(asignatura.getAsiNombre());
-				List<ItemVO> areas = planDeEstudiosDAO.getListaAreaBase();
-				for(int i=0;i<areas.size();i++){
-					ItemVO obj = areas.get(i);
-					if(obj.getCodigo()==asignatura.getAsiArea()){
-						log.setArea(obj.getNombre());
-						break;
-					}
-				}
-				
-				Gson gson = new Gson();
-				List<LogGradoDto> gradosLog = new ArrayList<>();
-				LogGradoDto grado;
-				String gradoS;
-				String [] infoGrado;
-				for(int i=0;i<asignatura.getAsiGrado().length;i++){
-					if(asignatura.getAsiGrado()[i]!="-1"){
-						gradoS = asignatura.getAsiGrado()[i];
-						infoGrado = gradoS.split(":");
-						grado = new LogGradoDto();
-						grado.setGrado(infoGrado[0]);
-						grado.setIntensidadHoraria(infoGrado[1]);
-						grado.setEstado(infoGrado[2]);
-						gradosLog.add(grado);
-					}
-				}
-				String jsonGrados = gson.toJson(gradosLog);
-				log.setGrados(jsonGrados);
-				log.setIdentificadorRegistro(String.valueOf(asignatura.getAsiCodigo()));
-				List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
-				for(int i=0;i<metodologias.size();i++){
-					ItemVO obj = metodologias.get(i);
-					if(obj.getCodigo()==asignatura.getAsiMetodologia()){
-						log.setMetodologia(obj.getNombre());
-						break;
-					}
-				}
-				log.setNombre(asignatura.getAsiNombre());
-				log.setOrden(String.valueOf(asignatura.getAsiOrden()));
-				List<ItemVO> vigencias = planDeEstudiosDAO.getListaVigenciaInst(Long.valueOf(usuVO.getInstId()));
-				for(int i=0;i<vigencias.size();i++){
-					ItemVO obj = vigencias.get(i);
-					if(obj.getCodigo()==asignatura.getAsiVigencia()){
-						log.setVigencia(obj.getNombre());
-						break;
-					}
-				}
-				gson = new Gson();
-				jsonString = gson.toJson(log);
-			}catch(Exception e){
-				
-			}	
+	        String jsonString="";
+	        BitacoraCOM com = new BitacoraCOM();
+	        HttpSession session2 = request.getSession();
+	        String loginBitacora = (String)session2.getAttribute("loginBitacora");
+	        Gson gson = new Gson();
+	        
+	        LogAsignaturaDto log = new LogAsignaturaDto();
+	        log.setAbreviatura(asignatura.getAsiAbreviatura());
+	        log.setAsignatura(asignatura.getAsiNombre());
+	        List<ItemVO> areas = planDeEstudiosDAO.getListaAreaBase();
+	        for(int i=0;i<areas.size();i++){
+	            ItemVO obj = areas.get(i);
+	            if(obj.getCodigo()==asignatura.getAsiArea()){
+	                log.setArea(obj.getNombre());
+	                break;
+	            }
+	        }
+	        
+	        List<LogGradoDto> gradosLog = new ArrayList<>();
+	        LogGradoDto grado;
+	        String gradoS;
+	        String [] infoGrado;
+	        for(int i=0;i<asignatura.getAsiGrado().length;i++){
+	            if(!asignatura.getAsiGrado()[i].equals("-1")){
+	                gradoS = asignatura.getAsiGrado()[i];
+	                infoGrado = gradoS.split(":");
+	                grado = new LogGradoDto();
+	                grado.setGrado(infoGrado[0]);
+	                grado.setIntensidadHoraria(infoGrado[1]);
+	                grado.setEstado(infoGrado[2]);
+	                gradosLog.add(grado);
+	            }
+	        }
+	        String jsonGrados = gson.toJson(gradosLog);
+	        log.setGrados(jsonGrados);
+	        
+	        log.setIdentificadorRegistro(String.valueOf(asignatura.getAsiCodigo()));
+	        List<ItemVO> metodologias = planDeEstudiosDAO.getListaMetodologia(Long.parseLong(usuVO.getInstId()));
+	        for(int i=0;i<metodologias.size();i++){
+	            ItemVO obj = metodologias.get(i);
+	            if(obj.getCodigo()==asignatura.getAsiMetodologia()){
+	                log.setMetodologia(obj.getNombre());
+	                break;
+	            }
+	        }
+	        log.setNombre(asignatura.getAsiNombre());
+	        log.setOrden(String.valueOf(asignatura.getAsiOrden()));
+	        List<ItemVO> vigencias = planDeEstudiosDAO.getListaVigenciaInst(Long.valueOf(usuVO.getInstId()));
+	        for(int i=0;i<vigencias.size();i++){
+	            ItemVO obj = vigencias.get(i);
+	            if(obj.getCodigo()==asignatura.getAsiVigencia()){
+	                log.setVigencia(obj.getNombre());
+	                break;
+	            }
+	        }
+	        
+	        jsonString = gson.toJson(log);
+        
 			if (asignatura.getFormaEstado().equals("1")) {
 				planDeEstudiosDAO.actualizarAsignatura(asignatura);
 				try{
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 2, loginBitacora, jsonString);
+							61, 2, loginBitacora, jsonString);
 				}catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -1007,7 +986,7 @@ public class Nuevo extends Service {
 				planDeEstudiosDAO.ingresarAsignatura(asignatura);
 				try{
 					com.insertarBitacora(Long.valueOf(usuVO.getInstId()), Integer.parseInt(usuVO.getJornadaId()), 3, usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-							63, 1, loginBitacora, jsonString);
+							61, 1, loginBitacora, jsonString);
 				}catch (Exception e) {
 					// TODO: handle exception
 				}

@@ -156,6 +156,7 @@ public class Reportes extends HttpServlet {
 			case ReporteVO._REP_BOLETINES:
 			case ReporteVO._REP_RESUMENES_AREA:
 			case ReporteVO._REP_RESUMENES_ASIG:
+			case ReporteVO._REP_RESUMENES_AREA_ASIG:
 			case ReporteVO._REP_CERTIFICADOS:
 			case ReporteVO._REP_LIBRO_NOTAS:
 			case ReporteVO._REP_RESULT_ACADEMICOS:
@@ -618,6 +619,9 @@ public class Reportes extends HttpServlet {
 		case ReporteVO._REP_RESUMENES_ASIG:
 			daboltiporep = Params.TIPOREP_ResumAsigS;
 			break;
+		case ReporteVO._REP_RESUMENES_AREA_ASIG: 
+			daboltiporep = Params.TIPOREP_ResumAreaAsigS;
+			break;	
 		case ReporteVO._REP_CERTIFICADOS:
 			daboltiporep = Params.TIPOREP_Certificados;
 			break;

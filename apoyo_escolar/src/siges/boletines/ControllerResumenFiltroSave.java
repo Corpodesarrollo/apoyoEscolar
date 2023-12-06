@@ -26,6 +26,7 @@ import siges.adminParamsInst.dao.AdminParametroInstDAO;
 import siges.adminParamsInst.vo.InstParVO;
 import siges.boletines.beans.AlarmaBean;
 import siges.boletines.beans.FiltroBeanReports;
+import siges.boletines.beans.FiltroBeanResumenAreaAsig;
 import siges.boletines.beans.FiltroBeanResumenAreas;
 import siges.boletines.beans.FiltroBeanResumenAsignaturas;
 import siges.boletines.beans.FiltroConsultaAsignaturasPerdidas;
@@ -46,10 +47,10 @@ import siges.io.Zip;
 import siges.login.beans.Login;
 import siges.util.beans.ReporteVO;
 
-
 /**
  * Nombre: ControllerResumenFiltroSave<BR>
- * Descripcinn: Controla la negociacion de busqueda para la vista de resultados <BR>
+ * Descripcinn: Controla la negociacion de busqueda para la vista de resultados
+ * <BR>
  * Funciones de la pngina: Busca los datos y redirige el control a la vista de
  * resultados <BR>
  * Entidades afectadas: <BR>
@@ -75,11 +76,13 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	private FiltroBeanResumenAreas filtroAreas;
 	private FiltroBeanResumenAsignaturas filtroAsignaturas;
 	private FiltroConsultaAsignaturasPerdidas filtroConsultaAisgnaturasPerdidas;
+	private FiltroBeanResumenAreaAsig filtroAreaAsig;
 	private Util util;
 	private String[] codigo;
 	private String buscarcodigo;
 	private static final String moduloArea = "22";
 	private static final String moduloAsignatura = "23";
+	private static final String moduloAreaAsig = "32";
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private ServletConfig config;
@@ -90,9 +93,11 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	private String sig;
 	private String sig2;
 	private String sig3;
+	private String sig4;
 	private String home;
 	private File reportFile_area;
 	private File reportFile_asignatura;
+	private File reportFile_area_asig;
 	private String path;
 	private Dao dao;
 	private String vigencia;
@@ -116,9 +121,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            response
 	 **/
 
-	public String process(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		String contextoTotal ="";
+	public String process(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String contextoTotal = "";
 		Connection con = null;
 		PreparedStatement pst = null;
 		Collection list = new ArrayList();
@@ -131,6 +136,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		sig = "/boletines/GenerarResumenAreas.jsp";
 		sig2 = "/boletines/GenerarResumenAsignaturas.jsp";
 		sig3 = "/boletines/NuevoConsultaPerdidaAsignaturas.jsp";
+		sig4 = "/boletines/GenerarResumenAreaAsignatura.jsp";
 		s = "/Reportes.do";
 		s1 = "/boletines/ControllerResumenFiltroEdit.do";
 		er = getServletContext().getInitParameter("error");
@@ -153,10 +159,10 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		}
 		// System.out.println("REPORTE SOLICITADO: "
 		// + request.getParameter("reporte_solicitado"));
-		alert = "El Reporte se esta generando en este momento. \nPulse en el hipervinculo 'Listado de Reportes' para ver si el reporte ya fue generado. \nO vaya a la opciÃ³n de menu 'Reportes generados'";
+		alert = "El Reporte se esta generando en este momento. \nPulse en el hipervinculo 'Listado de Reportes' para ver si el reporte ya fue generado. \nO vaya a la opción de menu 'Reportes generados'";
 
 		if (!asignarBeans(request)) {
-			setMensaje("Error capturando datos de sesinn para el usuario");
+			setMensaje("Error capturando datos de sesión para el usuario");
 			request.setAttribute("mensaje", mensaje);
 			ir(2, er, request, response);
 			return null;
@@ -175,34 +181,33 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				return er;
 			}
 			// System.out.println("VIGENCIA_ DE DAO: "+vigencia);
-			requerido = Integer.parseInt(request
-					.getParameter("reporte_solicitado"));
+			requerido = Integer.parseInt(request.getParameter("reporte_solicitado"));
 
-			ServletContext context = request.getSession()
-					.getServletContext();
+			ServletContext context = request.getSession().getServletContext();
 			contextoTotal = context.getRealPath("/");
 			String path = context.getRealPath("/boletines/reports");
 			String path1 = context.getRealPath("/etc/img");
 			String path2 = context.getRealPath("/private/escudo");
-			reportFile_area = new File(path + File.separator
-					+ rb3.getString("resumen_area"));
-			reportFile_asignatura = new File(path + File.separator
-					+ rb3.getString("resumen_asignatura"));
+			reportFile_area = new File(path + File.separator + rb3.getString("resumen_area"));
+			reportFile_asignatura = new File(path + File.separator + rb3.getString("resumen_asignatura"));
+			reportFile_area_asig = new File(path + File.separator + rb3.getString("resumen_area_asig"));
 
 			switch (requerido) {
 			case 1:
-				if (!resumen_Areas(request, vigencia, contextoTotal))					
+				if (!resumen_Areas(request, vigencia, contextoTotal))
 					return s;
-				else{
+				else {
 					ReporteVO reporteVO = new ReporteVO();
 					reporteVO.setRepTipo(ReporteVO._REP_RESUMENES_AREA);
 					reporteVO.setRepOrden(ReporteVO.ORDEN_DESC);
 					request.getSession().setAttribute("reporteVO", reporteVO);
-					//Se redirecciona a boletines para proceder con la generación					 
-					ResumenArea rA = new ResumenArea(cursor,contextoTotal,path);	  
-					rA.procesar_solicitudes();// se dispara el procesamiento de solicitudes
+					// Se redirecciona a resumen area para proceder con la
+					// generación
+					ResumenArea rA = new ResumenArea(cursor, contextoTotal, path);
+					rA.procesar_solicitudes();// se dispara el procesamiento de
+												// solicitudes
 				}
-					
+
 				break;
 			case 2:
 				if (!resumen_Asignaturas(request, vigencia, contextoTotal)) {
@@ -212,6 +217,11 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				reporteVO2.setRepTipo(ReporteVO._REP_RESUMENES_ASIG);
 				reporteVO2.setRepOrden(ReporteVO.ORDEN_DESC);
 				request.getSession().setAttribute("reporteVO", reporteVO2);
+				// Se redirecciona a resumenes asignatura para proceder con la
+				// generación
+				ResumenAsignatura rA = new ResumenAsignatura(cursor, contextoTotal, path);
+				rA.procesar_solicitudes();// se dispara el procesamiento de
+											// solicitudes
 				break;
 			case 3:
 				session.removeAttribute("filtroResultado");
@@ -230,22 +240,15 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				 * System.out.println("sede mantener " + (String)
 				 * request.getParameter("periodo"));
 				 */
-				request.setAttribute("sedeMantenerFil",
-						request.getParameter("sede"));
-				request.setAttribute("jornadaMantenerFil",
-						request.getParameter("jornada"));
-				request.setAttribute("metodologiaMantenerFil",
-						request.getParameter("metodologia"));
-				request.setAttribute("gradoMantenerFil",
-						request.getParameter("grado"));
-				request.setAttribute("grupoMantenerFil",
-						request.getParameter("grupo"));
-				request.setAttribute("periodoMantenerFil",
-						request.getParameter("periodo"));
+				request.setAttribute("sedeMantenerFil", request.getParameter("sede"));
+				request.setAttribute("jornadaMantenerFil", request.getParameter("jornada"));
+				request.setAttribute("metodologiaMantenerFil", request.getParameter("metodologia"));
+				request.setAttribute("gradoMantenerFil", request.getParameter("grado"));
+				request.setAttribute("grupoMantenerFil", request.getParameter("grupo"));
+				request.setAttribute("periodoMantenerFil", request.getParameter("periodo"));
 				Collection[] est = null;
 				int opcionconsulta = 1;
-				if (!resumen_ConsultaAsignaturas(request, vigencia,
-						contextoTotal)) {
+				if (!resumen_ConsultaAsignaturas(request, vigencia, contextoTotal)) {
 					return s1;
 				}
 
@@ -256,58 +259,41 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				// System.out.println(Integer
 				// .parseInt(filtroConsultaAisgnaturasPerdidas
 				// .getTipoconsulta()));
-				switch (Integer.parseInt(filtroConsultaAisgnaturasPerdidas
-						.getTipoconsulta())) {
+				switch (Integer.parseInt(filtroConsultaAisgnaturasPerdidas.getTipoconsulta())) {
 
 				case 1:
 					session.removeAttribute("listaalarmas");
 					listalarmas = new ArrayList();
 					listaObservacion = new ArrayList();
-					est = obtenerConsultaEstudiantes(request, vigencia,
-							contextoTotal);
-					opcionconsulta = Integer
-							.parseInt(filtroConsultaAisgnaturasPerdidas
-									.getTipoconsulta());
+					est = obtenerConsultaEstudiantes(request, vigencia, contextoTotal);
+					opcionconsulta = Integer.parseInt(filtroConsultaAisgnaturasPerdidas.getTipoconsulta());
 					break;
 				case 2:
 					session.removeAttribute("listaalarmas");
 					listalarmas = new ArrayList();
 					listaObservacion = new ArrayList();
-					est = obtenerConsultaEstudiantesxPeriodo(request, vigencia,
-							contextoTotal);
-					opcionconsulta = Integer
-							.parseInt(filtroConsultaAisgnaturasPerdidas
-									.getTipoconsulta());
-					request.getSession().setAttribute("gradoconsulta",
-							filtroConsultaAisgnaturasPerdidas.getGrado());
+					est = obtenerConsultaEstudiantesxPeriodo(request, vigencia, contextoTotal);
+					opcionconsulta = Integer.parseInt(filtroConsultaAisgnaturasPerdidas.getTipoconsulta());
+					request.getSession().setAttribute("gradoconsulta", filtroConsultaAisgnaturasPerdidas.getGrado());
 					break;
 				case 3:
 					session.removeAttribute("listaalarmas");
 					listalarmas = new ArrayList();
 					listaObservacion = new ArrayList();
-					est = obtenerConsultaEstudiantesxPeriodoeinasistencia(
-							request, vigencia, contextoTotal);
-					opcionconsulta = Integer
-							.parseInt(filtroConsultaAisgnaturasPerdidas
-									.getTipoconsulta());
-					request.getSession().setAttribute("gradoconsulta",
-							filtroConsultaAisgnaturasPerdidas.getGrado());
+					est = obtenerConsultaEstudiantesxPeriodoeinasistencia(request, vigencia, contextoTotal);
+					opcionconsulta = Integer.parseInt(filtroConsultaAisgnaturasPerdidas.getTipoconsulta());
+					request.getSession().setAttribute("gradoconsulta", filtroConsultaAisgnaturasPerdidas.getGrado());
 					break;
 				case 4:
 					session.removeAttribute("listaalarmas");
 					listalarmas = new ArrayList();
 					listaObservacion = new ArrayList();
-					ArrayList listagrados = (ArrayList) session
-							.getAttribute("gradosconsultar");
-					ArrayList metodologiasaconsultar = (ArrayList) session
-							.getAttribute("metodologiasaconsultar");
+					ArrayList listagrados = (ArrayList) session.getAttribute("gradosconsultar");
+					ArrayList metodologiasaconsultar = (ArrayList) session.getAttribute("metodologiasaconsultar");
 
-					est = obtenerConsultaEstudiantesxPeriodo2(request,
-							vigencia, contextoTotal, listagrados,
+					est = obtenerConsultaEstudiantesxPeriodo2(request, vigencia, contextoTotal, listagrados,
 							metodologiasaconsultar);
-					opcionconsulta = Integer
-							.parseInt(filtroConsultaAisgnaturasPerdidas
-									.getTipoconsulta());
+					opcionconsulta = Integer.parseInt(filtroConsultaAisgnaturasPerdidas.getTipoconsulta());
 					// request.getSession().setAttribute("gradoconsulta",
 					// filtroConsultaAisgnaturasPerdidas.getGrado());
 					break;
@@ -315,23 +301,17 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 					session.removeAttribute("listaalarmas");
 					listalarmas = new ArrayList();
 					listaObservacion = new ArrayList();
-					ArrayList listagrados2 = (ArrayList) session
-							.getAttribute("gradosconsultar");
-					ArrayList metodologiasaconsultar2 = (ArrayList) session
-							.getAttribute("metodologiasaconsultar");
+					ArrayList listagrados2 = (ArrayList) session.getAttribute("gradosconsultar");
+					ArrayList metodologiasaconsultar2 = (ArrayList) session.getAttribute("metodologiasaconsultar");
 
-					est = obtenerConsultaEstudiantesxPeriodoeinasistencia2(
-							request, vigencia, contextoTotal, listagrados2,
-							metodologiasaconsultar2);
-					opcionconsulta = Integer
-							.parseInt(filtroConsultaAisgnaturasPerdidas
-									.getTipoconsulta());
+					est = obtenerConsultaEstudiantesxPeriodoeinasistencia2(request, vigencia, contextoTotal,
+							listagrados2, metodologiasaconsultar2);
+					opcionconsulta = Integer.parseInt(filtroConsultaAisgnaturasPerdidas.getTipoconsulta());
 					break;
 				// // caso para ejecucinn de alarmas
 				case 6:
 
-					ArrayList listaalarmasget = (ArrayList) session
-							.getAttribute("listaalarmas");
+					ArrayList listaalarmasget = (ArrayList) session.getAttribute("listaalarmas");
 
 					try {
 						for (int i = 0; i < listaObservacion.size(); i++) {
@@ -341,9 +321,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							// + a.getAlar_asi() + " - "
 							// + a.getAlar_periodo());
 
-							evaluacionDAO
-									.guardarObservacionEstudiante((AlarmaBean) listaObservacion
-											.get(i));
+							evaluacionDAO.guardarObservacionEstudiante((AlarmaBean) listaObservacion.get(i));
 
 						}
 						for (int i = 0; i < listaalarmasget.size(); i++) {
@@ -353,49 +331,48 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							// + b.getAlar_asi() + " - "
 							// + b.getAlar_periodo());
 
-							evaluacionDAO
-									.insertarAlarma((AlarmaBean) listaalarmasget
-											.get(i));
+							evaluacionDAO.insertarAlarma((AlarmaBean) listaalarmasget.get(i));
 
 						}
 
 						if (session.getAttribute("alarma") == null) {
-							session.setAttribute("alarma",
-									"Alarmas agregadas correctamente.");
+							session.setAttribute("alarma", "Alarmas agregadas correctamente.");
 						}
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						if (session.getAttribute("alarma") == null) {
-							session.setAttribute("alarma", "Error alarmas:"
-									+ ex.getMessage());
+							session.setAttribute("alarma", "Error alarmas:" + ex.getMessage());
 						}
 
 					}
 
 					break;
-
+				
 				}
 
-				/* session.setAttribute("filtroResultado", est[0]); */
-				/*
-				 * session.setAttribute("filtroAsignaturaNom", est[2]);
-				 * session.setAttribute("filtroAreaNom", est[3]);
-				 * session.setAttribute("filtroGrupoNom", est[4]);
-				 */
-				// ReporteVO reporteVO3 = new ReporteVO();
-				/*
-				 * reporteVO3.setRepTipo(ReporteVO._REP_RESUMENES_ASIG);
-				 * reporteVO3.setRepOrden(ReporteVO.ORDEN_DESC);
-				 */
-				// request.getSession().setAttribute("reporteVO", reporteVO3);
-
+		
 				request.getSession().setAttribute("filtroResultado", est);
-				request.getSession().setAttribute("opcionseleccionada",
-						String.valueOf(opcionconsulta));
+				request.getSession().setAttribute("opcionseleccionada", String.valueOf(opcionconsulta));
 				request.getSession().setAttribute("listaalarmas", listalarmas);
 				s = "/boletines/NuevoConsultaPerdidaAsignaturas.jsp";
 				break;
+			
+			case 32:
+				if (!resumen_Area_Asig(request, vigencia, contextoTotal))
+					return s;
+				else {
+					ReporteVO reporteVO = new ReporteVO();
+					reporteVO.setRepTipo(ReporteVO._REP_RESUMENES_AREA_ASIG);
+					reporteVO.setRepOrden(ReporteVO.ORDEN_DESC);
+					request.getSession().setAttribute("reporteVO", reporteVO);
+					// Se redirecciona a resumen area para proceder con la
+					// generación
+					ResumenAreaAsig rAA = new ResumenAreaAsig(cursor, contextoTotal, path);
+					rAA.procesar_solicitudes();// se dispara el procesamiento de
+												// solicitudes
+				}
 
+				break;
 			}
 			if (err) {
 				request.setAttribute("mensaje", mensaje);
@@ -411,12 +388,12 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 					util.cerrar();
 			} catch (Exception e) {
 			}
-		}		
+		}
 		return s;
 	}
 
-	public boolean resumen_Areas(HttpServletRequest request, String vigencia,
-			String contextoTotal) throws ServletException, IOException {
+	public boolean resumen_Areas(HttpServletRequest request, String vigencia, String contextoTotal)
+			throws ServletException, IOException {
 		Connection con = null;
 		PreparedStatement pst = null;
 		CallableStatement cstmt = null;
@@ -448,25 +425,21 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				return false;
 			}
 
-			pst = con.prepareStatement(rb3
-					.getString("existe_mismo_reporte_en_cola"));
+			pst = con.prepareStatement(rb3.getString("existe_mismo_reporte_en_cola"));
 			posicion = 1;
 			pst.clearParameters();
 			pst.clearParameters();
 			pst.setLong(posicion++, Long.parseLong(login.getInstId()));
-			pst.setLong(posicion++, Long.parseLong(!filtroAreas.getSede()
-					.equals("-9") ? filtroAreas.getSede() : "-9"));
-			pst.setLong(posicion++, Long.parseLong(!filtroAreas.getJornada()
-					.equals("-9") ? filtroAreas.getJornada() : "-9"));
-			pst.setLong(posicion++, Long.parseLong(!filtroAreas
-					.getMetodologia().equals("-9") ? filtroAreas
-					.getMetodologia() : "-9"));
-			pst.setLong(posicion++, Long.parseLong(!filtroAreas.getGrado()
-					.equals("-9") ? filtroAreas.getGrado() : "-9"));
-			pst.setLong(posicion++, Long.parseLong(!filtroAreas.getGrupo()
-					.equals("-9") ? filtroAreas.getGrupo() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(!filtroAreas.getSede().equals("-9") ? filtroAreas.getSede() : "-9"));
 			pst.setLong(posicion++,
-					Long.parseLong(filtroAreas.getPeriodo().trim()));
+					Long.parseLong(!filtroAreas.getJornada().equals("-9") ? filtroAreas.getJornada() : "-9"));
+			pst.setLong(posicion++,
+					Long.parseLong(!filtroAreas.getMetodologia().equals("-9") ? filtroAreas.getMetodologia() : "-9"));
+			pst.setLong(posicion++,
+					Long.parseLong(!filtroAreas.getGrado().equals("-9") ? filtroAreas.getGrado() : "-9"));
+			pst.setLong(posicion++,
+					Long.parseLong(!filtroAreas.getGrupo().equals("-9") ? filtroAreas.getGrupo() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(filtroAreas.getPeriodo().trim()));
 			pst.setLong(posicion++, dao.getVigenciaNumerico());
 			pst.setString(posicion++, filtroAreas.getareassel());
 
@@ -494,35 +467,22 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 			if (!rs.next()) {
 				// System.out
-				// .println("RESUMEN AREAS: ******nNO HAY NINGUNO CON LOS MISMOS PARAMETROS!...EN ESTADO CERO O -1!*********");
+				// .println("RESUMEN AREAS: ******nNO HAY NINGUNO CON LOS MISMOS
+				// PARAMETROS!...EN ESTADO CERO O -1!*********");
 				rs.close();
 				pst.close();
-				sede = (!filtroAreas.getSede().equals("-9") ? "_Sed_"
-						+ filtroAreas.getSede().trim() : "");
-				jornada = (!filtroAreas.getJornada().equals("-9") ? "_Jor_"
-						+ filtroAreas.getJornada().trim() : "");
-				met = (!filtroAreas.getMetodologia().equals("-9") ? "_Met_"
-						+ filtroAreas.getMetodologia()
-						: "");
-				grado = (!filtroAreas.getGrado().equals("-9") ? "_Gra_"
-						+ filtroAreas.getGrado() : "");
-				grupo = (!filtroAreas.getGrupo().equals("-9") ? "_Gru_"
-						+ filtroAreas.getGrupo() : "");
+				sede = (!filtroAreas.getSede().equals("-9") ? "_Sed_" + filtroAreas.getSede().trim() : "");
+				jornada = (!filtroAreas.getJornada().equals("-9") ? "_Jor_" + filtroAreas.getJornada().trim() : "");
+				met = (!filtroAreas.getMetodologia().equals("-9") ? "_Met_" + filtroAreas.getMetodologia() : "");
+				grado = (!filtroAreas.getGrado().equals("-9") ? "_Gra_" + filtroAreas.getGrado() : "");
+				grupo = (!filtroAreas.getGrupo().equals("-9") ? "_Gru_" + filtroAreas.getGrupo() : "");
 
 				if (Long.parseLong(filtroAreas.getPeriodo().trim()) == 7) {
 					filtroAreas.setPeriodonom("FINAL");
 				}
 
-				nom = sede
-						+ jornada
-						+ met
-						+ grado
-						+ grupo
-						+ "_Periodo_"
-						+ filtroAreas.getPeriodonom().trim()
-						+ "_Fecha_"
-						+ f2.toString().replace(' ', '_').replace(':', '-')
-								.replace('.', '-');
+				nom = sede + jornada + met + grado + grupo + "_Periodo_" + filtroAreas.getPeriodonom().trim()
+						+ "_Fecha_" + f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-');
 				archivo = "Resumen_Evaluacion_Areas_" + nom + ".pdf";
 				archivoxls = "Resumen_Evaluacion_Areas_" + nom + ".xls";
 				archivozip = "Resumen_Evaluacion_Areas_" + nom + ".zip";
@@ -531,27 +491,22 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				posicion = 1;
 				pst.clearParameters();
 				pst.setLong(posicion++, Long.parseLong(login.getInstId()));
-				pst.setLong(posicion++, Long.parseLong(!filtroAreas.getSede()
-						.equals("-9") ? filtroAreas.getSede() : "-9"));
-				pst.setLong(posicion++, Long.parseLong(!filtroAreas
-						.getJornada().equals("-9") ? filtroAreas.getJornada()
-						: "-9"));
-				pst.setLong(
-						posicion++,
-						Long.parseLong(!filtroAreas.getMetodologia().equals(
-								"-9") ? filtroAreas.getMetodologia() : "-9"));
-				pst.setLong(posicion++, Long.parseLong(!filtroAreas.getGrado()
-						.equals("-9") ? filtroAreas.getGrado() : "-9"));
-				pst.setLong(posicion++, Long.parseLong(!filtroAreas.getGrupo()
-						.equals("-9") ? filtroAreas.getGrupo() : "-9"));
 				pst.setLong(posicion++,
-						Long.parseLong(filtroAreas.getPeriodo().trim()));
-				pst.setString(posicion++, !filtroAreas.getPeriodonom().trim()
-						.equals("") ? filtroAreas.getPeriodonom().trim() : "");
+						Long.parseLong(!filtroAreas.getSede().equals("-9") ? filtroAreas.getSede() : "-9"));
+				pst.setLong(posicion++,
+						Long.parseLong(!filtroAreas.getJornada().equals("-9") ? filtroAreas.getJornada() : "-9"));
+				pst.setLong(posicion++, Long
+						.parseLong(!filtroAreas.getMetodologia().equals("-9") ? filtroAreas.getMetodologia() : "-9"));
+				pst.setLong(posicion++,
+						Long.parseLong(!filtroAreas.getGrado().equals("-9") ? filtroAreas.getGrado() : "-9"));
+				pst.setLong(posicion++,
+						Long.parseLong(!filtroAreas.getGrupo().equals("-9") ? filtroAreas.getGrupo() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(filtroAreas.getPeriodo().trim()));
+				pst.setString(posicion++,
+						!filtroAreas.getPeriodonom().trim().equals("") ? filtroAreas.getPeriodonom().trim() : "");
 				pst.setString(posicion++, "");
 
-				pst.setString(posicion++, f2.toString().replace(' ', '_')
-						.replace(':', '-').replace('.', '-'));
+				pst.setString(posicion++, f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-'));
 				pst.setString(posicion++, archivozip);
 				pst.setString(posicion++, archivo);
 				pst.setString(posicion++, "");
@@ -575,8 +530,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				pst.setString(posicion++, login.getJornada());
 				pst.setLong(posicion++, dao.getVigenciaNumerico());
 
-				String resol = reportesDAO.getResolInst(Long.parseLong(login
-						.getInstId()));
+				String resol = reportesDAO.getResolInst(Long.parseLong(login.getInstId()));
 				pst.setString(posicion++, resol);
 				pst.setLong(posicion++, login.getLogNivelEval());
 				pst.setLong(posicion++, login.getLogNumPer());
@@ -589,19 +543,19 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				filtroRep.setGrado(filtroAreas.getGrado());
 				int tipoPrees = reportesDAO.getTipoEval(filtroRep, login);
 				// System.out.println("RESUMENES: INSERT TIPOEVALPREES: "
-				// + tipoPrees + "   NIVEL EVAL: "
+				// + tipoPrees + " NIVEL EVAL: "
 				// + login.getLogNivelEval());
 				pst.setInt(posicion++, tipoPrees);
 				// pst.setInt(posicion++,1);
 				pst.setInt(posicion++, -9);
 				pst.setString(posicion++, filtroAreas.getareassel());
-				if (login.getPerfil().equals("410")
-						|| login.getPerfil().equals("421")) {
+				if (login.getPerfil().equals("410") || login.getPerfil().equals("421")) {
 					pst.setString(posicion++, "1");
 				} else {
 					pst.setString(posicion++, "0");
 				}
-				// System.out.println("areas seleccionadas "+filtroAreas.getareassel()+"****************************************");
+				// System.out.println("areas seleccionadas
+				// "+filtroAreas.getareassel()+"****************************************");
 				pst.executeUpdate();
 				// System.out
 				// .println("RESUMEN AREAS: Se insertn en datos_boletin!!!!");
@@ -611,18 +565,17 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				pst.close();
 				con.commit();
 
-				ponerReporte(moduloArea, login.getUsuarioId(),
-						rb3.getString("reportes.PathReportes") + archivozip
-								+ "", "zip", "" + archivozip, "-1",
-						"ReporteInsertarEstado");// Estado -1
+				ponerReporte(moduloArea, login.getUsuarioId(), rb3.getString("reportes.PathReportes") + archivozip + "",
+						"zip", "" + archivozip, "-1", "ReporteInsertarEstado");// Estado
+																				// -1
 				// System.out
 				// .println("Se insertn el ZIP en Reporte con estado -1");
-				// siges.util.Logger.print(login.getUsuarioId(),"Peticinn de Resumen_Area:_Institucion:_"+login.getInstId()+"_Usuario:_"+login.getUsuarioId()+"_NombreReporte:_"+archivozip+"",3,1,this.toString());
+				// siges.util.Logger.print(login.getUsuarioId(),"Peticinn de
+				// Resumen_Area:_Institucion:_"+login.getInstId()+"_Usuario:_"+login.getUsuarioId()+"_NombreReporte:_"+archivozip+"",3,1,this.toString());
 				cont = cola_reportes("puesto_del_reporte_area");
 
 				if (cont != null && !cont.equals(""))
-					updatePuestoReporte(cont, archivozip, login.getUsuarioId(),
-							"update_puesto_reporte_area");
+					updatePuestoReporte(cont, archivozip, login.getUsuarioId(), "update_puesto_reporte_area");
 
 				return true;
 			} else {
@@ -630,16 +583,14 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				pst.close();
 				setMensaje("nYa existe una peticinn de este reporte con los mismos parnmetros!");
 				request.setAttribute("mensaje", mensaje);
-				request.setAttribute("mensaje2",
-						"nYa existe una peticinn de este reporte con los mismos parnmetros!");
+				request.setAttribute("mensaje2", "nYa existe una peticinn de este reporte con los mismos parnmetros!");
 				return false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			ponerReporteMensaje("2", moduloArea, login.getUsuarioId(),
-					rb3.getString("reportes.PathReportes") + archivozip + "",
-					"zip22", "" + archivozip, "ReporteActualizarBoletin",
-					"Ocurrin excepcinn en FiltroSave");
+					rb3.getString("reportes.PathReportes") + archivozip + "", "zip22", "" + archivozip,
+					"ReporteActualizarBoletin", "Ocurrin excepcinn en FiltroSave");
 			return false;
 		} finally {
 			try {
@@ -656,9 +607,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		}
 	}
 
-	public boolean resumen_ConsultaAsignaturas(HttpServletRequest request,
-			String vigencia, String contextoTotal) throws ServletException,
-			IOException {
+	public boolean resumen_ConsultaAsignaturas(HttpServletRequest request, String vigencia, String contextoTotal)
+			throws ServletException, IOException {
 		Connection con = null;
 		PreparedStatement pst = null;
 		CallableStatement cstmt = null;
@@ -893,9 +843,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public Collection[] obtenerConsultaEstudiantesxPeriodo(
-			HttpServletRequest request, String vigencia, String contextoTotal)
-			throws ServletException, IOException {
+	public Collection[] obtenerConsultaEstudiantesxPeriodo(HttpServletRequest request, String vigencia,
+			String contextoTotal) throws ServletException, IOException {
 
 		List colperiodos = null;
 
@@ -904,20 +853,15 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		TipoEvalVO tipoEval;
 
 		try {
-			tipoEval = evaluacionDAO.getTipoEval(
-					filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+			tipoEval = evaluacionDAO.getTipoEval(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
 					filtroConsultaAisgnaturasPerdidas.getGrado(), login);
-			session.setAttribute("tipoEvalAprobMin",
-					new Double(tipoEval.getTipoEvalAprobMin()));
-			session.setAttribute("tipoEval",
-					new Long(tipoEval.getCod_tipo_eval()));
+			session.setAttribute("tipoEvalAprobMin", new Double(tipoEval.getTipoEvalAprobMin()));
+			session.setAttribute("tipoEval", new Long(tipoEval.getCod_tipo_eval()));
 
 			if (tipoEval.getCod_tipo_eval() == ParamsVO.TIPO_EVAL_CONCEPTUAL) {
-				session.setAttribute("filtroNota2", evaluacionDAO
-						.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas
-								.getMetodologia(),
-								filtroConsultaAisgnaturasPerdidas.getGrado(),
-								login));
+				session.setAttribute("filtroNota2",
+						evaluacionDAO.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+								filtroConsultaAisgnaturasPerdidas.getGrado(), login));
 
 			}
 
@@ -930,18 +874,14 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 			f.setMetodologia(filtroConsultaAisgnaturasPerdidas.getMetodologia());
 			f.setPeriodo(filtroConsultaAisgnaturasPerdidas.getPeriodo());
 			f.setVigencia(vigencia);
-			Collection colgrupos = (Collection) request
-					.getAttribute("filtroGrupoF");
+			Collection colgrupos = (Collection) request.getAttribute("filtroGrupoF");
 			int contadorgruposanadidios = 0;
-			ArrayList listadocoordinadores = evaluacionDAO
-					.getCoordinadores(login);
+			ArrayList listadocoordinadores = evaluacionDAO.getCoordinadores(login);
 			for (Iterator it = colgrupos.iterator(); it.hasNext();) {
 
 				Object[] element = (Object[]) it.next();
-				if (f.getSede().equals(element[2])
-						&& f.getJornada().equals(element[3])
-						&& f.getGrado().equals(element[4])
-						&& f.getMetodologia().equals(element[5])) {
+				if (f.getSede().equals(element[2]) && f.getJornada().equals(element[3])
+						&& f.getGrado().equals(element[4]) && f.getMetodologia().equals(element[5])) {
 					f.setGrupo((String) element[0]);
 
 					f.setOrden("0");
@@ -953,35 +893,32 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 						if (request.getAttribute("FiltroAreas") == null
 								&& request.getAttribute("FiltroAsignaturas") == null
 								&& request.getAttribute("roldocasig") == null) {
-							// System.out.println("iddoc "+login.getUsuarioId()+" inst "+login.getInstId()+" vig "+Long.toString(login.getVigencia_inst()));
-							colgg = util.getfiltroasdoc(login.getInstId(),
-									Long.toString(login.getVigencia_inst()),
+							// System.out.println("iddoc
+							// "+login.getUsuarioId()+" inst
+							// "+login.getInstId()+" vig
+							// "+Long.toString(login.getVigencia_inst()));
+							colgg = util.getfiltroasdoc(login.getInstId(), Long.toString(login.getVigencia_inst()),
 									login.getUsuarioId());
 							request.setAttribute("FiltroAreas", colgg[0]);
 							request.setAttribute("FiltroAsignaturas", colgg[1]);
 							request.setAttribute("roldocasig", "1");
 						} else {
 							colgg = new Collection[3];
-							colgg[0] = (Collection) request
-									.getAttribute("FiltroAreas");
-							colgg[1] = (Collection) request
-									.getAttribute("FiltroAsignaturas");
+							colgg[0] = (Collection) request.getAttribute("FiltroAreas");
+							colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 						}
 					} else {
 						if (request.getAttribute("FiltroAreas") != null
 								&& request.getAttribute("FiltroAsignaturas") != null
 								&& request.getAttribute("roldocasig") != null) {
-							colgg = util.getfiltroas(login.getInstId(),
-									Long.toString(login.getVigencia_inst()));
+							colgg = util.getfiltroas(login.getInstId(), Long.toString(login.getVigencia_inst()));
 							request.setAttribute("FiltroAreas", colgg[0]);
 							request.setAttribute("FiltroAsignaturas", colgg[1]);
 							request.setAttribute("roldocasig", "0");
 						} else {
 							colgg = new Collection[3];
-							colgg[0] = (Collection) request
-									.getAttribute("FiltroAreas");
-							colgg[1] = (Collection) request
-									.getAttribute("FiltroAsignaturas");
+							colgg[0] = (Collection) request.getAttribute("FiltroAreas");
+							colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 						}
 					}
 
@@ -995,18 +932,14 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 						if (((String) element3[3]).equals(f.getMetodologia())) {
 							agregarlista = true;
-							f.setAsignatura((String) element3[2] + "|"
-									+ (String) element3[1]);
+							f.setAsignatura((String) element3[2] + "|" + (String) element3[1]);
 							asignaturatmp = (String) element3[2];
 
-							for (Iterator it2 = colgg[0].iterator(); it2
-									.hasNext();) {
+							for (Iterator it2 = colgg[0].iterator(); it2.hasNext();) {
 								Object[] element2 = (Object[]) it2.next();
 
-								if (((String) element2[0])
-										.equals(element3[0])
-										&& ((String) element2[2])
-												.equals(element3[3])) {
+								if (((String) element2[0]).equals(element3[0])
+										&& ((String) element2[2]).equals(element3[3])) {
 									areatmp = (String) element2[1];
 									break;
 								}
@@ -1018,22 +951,17 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 							ArrayList listadocenetsasignatura = null;
 							if (av.getAdminHorario().trim().equals("1")) {
-								listadocenetsasignatura = evaluacionDAO
-										.getDocenteDictaAsignatura(f);
+								listadocenetsasignatura = evaluacionDAO.getDocenteDictaAsignatura(f);
 							} else {
-								listadocenetsasignatura = evaluacionDAO
-										.getDocenteInstJornSed(f);
+								listadocenetsasignatura = evaluacionDAO.getDocenteInstJornSed(f);
 							}
 
 							Collection[] col = new Collection[6];
 
-							colperiodos = (List) request
-									.getAttribute("filtroPeriodoF");
+							colperiodos = (List) request.getAttribute("filtroPeriodoF");
 
-							col[0] = evaluacionDAO
-									.getEstudiantesAsignaturaxPeriodoConsultaperdida(
-											f, tipoEval.getCod_tipo_eval(),
-											tipoEval.getTipoEvalAprobMin());
+							col[0] = evaluacionDAO.getEstudiantesAsignaturaxPeriodoConsultaperdida(f,
+									tipoEval.getCod_tipo_eval(), tipoEval.getTipoEvalAprobMin());
 							// ,
 							// tipoEval.getCod_tipo_eval(),colperiodos.size(),tipoEval.getTipoEvalAprobMin()
 							Collection c = new ArrayList();
@@ -1058,11 +986,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							col[4] = c3;
 
 							boolean agregarlistado = false;
-							for (Iterator it4 = col[0].iterator(); it4
-									.hasNext();) {
+							for (Iterator it4 = col[0].iterator(); it4.hasNext();) {
 								Object[] element2 = (Object[]) it4.next();
-								if (element2[0] != null
-										|| !((String) element2[0]).equals("")) {
+								if (element2[0] != null || !((String) element2[0]).equals("")) {
 									agregarlistado = true;
 								}
 								if (agregarlistado) {
@@ -1075,25 +1001,18 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 									ala.setAlar_estado("0");
 									ala.setAlar_grado(f.getGrado());
 									ala.setAlar_motivobajorendimiento("X");
-									ala.setAlar_nombreestudiante(String
-											.valueOf(element2[2])
-											+ " "
-											+ String.valueOf(element2[3])
-											+ " "
-											+ String.valueOf(element2[4])
-											+ " "
-											+ String.valueOf(element2[5]));
+									ala.setAlar_nombreestudiante(
+											String.valueOf(element2[2]) + " " + String.valueOf(element2[3]) + " "
+													+ String.valueOf(element2[4]) + " " + String.valueOf(element2[5]));
 									ala.setAlar_grujerar(f.getJerarquiagrupo());
 									ala.setAlar_vigencia(f.getVigencia());
 
 									ala.setAlar_periodo(f.getPeriodo());
-									ala.setAlar_codest(String
-											.valueOf(element2[0]));
+									ala.setAlar_codest(String.valueOf(element2[0]));
 									listaObservacion.add(ala);
 
 									if (listadocenetsasignatura != null) {
-										for (int i = 0; i < listadocenetsasignatura
-												.size(); i++) {
+										for (int i = 0; i < listadocenetsasignatura.size(); i++) {
 											// System.out.println("Doc "
 											// + listadocenetsasignatura
 											// .get(i));
@@ -1101,34 +1020,22 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 											alarma.setAlar_area(areatmp);
 											alarma.setAlar_asi(asignaturatmp);
 											alarma.setAlar_grupo(f.getGrupo());
-											alarma.setAlar_docdocente(String
-													.valueOf(listadocenetsasignatura
-															.get(i)));
+											alarma.setAlar_docdocente(String.valueOf(listadocenetsasignatura.get(i)));
 											alarma.setAlar_estado("0");
 											alarma.setAlar_grado(f.getGrado());
 											alarma.setAlar_motivobajorendimiento("X");
-											alarma.setAlar_nombreestudiante(String
-													.valueOf(element2[2])
-													+ " "
-													+ String.valueOf(element2[3])
-													+ " "
-													+ String.valueOf(element2[4])
-													+ " "
-													+ String.valueOf(element2[5]));
-											alarma.setAlar_grujerar(f
-													.getJerarquiagrupo());
-											alarma.setAlar_vigencia(f
-													.getVigencia());
+											alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+													+ String.valueOf(element2[3]) + " " + String.valueOf(element2[4])
+													+ " " + String.valueOf(element2[5]));
+											alarma.setAlar_grujerar(f.getJerarquiagrupo());
+											alarma.setAlar_vigencia(f.getVigencia());
 
-											alarma.setAlar_periodo(f
-													.getPeriodo());
-											alarma.setAlar_codest(String
-													.valueOf(element2[0]));
+											alarma.setAlar_periodo(f.getPeriodo());
+											alarma.setAlar_codest(String.valueOf(element2[0]));
 											listalarmas.add(alarma);
 										}
 
-										for (int i = 0; i < listadocoordinadores
-												.size(); i++) {
+										for (int i = 0; i < listadocoordinadores.size(); i++) {
 											// System.out.println("Coor "
 											// + listadocoordinadores
 											// .get(i));
@@ -1136,29 +1043,18 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 											alarma.setAlar_area(areatmp);
 											alarma.setAlar_asi(asignaturatmp);
 											alarma.setAlar_grupo(f.getGrupo());
-											alarma.setAlar_docdocente(String
-													.valueOf(listadocoordinadores
-															.get(i)));
+											alarma.setAlar_docdocente(String.valueOf(listadocoordinadores.get(i)));
 											alarma.setAlar_estado("0");
 											alarma.setAlar_grado(f.getGrado());
 											alarma.setAlar_motivobajorendimiento("X");
-											alarma.setAlar_nombreestudiante(String
-													.valueOf(element2[2])
-													+ " "
-													+ String.valueOf(element2[3])
-													+ " "
-													+ String.valueOf(element2[4])
-													+ " "
-													+ String.valueOf(element2[5]));
-											alarma.setAlar_grujerar(f
-													.getJerarquiagrupo());
-											alarma.setAlar_vigencia(f
-													.getVigencia());
+											alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+													+ String.valueOf(element2[3]) + " " + String.valueOf(element2[4])
+													+ " " + String.valueOf(element2[5]));
+											alarma.setAlar_grujerar(f.getJerarquiagrupo());
+											alarma.setAlar_vigencia(f.getVigencia());
 
-											alarma.setAlar_periodo(f
-													.getPeriodo());
-											alarma.setAlar_codest(String
-													.valueOf(element2[0]));
+											alarma.setAlar_periodo(f.getPeriodo());
+											alarma.setAlar_codest(String.valueOf(element2[0]));
 											listalarmas.add(alarma);
 
 										}
@@ -1173,18 +1069,15 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 						}
 
 						boolean agregarlistadoasig = false;
-						for (Iterator it4 = listaAsignaturas.iterator(); it4
-								.hasNext();) {
+						for (Iterator it4 = listaAsignaturas.iterator(); it4.hasNext();) {
 							Object[] element2 = (Object[]) it4.next();
-							if (element2[0] != null
-									|| !((String) element2[0]).equals("")) {
+							if (element2[0] != null || !((String) element2[0]).equals("")) {
 								agregarlistadoasig = true;
 							}
 						}
 
 						if (agregarlista && agregarlistadoasig) {
-							listaAsignaturas.removeAll(Collections
-									.singletonList(null));
+							listaAsignaturas.removeAll(Collections.singletonList(null));
 							listagrupos.add(listaAsignaturas);
 						}
 						// cierre metodologia asignatura
@@ -1220,9 +1113,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @throws IOException
 	 * @throws InternalErrorException
 	 */
-	public Collection[] obtenerConsultaEstudiantesxPeriodoeinasistencia(
-			HttpServletRequest request, String vigencia, String contextoTotal)
-			throws ServletException, IOException, InternalErrorException {
+	public Collection[] obtenerConsultaEstudiantesxPeriodoeinasistencia(HttpServletRequest request, String vigencia,
+			String contextoTotal) throws ServletException, IOException, InternalErrorException {
 		List colperiodos = null;
 		ArrayList listadocoordinadores = evaluacionDAO.getCoordinadores(login);
 		Collection[] totalEstudiantes = new Collection[100];
@@ -1230,20 +1122,15 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		TipoEvalVO tipoEval;
 
 		try {
-			tipoEval = evaluacionDAO.getTipoEval(
-					filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+			tipoEval = evaluacionDAO.getTipoEval(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
 					filtroConsultaAisgnaturasPerdidas.getGrado(), login);
-			session.setAttribute("tipoEvalAprobMin",
-					new Double(tipoEval.getTipoEvalAprobMin()));
-			session.setAttribute("tipoEval",
-					new Long(tipoEval.getCod_tipo_eval()));
+			session.setAttribute("tipoEvalAprobMin", new Double(tipoEval.getTipoEvalAprobMin()));
+			session.setAttribute("tipoEval", new Long(tipoEval.getCod_tipo_eval()));
 
 			if (tipoEval.getCod_tipo_eval() == ParamsVO.TIPO_EVAL_CONCEPTUAL) {
-				session.setAttribute("filtroNota2", evaluacionDAO
-						.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas
-								.getMetodologia(),
-								filtroConsultaAisgnaturasPerdidas.getGrado(),
-								login));
+				session.setAttribute("filtroNota2",
+						evaluacionDAO.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+								filtroConsultaAisgnaturasPerdidas.getGrado(), login));
 
 			}
 
@@ -1257,20 +1144,19 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 			f.setPeriodo(filtroConsultaAisgnaturasPerdidas.getPeriodo());
 			f.setVigencia(vigencia);
 
-			Collection colgrupos = (Collection) request
-					.getAttribute("filtroGrupoF");
+			Collection colgrupos = (Collection) request.getAttribute("filtroGrupoF");
 			int contadorgruposanadidios = 0;
 
 			// System.out.println("nombre perfil "+per);
 			Collection colgg[];
 			String per = login.getPerfil();
 			if (per.equals("422")) {
-				if (request.getAttribute("FiltroAreas") == null
-						&& request.getAttribute("FiltroAsignaturas") == null
+				if (request.getAttribute("FiltroAreas") == null && request.getAttribute("FiltroAsignaturas") == null
 						&& request.getAttribute("roldocasig") == null) {
-					// System.out.println("iddoc "+login.getUsuarioId()+" inst "+login.getInstId()+" vig "+Long.toString(login.getVigencia_inst()));
-					colgg = util.getfiltroasdoc(login.getInstId(),
-							Long.toString(login.getVigencia_inst()),
+					// System.out.println("iddoc "+login.getUsuarioId()+" inst
+					// "+login.getInstId()+" vig
+					// "+Long.toString(login.getVigencia_inst()));
+					colgg = util.getfiltroasdoc(login.getInstId(), Long.toString(login.getVigencia_inst()),
 							login.getUsuarioId());
 					request.setAttribute("FiltroAreas", colgg[0]);
 					request.setAttribute("FiltroAsignaturas", colgg[1]);
@@ -1278,23 +1164,19 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				} else {
 					colgg = new Collection[3];
 					colgg[0] = (Collection) request.getAttribute("FiltroAreas");
-					colgg[1] = (Collection) request
-							.getAttribute("FiltroAsignaturas");
+					colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 				}
 			} else {
-				if (request.getAttribute("FiltroAreas") != null
-						&& request.getAttribute("FiltroAsignaturas") != null
+				if (request.getAttribute("FiltroAreas") != null && request.getAttribute("FiltroAsignaturas") != null
 						&& request.getAttribute("roldocasig") != null) {
-					colgg = util.getfiltroas(login.getInstId(),
-							Long.toString(login.getVigencia_inst()));
+					colgg = util.getfiltroas(login.getInstId(), Long.toString(login.getVigencia_inst()));
 					request.setAttribute("FiltroAreas", colgg[0]);
 					request.setAttribute("FiltroAsignaturas", colgg[1]);
 					request.setAttribute("roldocasig", "0");
 				} else {
 					colgg = new Collection[3];
 					colgg[0] = (Collection) request.getAttribute("FiltroAreas");
-					colgg[1] = (Collection) request
-							.getAttribute("FiltroAsignaturas");
+					colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 				}
 			}
 
@@ -1310,8 +1192,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				if (((String) element3[3]).equals(f.getMetodologia())) {
 					agregarlista = true;
 					// f.setAsignatura((String)element3[2]+"|"+(String)element3[1]);
-					idasignaturas
-							.add(((String) element3[2] + "|" + (String) element3[1]));
+					idasignaturas.add(((String) element3[2] + "|" + (String) element3[1]));
 					Object[] objasig = new Object[3];
 					objasig[0] = element3[2];
 					objasig[1] = element3[1];
@@ -1319,9 +1200,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 					for (Iterator it2 = colgg[0].iterator(); it2.hasNext();) {
 						Object[] element2 = (Object[]) it2.next();
 
-						if (((String) element2[0]).equals(element3[0])
-								&& ((String) element2[2])
-										.equals(element3[3])) {
+						if (((String) element2[0]).equals(element3[0]) && ((String) element2[2]).equals(element3[3])) {
 							Object[] obj = new Object[2];
 							objasig[2] = element2[1];
 							obj[0] = element2[2];
@@ -1335,8 +1214,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 				}
 			}
-			int[] ihasignaturas = consultartotalasistenciasporasignatura(
-					request, login, f, idasignaturas);
+			int[] ihasignaturas = consultartotalasistenciasporasignatura(request, login, f, idasignaturas);
 
 			ArrayList listadocenetsasignatura = null;
 
@@ -1344,10 +1222,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 				Collection listagrupos = new ArrayList();
 				Object[] element = (Object[]) it.next();
-				if (f.getSede().equals(element[2])
-						&& f.getJornada().equals(element[3])
-						&& f.getGrado().equals(element[4])
-						&& f.getMetodologia().equals(element[5])) {
+				if (f.getSede().equals(element[2]) && f.getJornada().equals(element[3])
+						&& f.getGrado().equals(element[4]) && f.getMetodologia().equals(element[5])) {
 					f.setGrupo((String) element[0]);
 
 					f.setOrden("0");
@@ -1356,10 +1232,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 					colperiodos = (List) request.getAttribute("filtroPeriodoF");
 
-					col[0] = evaluacionDAO
-							.getEstudiantesAsignaturaxPeriodoConsultaperdidaxInasistencia(
-									f, tipoEval.getCod_tipo_eval(),
-									ihasignaturas, idasignaturas, true);
+					col[0] = evaluacionDAO.getEstudiantesAsignaturaxPeriodoConsultaperdidaxInasistencia(f,
+							tipoEval.getCod_tipo_eval(), ihasignaturas, idasignaturas, true);
 
 					Collection c0 = new ArrayList();
 					c0.add(f.getGrupo());
@@ -1391,17 +1265,14 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 					boolean agregarlistado = false;
 					try {
 						if (col[0] != null) {
-							for (Iterator it4 = col[0].iterator(); it4
-									.hasNext();) {
+							for (Iterator it4 = col[0].iterator(); it4.hasNext();) {
 								Object[] element2 = (Object[]) it4.next();
 
 								// for (int i = 0; i < element2.length; i++) {
 								// System.out.println(element2[i]);
 								// }
 
-								if (element2[0] != null
-										|| !((String) element2[0]).trim()
-												.equals("")) {
+								if (element2[0] != null || !((String) element2[0]).trim().equals("")) {
 									agregarlistado = true;
 								}
 
@@ -1413,114 +1284,76 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 									ala.setAlar_estado("0");
 									ala.setAlar_grado(f.getGrado());
 									ala.setAlar_motivoinasistencia("X");
-									ala.setAlar_nombreestudiante(String
-											.valueOf(element2[2])
-											+ " "
-											+ String.valueOf(element2[3])
-											+ " "
-											+ String.valueOf(element2[4])
-											+ " "
-											+ String.valueOf(element2[5]));
+									ala.setAlar_nombreestudiante(
+											String.valueOf(element2[2]) + " " + String.valueOf(element2[3]) + " "
+													+ String.valueOf(element2[4]) + " " + String.valueOf(element2[5]));
 									ala.setAlar_grujerar(f.getJerarquiagrupo());
 									ala.setAlar_vigencia(f.getVigencia());
 
 									ala.setAlar_periodo(f.getPeriodo());
-									ala.setAlar_codest(String
-											.valueOf(element2[0]));
+									ala.setAlar_codest(String.valueOf(element2[0]));
 									listaObservacion.add(ala);
 
 									for (int k = 0; k < idasignaturas.size(); k++) {
-										if (Integer
-												.parseInt((String) element2[k + 6]) > ihasignaturas[k]
+										if (Integer.parseInt((String) element2[k + 6]) > ihasignaturas[k]
 												&& ihasignaturas[k] != 0) {
 
-											Object[] objasig = (Object[]) asignaturasrefarea
-													.get(k);
+											Object[] objasig = (Object[]) asignaturasrefarea.get(k);
 
-											f.setAsignatura(String
-													.valueOf(idasignaturas
-															.get(k)));
+											f.setAsignatura(String.valueOf(idasignaturas.get(k)));
 
 											AdminVO av = new AdminVO();
 											av.setAdminInst(f.getInstitucion());
 											av = adminDAO.getAdminHorario(av);
 
-											if (av.getAdminHorario().trim()
-													.equals("1")) {
-												listadocenetsasignatura = evaluacionDAO
-														.getDocenteDictaAsignatura(f);
+											if (av.getAdminHorario().trim().equals("1")) {
+												listadocenetsasignatura = evaluacionDAO.getDocenteDictaAsignatura(f);
 											} else {
-												listadocenetsasignatura = evaluacionDAO
-														.getDocenteInstJornSed(f);
+												listadocenetsasignatura = evaluacionDAO.getDocenteInstJornSed(f);
 											}
 
-											if (agregarlistado
-													&& listadocenetsasignatura != null) {
+											if (agregarlistado && listadocenetsasignatura != null) {
 
-												for (int i = 0; i < listadocenetsasignatura
-														.size(); i++) {
+												for (int i = 0; i < listadocenetsasignatura.size(); i++) {
 													AlarmaBean alarma = new AlarmaBean();
 													alarma.setAlar_area((String) objasig[2]);
 													alarma.setAlar_asi((String) objasig[0]);
-													alarma.setAlar_grupo(f
-															.getGrupo());
-													alarma.setAlar_docdocente(String
-															.valueOf(listadocenetsasignatura
-																	.get(i)));
+													alarma.setAlar_grupo(f.getGrupo());
+													alarma.setAlar_docdocente(
+															String.valueOf(listadocenetsasignatura.get(i)));
 													alarma.setAlar_estado("0");
-													alarma.setAlar_grado(f
-															.getGrado());
+													alarma.setAlar_grado(f.getGrado());
 													alarma.setAlar_motivoinasistencia("X");
-													alarma.setAlar_nombreestudiante(String
-															.valueOf(element2[2])
-															+ " "
-															+ String.valueOf(element2[3])
-															+ " "
-															+ String.valueOf(element2[4])
-															+ " "
+													alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+															+ String.valueOf(element2[3]) + " "
+															+ String.valueOf(element2[4]) + " "
 															+ String.valueOf(element2[5]));
-													alarma.setAlar_grujerar(f
-															.getJerarquiagrupo());
-													alarma.setAlar_vigencia(f
-															.getVigencia());
+													alarma.setAlar_grujerar(f.getJerarquiagrupo());
+													alarma.setAlar_vigencia(f.getVigencia());
 
-													alarma.setAlar_periodo(f
-															.getPeriodo());
-													alarma.setAlar_codest(String
-															.valueOf(element2[0]));
+													alarma.setAlar_periodo(f.getPeriodo());
+													alarma.setAlar_codest(String.valueOf(element2[0]));
 													listalarmas.add(alarma);
 												}
-												for (int i = 0; i < listadocoordinadores
-														.size(); i++) {
+												for (int i = 0; i < listadocoordinadores.size(); i++) {
 													AlarmaBean alarma = new AlarmaBean();
 													alarma.setAlar_area((String) objasig[2]);
 													alarma.setAlar_asi((String) objasig[0]);
-													alarma.setAlar_grupo(f
-															.getGrupo());
-													alarma.setAlar_docdocente(String
-															.valueOf(listadocoordinadores
-																	.get(i)));
+													alarma.setAlar_grupo(f.getGrupo());
+													alarma.setAlar_docdocente(
+															String.valueOf(listadocoordinadores.get(i)));
 													alarma.setAlar_estado("0");
-													alarma.setAlar_grado(f
-															.getGrado());
+													alarma.setAlar_grado(f.getGrado());
 													alarma.setAlar_motivoinasistencia("X");
-													alarma.setAlar_nombreestudiante(String
-															.valueOf(element2[2])
-															+ " "
-															+ String.valueOf(element2[3])
-															+ " "
-															+ String.valueOf(element2[4])
-															+ " "
+													alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+															+ String.valueOf(element2[3]) + " "
+															+ String.valueOf(element2[4]) + " "
 															+ String.valueOf(element2[5]));
-													alarma.setAlar_grujerar(f
-															.getJerarquiagrupo());
-													alarma.setAlar_vigencia(f
-															.getVigencia());
+													alarma.setAlar_grujerar(f.getJerarquiagrupo());
+													alarma.setAlar_vigencia(f.getVigencia());
 
-													alarma.setAlar_periodo(f
-															.getPeriodo());
-													alarma.setAlar_codest(String
-															.valueOf(element2[0]));
+													alarma.setAlar_periodo(f.getPeriodo());
+													alarma.setAlar_codest(String.valueOf(element2[0]));
 													listalarmas.add(alarma);
 
 												}
@@ -1595,10 +1428,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @throws IOException
 	 * @throws InternalErrorException
 	 */
-	public Collection[] obtenerConsultaEstudiantesxPeriodo2(
-			HttpServletRequest request, String vigencia, String contextoTotal,
-			ArrayList grados, ArrayList metodologia) throws ServletException,
-			IOException, InternalErrorException {
+	public Collection[] obtenerConsultaEstudiantesxPeriodo2(HttpServletRequest request, String vigencia,
+			String contextoTotal, ArrayList grados, ArrayList metodologia)
+			throws ServletException, IOException, InternalErrorException {
 		ArrayList listadocoordinadores = evaluacionDAO.getCoordinadores(login);
 		List colperiodos = null;
 
@@ -1610,20 +1442,15 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		TipoEvalVO tipoEval;
 
 		try {
-			tipoEval = evaluacionDAO.getTipoEval(
-					filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+			tipoEval = evaluacionDAO.getTipoEval(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
 					filtroConsultaAisgnaturasPerdidas.getGrado(), login);
-			session.setAttribute("tipoEvalAprobMin",
-					new Double(tipoEval.getTipoEvalAprobMin()));
-			session.setAttribute("tipoEval",
-					new Long(tipoEval.getCod_tipo_eval()));
+			session.setAttribute("tipoEvalAprobMin", new Double(tipoEval.getTipoEvalAprobMin()));
+			session.setAttribute("tipoEval", new Long(tipoEval.getCod_tipo_eval()));
 
 			if (tipoEval.getCod_tipo_eval() == ParamsVO.TIPO_EVAL_CONCEPTUAL) {
-				session.setAttribute("filtroNota2", evaluacionDAO
-						.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas
-								.getMetodologia(),
-								filtroConsultaAisgnaturasPerdidas.getGrado(),
-								login));
+				session.setAttribute("filtroNota2",
+						evaluacionDAO.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+								filtroConsultaAisgnaturasPerdidas.getGrado(), login));
 
 			}
 			int contadorgruposanadidios = 0;
@@ -1634,22 +1461,18 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				for (int z = 0; z < metodologia.size(); z++) {
 					f.setMetodologia((String) metodologia.get(z));
 
-					f.setInstitucion(filtroConsultaAisgnaturasPerdidas
-							.getInsitucion());
+					f.setInstitucion(filtroConsultaAisgnaturasPerdidas.getInsitucion());
 					f.setSede(filtroConsultaAisgnaturasPerdidas.getSede());
 					f.setJornada(filtroConsultaAisgnaturasPerdidas.getJornada());
 					f.setPeriodo(filtroConsultaAisgnaturasPerdidas.getPeriodo());
 					f.setVigencia(vigencia);
-					Collection colgrupos = (Collection) request
-							.getAttribute("filtroGrupoF");
+					Collection colgrupos = (Collection) request.getAttribute("filtroGrupoF");
 
 					for (Iterator it = colgrupos.iterator(); it.hasNext();) {
 
 						Object[] element = (Object[]) it.next();
-						if (f.getSede().equals(element[2])
-								&& f.getJornada().equals(element[3])
-								&& f.getGrado().equals(element[4])
-								&& f.getMetodologia().equals(element[5])) {
+						if (f.getSede().equals(element[2]) && f.getJornada().equals(element[3])
+								&& f.getGrado().equals(element[4]) && f.getMetodologia().equals(element[5])) {
 							f.setGrupo((String) element[0]);
 
 							f.setOrden("0");
@@ -1659,73 +1482,56 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							Collection colgg[];
 							if (per.equals("422")) {
 								if (request.getAttribute("FiltroAreas") == null
-										&& request
-												.getAttribute("FiltroAsignaturas") == null
+										&& request.getAttribute("FiltroAsignaturas") == null
 										&& request.getAttribute("roldocasig") == null) {
-									// System.out.println("iddoc "+login.getUsuarioId()+" inst "+login.getInstId()+" vig "+Long.toString(login.getVigencia_inst()));
-									colgg = util.getfiltroasdoc(login
-											.getInstId(), Long.toString(login
-											.getVigencia_inst()), login
-											.getUsuarioId());
-									request.setAttribute("FiltroAreas",
-											colgg[0]);
-									request.setAttribute("FiltroAsignaturas",
-											colgg[1]);
+									// System.out.println("iddoc
+									// "+login.getUsuarioId()+" inst
+									// "+login.getInstId()+" vig
+									// "+Long.toString(login.getVigencia_inst()));
+									colgg = util.getfiltroasdoc(login.getInstId(),
+											Long.toString(login.getVigencia_inst()), login.getUsuarioId());
+									request.setAttribute("FiltroAreas", colgg[0]);
+									request.setAttribute("FiltroAsignaturas", colgg[1]);
 									request.setAttribute("roldocasig", "1");
 								} else {
 									colgg = new Collection[3];
-									colgg[0] = (Collection) request
-											.getAttribute("FiltroAreas");
-									colgg[1] = (Collection) request
-											.getAttribute("FiltroAsignaturas");
+									colgg[0] = (Collection) request.getAttribute("FiltroAreas");
+									colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 								}
 							} else {
 								if (request.getAttribute("FiltroAreas") != null
-										&& request
-												.getAttribute("FiltroAsignaturas") != null
+										&& request.getAttribute("FiltroAsignaturas") != null
 										&& request.getAttribute("roldocasig") != null) {
 									colgg = util.getfiltroas(login.getInstId(),
-											Long.toString(login
-													.getVigencia_inst()));
-									request.setAttribute("FiltroAreas",
-											colgg[0]);
-									request.setAttribute("FiltroAsignaturas",
-											colgg[1]);
+											Long.toString(login.getVigencia_inst()));
+									request.setAttribute("FiltroAreas", colgg[0]);
+									request.setAttribute("FiltroAsignaturas", colgg[1]);
 									request.setAttribute("roldocasig", "0");
 								} else {
 									colgg = new Collection[3];
-									colgg[0] = (Collection) request
-											.getAttribute("FiltroAreas");
-									colgg[1] = (Collection) request
-											.getAttribute("FiltroAsignaturas");
+									colgg[0] = (Collection) request.getAttribute("FiltroAreas");
+									colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 								}
 							}
 
 							String asignaturatmp = "";
 							String areatmp = "";
 
-							for (Iterator it3 = colgg[1].iterator(); it3
-									.hasNext();) {
+							for (Iterator it3 = colgg[1].iterator(); it3.hasNext();) {
 								boolean agregarlista = false;
 								Collection listaAsignaturas = new ArrayList();
 								Object[] element3 = (Object[]) it3.next();
 
-								if (((String) element3[3]).equals(f
-										.getMetodologia())) {
+								if (((String) element3[3]).equals(f.getMetodologia())) {
 									agregarlista = true;
-									f.setAsignatura((String) element3[2] + "|"
-											+ (String) element3[1]);
+									f.setAsignatura((String) element3[2] + "|" + (String) element3[1]);
 									asignaturatmp = (String) element3[2];
 
-									for (Iterator it2 = colgg[0].iterator(); it2
-											.hasNext();) {
-										Object[] element2 = (Object[]) it2
-												.next();
+									for (Iterator it2 = colgg[0].iterator(); it2.hasNext();) {
+										Object[] element2 = (Object[]) it2.next();
 
-										if (((String) element2[0])
-												.equals(element3[0])
-												&& ((String) element2[2])
-														.equals(element3[3])) {
+										if (((String) element2[0]).equals(element3[0])
+												&& ((String) element2[2]).equals(element3[3])) {
 											areatmp = (String) element2[1];
 											break;
 										}
@@ -1737,23 +1543,17 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 									ArrayList listadocenetsasignatura = null;
 									if (av.getAdminHorario().trim().equals("1")) {
-										listadocenetsasignatura = evaluacionDAO
-												.getDocenteDictaAsignatura(f);
+										listadocenetsasignatura = evaluacionDAO.getDocenteDictaAsignatura(f);
 									} else {
-										listadocenetsasignatura = evaluacionDAO
-												.getDocenteInstJornSed(f);
+										listadocenetsasignatura = evaluacionDAO.getDocenteInstJornSed(f);
 									}
 
 									Collection[] col = new Collection[7];
 
-									colperiodos = (List) request
-											.getAttribute("filtroPeriodoF");
+									colperiodos = (List) request.getAttribute("filtroPeriodoF");
 
-									col[0] = evaluacionDAO
-											.getEstudiantesAsignaturaxPeriodoConsultaperdida(
-													f,
-													tipoEval.getCod_tipo_eval(),
-													tipoEval.getTipoEvalAprobMin());
+									col[0] = evaluacionDAO.getEstudiantesAsignaturaxPeriodoConsultaperdida(f,
+											tipoEval.getCod_tipo_eval(), tipoEval.getTipoEvalAprobMin());
 									// ,
 									// tipoEval.getCod_tipo_eval(),colperiodos.size(),tipoEval.getTipoEvalAprobMin()
 									Collection c = new ArrayList();
@@ -1785,13 +1585,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 									col[5] = c4;
 
 									boolean agregarlistado = false;
-									for (Iterator it4 = col[0].iterator(); it4
-											.hasNext();) {
-										Object[] element2 = (Object[]) it4
-												.next();
-										if (element2[0] != null
-												|| !((String) element2[0])
-														.equals("")) {
+									for (Iterator it4 = col[0].iterator(); it4.hasNext();) {
+										Object[] element2 = (Object[]) it4.next();
+										if (element2[0] != null || !((String) element2[0]).equals("")) {
 											agregarlistado = true;
 										}
 										if (agregarlistado) {
@@ -1803,91 +1599,59 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 											ala.setAlar_estado("0");
 											ala.setAlar_grado(f.getGrado());
 											ala.setAlar_motivobajorendimiento("X");
-											ala.setAlar_nombreestudiante(String
-													.valueOf(element2[2])
-													+ " "
-													+ String.valueOf(element2[3])
-													+ " "
-													+ String.valueOf(element2[4])
-													+ " "
-													+ String.valueOf(element2[5]));
-											ala.setAlar_grujerar(f
-													.getJerarquiagrupo());
-											ala.setAlar_vigencia(f
-													.getVigencia());
+											ala.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+													+ String.valueOf(element2[3]) + " " + String.valueOf(element2[4])
+													+ " " + String.valueOf(element2[5]));
+											ala.setAlar_grujerar(f.getJerarquiagrupo());
+											ala.setAlar_vigencia(f.getVigencia());
 
 											ala.setAlar_periodo(f.getPeriodo());
-											ala.setAlar_codest(String
-													.valueOf(element2[0]));
+											ala.setAlar_codest(String.valueOf(element2[0]));
 											listaObservacion.add(ala);
 
 											if (listadocenetsasignatura != null) {
-												for (int i = 0; i < listadocenetsasignatura
-														.size(); i++) {
+												for (int i = 0; i < listadocenetsasignatura.size(); i++) {
 
 													AlarmaBean alarma = new AlarmaBean();
 													alarma.setAlar_area(areatmp);
 													alarma.setAlar_asi(asignaturatmp);
-													alarma.setAlar_grupo(f
-															.getGrupo());
-													alarma.setAlar_docdocente(String
-															.valueOf(listadocenetsasignatura
-																	.get(i)));
+													alarma.setAlar_grupo(f.getGrupo());
+													alarma.setAlar_docdocente(
+															String.valueOf(listadocenetsasignatura.get(i)));
 													alarma.setAlar_estado("0");
-													alarma.setAlar_grado(f
-															.getGrado());
+													alarma.setAlar_grado(f.getGrado());
 													alarma.setAlar_motivobajorendimiento("X");
-													alarma.setAlar_nombreestudiante(String
-															.valueOf(element2[2])
-															+ " "
-															+ String.valueOf(element2[3])
-															+ " "
-															+ String.valueOf(element2[4])
-															+ " "
+													alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+															+ String.valueOf(element2[3]) + " "
+															+ String.valueOf(element2[4]) + " "
 															+ String.valueOf(element2[5]));
-													alarma.setAlar_grujerar(f
-															.getJerarquiagrupo());
-													alarma.setAlar_vigencia(f
-															.getVigencia());
+													alarma.setAlar_grujerar(f.getJerarquiagrupo());
+													alarma.setAlar_vigencia(f.getVigencia());
 
-													alarma.setAlar_periodo(f
-															.getPeriodo());
-													alarma.setAlar_codest(String
-															.valueOf(element2[0]));
+													alarma.setAlar_periodo(f.getPeriodo());
+													alarma.setAlar_codest(String.valueOf(element2[0]));
 
 													listalarmas.add(alarma);
 												}
-												for (int i = 0; i < listadocoordinadores
-														.size(); i++) {
+												for (int i = 0; i < listadocoordinadores.size(); i++) {
 													AlarmaBean alarma = new AlarmaBean();
 													alarma.setAlar_area(areatmp);
 													alarma.setAlar_asi(asignaturatmp);
-													alarma.setAlar_grupo(f
-															.getGrupo());
-													alarma.setAlar_docdocente(String
-															.valueOf(listadocoordinadores
-																	.get(i)));
+													alarma.setAlar_grupo(f.getGrupo());
+													alarma.setAlar_docdocente(
+															String.valueOf(listadocoordinadores.get(i)));
 													alarma.setAlar_estado("0");
-													alarma.setAlar_grado(f
-															.getGrado());
+													alarma.setAlar_grado(f.getGrado());
 													alarma.setAlar_motivoinasistencia("X");
-													alarma.setAlar_nombreestudiante(String
-															.valueOf(element2[2])
-															+ " "
-															+ String.valueOf(element2[3])
-															+ " "
-															+ String.valueOf(element2[4])
-															+ " "
+													alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+															+ String.valueOf(element2[3]) + " "
+															+ String.valueOf(element2[4]) + " "
 															+ String.valueOf(element2[5]));
-													alarma.setAlar_grujerar(f
-															.getJerarquiagrupo());
-													alarma.setAlar_vigencia(f
-															.getVigencia());
+													alarma.setAlar_grujerar(f.getJerarquiagrupo());
+													alarma.setAlar_vigencia(f.getVigencia());
 
-													alarma.setAlar_periodo(f
-															.getPeriodo());
-													alarma.setAlar_codest(String
-															.valueOf(element2[0]));
+													alarma.setAlar_periodo(f.getPeriodo());
+													alarma.setAlar_codest(String.valueOf(element2[0]));
 													listalarmas.add(alarma);
 
 												}
@@ -1901,25 +1665,20 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 								}
 
 								boolean agregarlistadoasig = false;
-								for (Iterator it4 = listaAsignaturas.iterator(); it4
-										.hasNext();) {
+								for (Iterator it4 = listaAsignaturas.iterator(); it4.hasNext();) {
 									Object[] element2 = (Object[]) it4.next();
-									if (element2[0] != null
-											|| !((String) element2[0])
-													.equals("")) {
+									if (element2[0] != null || !((String) element2[0]).equals("")) {
 										agregarlistadoasig = true;
 									}
 								}
 
 								if (agregarlista && agregarlistadoasig) {
-									listaAsignaturas.removeAll(Collections
-											.singletonList(null));
+									listaAsignaturas.removeAll(Collections.singletonList(null));
 									listagrupos.add(listaAsignaturas);
 								}
 								// cierre metodologia asignatura
 							}
-							listagrupos.removeAll(Collections
-									.singletonList(null));
+							listagrupos.removeAll(Collections.singletonList(null));
 							totalEstudiantes.add(listagrupos);
 
 							// cierre asignaturas
@@ -1960,10 +1719,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @throws IOException
 	 * @throws InternalErrorException
 	 */
-	public Collection[] obtenerConsultaEstudiantesxPeriodoeinasistencia2(
-			HttpServletRequest request, String vigencia, String contextoTotal,
-			ArrayList grados, ArrayList metodologia) throws ServletException,
-			IOException, InternalErrorException {
+	public Collection[] obtenerConsultaEstudiantesxPeriodoeinasistencia2(HttpServletRequest request, String vigencia,
+			String contextoTotal, ArrayList grados, ArrayList metodologia)
+			throws ServletException, IOException, InternalErrorException {
 		Collection totalEstudiantescompleto = new ArrayList();
 		ArrayList listadocoordinadores = evaluacionDAO.getCoordinadores(login);
 		List colperiodos = null;
@@ -1974,20 +1732,15 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		TipoEvalVO tipoEval;
 
 		try {
-			tipoEval = evaluacionDAO.getTipoEval(
-					filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+			tipoEval = evaluacionDAO.getTipoEval(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
 					filtroConsultaAisgnaturasPerdidas.getGrado(), login);
-			session.setAttribute("tipoEvalAprobMin",
-					new Double(tipoEval.getTipoEvalAprobMin()));
-			session.setAttribute("tipoEval",
-					new Long(tipoEval.getCod_tipo_eval()));
+			session.setAttribute("tipoEvalAprobMin", new Double(tipoEval.getTipoEvalAprobMin()));
+			session.setAttribute("tipoEval", new Long(tipoEval.getCod_tipo_eval()));
 
 			if (tipoEval.getCod_tipo_eval() == ParamsVO.TIPO_EVAL_CONCEPTUAL) {
-				session.setAttribute("filtroNota2", evaluacionDAO
-						.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas
-								.getMetodologia(),
-								filtroConsultaAisgnaturasPerdidas.getGrado(),
-								login));
+				session.setAttribute("filtroNota2",
+						evaluacionDAO.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+								filtroConsultaAisgnaturasPerdidas.getGrado(), login));
 
 			}
 			int contadorgruposanadidios = 0;
@@ -1999,14 +1752,12 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				for (int z = 0; z < metodologia.size(); z++) {
 					f.setMetodologia((String) metodologia.get(z));
 
-					f.setInstitucion(filtroConsultaAisgnaturasPerdidas
-							.getInsitucion());
+					f.setInstitucion(filtroConsultaAisgnaturasPerdidas.getInsitucion());
 					f.setSede(filtroConsultaAisgnaturasPerdidas.getSede());
 					f.setJornada(filtroConsultaAisgnaturasPerdidas.getJornada());
 					f.setPeriodo(filtroConsultaAisgnaturasPerdidas.getPeriodo());
 					f.setVigencia(vigencia);
-					Collection colgrupos = (Collection) request
-							.getAttribute("filtroGrupoF");
+					Collection colgrupos = (Collection) request.getAttribute("filtroGrupoF");
 
 					// System.out.println("nombre perfil "+per);
 					Collection colgg[];
@@ -2016,35 +1767,32 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 						if (request.getAttribute("FiltroAreas") == null
 								&& request.getAttribute("FiltroAsignaturas") == null
 								&& request.getAttribute("roldocasig") == null) {
-							// System.out.println("iddoc "+login.getUsuarioId()+" inst "+login.getInstId()+" vig "+Long.toString(login.getVigencia_inst()));
-							colgg = util.getfiltroasdoc(login.getInstId(),
-									Long.toString(login.getVigencia_inst()),
+							// System.out.println("iddoc
+							// "+login.getUsuarioId()+" inst
+							// "+login.getInstId()+" vig
+							// "+Long.toString(login.getVigencia_inst()));
+							colgg = util.getfiltroasdoc(login.getInstId(), Long.toString(login.getVigencia_inst()),
 									login.getUsuarioId());
 							request.setAttribute("FiltroAreas", colgg[0]);
 							request.setAttribute("FiltroAsignaturas", colgg[1]);
 							request.setAttribute("roldocasig", "1");
 						} else {
 							colgg = new Collection[3];
-							colgg[0] = (Collection) request
-									.getAttribute("FiltroAreas");
-							colgg[1] = (Collection) request
-									.getAttribute("FiltroAsignaturas");
+							colgg[0] = (Collection) request.getAttribute("FiltroAreas");
+							colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 						}
 					} else {
 						if (request.getAttribute("FiltroAreas") != null
 								&& request.getAttribute("FiltroAsignaturas") != null
 								&& request.getAttribute("roldocasig") != null) {
-							colgg = util.getfiltroas(login.getInstId(),
-									Long.toString(login.getVigencia_inst()));
+							colgg = util.getfiltroas(login.getInstId(), Long.toString(login.getVigencia_inst()));
 							request.setAttribute("FiltroAreas", colgg[0]);
 							request.setAttribute("FiltroAsignaturas", colgg[1]);
 							request.setAttribute("roldocasig", "0");
 						} else {
 							colgg = new Collection[3];
-							colgg[0] = (Collection) request
-									.getAttribute("FiltroAreas");
-							colgg[1] = (Collection) request
-									.getAttribute("FiltroAsignaturas");
+							colgg[0] = (Collection) request.getAttribute("FiltroAreas");
+							colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 						}
 					}
 
@@ -2060,20 +1808,16 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 						if (((String) element3[3]).equals(f.getMetodologia())) {
 							agregarlista = true;
 							// f.setAsignatura((String)element3[2]+"|"+(String)element3[1]);
-							idasignaturas
-									.add(((String) element3[2] + "|" + (String) element3[1]));
+							idasignaturas.add(((String) element3[2] + "|" + (String) element3[1]));
 							Object[] objasig = new Object[3];
 							objasig[0] = element3[2];
 							objasig[1] = element3[1];
 
-							for (Iterator it2 = colgg[0].iterator(); it2
-									.hasNext();) {
+							for (Iterator it2 = colgg[0].iterator(); it2.hasNext();) {
 								Object[] element2 = (Object[]) it2.next();
 
-								if (((String) element2[0])
-										.equals(element3[0])
-										&& ((String) element2[2])
-												.equals(element3[3])) {
+								if (((String) element2[0]).equals(element3[0])
+										&& ((String) element2[2]).equals(element3[3])) {
 									Object[] obj = new Object[2];
 									objasig[2] = element2[1];
 									obj[0] = element2[2];
@@ -2088,16 +1832,13 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 						}
 					}
 					ArrayList listadocenetsasignatura = null;
-					int[] ihasignaturas = consultartotalasistenciasporasignatura(
-							request, login, f, idasignaturas);
+					int[] ihasignaturas = consultartotalasistenciasporasignatura(request, login, f, idasignaturas);
 
 					for (Iterator it = colgrupos.iterator(); it.hasNext();) {
 
 						Object[] element = (Object[]) it.next();
-						if (f.getSede().equals(element[2])
-								&& f.getJornada().equals(element[3])
-								&& f.getGrado().equals(element[4])
-								&& f.getMetodologia().equals(element[5])) {
+						if (f.getSede().equals(element[2]) && f.getJornada().equals(element[3])
+								&& f.getGrado().equals(element[4]) && f.getMetodologia().equals(element[5])) {
 							f.setGrupo((String) element[0]);
 
 							f.setOrden("0");
@@ -2105,13 +1846,10 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 							Collection[] col = new Collection[7];
 
-							colperiodos = (List) request
-									.getAttribute("filtroPeriodoF");
+							colperiodos = (List) request.getAttribute("filtroPeriodoF");
 
-							col[0] = evaluacionDAO
-									.getEstudiantesAsignaturaxPeriodoConsultaperdidaxInasistencia(
-											f, tipoEval.getCod_tipo_eval(),
-											ihasignaturas, idasignaturas, true);
+							col[0] = evaluacionDAO.getEstudiantesAsignaturaxPeriodoConsultaperdidaxInasistencia(f,
+									tipoEval.getCod_tipo_eval(), ihasignaturas, idasignaturas, true);
 							// ,
 							// tipoEval.getCod_tipo_eval(),colperiodos.size(),tipoEval.getTipoEvalAprobMin()
 
@@ -2140,13 +1878,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							boolean agregarlistado = false;
 							try {
 								if (col[0] != null) {
-									for (Iterator it4 = col[0].iterator(); it4
-											.hasNext();) {
-										Object[] element2 = (Object[]) it4
-												.next();
-										if (element2[0] != null
-												|| !((String) element2[0])
-														.equals("")) {
+									for (Iterator it4 = col[0].iterator(); it4.hasNext();) {
+										Object[] element2 = (Object[]) it4.next();
+										if (element2[0] != null || !((String) element2[0]).equals("")) {
 											agregarlistado = true;
 										}
 
@@ -2158,45 +1892,29 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 											ala.setAlar_estado("0");
 											ala.setAlar_grado(f.getGrado());
 											ala.setAlar_motivoinasistencia("X");
-											ala.setAlar_nombreestudiante(String
-													.valueOf(element2[2])
-													+ " "
-													+ String.valueOf(element2[3])
-													+ " "
-													+ String.valueOf(element2[4])
-													+ " "
-													+ String.valueOf(element2[5]));
-											ala.setAlar_grujerar(f
-													.getJerarquiagrupo());
-											ala.setAlar_vigencia(f
-													.getVigencia());
+											ala.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+													+ String.valueOf(element2[3]) + " " + String.valueOf(element2[4])
+													+ " " + String.valueOf(element2[5]));
+											ala.setAlar_grujerar(f.getJerarquiagrupo());
+											ala.setAlar_vigencia(f.getVigencia());
 
 											ala.setAlar_periodo(f.getPeriodo());
-											ala.setAlar_codest(String
-													.valueOf(element2[0]));
+											ala.setAlar_codest(String.valueOf(element2[0]));
 											listaObservacion.add(ala);
 
-											for (int k = 0; k < idasignaturas
-													.size(); k++) {
-												if (Integer
-														.parseInt((String) element2[k + 6]) > ihasignaturas[k]
+											for (int k = 0; k < idasignaturas.size(); k++) {
+												if (Integer.parseInt((String) element2[k + 6]) > ihasignaturas[k]
 														&& ihasignaturas[k] != 0) {
 
-													Object[] objasig = (Object[]) asignaturasrefarea
-															.get(k);
+													Object[] objasig = (Object[]) asignaturasrefarea.get(k);
 
-													f.setAsignatura(String
-															.valueOf(idasignaturas
-																	.get(k)));
+													f.setAsignatura(String.valueOf(idasignaturas.get(k)));
 
 													AdminVO av = new AdminVO();
-													av.setAdminInst(f
-															.getInstitucion());
-													av = adminDAO
-															.getAdminHorario(av);
+													av.setAdminInst(f.getInstitucion());
+													av = adminDAO.getAdminHorario(av);
 
-													if (av.getAdminHorario()
-															.trim().equals("1")) {
+													if (av.getAdminHorario().trim().equals("1")) {
 														listadocenetsasignatura = evaluacionDAO
 																.getDocenteDictaAsignatura(f);
 													} else {
@@ -2204,75 +1922,48 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 																.getDocenteInstJornSed(f);
 													}
 
-													if (agregarlistado
-															&& listadocenetsasignatura != null) {
-														for (int i = 0; i < listadocenetsasignatura
-																.size(); i++) {
+													if (agregarlistado && listadocenetsasignatura != null) {
+														for (int i = 0; i < listadocenetsasignatura.size(); i++) {
 															AlarmaBean alarma = new AlarmaBean();
 															alarma.setAlar_area((String) objasig[2]);
 															alarma.setAlar_asi((String) objasig[0]);
-															alarma.setAlar_grupo(f
-																	.getGrupo());
-															alarma.setAlar_docdocente(String
-																	.valueOf(listadocenetsasignatura
-																			.get(i)));
+															alarma.setAlar_grupo(f.getGrupo());
+															alarma.setAlar_docdocente(
+																	String.valueOf(listadocenetsasignatura.get(i)));
 															alarma.setAlar_estado("0");
-															alarma.setAlar_grado(f
-																	.getGrado());
+															alarma.setAlar_grado(f.getGrado());
 															alarma.setAlar_motivoinasistencia("X");
-															alarma.setAlar_nombreestudiante(String
-																	.valueOf(element2[2])
-																	+ " "
-																	+ String.valueOf(element2[3])
-																	+ " "
-																	+ String.valueOf(element2[4])
-																	+ " "
+															alarma.setAlar_nombreestudiante(String.valueOf(element2[2])
+																	+ " " + String.valueOf(element2[3]) + " "
+																	+ String.valueOf(element2[4]) + " "
 																	+ String.valueOf(element2[5]));
-															alarma.setAlar_grujerar(f
-																	.getJerarquiagrupo());
-															alarma.setAlar_vigencia(f
-																	.getVigencia());
+															alarma.setAlar_grujerar(f.getJerarquiagrupo());
+															alarma.setAlar_vigencia(f.getVigencia());
 
-															alarma.setAlar_periodo(f
-																	.getPeriodo());
-															alarma.setAlar_codest(String
-																	.valueOf(element2[0]));
-															listalarmas
-																	.add(alarma);
+															alarma.setAlar_periodo(f.getPeriodo());
+															alarma.setAlar_codest(String.valueOf(element2[0]));
+															listalarmas.add(alarma);
 														}
-														for (int i = 0; i < listadocoordinadores
-																.size(); i++) {
+														for (int i = 0; i < listadocoordinadores.size(); i++) {
 															AlarmaBean alarma = new AlarmaBean();
 															alarma.setAlar_area((String) objasig[2]);
 															alarma.setAlar_asi((String) objasig[0]);
-															alarma.setAlar_grupo(f
-																	.getGrupo());
-															alarma.setAlar_docdocente(String
-																	.valueOf(listadocoordinadores
-																			.get(i)));
+															alarma.setAlar_grupo(f.getGrupo());
+															alarma.setAlar_docdocente(
+																	String.valueOf(listadocoordinadores.get(i)));
 															alarma.setAlar_estado("0");
-															alarma.setAlar_grado(f
-																	.getGrado());
+															alarma.setAlar_grado(f.getGrado());
 															alarma.setAlar_motivoinasistencia("X");
-															alarma.setAlar_nombreestudiante(String
-																	.valueOf(element2[2])
-																	+ " "
-																	+ String.valueOf(element2[3])
-																	+ " "
-																	+ String.valueOf(element2[4])
-																	+ " "
+															alarma.setAlar_nombreestudiante(String.valueOf(element2[2])
+																	+ " " + String.valueOf(element2[3]) + " "
+																	+ String.valueOf(element2[4]) + " "
 																	+ String.valueOf(element2[5]));
-															alarma.setAlar_grujerar(f
-																	.getJerarquiagrupo());
-															alarma.setAlar_vigencia(f
-																	.getVigencia());
+															alarma.setAlar_grujerar(f.getJerarquiagrupo());
+															alarma.setAlar_vigencia(f.getVigencia());
 
-															alarma.setAlar_periodo(f
-																	.getPeriodo());
-															alarma.setAlar_codest(String
-																	.valueOf(element2[0]));
-															listalarmas
-																	.add(alarma);
+															alarma.setAlar_periodo(f.getPeriodo());
+															alarma.setAlar_codest(String.valueOf(element2[0]));
+															listalarmas.add(alarma);
 
 														}
 													}
@@ -2294,8 +1985,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 								ex.printStackTrace();
 							}
 
-							listagrupos.removeAll(Collections
-									.singletonList(null));
+							listagrupos.removeAll(Collections.singletonList(null));
 
 							if (listagrupos.size() > 0) {
 								totalEstudiantescompleto.add(listagrupos);
@@ -2335,9 +2025,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @throws IOException
 	 * @throws InternalErrorException
 	 */
-	public Collection[] obtenerConsultaEstudiantes(HttpServletRequest request,
-			String vigencia, String contextoTotal) throws ServletException,
-			IOException, InternalErrorException {
+	public Collection[] obtenerConsultaEstudiantes(HttpServletRequest request, String vigencia, String contextoTotal)
+			throws ServletException, IOException, InternalErrorException {
 
 		List colperiodos = null;
 		ArrayList listadocoordinadores = evaluacionDAO.getCoordinadores(login);
@@ -2346,20 +2035,15 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		TipoEvalVO tipoEval;
 
 		try {
-			tipoEval = evaluacionDAO.getTipoEval(
-					filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+			tipoEval = evaluacionDAO.getTipoEval(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
 					filtroConsultaAisgnaturasPerdidas.getGrado(), login);
-			session.setAttribute("tipoEvalAprobMin",
-					new Double(tipoEval.getTipoEvalAprobMin()));
-			session.setAttribute("tipoEval",
-					new Long(tipoEval.getCod_tipo_eval()));
+			session.setAttribute("tipoEvalAprobMin", new Double(tipoEval.getTipoEvalAprobMin()));
+			session.setAttribute("tipoEval", new Long(tipoEval.getCod_tipo_eval()));
 
 			if (tipoEval.getCod_tipo_eval() == ParamsVO.TIPO_EVAL_CONCEPTUAL) {
-				session.setAttribute("filtroNota2", evaluacionDAO
-						.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas
-								.getMetodologia(),
-								filtroConsultaAisgnaturasPerdidas.getGrado(),
-								login));
+				session.setAttribute("filtroNota2",
+						evaluacionDAO.getEscalaConceptual(filtroConsultaAisgnaturasPerdidas.getMetodologia(),
+								filtroConsultaAisgnaturasPerdidas.getGrado(), login));
 
 			}
 
@@ -2372,20 +2056,19 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 			f.setMetodologia(filtroConsultaAisgnaturasPerdidas.getMetodologia());
 
 			f.setVigencia(vigencia);
-			Collection colgrupos = (Collection) request
-					.getAttribute("filtroGrupoF");
+			Collection colgrupos = (Collection) request.getAttribute("filtroGrupoF");
 			int contadorgruposanadidios = 0;
 
 			String per = login.getPerfil();
 			// System.out.println("nombre perfil "+per);
 			Collection colgg[];
 			if (per.equals("422")) {
-				if (request.getAttribute("FiltroAreas") == null
-						&& request.getAttribute("FiltroAsignaturas") == null
+				if (request.getAttribute("FiltroAreas") == null && request.getAttribute("FiltroAsignaturas") == null
 						&& request.getAttribute("roldocasig") == null) {
-					// System.out.println("iddoc "+login.getUsuarioId()+" inst "+login.getInstId()+" vig "+Long.toString(login.getVigencia_inst()));
-					colgg = util.getfiltroasdoc(login.getInstId(),
-							Long.toString(login.getVigencia_inst()),
+					// System.out.println("iddoc "+login.getUsuarioId()+" inst
+					// "+login.getInstId()+" vig
+					// "+Long.toString(login.getVigencia_inst()));
+					colgg = util.getfiltroasdoc(login.getInstId(), Long.toString(login.getVigencia_inst()),
 							login.getUsuarioId());
 					request.setAttribute("FiltroAreas", colgg[0]);
 					request.setAttribute("FiltroAsignaturas", colgg[1]);
@@ -2393,33 +2076,27 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				} else {
 					colgg = new Collection[3];
 					colgg[0] = (Collection) request.getAttribute("FiltroAreas");
-					colgg[1] = (Collection) request
-							.getAttribute("FiltroAsignaturas");
+					colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 				}
 			} else {
-				if (request.getAttribute("FiltroAreas") != null
-						&& request.getAttribute("FiltroAsignaturas") != null
+				if (request.getAttribute("FiltroAreas") != null && request.getAttribute("FiltroAsignaturas") != null
 						&& request.getAttribute("roldocasig") != null) {
-					colgg = util.getfiltroas(login.getInstId(),
-							Long.toString(login.getVigencia_inst()));
+					colgg = util.getfiltroas(login.getInstId(), Long.toString(login.getVigencia_inst()));
 					request.setAttribute("FiltroAreas", colgg[0]);
 					request.setAttribute("FiltroAsignaturas", colgg[1]);
 					request.setAttribute("roldocasig", "0");
 				} else {
 					colgg = new Collection[3];
 					colgg[0] = (Collection) request.getAttribute("FiltroAreas");
-					colgg[1] = (Collection) request
-							.getAttribute("FiltroAsignaturas");
+					colgg[1] = (Collection) request.getAttribute("FiltroAsignaturas");
 				}
 			}
 
 			for (Iterator it = colgrupos.iterator(); it.hasNext();) {
 
 				Object[] element = (Object[]) it.next();
-				if (f.getSede().equals(element[2])
-						&& f.getJornada().equals(element[3])
-						&& f.getGrado().equals(element[4])
-						&& f.getMetodologia().equals(element[5])) {
+				if (f.getSede().equals(element[2]) && f.getJornada().equals(element[3])
+						&& f.getGrado().equals(element[4]) && f.getMetodologia().equals(element[5])) {
 					f.setGrupo((String) element[0]);
 
 					f.setOrden("0");
@@ -2436,8 +2113,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 						if (((String) element3[3]).equals(f.getMetodologia())) {
 							agregarlista = true;
-							f.setAsignatura((String) element3[2] + "|"
-									+ (String) element3[1]);
+							f.setAsignatura((String) element3[2] + "|" + (String) element3[1]);
 							asignaturatmp = (String) element3[2];
 
 							AdminVO av = new AdminVO();
@@ -2447,21 +2123,16 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							ArrayList listadocenetsasignatura = null;
 
 							if (av.getAdminHorario().trim().equals("1")) {
-								listadocenetsasignatura = evaluacionDAO
-										.getDocenteDictaAsignatura(f);
+								listadocenetsasignatura = evaluacionDAO.getDocenteDictaAsignatura(f);
 							} else {
-								listadocenetsasignatura = evaluacionDAO
-										.getDocenteInstJornSed(f);
+								listadocenetsasignatura = evaluacionDAO.getDocenteInstJornSed(f);
 							}
 
-							for (Iterator it2 = colgg[0].iterator(); it2
-									.hasNext();) {
+							for (Iterator it2 = colgg[0].iterator(); it2.hasNext();) {
 								Object[] element2 = (Object[]) it2.next();
 
-								if (((String) element2[0])
-										.equals(element3[0])
-										&& ((String) element2[2])
-												.equals(element3[3])) {
+								if (((String) element2[0]).equals(element3[0])
+										&& ((String) element2[2]).equals(element3[3])) {
 									areatmp = (String) element2[1];
 									break;
 								}
@@ -2470,14 +2141,10 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 							Collection[] col = new Collection[6];
 
-							colperiodos = (List) request
-									.getAttribute("filtroPeriodoF");
+							colperiodos = (List) request.getAttribute("filtroPeriodoF");
 
-							col[0] = evaluacionDAO
-									.getEstudiantesConsultaPierdenAsignatura(f,
-											tipoEval.getCod_tipo_eval(),
-											colperiodos.size(),
-											tipoEval.getTipoEvalAprobMin());
+							col[0] = evaluacionDAO.getEstudiantesConsultaPierdenAsignatura(f,
+									tipoEval.getCod_tipo_eval(), colperiodos.size(), tipoEval.getTipoEvalAprobMin());
 
 							Collection c = new ArrayList();
 							/*
@@ -2509,8 +2176,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 							col[5] = c4;
 
 							boolean agregarlistado = false;
-							for (Iterator it4 = col[0].iterator(); it4
-									.hasNext();) {
+							for (Iterator it4 = col[0].iterator(); it4.hasNext();) {
 								Object[] element2 = (Object[]) it4.next();
 
 								int periodo = 1;
@@ -2518,9 +2184,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 								int w = 6;
 								while (w < element2.length) {
 									if (!element2[w].equals("NR")
-											&& Double
-													.parseDouble((element2[w] + "")
-															.replace(',', '.')) < tipoEval
+											&& Double.parseDouble((element2[w] + "").replace(',', '.')) < tipoEval
 													.getTipoEvalAprobMin()) {
 
 										periodo = (w / 2) - 2;
@@ -2531,9 +2195,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 									w = w + 2;
 								}
 
-								if (element2[0] != null
-										&& !((String) element2[0]).equals("")
-										&& contador >= 2 && periodo > 1) {
+								if (element2[0] != null && !((String) element2[0]).equals("") && contador >= 2
+										&& periodo > 1) {
 
 									agregarlistado = true;
 
@@ -2563,20 +2226,14 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 									ala.setAlar_estado("0");
 									ala.setAlar_grado(f.getGrado());
 									ala.setAlar_motivobajorendimiento("X");
-									ala.setAlar_nombreestudiante(String
-											.valueOf(element2[2])
-											+ " "
-											+ String.valueOf(element2[3])
-											+ " "
-											+ String.valueOf(element2[4])
-											+ " "
-											+ String.valueOf(element2[5]));
+									ala.setAlar_nombreestudiante(
+											String.valueOf(element2[2]) + " " + String.valueOf(element2[3]) + " "
+													+ String.valueOf(element2[4]) + " " + String.valueOf(element2[5]));
 									ala.setAlar_grujerar(f.getJerarquiagrupo());
 									ala.setAlar_vigencia(f.getVigencia());
 
 									ala.setAlar_periodo(periodo + "");
-									ala.setAlar_codest(String
-											.valueOf(element2[0]));
+									ala.setAlar_codest(String.valueOf(element2[0]));
 									if (periodo > 1 && contador >= 2) {
 										listaObservacion.add(ala);
 									}
@@ -2587,8 +2244,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 										// .println(listadocenetsasignatura
 										// .size());
 
-										for (int i = 0; i < listadocenetsasignatura
-												.size(); i++) {
+										for (int i = 0; i < listadocenetsasignatura.size(); i++) {
 											// System.out
 											// .println(listadocenetsasignatura
 											// .get(i));
@@ -2597,62 +2253,41 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 											alarma.setAlar_area(areatmp);
 											alarma.setAlar_asi(asignaturatmp);
 											alarma.setAlar_grupo(f.getGrupo());
-											alarma.setAlar_docdocente(String
-													.valueOf(listadocenetsasignatura
-															.get(i)));
+											alarma.setAlar_docdocente(String.valueOf(listadocenetsasignatura.get(i)));
 
 											alarma.setAlar_estado("0");
 											alarma.setAlar_grado(f.getGrado());
 											alarma.setAlar_motivobajorendimiento("X");
-											alarma.setAlar_nombreestudiante(String
-													.valueOf(element2[2])
-													+ " "
-													+ String.valueOf(element2[3])
-													+ " "
-													+ String.valueOf(element2[4])
-													+ " "
-													+ String.valueOf(element2[5]));
-											alarma.setAlar_grujerar(f
-													.getJerarquiagrupo());
-											alarma.setAlar_vigencia(f
-													.getVigencia());
+											alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+													+ String.valueOf(element2[3]) + " " + String.valueOf(element2[4])
+													+ " " + String.valueOf(element2[5]));
+											alarma.setAlar_grujerar(f.getJerarquiagrupo());
+											alarma.setAlar_vigencia(f.getVigencia());
 
 											alarma.setAlar_periodo(periodo + "");
-											alarma.setAlar_codest(String
-													.valueOf(element2[0]));
+											alarma.setAlar_codest(String.valueOf(element2[0]));
 											if (periodo > 1 && contador >= 2) {
 												listalarmas.add(alarma);
 											}
 										}
 
-										for (int i = 0; i < listadocoordinadores
-												.size(); i++) {
+										for (int i = 0; i < listadocoordinadores.size(); i++) {
 											AlarmaBean alarma = new AlarmaBean();
 											alarma.setAlar_area(areatmp);
 											alarma.setAlar_asi(asignaturatmp);
 											alarma.setAlar_grupo(f.getGrupo());
-											alarma.setAlar_docdocente(String
-													.valueOf(listadocoordinadores
-															.get(i)));
+											alarma.setAlar_docdocente(String.valueOf(listadocoordinadores.get(i)));
 											alarma.setAlar_estado("0");
 											alarma.setAlar_grado(f.getGrado());
 											alarma.setAlar_motivobajorendimiento("X");
-											alarma.setAlar_nombreestudiante(String
-													.valueOf(element2[2])
-													+ " "
-													+ String.valueOf(element2[3])
-													+ " "
-													+ String.valueOf(element2[4])
-													+ " "
-													+ String.valueOf(element2[5]));
-											alarma.setAlar_grujerar(f
-													.getJerarquiagrupo());
-											alarma.setAlar_vigencia(f
-													.getVigencia());
+											alarma.setAlar_nombreestudiante(String.valueOf(element2[2]) + " "
+													+ String.valueOf(element2[3]) + " " + String.valueOf(element2[4])
+													+ " " + String.valueOf(element2[5]));
+											alarma.setAlar_grujerar(f.getJerarquiagrupo());
+											alarma.setAlar_vigencia(f.getVigencia());
 											f.setPeriodo(contador + "");
 											alarma.setAlar_periodo(periodo + "");
-											alarma.setAlar_codest(String
-													.valueOf(element2[0]));
+											alarma.setAlar_codest(String.valueOf(element2[0]));
 											if (periodo > 1 && contador >= 2) {
 												listalarmas.add(alarma);
 											}
@@ -2671,19 +2306,16 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 						}
 
 						boolean agregarlistadoasig = false;
-						for (Iterator it4 = listaAsignaturas.iterator(); it4
-								.hasNext();) {
+						for (Iterator it4 = listaAsignaturas.iterator(); it4.hasNext();) {
 							Object[] element2 = (Object[]) it4.next();
 
-							if (element2[0] != null
-									|| !((String) element2[0]).equals("")) {
+							if (element2[0] != null || !((String) element2[0]).equals("")) {
 								agregarlistadoasig = true;
 							}
 						}
 
 						if (agregarlista && agregarlistadoasig) {
-							listaAsignaturas.removeAll(Collections
-									.singletonList(null));
+							listaAsignaturas.removeAll(Collections.singletonList(null));
 							listagrupos.add(listaAsignaturas);
 						}
 						// cierre metodologia asignatura
@@ -2712,9 +2344,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		return totalEstudiantes;
 	}
 
-	public boolean resumen_Asignaturas(HttpServletRequest request,
-			String vigencia, String contextoTotal) throws ServletException,
-			IOException {
+	public boolean resumen_Asignaturas(HttpServletRequest request, String vigencia, String contextoTotal)
+			throws ServletException, IOException {
 		Connection con = null;
 		PreparedStatement pst = null;
 		CallableStatement cstmt = null;
@@ -2747,27 +2378,20 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				ir(2, er, request, response);
 				return false;
 			}
-			pst = con.prepareStatement(rb3
-					.getString("existe_mismo_reporte_as_en_cola"));
+			pst = con.prepareStatement(rb3.getString("existe_mismo_reporte_as_en_cola"));
 			posicion = 1;
 			pst.setLong(posicion++, Long.parseLong(login.getInstId()));
-			pst.setLong(posicion++, Long.parseLong(!filtroAsignaturas.getSede()
-					.equals("-9") ? filtroAsignaturas.getSede() : "-9"));
-			pst.setLong(posicion++, Long.parseLong(!filtroAsignaturas
-					.getJornada().equals("-9") ? filtroAsignaturas.getJornada()
-					: "-9"));
-			pst.setLong(
-					posicion++,
-					Long.parseLong(!filtroAsignaturas.getMetodologia().equals(
-							"-9") ? filtroAsignaturas.getMetodologia() : "-9"));
-			pst.setLong(posicion++, Long.parseLong(!filtroAsignaturas
-					.getGrado().equals("-9") ? filtroAsignaturas.getGrado()
-					: "-9"));
-			pst.setLong(posicion++, Long.parseLong(!filtroAsignaturas
-					.getGrupo().equals("-9") ? filtroAsignaturas.getGrupo()
-					: "-9"));
 			pst.setLong(posicion++,
-					Long.parseLong(filtroAsignaturas.getPeriodo().trim()));
+					Long.parseLong(!filtroAsignaturas.getSede().equals("-9") ? filtroAsignaturas.getSede() : "-9"));
+			pst.setLong(posicion++, Long
+					.parseLong(!filtroAsignaturas.getJornada().equals("-9") ? filtroAsignaturas.getJornada() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(
+					!filtroAsignaturas.getMetodologia().equals("-9") ? filtroAsignaturas.getMetodologia() : "-9"));
+			pst.setLong(posicion++,
+					Long.parseLong(!filtroAsignaturas.getGrado().equals("-9") ? filtroAsignaturas.getGrado() : "-9"));
+			pst.setLong(posicion++,
+					Long.parseLong(!filtroAsignaturas.getGrupo().equals("-9") ? filtroAsignaturas.getGrupo() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(filtroAsignaturas.getPeriodo().trim()));
 			pst.setLong(posicion++, dao.getVigenciaNumerico());
 			pst.setString(posicion++, filtroAsignaturas.getareassel());
 			pst.setString(posicion++, filtroAsignaturas.getasigsel());
@@ -2775,36 +2399,24 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 
 			if (!rs.next()) {
 				// System.out
-				// .println("******nNO HAY NINGUNO CON LOS MISMOS PARAMETROS!...EN ESTADO CERO O -1!*********");
+				// .println("******nNO HAY NINGUNO CON LOS MISMOS
+				// PARAMETROS!...EN ESTADO CERO O -1!*********");
 				rs.close();
 				pst.close();
-				sede = (!filtroAsignaturas.getSede().equals("-9") ? "_Sed_"
-						+ filtroAsignaturas.getSede().trim() : "");
-				jornada = (!filtroAsignaturas.getJornada().equals("-9") ? "_Jor_"
-						+ filtroAsignaturas.getJornada().trim()
+				sede = (!filtroAsignaturas.getSede().equals("-9") ? "_Sed_" + filtroAsignaturas.getSede().trim() : "");
+				jornada = (!filtroAsignaturas.getJornada().equals("-9")
+						? "_Jor_" + filtroAsignaturas.getJornada().trim() : "");
+				met = (!filtroAsignaturas.getMetodologia().equals("-9") ? "_Met_" + filtroAsignaturas.getMetodologia()
 						: "");
-				met = (!filtroAsignaturas.getMetodologia().equals("-9") ? "_Met_"
-						+ filtroAsignaturas.getMetodologia()
-						: "");
-				grado = (!filtroAsignaturas.getGrado().equals("-9") ? "_Gra_"
-						+ filtroAsignaturas.getGrado() : "");
-				grupo = (!filtroAsignaturas.getGrupo().equals("-9") ? "_Gru_"
-						+ filtroAsignaturas.getGrupo() : "");
+				grado = (!filtroAsignaturas.getGrado().equals("-9") ? "_Gra_" + filtroAsignaturas.getGrado() : "");
+				grupo = (!filtroAsignaturas.getGrupo().equals("-9") ? "_Gru_" + filtroAsignaturas.getGrupo() : "");
 
 				if (Long.parseLong(filtroAsignaturas.getPeriodo().trim()) == 7) {
 					filtroAsignaturas.setPeriodonom("FINAL");
 				}
 
-				nom = sede
-						+ jornada
-						+ met
-						+ grado
-						+ grupo
-						+ "_Periodo_"
-						+ filtroAsignaturas.getPeriodonom().trim()
-						+ "_Fecha_"
-						+ f2.toString().replace(' ', '_').replace(':', '-')
-								.replace('.', '-');
+				nom = sede + jornada + met + grado + grupo + "_Periodo_" + filtroAsignaturas.getPeriodonom().trim()
+						+ "_Fecha_" + f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-');
 				archivo = "Resumen_Evaluacion_Asignaturas_" + nom + ".pdf";
 				archivoxls = "Resumen_Evaluacion_Asignaturas_" + nom + ".xls";
 				archivozip = "Resumen_Evaluacion_Asignaturas_" + nom + ".zip";
@@ -2814,33 +2426,22 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				posicion = 1;
 				pst.clearParameters();
 				pst.setLong(posicion++, Long.parseLong(login.getInstId()));
-				pst.setLong(posicion++, Long.parseLong(!filtroAsignaturas
-						.getSede().equals("-9") ? filtroAsignaturas.getSede()
-						: "-9"));
-				pst.setLong(
-						posicion++,
-						Long.parseLong(!filtroAsignaturas.getJornada().equals(
-								"-9") ? filtroAsignaturas.getJornada() : "-9"));
-				pst.setLong(posicion++, Long.parseLong(!filtroAsignaturas
-						.getMetodologia().equals("-9") ? filtroAsignaturas
-						.getMetodologia() : "-9"));
-				pst.setLong(
-						posicion++,
-						Long.parseLong(!filtroAsignaturas.getGrado().equals(
-								"-9") ? filtroAsignaturas.getGrado() : "-9"));
-				pst.setLong(
-						posicion++,
-						Long.parseLong(!filtroAsignaturas.getGrupo().equals(
-								"-9") ? filtroAsignaturas.getGrupo() : "-9"));
 				pst.setLong(posicion++,
-						Long.parseLong(filtroAsignaturas.getPeriodo().trim()));
-				pst.setString(posicion++, !filtroAsignaturas.getPeriodonom()
-						.trim().equals("") ? filtroAsignaturas.getPeriodonom()
-						.trim() : "");
+						Long.parseLong(!filtroAsignaturas.getSede().equals("-9") ? filtroAsignaturas.getSede() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(
+						!filtroAsignaturas.getJornada().equals("-9") ? filtroAsignaturas.getJornada() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(
+						!filtroAsignaturas.getMetodologia().equals("-9") ? filtroAsignaturas.getMetodologia() : "-9"));
+				pst.setLong(posicion++, Long
+						.parseLong(!filtroAsignaturas.getGrado().equals("-9") ? filtroAsignaturas.getGrado() : "-9"));
+				pst.setLong(posicion++, Long
+						.parseLong(!filtroAsignaturas.getGrupo().equals("-9") ? filtroAsignaturas.getGrupo() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(filtroAsignaturas.getPeriodo().trim()));
+				pst.setString(posicion++, !filtroAsignaturas.getPeriodonom().trim().equals("")
+						? filtroAsignaturas.getPeriodonom().trim() : "");
 				pst.setString(posicion++, "");
 
-				pst.setString(posicion++, f2.toString().replace(' ', '_')
-						.replace(':', '-').replace('.', '-'));
+				pst.setString(posicion++, f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-'));
 				pst.setString(posicion++, archivozip);
 				pst.setString(posicion++, archivo);
 				pst.setString(posicion++, "");
@@ -2864,8 +2465,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				pst.setString(posicion++, login.getJornada());
 				pst.setLong(posicion++, dao.getVigenciaNumerico());
 
-				String resol = reportesDAO.getResolInst(Long.parseLong(login
-						.getInstId()));
+				String resol = reportesDAO.getResolInst(Long.parseLong(login.getInstId()));
 				pst.setString(posicion++, resol);
 				pst.setLong(posicion++, login.getLogNivelEval());
 				pst.setLong(posicion++, login.getLogNumPer());
@@ -2878,15 +2478,14 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				filtroRep.setGrado(filtroAsignaturas.getGrado());
 				int tipoPrees = reportesDAO.getTipoEval(filtroRep, login);
 				// System.out.println("RESUMENES: INSERT TIPOEVALPREES: "
-				// + tipoPrees + "   NIVEL EVAL: "
+				// + tipoPrees + " NIVEL EVAL: "
 				// + login.getLogNivelEval());
 				pst.setInt(posicion++, tipoPrees);
 				// pst.setInt(posicion++,1);
 				pst.setInt(posicion++, -9);
 				pst.setString(posicion++, filtroAsignaturas.getareassel());
 				pst.setString(posicion++, filtroAsignaturas.getasigsel());
-				if (login.getPerfil().equals("410")
-						|| login.getPerfil().equals("421")) {
+				if (login.getPerfil().equals("410") || login.getPerfil().equals("421")) {
 					pst.setString(posicion++, "1");
 				} else {
 					pst.setString(posicion++, "0");
@@ -2894,43 +2493,38 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 				pst.executeUpdate();
 				// System.out
 				// .println("RESUMEN ASIG: Se insertn en datos_boletin!!!!");
-				// System.out.println("nnSe insertn en DATOS_RESUMEN_ASIGNATURA!!!!");
+				// System.out.println("nnSe insertn en
+				// DATOS_RESUMEN_ASIGNATURA!!!!");
 				pst.close();
 				con.commit();
 
 				ponerReporte(moduloAsignatura, login.getUsuarioId(),
-						rb3.getString("reportes.PathReportes") + archivozip
-								+ "", "zip", "" + archivozip, "-1",
+						rb3.getString("reportes.PathReportes") + archivozip + "", "zip", "" + archivozip, "-1",
 						"ReporteInsertarEstado");// Estado -1
 				// System.out
 				// .println("Se insertn el ZIP en Reporte con estado -1");
 				siges.util.Logger.print(
-						login.getUsuarioId(),
-						"Peticinn de Resumen_Asignatura:_Institucion:_"
-								+ login.getInstId() + "_Usuario:_"
-								+ login.getUsuarioId() + "_NombreReporte:_"
-								+ archivozip + "", 3, 1, this.toString());
+						login.getUsuarioId(), "Peticinn de Resumen_Asignatura:_Institucion:_" + login.getInstId()
+								+ "_Usuario:_" + login.getUsuarioId() + "_NombreReporte:_" + archivozip + "",
+						3, 1, this.toString());
 				cont = cola_reportes("puesto_del_reporte_asignatura");
 
 				if (cont != null && !cont.equals(""))
-					updatePuestoReporte(cont, archivozip, login.getUsuarioId(),
-							"update_puesto_reporte_asignatura");
+					updatePuestoReporte(cont, archivozip, login.getUsuarioId(), "update_puesto_reporte_asignatura");
 			} else {
 				rs.close();
 				pst.close();
 				setMensaje("nYa existe una peticinn de este reporte con los mismos parnmetros!");
 				request.setAttribute("mensaje", mensaje);
-				request.setAttribute("mensaje2",
-						"nYa existe una peticinn de este reporte con los mismos parnmetros!");
+				request.setAttribute("mensaje2", "nYa existe una peticinn de este reporte con los mismos parnmetros!");
 				return false;
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			ponerReporteMensaje("2", moduloAsignatura, login.getUsuarioId(),
-					rb3.getString("reportes.PathReportes") + archivozip + "",
-					"zip", "" + archivozip, "ReporteActualizarBoletin",
-					"Ocurrin excepcinn en FiltroSave");
+					rb3.getString("reportes.PathReportes") + archivozip + "", "zip", "" + archivozip,
+					"ReporteActualizarBoletin", "Ocurrin excepcinn en FiltroSave");
 			return false;
 		} finally {
 			try {
@@ -2964,8 +2558,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            prepared
 	 **/
 
-	public void ponerReporte(String modulo, String us, String rec, String tipo,
-			String nombre, String estado, String prepared) {
+	public void ponerReporte(String modulo, String us, String rec, String tipo, String nombre, String estado,
+			String prepared) {
 		Connection con = null;
 		PreparedStatement pst = null;
 		int posicion = 1;
@@ -3014,9 +2608,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            prepared
 	 **/
 
-	public void ponerReporteMensaje(String estado, String modulo, String us,
-			String rec, String tipo, String nombre, String prepared,
-			String mensaje) {
+	public void ponerReporteMensaje(String estado, String modulo, String us, String rec, String tipo, String nombre,
+			String prepared, String mensaje) {
 
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -3066,8 +2659,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            prepared
 	 **/
 
-	public void updatePuestoReporte(String puesto, String nombreboletinzip,
-			String user, String prepared) {
+	public void updatePuestoReporte(String puesto, String nombreboletinzip, String user, String prepared) {
 		Connection con = null;
 		PreparedStatement pst = null;
 		int posicion = 1;
@@ -3152,8 +2744,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public boolean asignarBeans(HttpServletRequest request)
-			throws ServletException, IOException {
+	public boolean asignarBeans(HttpServletRequest request) throws ServletException, IOException {
 		login = (Login) session.getAttribute("login");
 		String sentencia = "";
 		return true;
@@ -3167,11 +2758,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public boolean asignarBeansAreas(HttpServletRequest request)
-			throws ServletException, IOException {
+	public boolean asignarBeansAreas(HttpServletRequest request) throws ServletException, IOException {
 		login = (Login) session.getAttribute("login");
-		filtroAreas = (FiltroBeanResumenAreas) session
-				.getAttribute("filtroResumenAreas");
+		filtroAreas = (FiltroBeanResumenAreas) session.getAttribute("filtroResumenAreas");
 		filtroAreas.setInstitucion(login.getInstId());
 		filtroAreas.setFormato("1");
 		String sentencia = "";
@@ -3186,11 +2775,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public boolean asignarBeansAsignaturas(HttpServletRequest request)
-			throws ServletException, IOException {
+	public boolean asignarBeansAsignaturas(HttpServletRequest request) throws ServletException, IOException {
 		login = (Login) session.getAttribute("login");
-		filtroAsignaturas = (FiltroBeanResumenAsignaturas) session
-				.getAttribute("filtroResumenAsignaturas");
+		filtroAsignaturas = (FiltroBeanResumenAsignaturas) session.getAttribute("filtroResumenAsignaturas");
 		filtroAsignaturas.setInstitucion(login.getInstId());
 		filtroAsignaturas.setFormato("1");
 		String sentencia = "";
@@ -3205,13 +2792,30 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public boolean asignarBeansConsultaPerdiaAsignaturas(
-			HttpServletRequest request) throws ServletException, IOException {
+	public boolean asignarBeansConsultaPerdiaAsignaturas(HttpServletRequest request)
+			throws ServletException, IOException {
 		login = (Login) session.getAttribute("login");
 		filtroConsultaAisgnaturasPerdidas = (FiltroConsultaAsignaturasPerdidas) session
 				.getAttribute("filtroConsultaAsignaturasPerdidas");
 		filtroConsultaAisgnaturasPerdidas.setInstitucion(login.getInstId());
 		filtroConsultaAisgnaturasPerdidas.setFormato("1");
+		String sentencia = "";
+		return true;
+	}
+	
+	/**
+	 * Inserta los valores por defecto para el bean de informacion basica con
+	 * respecto a la informacion de la institucion educativa
+	 * 
+	 * @param HttpServletRequest
+	 *            request
+	 * @return boolean
+	 */
+	public boolean asignarBeansAreaAsig(HttpServletRequest request) throws ServletException, IOException {
+		login = (Login) session.getAttribute("login");
+		filtroAreaAsig = (FiltroBeanResumenAreaAsig) session.getAttribute("filtroResumenAreaAsig");
+		filtroAreaAsig.setInstitucion(login.getInstId());
+		filtroAreaAsig.setFormato("1");
 		String sentencia = "";
 		return true;
 	}
@@ -3225,8 +2829,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            response
 	 **/
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 
@@ -3239,8 +2842,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 *            response
 	 **/
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String s = process(request, response);
 		if (s != null && !s.equals(""))
 			ir(1, s, request, response);
@@ -3256,7 +2858,7 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	public void setMensaje(String s) {
 		if (!err) {
 			err = true;
-			mensaje = "VERIFIQUE LA SIGUIENTE informaciÃ³n: \n\n";
+			mensaje = "VERIFIQUE LA SIGUIENTE información: \n\n";
 		}
 		mensaje = "  - " + s + "\n";
 	}
@@ -3274,7 +2876,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	/**
 	 * Redirige el control a otro servlet
 	 * 
-	 * @param int a: 1=redirigir como 'include', 2=redirigir como 'forward'
+	 * @param int
+	 *            a: 1=redirigir como 'include', 2=redirigir como 'forward'
 	 * @param String
 	 *            s
 	 * @param HttpServletRequest
@@ -3282,8 +2885,8 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 **/
-	public void ir(int a, String s, HttpServletRequest rq,
-			HttpServletResponse rs) throws ServletException, IOException {
+	public void ir(int a, String s, HttpServletRequest rq, HttpServletResponse rs)
+			throws ServletException, IOException {
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(s);
 		if (a == 1)
 			rd.include(rq, rs);
@@ -3301,15 +2904,14 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		cursor = null;
 	}
 
-	public void filtroConsultaPerdidaAsignaturas(HttpServletRequest request)
-			throws ServletException, IOException {
+	public void filtroConsultaPerdidaAsignaturas(HttpServletRequest request) throws ServletException, IOException {
 
 		try {
-			ResourceBundle rb = ResourceBundle
-					.getBundle("siges.boletines.bundle.resumen");
+			ResourceBundle rb = ResourceBundle.getBundle("siges.boletines.bundle.resumen");
 			session.removeAttribute("filtroResumenAsignaturas");
 			// System.out
-			// .println("*********////*********nENTRn CONSULTA ASIGNATURAS PERIDA !**********//**********");
+			// .println("*********////*********nENTRn CONSULTA ASIGNATURAS
+			// PERIDA !**********//**********");
 			Collection list;
 			String per;
 			Object[] o;
@@ -3323,22 +2925,19 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 			list.add(o);
 
 			if (request.getAttribute("filtroSedeF") == null)
-				request.setAttribute("filtroSedeF", util.getFiltro(
-						rb.getString("filtroSedeInstitucion"), list));
+				request.setAttribute("filtroSedeF", util.getFiltro(rb.getString("filtroSedeInstitucion"), list));
 			if (request.getAttribute("filtroJornadaF") == null)
-				request.setAttribute("filtroJornadaF", util.getFiltro(
-						rb.getString("filtroSedeJornadaInstitucion"), list));
+				request.setAttribute("filtroJornadaF",
+						util.getFiltro(rb.getString("filtroSedeJornadaInstitucion"), list));
 			if (request.getAttribute("filtroMetodologiaF") == null)
-				request.setAttribute("filtroMetodologiaF", util.getFiltro(
-						rb.getString("listaMetodologiaInstitucion"), list));
+				request.setAttribute("filtroMetodologiaF",
+						util.getFiltro(rb.getString("listaMetodologiaInstitucion"), list));
 
-			Collection cc = util.getFiltro(
-					rb.getString("filtroSedeJornadaGradoInstitucion2"), list);
+			Collection cc = util.getFiltro(rb.getString("filtroSedeJornadaGradoInstitucion2"), list);
 			request.setAttribute("filtroGradoF2", cc);
 			if (request.getAttribute("filtroGrupoF") == null)
-				request.setAttribute("filtroGrupoF", util.getFiltro(
-						rb.getString("filtroSedeJornadaGradoGrupoInstitucion"),
-						list));
+				request.setAttribute("filtroGrupoF",
+						util.getFiltro(rb.getString("filtroSedeJornadaGradoGrupoInstitucion"), list));
 			if (request.getAttribute("filtroPeriodoF") == null) {
 				List l = new ArrayList();
 				ItemVO item = null;
@@ -3356,16 +2955,16 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 			per = login.getPerfil();
 			// System.out.println("nombre perfil "+per);
 			if (per.equals("422")) {
-				// System.out.println("iddoc "+login.getUsuarioId()+" inst "+login.getInstId()+" vig "+Long.toString(login.getVigencia_inst()));
-				Collection colgg[] = util.getfiltroasdoc(login.getInstId(),
-						Long.toString(login.getVigencia_inst()),
+				// System.out.println("iddoc "+login.getUsuarioId()+" inst
+				// "+login.getInstId()+" vig
+				// "+Long.toString(login.getVigencia_inst()));
+				Collection colgg[] = util.getfiltroasdoc(login.getInstId(), Long.toString(login.getVigencia_inst()),
 						login.getUsuarioId());
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
 				request.setAttribute("roldocasig", "1");
 			} else {
-				Collection colgg[] = util.getfiltroas(login.getInstId(),
-						Long.toString(login.getVigencia_inst()));
+				Collection colgg[] = util.getfiltroas(login.getInstId(), Long.toString(login.getVigencia_inst()));
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
 				request.setAttribute("roldocasig", "0");
@@ -3387,12 +2986,9 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 	 * @return
 	 * @throws Exception
 	 */
-	public int[] consultartotalasistenciasporasignatura(
-			HttpServletRequest request, Login login,
-			FiltroBeanEvaluacion filtroEvaluacion, ArrayList idasignaturas)
-			throws Exception {
-		ResourceBundle rb = ResourceBundle
-				.getBundle("siges.evaluacion.bundle.evaluacion");
+	public int[] consultartotalasistenciasporasignatura(HttpServletRequest request, Login login,
+			FiltroBeanEvaluacion filtroEvaluacion, ArrayList idasignaturas) throws Exception {
+		ResourceBundle rb = ResourceBundle.getBundle("siges.evaluacion.bundle.evaluacion");
 
 		String[] asig = new String[idasignaturas.size()];
 		int[] ihtodasasignaturas = new int[idasignaturas.size()];
@@ -3406,22 +3002,187 @@ public class ControllerResumenFiltroSave extends HttpServlet {
 		Cursor cursor = new Cursor();
 		AdminParametroInstDAO adminDAO = new AdminParametroInstDAO(cursor);
 
-		InstParVO instParVO = adminDAO.getInstdeVigenciaMayor(Integer
-				.parseInt(login.getInstId()));
+		InstParVO instParVO = adminDAO.getInstdeVigenciaMayor(Integer.parseInt(login.getInstId()));
 
 		for (int i = 0; i < asig.length; i++) {
-			int ih_asignatura = evaluacionDAO
-					.consultarIntensidadHorariaporasignatura(login.getInstId(),
-							filtroEvaluacion.getGrado(),
-							filtroEvaluacion.getMetodologia(), asig[i],
-							String.valueOf(instParVO.getInsparvigencia()));
-			int semanasAcademicas = Integer.parseInt(rb
-					.getString("semanasacademicas"));
+			int ih_asignatura = evaluacionDAO.consultarIntensidadHorariaporasignatura(login.getInstId(),
+					filtroEvaluacion.getGrado(), filtroEvaluacion.getMetodologia(), asig[i],
+					String.valueOf(instParVO.getInsparvigencia()));
+			int semanasAcademicas = Integer.parseInt(rb.getString("semanasacademicas"));
 
-			ihtodasasignaturas[i] = (int) ((ih_asignatura * semanasAcademicas) * instParVO
-					.getPorcentajeperdida()) / 100;
+			ihtodasasignaturas[i] = (int) ((ih_asignatura * semanasAcademicas) * instParVO.getPorcentajeperdida())
+					/ 100;
 		}
 
 		return ihtodasasignaturas;
+	}
+	
+	public boolean resumen_Area_Asig(HttpServletRequest request, String vigencia, String contextoTotal)
+			throws ServletException, IOException {
+		Connection con = null;
+		PreparedStatement pst = null;
+		CallableStatement cstmt = null;
+		ResultSet rs = null;
+		String sede = null;
+		String jornada = null;
+		String met = null;
+		String grado = null;
+		String grupo = null;
+		String periodo = null;
+		String nom = null;
+		String puesto = null;
+		int posicion = 1;
+		String archivosalida = null;
+		int zise;
+		Collection list = new ArrayList();
+		Zip zip = new Zip();
+		String cont = null;
+		String archivozip = null;
+		String archivo = null;
+		String archivoxls = null;
+		String alert = "El Reporte se esta generando en este momento. \nPulse en el hipervinculo 'Listado de Reportes' para ver si el reporte ya fue generado. \nO vaya a la opción de menu 'Reportes generados'";
+
+		try {
+			con = cursor.getConnection();
+
+			if (!asignarBeansAreaAsig(request)) {
+				setMensaje("Error capturando datos para el reporte Area/Asignatura");
+				request.setAttribute("mensaje", mensaje);
+				ir(2, er, request, response);
+				return false;
+			}
+			pst = con.prepareStatement(rb3.getString("existe_mismo_reporte_ar_as_en_cola"));
+			posicion = 1;
+			pst.setLong(posicion++, Long.parseLong(login.getInstId()));
+			pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getSede().equals("-9") ? filtroAreaAsig.getSede() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getJornada().equals("-9") ? filtroAreaAsig.getJornada() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getMetodologia().equals("-9") ? filtroAreaAsig.getMetodologia() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getGrado().equals("-9") ? filtroAreaAsig.getGrado() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getGrupo().equals("-9") ? filtroAreaAsig.getGrupo() : "-9"));
+			pst.setLong(posicion++, Long.parseLong(filtroAreaAsig.getPeriodo().trim()));
+			pst.setLong(posicion++, dao.getVigenciaNumerico());
+			pst.setString(posicion++, filtroAreaAsig.getareassel());
+			pst.setString(posicion++, filtroAreaAsig.getasigsel());
+			rs = pst.executeQuery();
+
+			if (!rs.next()) {
+				// System.out
+				// .println("******nNO HAY NINGUNO CON LOS MISMOS
+				// PARAMETROS!...EN ESTADO CERO O -1!*********");
+				rs.close();
+				pst.close();
+				sede = (!filtroAreaAsig.getSede().equals("-9") ? "_Sed_" + filtroAreaAsig.getSede().trim() : "");
+				jornada = (!filtroAreaAsig.getJornada().equals("-9") ? "_Jor_" + filtroAreaAsig.getJornada().trim() : "");
+				met = (!filtroAreaAsig.getMetodologia().equals("-9") ? "_Met_" + filtroAreaAsig.getMetodologia(): "");
+				grado = (!filtroAreaAsig.getGrado().equals("-9") ? "_Gra_" + filtroAreaAsig.getGrado() : "");
+				grupo = (!filtroAreaAsig.getGrupo().equals("-9") ? "_Gru_" + filtroAreaAsig.getGrupo() : "");
+
+				if (Long.parseLong(filtroAreaAsig.getPeriodo().trim()) == 7) {
+					filtroAreaAsig.setPeriodonom("FINAL");
+				}
+
+				nom = sede + jornada + met + grado + grupo + "_Periodo_" + filtroAreaAsig.getPeriodonom().trim() + "_Fecha_" + f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-');
+				archivo = "Resumen_Evaluacion_Area_Asignatura_" + nom + ".pdf";
+				archivoxls = "Resumen_Evaluacion_Area_Asignatura_" + nom + ".xls";
+				archivozip = "Resumen_Evaluacion_Area_Asignatura_" + nom + ".zip";
+
+				posicion = 1;
+				pst = con.prepareStatement(rb3.getString("insert_datos_area_asig"));
+				posicion = 1;
+				pst.clearParameters();
+				pst.setLong(posicion++, Long.parseLong(login.getInstId()));
+				pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getSede().equals("-9") ? filtroAreaAsig.getSede() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getJornada().equals("-9") ? filtroAreaAsig.getJornada() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getMetodologia().equals("-9") ? filtroAreaAsig.getMetodologia() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getGrado().equals("-9") ? filtroAreaAsig.getGrado() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(!filtroAreaAsig.getGrupo().equals("-9") ? filtroAreaAsig.getGrupo() : "-9"));
+				pst.setLong(posicion++, Long.parseLong(filtroAreaAsig.getPeriodo().trim()));
+				pst.setString(posicion++, !filtroAreaAsig.getPeriodonom().trim().equals("")? filtroAreaAsig.getPeriodonom().trim() : "");
+				pst.setString(posicion++, "");
+				pst.setString(posicion++, f2.toString().replace(' ', '_').replace(':', '-').replace('.', '-'));
+				pst.setString(posicion++, archivozip);
+				pst.setString(posicion++, archivo);
+				pst.setString(posicion++, "");
+				pst.setLong(posicion++, Long.parseLong("-1"));
+				pst.setString(posicion++, login.getUsuarioId());
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+				pst.setLong(posicion++, Long.parseLong("1"));
+
+				pst.setString(posicion++, login.getInst());
+				pst.setString(posicion++, login.getSede());
+				pst.setString(posicion++, login.getJornada());
+				pst.setLong(posicion++, dao.getVigenciaNumerico());
+
+				String resol = reportesDAO.getResolInst(Long.parseLong(login.getInstId()));
+				pst.setString(posicion++, resol);
+				pst.setLong(posicion++, login.getLogNivelEval());
+				pst.setLong(posicion++, login.getLogNumPer());
+				pst.setString(posicion++, login.getLogNomPerDef());
+				FiltroBeanReports filtroRep = new FiltroBeanReports();
+				
+				login.setSedeId(filtroAreaAsig.getSede());
+				login.setJornadaId(filtroAreaAsig.getJornada());
+				filtroRep.setMetodologia(filtroAreaAsig.getMetodologia());
+				filtroRep.setGrado(filtroAreaAsig.getGrado());
+				int tipoPrees = reportesDAO.getTipoEval(filtroRep, login);
+			
+				pst.setInt(posicion++, tipoPrees);
+				// pst.setInt(posicion++,1);
+				pst.setInt(posicion++, -9);
+				pst.setString(posicion++, filtroAreaAsig.getareassel());
+				pst.setString(posicion++, filtroAreaAsig.getasigsel());
+				if (login.getPerfil().equals("410") || login.getPerfil().equals("421")) {
+					pst.setString(posicion++, "1");
+				} else {
+					pst.setString(posicion++, "0");
+				}
+				
+				pst.executeUpdate();
+				pst.close();
+				con.commit();
+
+				ponerReporte(moduloAreaAsig, login.getUsuarioId(), rb3.getString("reportes.PathReportes") + archivozip + "", "zip", "" + archivozip, "-1", "ReporteInsertarEstado");// Estado -1
+				// System.out
+				// .println("Se insertn el ZIP en Reporte con estado -1");
+				siges.util.Logger.print(login.getUsuarioId(), "Petición de Resumen_Area/Asignatura:_Institucion:_" + login.getInstId()+ "_Usuario:_" + login.getUsuarioId() + "_NombreReporte:_" + archivozip + "",3, 1, this.toString());
+				cont = cola_reportes("puesto_del_reporte_area_asig");
+
+				if (cont != null && !cont.equals(""))
+					updatePuestoReporte(cont, archivozip, login.getUsuarioId(), "update_puesto_reporte_area_asig");
+			} else {
+				rs.close();
+				pst.close();
+				setMensaje("nYa existe una petición de este reporte con los mismos parámetros!");
+				request.setAttribute("mensaje", mensaje);
+				request.setAttribute("mensaje2", "Ya existe una petición de este reporte con los mismos parámetros!");
+				return false;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			ponerReporteMensaje("2", moduloAreaAsig, login.getUsuarioId(),rb3.getString("reportes.PathReportes") + archivozip + "", "zip", "" + archivozip,"ReporteActualizarBoletin", "Ocurrio excepcion en FiltroSave");
+			return false;
+		} finally {
+			try {
+				if (cursor != null)
+					cursor.cerrar();
+				if (util != null)
+					util.cerrar();
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeCallableStatement(cstmt);
+				OperacionesGenerales.closeConnection(con);
+			} catch (Exception e) {
+			}
+		}
+		return true;
 	}
 }

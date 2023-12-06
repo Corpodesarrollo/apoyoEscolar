@@ -21,6 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.CopyUtils;
@@ -65,6 +68,7 @@ public class Boletin{
 	private Thread t;
 	private String mensaje;
 	private String uriApiReport;
+	private long boletinTimer;
 	private boolean err;// variable que inidica si hay o no errores en la
 						// validacion de los datos del formulario
 	private ResourceBundle rPath, rbBol;
@@ -194,6 +198,7 @@ public class Boletin{
 					reporte = setReporte(rep);
 					parameters = setParametros(rep);
 					if (!procesar(rep, parameters, reporte)) {
+						System.out.println("No tengo datos para generar reportes");
 						rep.setDABOLFECHAFIN(new java.sql.Timestamp(System.currentTimeMillis()).toString());
 						bolDAO.updateSolicitud(rep.getDABOLCONSEC(), ParamsVO.ESTADO_REPORTE_NOGEN,	rep.getDABOLFECHAGEN(), rep.getDABOLFECHAFIN());
 						reporte.setEstado(ParamsVO.ESTADO_REPORTE_NOGEN);
@@ -277,6 +282,7 @@ public class Boletin{
 		int boletin = 1;
 		Connection con = null;
 		uriApiReport = rbBol.getString("boletines_uri_api_reporte");
+		boletinTimer = Long.parseLong(rbBol.getString("boletin_timer"));
 		try {
 			bolDAO.limpiarTablas(rep.getDABOLCONSEC());
 			rep.setDABOLFECHAGEN(new java.sql.Timestamp(System.currentTimeMillis()).toString());
@@ -376,35 +382,41 @@ public class Boletin{
 
 							String json = objectMapper.writeValueAsString(param);
 							System.out.println(json);
-
-							outputStreamWriter.write(json);
-							outputStreamWriter.flush();
-							outputStreamWriter.close();
-							// Obtener respuesta de la API
-							int responseCode = conn.getResponseCode();
-							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-							String line;
-							StringBuilder response = new StringBuilder();
-							while ((line = reader.readLine()) != null) {
-								response.append(line);
-							}
-							reader.close();
-							// Procesar la respuesta
-							if (responseCode == HttpURLConnection.HTTP_OK) {
-								System.out.println("Respuesta de la API:" + response.toString());
-								// Realizar operaciones adicionales con la
-								// respuesta obtenida
-								/* llamado al consumidor JMS */
-								//JmsListenerReport listenerReport = new JmsListenerReport(cursor, Integer.parseInt(String.valueOf(rep.getDABOLCONSEC())));
-								//listenerReport.starListening();
-								return true; // reporte en topic para ser generado de forma asincrona 
-							} else {
-								System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
-							}
-							// Cerrar conexión
-							conn.disconnect();
-							return true;
+							long tiempoActualEnMillis = System.currentTimeMillis();
+							System.out.println("inicio: "+tiempoActualEnMillis);
+							// retraso de ejecución de la API para dar espera a la ejecuión de SP
+							ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+							scheduler.schedule(() -> {							    
+								outputStreamWriter.write(json);
+								outputStreamWriter.flush();
+								outputStreamWriter.close();
+								// Obtener respuesta de la API
+								int responseCode = conn.getResponseCode();
+								BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+								
+								String line;
+								StringBuilder response = new StringBuilder();
+								while ((line = reader.readLine()) != null) {
+									response.append(line);
+								}
+								reader.close();
+								// Procesar la respuesta
+								if (responseCode == HttpURLConnection.HTTP_OK) {
+									System.out.println("Respuesta de la API:" + response.toString());
+									// Calcular la duración de la tarea
+									long tiempoFinalEnMillis = System.currentTimeMillis();
+									long duracionEnMillis = tiempoFinalEnMillis - tiempoActualEnMillis;
+									System.out.println("final: "+tiempoFinalEnMillis);
+									System.out.println("Duración de la tarea: " + duracionEnMillis + " milisegundos");									
+									return true; // reporte en topic para ser generado de forma asincrona 
+								} else {
+									System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+								}
+								// Cerrar conexión
+								conn.disconnect();
+								return true;
+							}, boletinTimer, TimeUnit.SECONDS);
+							//////////////////////////////////////////////////////////////////////							
 
 						} catch (JsonProcessingException e) {
 							e.printStackTrace();

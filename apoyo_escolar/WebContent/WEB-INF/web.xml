@@ -211,8 +211,6 @@
 		<servlet-class>siges.boletines.ControllerResumenArea</servlet-class>
 		<load-on-startup>6</load-on-startup>
 	</servlet>
-
-
 	<servlet>
 		<servlet-name>ResumenAsignatura</servlet-name>
 		<servlet-class>siges.boletines.ControllerResumenAsignatura
@@ -306,7 +304,12 @@
 <!-- 		</servlet-class> -->
 <!-- 		<load-on-startup>17</load-on-startup> -->
 <!-- 	</servlet> -->
-	
+	<servlet>
+		<servlet-name>ResumenAreaAsig</servlet-name>
+		<servlet-class>siges.boletines.ControllerResumenAreaAsig
+		</servlet-class>
+		<load-on-startup>7</load-on-startup>
+	</servlet>
 
 
 	<!--/SERVLETS QUE SE ALTERNAN EN LOS WARS -->
@@ -3115,6 +3118,11 @@
 			</param-value>
 		</init-param>
 		<init-param>
+			<param-name>sig4</param-name>
+			<param-value>/boletines/GenerarResumenAreaAsignatura.jsp
+			</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ant</param-name>
 			<param-value>/index.jsp</param-value>
 		</init-param>
@@ -3143,6 +3151,11 @@
 		<init-param>
 			<param-name>sig3</param-name>
 			<param-value>/boletines/NuevoConsultaPerdidaAsignaturas.jsp
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sig4</param-name>
+			<param-value>/boletines/GenerarResumenAreaAsignatura.jsp
 			</param-value>
 		</init-param>
 		<init-param>

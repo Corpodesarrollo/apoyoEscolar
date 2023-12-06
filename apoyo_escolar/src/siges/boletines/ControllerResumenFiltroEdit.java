@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import siges.boletines.beans.FiltroBeanResumenAreaAsig;
 import siges.boletines.beans.FiltroBeanResumenAreas;
 import siges.boletines.beans.FiltroBeanResumenAsignaturas;
 import siges.boletines.beans.FiltroConsultaAsignaturasPerdidas;
@@ -48,6 +49,8 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 	private FiltroBeanResumenAreas filtroAreas;
 	private FiltroBeanResumenAsignaturas filtroAsignaturas;
     private FiltroConsultaAsignaturasPerdidas filtroConsultaAisgnaturasPerdidas;
+    private FiltroBeanResumenAreaAsig filtroAreaAsig;
+    
 	/**
 	 * Procesa la peticion HTTP
 	 * 
@@ -61,6 +64,7 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 		session = request.getSession();
 		rb = ResourceBundle.getBundle("siges.boletines.bundle.resumen");
 		String sig, sig2,sig3;
+		String sig4;
 		String ant;
 		String er;
 		String home;
@@ -68,23 +72,24 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 		int tipo;
 		sig = getServletConfig().getInitParameter("sig");
 		sig2 = getServletConfig().getInitParameter("sig2");
-		//url de acceso a consulta de asignaturas perdidas
-		sig3= getServletConfig().getInitParameter("sig3");
+		sig3 = getServletConfig().getInitParameter("sig3"); //url de acceso a consulta de asignaturas perdidas
+		sig4 = getServletConfig().getInitParameter("sig4"); //url de acceso a consulta de asignaturas perdidas
 		ant = getServletConfig().getInitParameter("ant");
 		er = getServletContext().getInitParameter("error");
 		home = getServletContext().getInitParameter("home");
 		err = false;
 		mensaje = null;
+		
 		try {
 			cursor = new Cursor();
 			util = new Util(cursor);
 
-			if (request.getParameter("tipo") == null
-					|| ((String) request.getParameter("tipo")).equals("")) {
+			if (request.getParameter("tipo") == null || ((String) request.getParameter("tipo")).equals("")) {
 				session.removeAttribute("filtroResumenAreas");
 				tipo = 1;
 			} else
 				tipo = Integer.parseInt((String) request.getParameter("tipo"));
+			
 			if (!asignarBeans(request)) {
 				setMensaje("Error capturando datos de sesinn para el usuario");
 				request.setAttribute("mensaje", mensaje);
@@ -100,12 +105,17 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 				sig = sig2;
 				break;
 			case 3:
-				session.removeAttribute("alarma");				
+				session.removeAttribute("alarma");
 				filtroConsultaPerdidaAsignaturas(request);
 				session.removeAttribute("filtroResultado");
-				sig=sig3;
+				sig = sig3;
+				break;
+			case 32:
+				filtrosAreaAsig(request);
+				sig = sig4;
 				break;
 			}
+			
 			if (err) {
 				request.setAttribute("mensaje", mensaje);
 				return er;
@@ -173,12 +183,14 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 						login.getUsuarioId());
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
 				request.setAttribute("roldocasig", "1");
 			} else {
 				Collection colgg[] = util.getfiltroas(login.getInstId(),
 						Long.toString(login.getVigencia_inst()));
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
 				request.setAttribute("roldocasig", "0");
 			}
 		} catch (Throwable th) {
@@ -241,12 +253,14 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 						login.getUsuarioId());
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
 				request.setAttribute("roldocasig", "1");
 			} else {
 				Collection colgg[] = util.getfiltroas(login.getInstId(),
 						Long.toString(login.getVigencia_inst()));
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
 				request.setAttribute("roldocasig", "0");
 			}
 		} catch (Throwable th) {
@@ -308,12 +322,14 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 						login.getUsuarioId());
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
 				request.setAttribute("roldocasig", "1");
 			} else {
 				Collection colgg[] = util.getfiltroas(login.getInstId(),
 						Long.toString(login.getVigencia_inst()));
 				request.setAttribute("FiltroAreas", colgg[0]);
 				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
 				request.setAttribute("roldocasig", "0");
 			}
 		} catch (Throwable th) {
@@ -322,7 +338,60 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 		}
 	}
 
-	
+	public void filtrosAreaAsig(HttpServletRequest request) throws ServletException, IOException {
+
+		try {
+			borrarBeansFiltroAreaAsig(request);
+			// System.out.println("*********////*********nENTRn POR RESUMEN AREA ASIGNATURA!**********//**********");
+			Collection list;
+			String per;
+			Object[] o;
+			String s;
+			int z;
+			z = 0;
+			list = new ArrayList();
+			o = new Object[2];
+			o[z++] = new Integer(java.sql.Types.INTEGER);
+			o[z++] = login.getInstId();
+			list.add(o);
+			
+			if (request.getAttribute("filtroSedeF") == null)
+				request.setAttribute("filtroSedeF", util.getFiltro(rb.getString("filtroSedeInstitucion"), list));
+			
+			if (request.getAttribute("filtroJornadaF") == null)
+				request.setAttribute("filtroJornadaF", util.getFiltro(rb.getString("filtroSedeJornadaInstitucion"), list));
+			
+			if (request.getAttribute("filtroMetodologiaF") == null)
+				request.setAttribute("filtroMetodologiaF", util.getFiltro(rb.getString("listaMetodologiaInstitucion"), list));
+				Collection cc = util.getFiltro(rb.getString("filtroSedeJornadaGradoInstitucion2"), list);
+				request.setAttribute("filtroGradoF2", cc);
+			
+			if (request.getAttribute("filtroGrupoF") == null)
+				request.setAttribute("filtroGrupoF", util.getFiltro(rb.getString("filtroSedeJornadaGradoGrupoInstitucion"),list));
+			
+			if (request.getAttribute("filtroPeriodoF") == null)
+				request.setAttribute("filtroPeriodoF",getListaPeriodo(login.getLogNumPer(),login.getLogNomPerDef()));
+			
+			per = login.getPerfil();
+			
+			if (per.equals("422")) {
+				Collection colgg[] = util.getfiltroasdoc(login.getInstId(),Long.toString(login.getVigencia_inst()),login.getUsuarioId());
+				request.setAttribute("FiltroAreas", colgg[0]);
+				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
+				request.setAttribute("roldocasig", "1");
+			} else {
+				Collection colgg[] = util.getfiltroas(login.getInstId(),Long.toString(login.getVigencia_inst()));
+				request.setAttribute("FiltroAreas", colgg[0]);
+				request.setAttribute("FiltroAsignaturas", colgg[1]);
+				request.setAttribute("FiltroAreaAsig", colgg[0]);
+				request.setAttribute("roldocasig", "0");
+			}
+		} catch (Throwable th) {
+			th.printStackTrace();
+			throw new ServletException(th);
+		}
+	}
 	
 	/**
 	 * Inserta los valores por defecto para el bean de información bnsica con
@@ -335,11 +404,11 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 	public boolean asignarBeans(HttpServletRequest request)
 			throws ServletException, IOException {
 		login = (Login) session.getAttribute("login");
-		filtroAreas = (FiltroBeanResumenAreas) session
-				.getAttribute("filtroResumenAreas");
-		filtroAsignaturas = (FiltroBeanResumenAsignaturas) session
-				.getAttribute("filtroResumenAsignaturas");
+		filtroAreas = (FiltroBeanResumenAreas) session.getAttribute("filtroResumenAreas");
+		filtroAsignaturas = (FiltroBeanResumenAsignaturas) session.getAttribute("filtroResumenAsignaturas");
 		filtroConsultaAisgnaturasPerdidas= (FiltroConsultaAsignaturasPerdidas) session.getAttribute("filtroConsultaAsignaturasPerdidas");
+		filtroAreaAsig = (FiltroBeanResumenAreaAsig) session.getAttribute("filtroResumenAreaAsig");
+		
 		String sentencia = "";
 		return true;
 	}
@@ -381,6 +450,18 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 		session.removeAttribute("filtroConsultaAsignaturasPerdidas");
 		// System.out
 		// .println("nnnnnBorrn de sesinn el filtro de Resumen de Asignaturas!!!!");
+	}
+	
+	/**
+	 * Elimina del contexto de la sesion los beans de resumen area asignatura
+	 * 
+	 * @param HttpServletRequest
+	 *            request
+	 */
+	public void borrarBeansFiltroAreaAsig(HttpServletRequest request) throws ServletException, IOException {
+		session.removeAttribute("filtroResumenAreaAsig");
+		// System.out
+		// .println("nnnnnBorrn de sesinn el filtro de Resumen de Area Asignatura!!!!");
 	}
 
 	/**
@@ -443,7 +524,7 @@ public class ControllerResumenFiltroEdit extends HttpServlet {
 	public void setMensaje(String s) {
 		if (!err) {
 			err = true;
-			mensaje = "VERIFIQUE LA SIGUIENTE información: \n\n";
+			mensaje = "VERIFIQUE LA SIGUIENTE informaci�n: \n\n";
 		}
 		mensaje += "  - " + s + "\n";
 	}

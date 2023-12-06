@@ -274,7 +274,7 @@ public class Mailer {
 			}
 			reader.close();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Respuesta de la API:" + response.toString()); 
+				System.out.println("Respuesta de la API Mail:" + response.toString()); 
 				JsonNode jsonNode = objectMapper.readTree(response.toString());
 				token = jsonNode.get("token").asText();
 			} else {

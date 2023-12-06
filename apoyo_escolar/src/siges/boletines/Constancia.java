@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -59,6 +62,7 @@ public class Constancia{
 	private Thread t;
 	private String mensaje;
 	private String uriApiReport;
+	private long constanciaTimer;
 	private boolean err;// variable que inidica si hay o no errores en la
 						// validacion de los datos del formulario
 	private ResourceBundle r, rb3, rbBol;
@@ -178,6 +182,7 @@ public class Constancia{
 		int zise;
 		int posicion = 1;
 		uriApiReport = rbBol.getString("boletines_uri_api_reporte");
+		constanciaTimer = Long.parseLong(rbBol.getString("constancia_timer"));
 
 		try {
 			limpiarTablas(filtro.getUsuarioid());
@@ -255,29 +260,33 @@ public class Constancia{
 						String json = objectMapper.writeValueAsString(param);
 						System.out.println(json);
 						
-						outputStreamWriter.write(json);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-						// Obtener respuesta de la API
-						int responseCode = conn.getResponseCode();
-						BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-						
-						String line;
-						StringBuilder response = new StringBuilder();
-						while ((line = reader.readLine()) != null) {
-							response.append(line);
-						}
-						reader.close();
-						// Procesar la respuesta
-						if (responseCode == HttpURLConnection.HTTP_OK) {
-							System.out.println("Respuesta de la API:" + response.toString());						
-							return true; // reporte en topic para ser generado de forma asincrona 
-						} else {
-							System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
-						}
-						// Cerrar conexión
-						conn.disconnect();
-						return true;
+						ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+						scheduler.schedule(() -> {							    
+							outputStreamWriter.write(json);
+							outputStreamWriter.flush();
+							outputStreamWriter.close();
+							// Obtener respuesta de la API
+							int responseCode = conn.getResponseCode();
+							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+							
+							String line;
+							StringBuilder response = new StringBuilder();
+							while ((line = reader.readLine()) != null) {
+								response.append(line);
+							}
+							reader.close();
+							// Procesar la respuesta
+							if (responseCode == HttpURLConnection.HTTP_OK) {
+								System.out.println("Respuesta de la API:" + response.toString());																	
+								return true; // reporte en topic para ser generado de forma asincrona 
+							} else {
+								System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+							}
+							// Cerrar conexión
+							conn.disconnect();
+							return true;
+						}, constanciaTimer, TimeUnit.SECONDS);
+						//////////////////////////////////////////////////////////////////////
 						
 					} catch (JsonProcessingException e) {
 						e.printStackTrace();
@@ -356,29 +365,33 @@ public class Constancia{
 							String json = objectMapper.writeValueAsString(param);
 							System.out.println(json);
 							
-							outputStreamWriter.write(json);
-							outputStreamWriter.flush();
-							outputStreamWriter.close();
-							// Obtener respuesta de la API
-							int responseCode = conn.getResponseCode();
-							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-							
-							String line;
-							StringBuilder response = new StringBuilder();
-							while ((line = reader.readLine()) != null) {
-								response.append(line);
-							}
-							reader.close();
-							// Procesar la respuesta
-							if (responseCode == HttpURLConnection.HTTP_OK) {
-								System.out.println("Respuesta de la API:" + response.toString());						
-								return true; // reporte en topic para ser generado de forma asincrona 
-							} else {
-								System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
-							}
-							// Cerrar conexión
-							conn.disconnect();
-							return true;
+							ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+							scheduler.schedule(() -> {							    
+								outputStreamWriter.write(json);
+								outputStreamWriter.flush();
+								outputStreamWriter.close();
+								// Obtener respuesta de la API
+								int responseCode = conn.getResponseCode();
+								BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+								
+								String line;
+								StringBuilder response = new StringBuilder();
+								while ((line = reader.readLine()) != null) {
+									response.append(line);
+								}
+								reader.close();
+								// Procesar la respuesta
+								if (responseCode == HttpURLConnection.HTTP_OK) {
+									System.out.println("Respuesta de la API:" + response.toString());																	
+									return true; // reporte en topic para ser generado de forma asincrona 
+								} else {
+									System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+								}
+								// Cerrar conexión
+								conn.disconnect();
+								return true;
+							}, constanciaTimer, TimeUnit.SECONDS);
+							//////////////////////////////////////////////////////////////////////	
 							
 						} catch (JsonProcessingException e) {
 							e.printStackTrace();

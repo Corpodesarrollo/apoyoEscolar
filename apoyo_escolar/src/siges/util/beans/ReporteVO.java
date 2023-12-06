@@ -69,6 +69,9 @@ public class ReporteVO {
 	public static final String REP_RESUMENES_ASIG      = "Resúmenes Asignatura";
 	public static final int  _REP_RESUMENES_ASIG       = 23;
 	
+	public static final String REP_RESUMENES_AREA_ASIG = "Resúmenes Área Asignatura";
+	public static final int  _REP_RESUMENES_AREA_ASIG = 32;
+	
 	public static final String REP_HORARIOS_GRUP       = "Reportes de Horarios por grupo";
 	public static final int   _REP_HORARIOS_GRUP       = 24;
 	
@@ -173,6 +176,7 @@ public class ReporteVO {
     	lista.add(new ItemVO(_REP_LIBRO_NOTAS,REP_LIBRO_NOTAS));
     	lista.add(new ItemVO(_REP_RESUMENES_AREA, REP_RESUMENES_AREA));
     	lista.add(new ItemVO(_REP_RESUMENES_ASIG, REP_RESUMENES_ASIG));
+    	lista.add(new ItemVO(_REP_RESUMENES_AREA_ASIG, REP_RESUMENES_AREA_ASIG));
     	lista.add(new ItemVO(_REP_CERTIFICADOS, REP_CERTIFICADOS));
     	lista.add(new ItemVO(_REP_CONSTANCIAS, REP_CONSTANCIAS));
     	lista.add(new ItemVO(_REP_CARNES, REP_CARNES));

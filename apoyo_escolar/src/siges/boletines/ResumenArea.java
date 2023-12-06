@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -71,6 +74,7 @@ public class ResumenArea {
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;
 	private String uriApiReport;
+	private long resumenTimer;
 	private String mensaje;
 	private boolean err;// variable que inidica si hay o no errores en la
 						// validacion de los datos del formulario
@@ -447,6 +451,7 @@ public class ResumenArea {
 		int boletin = 1;
 		
 		uriApiReport = rb3.getString("boletines_uri_api_reporte");
+		resumenTimer = Long.parseLong(rb3.getString("resumen_timer"));
 
 		try {			
 			updateDatosBoletin("0", nombreBol, "-1", usuarioBol);
@@ -533,30 +538,35 @@ public class ResumenArea {
 						String json = objectMapper.writeValueAsString(param);
 						System.out.println(json);
 
-						outputStreamWriter.write(json);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-						// Obtener respuesta de la API
-						int responseCode = conn.getResponseCode();
-						BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-						String line;
-						StringBuilder response = new StringBuilder();
-						while ((line = reader.readLine()) != null) {
-							response.append(line);
-						}
-						reader.close();
-						// Procesar la respuesta
-						if (responseCode == HttpURLConnection.HTTP_OK) {
-							System.out.println("Respuesta de la API:" + response.toString());
-							updateDatosBoletin("0", nombreBol, "1", usuarioBol);
-							return true; // reporte en topic para ser generado de forma asincrona 
-						} else {
-							System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
-						}
-						// Cerrar conexión
-						conn.disconnect();
-						return true;
+						// retraso de ejecución de la API para dar espera a la ejecuión de SP
+						ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+						scheduler.schedule(() -> {							    
+							outputStreamWriter.write(json);
+							outputStreamWriter.flush();
+							outputStreamWriter.close();
+							// Obtener respuesta de la API
+							int responseCode = conn.getResponseCode();
+							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+							
+							String line;
+							StringBuilder response = new StringBuilder();
+							while ((line = reader.readLine()) != null) {
+								response.append(line);
+							}
+							reader.close();
+							// Procesar la respuesta
+							if (responseCode == HttpURLConnection.HTTP_OK) {
+								System.out.println("Respuesta de la API:" + response.toString());	
+								updateDatosBoletin("0", nombreBol, "1", usuarioBol);									
+								return true; // reporte en topic para ser generado de forma asincrona 
+							} else {
+								System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+							}
+							// Cerrar conexión
+							conn.disconnect();
+							return true;
+						}, resumenTimer, TimeUnit.SECONDS);
+						//////////////////////////////////////////////////////////////////////	
 
 					} catch (JsonProcessingException e) {
 						ponerReporteMensaje("2", modulo, usuarioBol,
@@ -665,30 +675,35 @@ public class ResumenArea {
 						String json = objectMapper.writeValueAsString(param);
 						System.out.println(json);
 
-						outputStreamWriter.write(json);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-						// Obtener respuesta de la API
-						int responseCode = conn.getResponseCode();
-						BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-						String line;
-						StringBuilder response = new StringBuilder();
-						while ((line = reader.readLine()) != null) {
-							response.append(line);
-						}
-						reader.close();
-						// Procesar la respuesta
-						if (responseCode == HttpURLConnection.HTTP_OK) {
-							System.out.println("Respuesta de la API:" + response.toString());
-							updateDatosBoletin("0", nombreBol, "1", usuarioBol);							
-							return true; // reporte en topic para ser generado de forma asincrona 
-						} else {
-							System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
-						}
-						// Cerrar conexión
-						conn.disconnect();
-						return true;
+						// retraso de ejecución de la API para dar espera a la ejecuión de SP
+						ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+						scheduler.schedule(() -> {							    
+							outputStreamWriter.write(json);
+							outputStreamWriter.flush();
+							outputStreamWriter.close();
+							// Obtener respuesta de la API
+							int responseCode = conn.getResponseCode();
+							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+							
+							String line;
+							StringBuilder response = new StringBuilder();
+							while ((line = reader.readLine()) != null) {
+								response.append(line);
+							}
+							reader.close();
+							// Procesar la respuesta
+							if (responseCode == HttpURLConnection.HTTP_OK) {
+								System.out.println("Respuesta de la API:" + response.toString());	
+								updateDatosBoletin("0", nombreBol, "1", usuarioBol);									
+								return true; // reporte en topic para ser generado de forma asincrona 
+							} else {
+								System.out.println("Error al llamar a la API. Código de respuesta:" + responseCode);
+							}
+							// Cerrar conexión
+							conn.disconnect();
+							return true;
+						}, resumenTimer, TimeUnit.SECONDS);
+						//////////////////////////////////////////////////////////////////////
 
 					} catch (JsonProcessingException e) {
 						e.printStackTrace();

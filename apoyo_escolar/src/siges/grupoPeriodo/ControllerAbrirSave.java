@@ -279,7 +279,8 @@ public class ControllerAbrirSave extends HttpServlet{
 						logPeriodo.setInstitucion(login.getInst());
 						logPeriodo.setSede(login.getSede());
 						logPeriodo.setJornada(login.getJornada());
-						logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+						logPeriodo.setPeriodo(cierreVO.getCiePer());
+						logPeriodo.setTipo("Cierre Periodo");
 						bitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornadaId()),
@@ -336,7 +337,8 @@ public class ControllerAbrirSave extends HttpServlet{
 			logPeriodo.setInstitucion(login.getInst());
 			logPeriodo.setSede(login.getSede());
 			logPeriodo.setJornada(login.getJornada());
-			logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+			logPeriodo.setPeriodo(cierreVO.getCiePer());
+			logPeriodo.setTipo("Abrir Periodo");
 			bitacoraCOM.insertarBitacora(
 					Long.parseLong(login.getInstId()), 
 					Integer.parseInt(login.getJornadaId()),
@@ -375,7 +377,8 @@ public class ControllerAbrirSave extends HttpServlet{
 				logPeriodo.setInstitucion(login.getInst());
 				logPeriodo.setSede(login.getSede());
 				logPeriodo.setJornada(login.getJornada());
-				logPeriodo.setPeriodo(abrirGrupo.getPeriodo());
+				logPeriodo.setPeriodo(cierreVO.getCiePer());
+				logPeriodo.setTipo("Cierre Periodo Total");
 				bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
 						Integer.parseInt(login.getJornadaId()),

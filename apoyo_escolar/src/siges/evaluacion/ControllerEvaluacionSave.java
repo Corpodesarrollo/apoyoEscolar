@@ -189,12 +189,12 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				case ParamsVO.EVAL_ASI:// asig
 					if (!insertarAsignatura(request, login, filtroEvaluacion)){
 						request.setAttribute("mensaje", mensaje);
-					} else {
-						String jsonBitacora = stringEvalAsignatura(notasOld, filtroEvaluacion);
+					} else {				
+						String[] arrString  = stringEvalAsignatura(notasOld, filtroEvaluacion);						
 						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornadaId()), 3, 
 								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
-								2202, 1, loginBitacora, jsonBitacora);
+								2202, Integer.parseInt(arrString[0]), loginBitacora, arrString[1]);
 						request.setAttribute("mensaje","Los datos fueron registrados satisfactoriamente");
 					}
 					return sig0 += "?tipo=" + tipo;
@@ -252,7 +252,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 	}
 
 
-	private String stringEvalAsignatura(List<String[]> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
+	private String[] stringEvalAsignatura(List<String[]> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
 		try {
 			List<LogEvaluacionDto> list = new ArrayList<LogEvaluacionDto>();
 			String[] newNotas = filtroEvaluacion.getNota();
@@ -291,11 +291,19 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				}
 				list.add(logEvaluacionDto);
 			}
+			String tipo = "2";
+			for (LogEvaluacionDto item : list) {
+				if (item.getNotaAnterior() == null && item.getNotaActualizada() != null) {
+					tipo = "1";
+				}
+			}
 			Gson gson = new Gson();
-			return gson.toJson(list);
+			String[] retorno = {tipo, gson.toJson(list)}; 
+			return retorno;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return e.getMessage();
+			String[] retorno = {e.getMessage()};
+			return retorno;
 		}
 	}
 

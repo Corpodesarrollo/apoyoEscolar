@@ -101,6 +101,7 @@ public class Params {
 	public static final int TIPOREP_BOLETINES = 1;
 	public static final int TIPOREP_ResumAreas = 2;
 	public static final int TIPOREP_ResumAsigS = 3;
+	public static final int TIPOREP_ResumAreaAsigS=3;
 	public static final int TIPOREP_BolPadreFla = 4;
 	public static final int TIPOREP_Certificados = 5;
 	public static final int TIPOREP_RepLibroNota = 6;

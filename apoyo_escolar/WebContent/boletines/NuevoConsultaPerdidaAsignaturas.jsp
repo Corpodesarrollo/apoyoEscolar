@@ -443,7 +443,8 @@ function guardar2(tipo){
 			  <a href="javaScript:lanzar(1)"><img src="../etc/img/tabs/resumen_eval_areas_0.gif" alt="Resumen de Evaluación de Áreas" width="84"  height="26" border="0"></a>
 			  <a href="javaScript:lanzar(2)"><img src="../etc/img/tabs/resumen_eval_asig_0.gif" alt="Resumen de Evaluación de Asignaturas" width="84" height="26" border="0"></a>
 			  <img src="../etc/img/tabs/resumen_eval_consulta_asi_1.png" alt="Consultar asignaturas perdidas" width="84" height="26" border="0">
-			  </td>
+			  <a href="javaScript:lanzar(32)"><img src="../etc/img/tabs/resumen_eval_area_asig_0.gif" alt="Resumen de Evaluación de Área Asignatura" width="84" height="26" border="0"></a>
+			</td>
 		</tr>
 		<tr>
 		</tr>

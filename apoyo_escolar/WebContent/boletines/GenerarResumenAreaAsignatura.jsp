@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=iso-8859-9" language="java" errorPage="" %><%@ page import="siges.util.Recursos" %>
-<jsp:useBean id="filtroResumenAreas" class="siges.boletines.beans.FiltroBeanResumenAreas" scope="session"/><jsp:setProperty name="filtroResumenAreas" property="*"/>
+<jsp:useBean id="filtroResumenAreaAsig" class="siges.boletines.beans.FiltroBeanResumenAreaAsig" scope="session"/><jsp:setProperty name="filtroResumenAreaAsig" property="*"/>
 <%@include file="../parametros.jsp"%>
  <link type="text/css" href="http://jquery-ui.googlecode.com/svn/tags/1.7/themes/redmond/jquery-ui.css" rel="stylesheet" />
  
@@ -157,7 +157,7 @@
 					}else
 						document.frm.areassel.value=areasselect;
 					document.frm.target="ModuloReportes";
-					document.frm.action='<c:url value="/boletines/FiltroGuardarAreas.jsp"/>';
+					document.frm.action='<c:url value="/boletines/FiltroGuardarAreaAsig.jsp"/>';
 					window.open("","ModuloReportes","width=800,height=500,menubar=yes,scrollbars=1").focus();
 					document.frm.submit();
 				}	
@@ -210,7 +210,7 @@
 							id_Hijos=new Array(); Hijos= new Array(); Sel_Hijos= new Array(); id_Padre= new Array(); var k=0;
 							<c:forEach begin="0" items="${requestScope.filtroJornadaF}" var="fila2">
 							<c:if test="${fila[0]==fila2[2]}">
-									Sel_Hijos[k] = '<c:if test="${sessionScope.login.perfil==410 || sessionScope.login.perfil==421}"><c:if test="${sessionScope.filtroResumenAreas.jornada== fila2[0]}">SELECTED</c:if></c:if><c:if test="${sessionScope.login.perfil!=410 && sessionScope.login.perfil!=421}"><c:if test="${sessionScope.login.jornadaId== fila2[0]}">SELECTED</c:if></c:if>';id_Hijos[k] = '<c:out value="${fila2[0]}"/>'; Hijos[k] = '<c:out value="${fila2[1]}"/>'; id_Padre[k] = '<c:out value="${fila2[2]}"/>'; k++;
+									Sel_Hijos[k] = '<c:if test="${sessionScope.login.perfil==410 || sessionScope.login.perfil==421}"><c:if test="${sessionScope.filtroResumenAreaAsig.jornada== fila2[0]}">SELECTED</c:if></c:if><c:if test="${sessionScope.login.perfil!=410 && sessionScope.login.perfil!=421}"><c:if test="${sessionScope.login.jornadaId== fila2[0]}">SELECTED</c:if></c:if>';id_Hijos[k] = '<c:out value="${fila2[0]}"/>'; Hijos[k] = '<c:out value="${fila2[1]}"/>'; id_Padre[k] = '<c:out value="${fila2[2]}"/>'; k++;
 							</c:if></c:forEach>
 							Padres[<c:out value="${st.index}"/>] = new Padre(id_Hijos, Hijos, Sel_Hijos,id_Padre);
 						</c:forEach>						
@@ -236,7 +236,7 @@
 					var id=0;
 					<c:if test="${!empty requestScope.filtroSedeF && !empty requestScope.filtroJornadaF && !empty requestScope.filtroGradoF2 && !empty requestScope.filtroMetodologiaF}">var Padres = new Array();
 						<c:forEach begin="0" items="${requestScope.filtroJornadaF}" var="fila2"  varStatus="st"><c:forEach begin="0" items="${requestScope.filtroMetodologiaF}" var="fila4">id_Hijos=new Array(); Hijos= new Array(); Sel_Hijos= new Array(); id_Padre= new Array(); var k=0;
-						<c:forEach begin="0" items="${requestScope.filtroGradoF2}" var="fila3"><c:if test="${fila2[2]==fila3[3] && fila2[0]==fila3[4] && fila3[5]==fila4[0]}">Sel_Hijos[k] = '<c:if test="${sessionScope.filtroResumenAreas.grado== fila3[0]}">SELECTED</c:if>';id_Hijos[k] = '<c:out value="${fila3[0]}"/>'; Hijos[k] = '<c:out value="${fila3[1]}"/>'; id_Padre[k] = '<c:out value="${fila3[3]}"/>|<c:out value="${fila3[4]}"/>|<c:out value="${fila3[5]}"/>'; k++;</c:if></c:forEach>
+						<c:forEach begin="0" items="${requestScope.filtroGradoF2}" var="fila3"><c:if test="${fila2[2]==fila3[3] && fila2[0]==fila3[4] && fila3[5]==fila4[0]}">Sel_Hijos[k] = '<c:if test="${sessionScope.filtroResumenAreaAsig.grado== fila3[0]}">SELECTED</c:if>';id_Hijos[k] = '<c:out value="${fila3[0]}"/>'; Hijos[k] = '<c:out value="${fila3[1]}"/>'; id_Padre[k] = '<c:out value="${fila3[3]}"/>|<c:out value="${fila3[4]}"/>|<c:out value="${fila3[5]}"/>'; k++;</c:if></c:forEach>
 						Padres[id++] = new Padre(id_Hijos, Hijos, Sel_Hijos,id_Padre);</c:forEach></c:forEach>
 						var niv=combo_padre.options[combo_padre.selectedIndex].value+'|'+combo_padre2.options[combo_padre2.selectedIndex].value+'|'+combo_padre3.options[combo_padre3.selectedIndex].value;
 						var val_padre = -9;
@@ -268,7 +268,7 @@
 							id_Hijos=new Array(); Hijos= new Array(); Sel_Hijos= new Array(); id_Padre= new Array(); var k=0;
 							<c:forEach begin="0" items="${requestScope.filtroGrupoF}" var="fila3">
 								<c:if test="${fila2[0]==fila3[4] && fila2[3]==fila3[2] && fila2[4]==fila3[3] && fila2[5]==fila3[5]}">
-									Sel_Hijos[k] = '<c:if test="${sessionScope.filtroResumenAreas.grupo== fila3[0]}">SELECTED</c:if>';
+									Sel_Hijos[k] = '<c:if test="${sessionScope.filtroResumenAreaAsig.grupo== fila3[0]}">SELECTED</c:if>';
 									id_Hijos[k] = '<c:out value="${fila3[0]}"/>'; 
 									Hijos[k] = '<c:out value="${fila3[1]}"/>'; 
 									id_Padre[k] = '<c:out value="${fila3[2]}"/>|<c:out value="${fila3[3]}"/>|<c:out value="${fila3[5]}"/>|<c:out value="${fila3[4]}"/>'; k++;
@@ -294,9 +294,10 @@
 			}
 		</script>
 <%@include file="../mensaje.jsp"%>
-	<form method="post" name="frm" onSubmit="return validarForma(frm)" action='<c:url value="/boletines/FiltroGuardarAreas.jsp"/>' >
+	<form method="post" name="frm" onSubmit="return validarForma(frm)" action='<c:url value="/boletines/FiltroGuardarAreaAsig.jsp"/>' >
 	<table border="0" align="center" width="100%">
-	<caption>Generar Resumen de &Aacute;reas</caption>
+	<caption>Generar Resumen de evaluaciones
+			&Aacute;rea/Asignatura</caption>
 		<tr>
 		  <td width="45%" bgcolor="#FFFFFF">
       	<input class='boton' name="cmd1" type="button" value="Generar" onClick="guardar(document.frm.tipo.value)">
@@ -311,20 +312,20 @@
 	<input type="hidden" name="areassel" value="0">
 	<input type="hidden" name="asigsel" value="0">
 	<INPUT TYPE="hidden" NAME="ext2"  VALUE=''><INPUT TYPE="hidden" NAME="height" VALUE='180'>
-	<input type="hidden" name="sedenom" value='<c:out value="${sessionScope.filtroResumenAreas.sedenom}"/>'>
-	<input type="hidden" name="jornadanom" value='<c:out value="${sessionScope.filtroResumenAreas.jornadanom}"/>'>
-	<input type="hidden" name="metodologianom" value='<c:out value="${sessionScope.filtroResumenAreas.metodologianom}"/>'>
-	<input type="hidden" name="gradonom" value='<c:out value="${sessionScope.filtroResumenAreas.gradonom}"/>'>
-	<input type="hidden" name="gruponom" value='<c:out value="${sessionScope.filtroResumenAreas.gruponom}"/>'>
-	<input type="hidden" name="periodonom" value='<c:out value="${sessionScope.filtroResumenAreas.periodonom}"/>'>
+	<input type="hidden" name="sedenom" value='<c:out value="${sessionScope.filtroResumenAreaAsig.sedenom}"/>'>
+	<input type="hidden" name="jornadanom" value='<c:out value="${sessionScope.filtroResumenAreaAsig.jornadanom}"/>'>
+	<input type="hidden" name="metodologianom" value='<c:out value="${sessionScope.filtroResumenAreaAsig.metodologianom}"/>'>
+	<input type="hidden" name="gradonom" value='<c:out value="${sessionScope.filtroResumenAreaAsig.gradonom}"/>'>
+	<input type="hidden" name="gruponom" value='<c:out value="${sessionScope.filtroResumenAreaAsig.gruponom}"/>'>
+	<input type="hidden" name="periodonom" value='<c:out value="${sessionScope.filtroResumenAreaAsig.periodonom}"/>'>
 
 	<table border="0" align="center" width="100%">
 		<tr height="1">
 			<td rowspan="2" width="420">
-			  <img src="../etc/img/tabs/resumen_eval_areas_1.gif" alt="Resumen de Evaluación de Áreas" width="84"  height="26" border="0">
+			  <a href="javaScript:lanzar(1)"><img src="../etc/img/tabs/resumen_eval_areas_0.gif" alt="Resumen de Evaluación de Áreas" width="84"  height="26" border="0"></a>
 			  <a href="javaScript:lanzar(2)"><img src="../etc/img/tabs/resumen_eval_asig_0.gif" alt="Resumen de Evaluación de Asignaturas" width="84" height="26" border="0"></a>
 			  <a href="javaScript:lanzar(3)"><img src="../etc/img/tabs/resumen_eval_consulta_asi_0.png" alt="Consultar asignaturas perdidas" width="84" height="26" border="0"></a>
-			  <a href="javaScript:lanzar(32)"><img src="../etc/img/tabs/resumen_eval_area_asig_0.gif" alt="Resumen de Evaluación de Área Asignatura" width="84" height="26" border="0"></a>
+			  <img src="../etc/img/tabs/resumen_eval_area_asig_1.gif" alt="Resumen de Evaluación de Área Asignatura" width="84" height="26" border="0">
 			  </td>
 		</tr>
 		<tr>
@@ -337,7 +338,7 @@
 				<select name="sede" onChange='filtro(document.frm.sede, document.frm.jornada,document.frm.grado,document.frm.grupo,document.frm.metodologia)' style='width:300px;<c:if test="${sessionScope.login.perfil!=410 && sessionScope.login.perfil!=421}">display:none;</c:if>'>
 					<option value='-9'>-- Seleccione una --</option>
 					<c:forEach begin="0" items="${requestScope.filtroSedeF}" var="fila">
-						<option value="<c:out value="${fila[0]}"/>" <c:if test="${sessionScope.login.perfil==410 || sessionScope.login.perfil==421}"><c:if test="${sessionScope.filtroResumenAreas.sede== fila[0]}">SELECTED</c:if></c:if> <c:if test="${sessionScope.login.perfil!=410 && sessionScope.login.perfil!=421}"><c:if test="${sessionScope.login.sedeId== fila[0]}">SELECTED</c:if></c:if> ><c:out value="${fila[1]}"/></option>
+						<option value="<c:out value="${fila[0]}"/>" <c:if test="${sessionScope.login.perfil==410 || sessionScope.login.perfil==421}"><c:if test="${sessionScope.filtroResumenAreaAsig.sede== fila[0]}">SELECTED</c:if></c:if> <c:if test="${sessionScope.login.perfil!=410 && sessionScope.login.perfil!=421}"><c:if test="${sessionScope.login.sedeId== fila[0]}">SELECTED</c:if></c:if> ><c:out value="${fila[1]}"/></option>
 					</c:forEach>
 				</select>											
 		  </td>
@@ -354,7 +355,7 @@
 	      <select name="metodologia" style='width:120px;' onChange='filtro2(document.frm.sede,document.frm.jornada,document.frm.metodologia,document.frm.grado,document.frm.grupo)'>
 	      <option value='-9'>-- Seleccione una --</option>
 	      <c:forEach begin="0" items="${requestScope.filtroMetodologiaF}" var="fila">
-				<option value="<c:out value="${fila[0]}"/>" <c:if test="${sessionScope.filtroResumenAreas.metodologia==fila[0]}">SELECTED</c:if>><c:out value="${fila[1]}"/></option>
+				<option value="<c:out value="${fila[0]}"/>" <c:if test="${sessionScope.filtroResumenAreaAsig.metodologia==fila[0]}">SELECTED</c:if>><c:out value="${fila[1]}"/></option>
 	      </c:forEach>
 	      </select>
       </td>
@@ -395,9 +396,9 @@
 		
 		<tr style='display:none;'>
 			<td>Reporte en formato EXCEL:</td>
-			<td><input type="radio" name="formato" value="1"  <c:if test="${sessionScope.filtroResumenAreas.formato== '1'}"></c:if>></td>
+			<td><input type="radio" name="formato" value="1"  <c:if test="${sessionScope.filtroResumenAreaAsig.formato== '1'}"></c:if>></td>
 			<td>Reporte en formato PDF:</td>
-			<td><input type="radio" name="formato" value="2" <c:if test="${sessionScope.filtroResumenAreas.formato== '2'}"></c:if>></td>
+			<td><input type="radio" name="formato" value="2" <c:if test="${sessionScope.filtroResumenAreaAsig.formato== '2'}"></c:if>></td>
 		</tr>
 	</TABLE>
 <!--//////////////////////////////-->

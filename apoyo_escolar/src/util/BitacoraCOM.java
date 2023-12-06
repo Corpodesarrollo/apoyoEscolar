@@ -19,7 +19,7 @@ public class BitacoraCOM {
 	private ResourceBundle rb;
 	
 	public BitacoraCOM(){
-		rb = ResourceBundle.getBundle("siges.plantilla.bundle.plantilla");
+		rb = ResourceBundle.getBundle("common");
 	}
 	
 	public String insertarBitacora(long colegio,int jornada,int modulo,String perfil,int sede,int submodulo,int tipoLog,String usuario, String descripcion){
