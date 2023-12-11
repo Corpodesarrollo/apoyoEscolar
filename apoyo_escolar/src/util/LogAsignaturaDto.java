@@ -10,7 +10,7 @@ public class LogAsignaturaDto {
 	private String vigencia;
 	@SerializedName("Metodolog&iacute;a")
 	private String metodologia;
-	@SerializedName("Area")
+	@SerializedName("&Aacute;rea")
 	private String area;
 	@SerializedName("Nombre")
 	private String nombre;

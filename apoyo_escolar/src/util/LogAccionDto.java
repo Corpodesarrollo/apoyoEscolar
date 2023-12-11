@@ -16,7 +16,7 @@ public class LogAccionDto {
 		return this.fechaExpedicion;
 	}
 
-	@SerializedName("Departamento de expedicion")
+	@SerializedName("Departamento de expedici&oacute;n")
 	private String departamentoExpedicion;
 
 	public void setDepartamentoExpedicion(String departamentoExpedicion)
@@ -29,7 +29,7 @@ public class LogAccionDto {
 		return this.departamentoExpedicion;
 	}
 
-	@SerializedName("Municipio de expedicion")
+	@SerializedName("Municipio de expedici&oacute;n")
 	private String municipioExpedicion;
 
 	public void setMunicipioExpedicion(String municipioExpedicion)
@@ -68,7 +68,7 @@ public class LogAccionDto {
 		return this.municipioNacieminto;
 	}
 
-	@SerializedName("Telefono 1")
+	@SerializedName("Tel&eacute;fono 1")
 	private String telefono1;
 
 	public void setTelefono1(String telefono1)
@@ -81,7 +81,7 @@ public class LogAccionDto {
 		return this.telefono1;
 	}
 
-	@SerializedName("Telefono 2")
+	@SerializedName("Tel&eacute;fono 2")
 	private String telefono2;
 
 	public void setTelefono2(String telefono2)
@@ -94,7 +94,7 @@ public class LogAccionDto {
 		return this.telefono2;
 	}
 
-	@SerializedName("Correo electronico institucional")
+	@SerializedName("Correo electr&oacute;nico institucional")
 	private String correoInstitucional;
 
 	public void setCorreoInstitucional(String correoInstitucional)
@@ -107,7 +107,7 @@ public class LogAccionDto {
 		return this.correoInstitucional;
 	}
 
-	@SerializedName("Correo electronico personal")
+	@SerializedName("Correo electr&oacute;nico personal")
 	private String correoPersonal;
 
 	public void setCorreoPersonal(String correoPersonal)
@@ -120,7 +120,7 @@ public class LogAccionDto {
 		return this.correoPersonal;
 	}
 
-	@SerializedName("Direccion de residencia")
+	@SerializedName("Direcci&oacute;n de residencia")
 	private String direccionResidencia;
 
 	public void setDireccionResidencia(String direccionResidencia)

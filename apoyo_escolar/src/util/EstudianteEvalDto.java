@@ -1,7 +1,10 @@
 package util;
 
+import com.google.gson.annotations.SerializedName;
+
 public class EstudianteEvalDto {
 
+	@SerializedName("C&oacute;digo")
 	private Long codigo;
 
 	public void setCodigo(Long codigo){
@@ -12,6 +15,7 @@ public class EstudianteEvalDto {
 		return this.codigo;
 	}
 
+	@SerializedName("Tipo de identificaci&oacute;n")
 	private String tipoIdentificacion;
 
 	public void setTipoIdentificacion(String tipoIdentificacion){
@@ -22,6 +26,7 @@ public class EstudianteEvalDto {
 		return this.tipoIdentificacion;
 	}
 
+	@SerializedName("N&uacute;mero de identificaci&oacute;n")
 	private String numeroIdentificacion;
 
 	public void setNumeroIdentificacion(String numeroIdentificacion){
@@ -32,6 +37,7 @@ public class EstudianteEvalDto {
 		return this.numeroIdentificacion;
 	}
 
+	@SerializedName("Nombre completo")
 	private String nombreCompleto;
 
 	public void setNombreCompleto(String nombreCompleto){
@@ -42,6 +48,7 @@ public class EstudianteEvalDto {
 		return this.nombreCompleto;
 	}
 
+	@SerializedName("Nota")
 	private Float nota;
 
 	public void setNota(Float nota){

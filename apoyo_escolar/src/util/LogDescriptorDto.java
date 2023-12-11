@@ -5,30 +5,47 @@ import com.google.gson.annotations.SerializedName;
 public class LogDescriptorDto {
 	@SerializedName("Identificador de registro")
 	private	String identificadorRegistro;
+	
 	@SerializedName("Vigencia")
 	private String vigencia;
-	@SerializedName("Metodologia")
+	
+	@SerializedName("Metodolog&iacute;a")
 	private String metodología;
+	
 	@SerializedName("Docente")
 	private String docente;
+	
 	@SerializedName("Grado")
 	private String grado;
-	@SerializedName("Area")
+	
+	@SerializedName("&Aacute;rea")
 	private String area;
+	
 	@SerializedName("Periodo inicial")
 	private int periodoInicial;
+	
 	@SerializedName("Periodo final")
 	private int periodoFinal;
+	
 	@SerializedName("Logro")
 	private String logro;
+	
 	@SerializedName("Abreviatura")
 	private String abreviatura;
+	
+	@SerializedName("Orden")
 	private int orden;
+	
+	@SerializedName("Comentario")
 	private String comentario;
-	@SerializedName("tipo de descriptor")
+	
+	@SerializedName("Tipo de descriptor")
 	private String tipoDescriptor; 
-	@SerializedName("tipo de origen de dato")
+	
+	@SerializedName("Tipo de origen de dato")
 	private String tipoOrigenDato;
+	
+	@SerializedName("Descripci&oacute;n")
 	private String descripcion;
 	
 	public String getIdentificadorRegistro() {

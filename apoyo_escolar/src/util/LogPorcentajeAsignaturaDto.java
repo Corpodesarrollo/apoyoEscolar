@@ -63,7 +63,7 @@ public class LogPorcentajeAsignaturaDto {
 		return this.porcentaje;
 	}
 
-	@SerializedName("Area")
+	@SerializedName("&Aacute;rea")
 	private String area;
 
 	public void setArea(String area)

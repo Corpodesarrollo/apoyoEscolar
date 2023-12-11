@@ -3,7 +3,7 @@ package util;
 import com.google.gson.annotations.SerializedName;
 
 public class LogPersonalDto {
-	@SerializedName("Fotografia")
+	@SerializedName("Fotograf&iacute;a")
 	private String foto;
 
 	public void setFoto(String foto){

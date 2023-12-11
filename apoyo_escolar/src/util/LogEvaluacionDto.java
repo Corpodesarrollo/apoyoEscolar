@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class LogEvaluacionDto {
 
-	@SerializedName("Numero Identificacion")
+	@SerializedName("N&uacute;mero Identificaci&oacute;n")
 	private String numeroIdentificacion;
 
 	public void setNumeroIdentificacion(String numeroIdentificacion){

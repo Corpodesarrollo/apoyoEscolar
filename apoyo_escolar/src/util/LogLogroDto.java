@@ -3,30 +3,42 @@ package util;
 import com.google.gson.annotations.SerializedName;
 
 public class LogLogroDto {
-	@SerializedName("identificador de registro")
+	@SerializedName("Identificador de registro")
 	private String identificadorRegistro;
+	
 	@SerializedName("Vigencia")
 	private String vigencia;
+	
 	@SerializedName("Metodolog&iacute;a")
 	private String metodologia;
+	
 	@SerializedName("Grado")
 	private String grado;
+	
 	@SerializedName("Asignatura")
 	private String asignatura;
+	
 	@SerializedName("Periodo inicial")
 	private int periodoInicial;
+	
 	@SerializedName("Periodo final")
 	private int periodoFinal;
+	
 	@SerializedName("Logro")
 	private String logro;
+	
 	@SerializedName("Abreviatura")
 	private String abreviatura;
+	
 	@SerializedName("Orden")
 	private int orden;
+	
 	@SerializedName("Comentario")
 	private String comentario;
-	@SerializedName("tipo de cargue")
+	
+	@SerializedName("Tipo de cargue")
 	private String tipoCargue;
+	
 	public String getIdentificadorRegistro() {
 		return identificadorRegistro;
 	}

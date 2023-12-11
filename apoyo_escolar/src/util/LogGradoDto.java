@@ -5,10 +5,13 @@ import com.google.gson.annotations.SerializedName;
 public class LogGradoDto {
 	@SerializedName("Grado")
 	private String grado;
-	@SerializedName("intensidad horaria")
+	
+	@SerializedName("Intensidad horaria")
 	private String intensidadHoraria;
+	
 	@SerializedName("Estado")
 	private String estado;
+	
 	public String getGrado() {
 		return grado;
 	}

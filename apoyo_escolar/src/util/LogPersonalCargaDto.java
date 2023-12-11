@@ -14,7 +14,7 @@ public class LogPersonalCargaDto {
 		return this.docente;
 	}
 	
-	@SerializedName("Institucion")
+	@SerializedName("Instituci&oacute;n")
 	private String institucion;
 
 	public void setInstitucion(String institucion){

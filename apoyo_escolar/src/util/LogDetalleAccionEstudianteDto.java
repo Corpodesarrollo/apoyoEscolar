@@ -42,7 +42,7 @@ public class LogDetalleAccionEstudianteDto {
 		return this.seccionSalud;
 	}
 
-	@SerializedName("Informacion de Convivenvia - Registrar")
+	@SerializedName("Informaci&oacute;n de Convivencia - Registrar")
 	private String informacionConvivencia;
 
 	public void setInformacionConvivencia(String informacionConvivencia)

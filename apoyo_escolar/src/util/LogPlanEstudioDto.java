@@ -4,16 +4,21 @@ import com.google.gson.annotations.SerializedName;
 
 public class LogPlanEstudioDto {
 
-	@SerializedName("identificador de registro")
+	@SerializedName("Identificador de registro")
 	private long IdentificadorRegistro;
+	
 	@SerializedName("Vigencia")
 	private String vigencia;
+	
 	@SerializedName("Metodolog&iacute;a")
 	private String metodologia;
-	@SerializedName("Criterio de evaluacion")
+	
+	@SerializedName("Criterio de evaluaci&oacute;n")
 	private String criterioEvaluacion;
-	@SerializedName("Procedimiento de evaluacion")
+	
+	@SerializedName("Procedimiento de evaluaci&oacute;n")
 	private String procedimientoEvaluacion;
+	
 	@SerializedName("Planes de apoyo")
 	private String planesApoyo;
 	

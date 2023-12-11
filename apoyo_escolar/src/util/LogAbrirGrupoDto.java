@@ -13,7 +13,7 @@ public class LogAbrirGrupoDto extends LogCerrarPeriodoDto{
 		return this.metodologia;
 	}
 	
-	@SerializedName("Area")
+	@SerializedName("&Aacute;rea")
 	private String area;
 	
 	public void setArea(String area){
@@ -23,7 +23,7 @@ public class LogAbrirGrupoDto extends LogCerrarPeriodoDto{
 		return this.area;
 	}
 	
-	@SerializedName("Dimension")
+	@SerializedName("Dimensi&oacute;n")
 	private String dimension;
 	
 	public void setDimension(String dimension){

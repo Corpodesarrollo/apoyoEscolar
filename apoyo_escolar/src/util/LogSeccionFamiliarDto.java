@@ -29,7 +29,7 @@ public class LogSeccionFamiliarDto {
 		return this.tipoDocumento;
 	}
 
-	@SerializedName("N° de identificaci&oacute;n")
+	@SerializedName("N&uacute;mero de identificaci&oacute;n")
 	private String noDeIdentificacion;
 
 	public void setNoDeIdentificacion(String noDeIdentificacion)
@@ -42,7 +42,7 @@ public class LogSeccionFamiliarDto {
 		return this.noDeIdentificacion;
 	}
 
-	@SerializedName("Primer nombre	")
+	@SerializedName("Primer nombre")
 	private String primerNombre;
 
 	public void setPrimerNombre(String primerNombre)
