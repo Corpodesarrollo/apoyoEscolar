@@ -15,15 +15,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.validator.GenericValidator;
 
-import siges.personal.beans.GrupoVO;
-
 import siges.dao.Cursor;
 import siges.estudiante.beans.AsistenciaVO;
 import siges.estudiante.beans.Convivencia;
 import siges.login.beans.Login;
 import siges.personal.beans.FormacionVO;
+import siges.personal.beans.GrupoVO;
 import siges.personal.beans.LaboralVO;
 import siges.personal.beans.Personal;
+import siges.personal.beans.RotDocAsigGradoGrupoVO;
+import siges.personal.beans.RotDocAsigGradoVO;
 import siges.personal.dao.PersonalDAO;
 import siges.util.Properties;
 
@@ -70,13 +71,13 @@ public class ControllerNuevoEdit extends HttpServlet {
 	private static final int TIPO_CARGA = 8;
 
 	private static final int TIPO_FOTO = 9;
-	
+
 	private static final int TIPO_LISTA_CARGA = 10;
-	
+
 	private static final int TIPO_AJAX_LISTA_CARGA = 11;
-	
+
 	private static final int TIPO_GRUPOS_CARGA = 12;
-	
+
 	private static final int TIPO_GRUPOS_GUARDAR = 13;
 
 	/**
@@ -87,8 +88,8 @@ public class ControllerNuevoEdit extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public String process(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public String process(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		rb = ResourceBundle.getBundle("siges.personal.bundle.personal");
 		String ant;
 		String er;
@@ -108,7 +109,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 		String sig9 = getServletConfig().getInitParameter("sig9");
 		String sig10 = getServletConfig().getInitParameter("sig10");
 		String sig12 = getServletConfig().getInitParameter("sig12");
-		//String sig13 = getServletConfig().getInitParameter("sig13");
+		// String sig13 = getServletConfig().getInitParameter("sig13");
 		String ajax1 = getServletConfig().getInitParameter("ajax1");
 		ant = getServletConfig().getInitParameter("ant");
 		er = getServletContext().getInitParameter("error");
@@ -141,12 +142,10 @@ public class ControllerNuevoEdit extends HttpServlet {
 				// System.out.println("personal " + personal.getPernumdocum());
 				if (personal.getPerVigencia() == 0) {
 					if (GenericValidator.isLong(login.getInstId().trim())) {
-						personal.setPerVigencia((int) personalDAO
-								.getVigenciaInst(Long.parseLong(login
-										.getInstId().trim())));
+						personal.setPerVigencia(
+								(int) personalDAO.getVigenciaInst(Long.parseLong(login.getInstId().trim())));
 					} else {
-						personal.setPerVigencia((int) personalDAO
-								.getVigenciaNumerico());
+						personal.setPerVigencia((int) personalDAO.getVigenciaNumerico());
 					}
 				}
 			}
@@ -218,19 +217,15 @@ public class ControllerNuevoEdit extends HttpServlet {
 		}
 	}
 
-	public void editarLaboral(HttpServletRequest request, Personal personal)
-			throws ServletException, IOException {
-		String boton = (request.getParameter("cmd") != null) ? request
-				.getParameter("cmd") : new String("");
-		String r = (request.getParameter("r") != null) ? request
-				.getParameter("r") : new String("");
+	public void editarLaboral(HttpServletRequest request, Personal personal) throws ServletException, IOException {
+		String boton = (request.getParameter("cmd") != null) ? request.getParameter("cmd") : new String("");
+		String r = (request.getParameter("r") != null) ? request.getParameter("r") : new String("");
 		if (boton.equals("Editar") && personal != null) {
 			LaboralVO laboralVO = personalDAO.asignarLaboral(personal, r);
 			if (laboralVO != null) {
 				laboralVO.setLabEstado("1");
 				request.getSession().setAttribute("laboralVO", laboralVO);
-				request.getSession().setAttribute("laboralVO2",
-						laboralVO.clone());
+				request.getSession().setAttribute("laboralVO2", laboralVO.clone());
 			} else {
 				setMensaje(personalDAO.getMensaje());
 			}
@@ -248,35 +243,29 @@ public class ControllerNuevoEdit extends HttpServlet {
 			}
 		}
 		if (personal != null) {
-			request.setAttribute("filtroLaboral",personalDAO.getLaborales(personal));
+			request.setAttribute("filtroLaboral", personalDAO.getLaborales(personal));
 		}
 	}
 
-	public void editarAsistencia(HttpServletRequest request, Personal personal)
-			throws ServletException, IOException {
+	public void editarAsistencia(HttpServletRequest request, Personal personal) throws ServletException, IOException {
 		// System.out.println("editarAsistencia ");
 
 		request.getSession().removeAttribute("asistenciaVO");
 		request.getSession().removeAttribute("asistenciaVO2");
 
 		try {
-			String boton = (request.getParameter("cmd") != null) ? request
-					.getParameter("cmd") : new String("");
+			String boton = (request.getParameter("cmd") != null) ? request.getParameter("cmd") : new String("");
 
-			String r = (request.getParameter("r") != null) ? request
-					.getParameter("r") : new String("");
+			String r = (request.getParameter("r") != null) ? request.getParameter("r") : new String("");
 			String tipo = "2";
 			String msgk = (String) request.getAttribute("mensaje");
 			// System.out.println("msg " + msgk);
 			if (boton.equals("Editar") && personal != null) {
-				AsistenciaVO asistenciaVO = personalDAO.asignarAsistencia(
-						personal, tipo, r);
+				AsistenciaVO asistenciaVO = personalDAO.asignarAsistencia(personal, tipo, r);
 				if (asistenciaVO != null) {
 					asistenciaVO.setAsiEstado("1");
-					request.getSession().setAttribute("asistenciaVO",
-							asistenciaVO);
-					request.getSession().setAttribute("asistenciaVO2",
-							asistenciaVO.clone());
+					request.getSession().setAttribute("asistenciaVO", asistenciaVO);
+					request.getSession().setAttribute("asistenciaVO2", asistenciaVO.clone());
 				} else {
 					setMensaje(personalDAO.getMensaje());
 				}
@@ -296,8 +285,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 				}
 			}
 			if (personal != null) {
-				request.setAttribute("filtroAsistencia",
-						personalDAO.getAsistencias(tipo, personal));
+				request.setAttribute("filtroAsistencia", personalDAO.getAsistencias(tipo, personal));
 			}
 
 		} catch (Exception e) {
@@ -312,8 +300,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 	 * @param HttpServletRequest
 	 *            request
 	 */
-	public void borrarBeans(HttpServletRequest request)
-			throws ServletException, IOException {
+	public void borrarBeans(HttpServletRequest request) throws ServletException, IOException {
 		request.getSession().removeAttribute("nuevoPersonal");
 		request.getSession().removeAttribute("nuevoPersonal2");
 		request.getSession().removeAttribute("nuevoConvivencia");
@@ -329,16 +316,14 @@ public class ControllerNuevoEdit extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public boolean asignarBeans(HttpServletRequest request)
-			throws ServletException, IOException {
+	public boolean asignarBeans(HttpServletRequest request) throws ServletException, IOException {
 		if (request.getSession().getAttribute("login") == null
 				|| request.getSession().getAttribute("nuevoPersonal2") == null)
 			return false;
 		return true;
 	}
 
-	public void editarSedeJornada(HttpServletRequest request, Login login)
-			throws ServletException, IOException {
+	public void editarSedeJornada(HttpServletRequest request, Login login) throws ServletException, IOException {
 		int z = 0;
 		Collection list = null;
 		Object[] o = null;
@@ -349,22 +334,13 @@ public class ControllerNuevoEdit extends HttpServlet {
 			o[z++] = new Integer(java.sql.Types.INTEGER);
 			o[z++] = login.getInstId();
 			list.add(o);
-			request.getSession().setAttribute(
-					"filtroSedeF",
-					personalDAO.getFiltro(
-							rb.getString("filtroSedeInstitucion"), list));
-			request.getSession()
-					.setAttribute(
-							"filtroJornadaF",
-							personalDAO.getFiltro(rb
-									.getString("filtroSedeJornadaInstitucion"),
-									list));
-			request.getSession().setAttribute(
-					"filtroJornadasInstitucion",
-					personalDAO.getFiltro(
-							rb.getString("filtroJornadasInstitucion"), list));
-			request.getSession().setAttribute("filtroPerfilF",
-					personalDAO.getPerfiles());
+			request.getSession().setAttribute("filtroSedeF",
+					personalDAO.getFiltro(rb.getString("filtroSedeInstitucion"), list));
+			request.getSession().setAttribute("filtroJornadaF",
+					personalDAO.getFiltro(rb.getString("filtroSedeJornadaInstitucion"), list));
+			request.getSession().setAttribute("filtroJornadasInstitucion",
+					personalDAO.getFiltro(rb.getString("filtroJornadasInstitucion"), list));
+			request.getSession().setAttribute("filtroPerfilF", personalDAO.getPerfiles());
 		} catch (Exception e) {
 			System.out.println("Excepcion " + e);
 		}
@@ -378,21 +354,16 @@ public class ControllerNuevoEdit extends HttpServlet {
 	 * @param HttpServletRequest
 	 *            request
 	 */
-	public void editarConvivencia(HttpServletRequest request, Personal personal)
-			throws ServletException, IOException {
+	public void editarConvivencia(HttpServletRequest request, Personal personal) throws ServletException, IOException {
 		// System.out.println("entor editarConvivencia");
-		String boton = (request.getParameter("cmd") != null) ? request
-				.getParameter("cmd") : new String("");
-		String r = (request.getParameter("r") != null) ? request
-				.getParameter("r") : new String("");
+		String boton = (request.getParameter("cmd") != null) ? request.getParameter("cmd") : new String("");
+		String r = (request.getParameter("r") != null) ? request.getParameter("r") : new String("");
 		if (boton.equals("Editar") && personal != null) {
 			Convivencia convivencia = personalDAO.asignarConvivencia(r);
 			if (convivencia != null) {
 				convivencia.setEstado("1");
-				request.getSession().setAttribute("nuevoConvivencia",
-						convivencia);
-				request.getSession().setAttribute("nuevoConvivencia2",
-						convivencia.clone());
+				request.getSession().setAttribute("nuevoConvivencia", convivencia);
+				request.getSession().setAttribute("nuevoConvivencia2", convivencia.clone());
 			} else
 				setMensaje(personalDAO.getMensaje());
 		}
@@ -409,7 +380,8 @@ public class ControllerNuevoEdit extends HttpServlet {
 		}
 		try {
 			if (request.getSession().getAttribute("filtroTipoConvivencia") == null)
-				request.getSession().setAttribute("filtroTipoConvivencia",personalDAO.getFiltro(rb.getString("personal.convivencia")));
+				request.getSession().setAttribute("filtroTipoConvivencia",
+						personalDAO.getFiltro(rb.getString("personal.convivencia")));
 			if (personal != null) {
 				Collection lista = new ArrayList();
 				Object[] o = new Object[2];
@@ -420,8 +392,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 				// System.out.println("personal.getPernumdocum()"
 				// + personal.getPernumdocum());
 				lista.add(o);
-				Collection cc = personalDAO.getFiltro(
-						rb.getString("personal.convivencias"), lista);
+				Collection cc = personalDAO.getFiltro(rb.getString("personal.convivencias"), lista);
 				// System.out.println("tamano" + cc.size());
 				request.getSession().setAttribute("filtroConvivencia", cc);
 			} else {
@@ -443,8 +414,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 
@@ -456,8 +426,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String s = process(request, response);
 		if (s != null && !s.equals(""))
 			ir(1, s, request, response);
@@ -466,7 +435,8 @@ public class ControllerNuevoEdit extends HttpServlet {
 	/**
 	 * Redirige el control a otro servlet
 	 * 
-	 * @param int a: 1=redirigir como 'include', 2=redirigir como 'forward'
+	 * @param int
+	 *            a: 1=redirigir como 'include', 2=redirigir como 'forward'
 	 * @param String
 	 *            s
 	 * @param HttpServletRequest
@@ -474,8 +444,8 @@ public class ControllerNuevoEdit extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public void ir(int a, String s, HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public void ir(int a, String s, HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		if (cursor != null)
 			cursor.cerrar();
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(s);
@@ -500,18 +470,15 @@ public class ControllerNuevoEdit extends HttpServlet {
 		mensaje += "  - " + s + "\n";
 	}
 
-	public void editarFormacion(HttpServletRequest request, Personal personal)
-			throws ServletException, IOException {
-		String boton = (request.getParameter("cmd") != null) ? request
-				.getParameter("cmd") : new String("");
-		String r = (request.getParameter("r") != null) ? request
-				.getParameter("r") : new String("");
+	public void editarFormacion(HttpServletRequest request, Personal personal) throws ServletException, IOException {
+		String boton = (request.getParameter("cmd") != null) ? request.getParameter("cmd") : new String("");
+		String r = (request.getParameter("r") != null) ? request.getParameter("r") : new String("");
 		if (boton.equals("Editar") && personal != null) {
 			FormacionVO formacionVO = personalDAO.asignarFormacion(personal, r);
 			if (formacionVO != null) {
 				formacionVO.setForEstado("1");
 				request.getSession().setAttribute("formacionVO", formacionVO);
-				request.getSession().setAttribute("formacionVO2",formacionVO.clone());
+				request.getSession().setAttribute("formacionVO2", formacionVO.clone());
 			} else {
 				setMensaje(personalDAO.getMensaje());
 			}
@@ -529,39 +496,41 @@ public class ControllerNuevoEdit extends HttpServlet {
 			}
 		}
 		if (personal != null) {
-			request.setAttribute("filtroFormacion",personalDAO.getFormaciones(personal));
+			request.setAttribute("filtroFormacion", personalDAO.getFormaciones(personal));
 		}
 	}
-	
-	public void gruposGrado(HttpServletRequest request, Login login,Personal personal) throws ServletException, IOException {
-		
-		request.setAttribute("nombreGradoSeleccionado",request.getParameter("nombreGradoSeleccionado"));
-		request.setAttribute("NombreAsignaturaSeleccionada",request.getParameter("nombreAsignaturaSeleccionada"));
-		
-		if(request.getParameter("sedeSeleccionada")!= null && request.getParameter("jornadaSeleccionada") != null && request.getParameter("gradoSeleccionado") != null
-				&& request.getParameter("asignaturaSeleccionada")!= null ){
+
+	public void gruposGrado(HttpServletRequest request, Login login, Personal personal)
+			throws ServletException, IOException {
+
+		request.setAttribute("nombreGradoSeleccionado", request.getParameter("nombreGradoSeleccionado"));
+		request.setAttribute("NombreAsignaturaSeleccionada", request.getParameter("nombreAsignaturaSeleccionada"));
+
+		if (request.getParameter("sedeSeleccionada") != null && request.getParameter("jornadaSeleccionada") != null
+				&& request.getParameter("gradoSeleccionado") != null
+				&& request.getParameter("asignaturaSeleccionada") != null) {
 			int sedeSeleccionada = Integer.parseInt(request.getParameter("sedeSeleccionada"));
 			int jornadaSeleccionada = Integer.parseInt(request.getParameter("jornadaSeleccionada"));
 			int gradoSeleccionado = Integer.parseInt(request.getParameter("gradoSeleccionado"));
 			int asignaturaSeleccionada = Integer.parseInt(request.getParameter("asignaturaSeleccionada"));
-			request.setAttribute("asignaturaSeleccionada", ""+asignaturaSeleccionada);
-			
+			request.setAttribute("asignaturaSeleccionada", "" + asignaturaSeleccionada);
+
 			List listaGruposDocente = new ArrayList();
-			if(request.getParameter("rotdagdocente")!= null && request.getParameter("rotdagVigencia")!= null){
+			if (request.getParameter("rotdagdocente") != null && request.getParameter("rotdagVigencia") != null) {
 				long idDocente = Long.parseLong(request.getParameter("rotdagdocente"));
 				int vigencia = Integer.parseInt(request.getParameter("rotdagVigencia"));
-				listaGruposDocente = personalDAO.getGruposDocente(idDocente, asignaturaSeleccionada, vigencia); 
+				listaGruposDocente = personalDAO.getGruposDocente(idDocente, asignaturaSeleccionada, vigencia);
 				request.getSession().setAttribute("listaGruposDocente", listaGruposDocente);
 			}
-			
-			
+
 			List listaGrupos = new ArrayList();
 			try {
 				int metodologia = Integer.parseInt(request.getParameter("metodologiaSeleccionada"));
-				listaGrupos = personalDAO.getGruposInstSedeJornadaGradoMetodologia(Long.parseLong(login.getInstId()),sedeSeleccionada,jornadaSeleccionada,gradoSeleccionado, metodologia);
+				listaGrupos = personalDAO.getGruposInstSedeJornadaGradoMetodologia(Long.parseLong(login.getInstId()),
+						sedeSeleccionada, jornadaSeleccionada, gradoSeleccionado, metodologia);
 				request.getSession().removeAttribute("listaGrupos");
-				if(listaGrupos != null && listaGrupos.size() > 0){
-					request.getSession().setAttribute("listaGrupos",listaGrupos);
+				if (listaGrupos != null && listaGrupos.size() > 0) {
+					request.getSession().setAttribute("listaGrupos", listaGrupos);
 				}
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
@@ -572,86 +541,215 @@ public class ControllerNuevoEdit extends HttpServlet {
 			}
 		}
 	}
-	
-	public void asignarValoresFiltros(HttpServletRequest request, Login login,Personal personal) throws ServletException, IOException {
-		if(request.getParameter("sedeSeleccionada")!= null && Integer.parseInt(request.getParameter("sedeSeleccionada"))>0){
+
+	public void asignarValoresFiltros(HttpServletRequest request, Login login, Personal personal)
+			throws ServletException, IOException {
+		if (request.getParameter("sedeSeleccionada") != null
+				&& Integer.parseInt(request.getParameter("sedeSeleccionada")) > 0) {
 			int sedeSeleccionada = Integer.parseInt(request.getParameter("sedeSeleccionada"));
 			request.getSession().removeAttribute("sedeSeleccionada");
-			request.getSession().setAttribute("sedeSeleccionada", ""+sedeSeleccionada);
-		}else{
+			request.getSession().setAttribute("sedeSeleccionada", "" + sedeSeleccionada);
+		} else {
 			request.getSession().removeAttribute("sedeSeleccionada");
 		}
-		if(request.getParameter("jornadaSeleccionada")!= null && Integer.parseInt(request.getParameter("jornadaSeleccionada"))>0){
+		if (request.getParameter("jornadaSeleccionada") != null
+				&& Integer.parseInt(request.getParameter("jornadaSeleccionada")) > 0) {
 			int jornadaSeleccionada = Integer.parseInt(request.getParameter("jornadaSeleccionada"));
 			request.getSession().removeAttribute("jornadaSeleccionada");
-			request.getSession().setAttribute("jornadaSeleccionada", ""+jornadaSeleccionada);
-		}else{
+			request.getSession().setAttribute("jornadaSeleccionada", "" + jornadaSeleccionada);
+		} else {
 			request.getSession().removeAttribute("jornadaSeleccionada");
 		}
 		int metodologiaSeleccionada = 0;
-		if(request.getParameter("metodologiaSeleccionada")!= null && Integer.parseInt(request.getParameter("metodologiaSeleccionada"))>0){
+		if (request.getParameter("metodologiaSeleccionada") != null
+				&& Integer.parseInt(request.getParameter("metodologiaSeleccionada")) > 0) {
 			metodologiaSeleccionada = Integer.parseInt(request.getParameter("metodologiaSeleccionada"));
 			request.getSession().removeAttribute("metodologiaSeleccionada");
-			request.getSession().setAttribute("metodologiaSeleccionada", ""+metodologiaSeleccionada);
-		}else{
+			request.getSession().setAttribute("metodologiaSeleccionada", "" + metodologiaSeleccionada);
+		} else {
 			request.getSession().removeAttribute("metodologiaSeleccionada");
 		}
-		if(metodologiaSeleccionada > 0){
-			request.getSession().setAttribute("maximoHorasAsignaturas",personalDAO.getMaximoIntensidadHorariaAsignatura(Long.parseLong(login.getInstId()), personal.getPerVigencia(), metodologiaSeleccionada));
-		}else{
+		if (metodologiaSeleccionada > 0) {
+			request.getSession().setAttribute("maximoHorasAsignaturas",
+					personalDAO.getMaximoIntensidadHorariaAsignatura(Long.parseLong(login.getInstId()),
+							personal.getPerVigencia(), metodologiaSeleccionada));
+		} else {
 			request.getSession().removeAttribute("maximoHorasAsignaturas");
 		}
-			
-		
-		
+
 	}
-	
-	public void guardarGruposDocente(HttpServletRequest request, Login login,Personal personal) throws ServletException, IOException {
-		if(request.getParameter("asignaturaSeleccionada")!= null && request.getParameter("rotdagdocente")!=null && request.getParameter("rotdagVigencia")!= null){
-			String[] gruposAIngresar= null;
-			if(request.getParameterValues("checkBoxGruposDocente_")!= null){
-				gruposAIngresar= request.getParameterValues("checkBoxGruposDocente_");
+
+	public void guardarGruposDocente(HttpServletRequest request, Login login, Personal personal)
+			throws ServletException, IOException {
+		if (request.getParameter("asignaturaSeleccionada") != null && request.getParameter("rotdagdocente") != null
+				&& request.getParameter("rotdagVigencia") != null) {
+			String[] gruposAIngresar = null;
+			if (request.getParameterValues("checkBoxGruposDocente_") != null) {
+				gruposAIngresar = request.getParameterValues("checkBoxGruposDocente_");
 			}
-			
+
 			long asignatura = Integer.parseInt(request.getParameter("asignaturaSeleccionada"));
 			long idDocente = Long.parseLong(request.getParameter("rotdagdocente"));
 			int vigencia = Integer.parseInt(request.getParameter("rotdagVigencia"));
-			
-			List listaGrupos = (List)request.getSession().getAttribute("listaGrupos");
+
+			List listaGrupos = (List) request.getSession().getAttribute("listaGrupos");
 			List listaGruposDeseleccionados = new ArrayList();
-			listaGruposDeseleccionados =  ((List) ((ArrayList) listaGrupos).clone());
-			
-			if(listaGrupos != null && listaGrupos.size()>0 && gruposAIngresar != null){
-			
+			listaGruposDeseleccionados = ((List) ((ArrayList) listaGrupos).clone());
+
+			if (listaGrupos != null && listaGrupos.size() > 0 && gruposAIngresar != null) {
+
 				Iterator iteradorGrupos = listaGrupos.iterator();
-				while (iteradorGrupos.hasNext()){
+				while (iteradorGrupos.hasNext()) {
 					GrupoVO grupo = (GrupoVO) iteradorGrupos.next();
-					for(int j = 0; j< gruposAIngresar.length; j++){
+					for (int j = 0; j < gruposAIngresar.length; j++) {
 						long grupoAIngresar = Long.parseLong(gruposAIngresar[j]);
-						if(grupo.getGruCodigoJerarquiaGrupo().longValue() == grupoAIngresar){
+
+						if (grupo.getGruCodigoJerarquiaGrupo().longValue() == grupoAIngresar) {
 							personalDAO.insertarGruposDocente(asignatura, idDocente, grupoAIngresar, vigencia);
+							actualizarAsigAcadeDocAzul(grupo.getGruCodigoJerarquia(), idDocente, asignatura,
+									grupo.getGruCodigo(), vigencia, "crear");
 							listaGruposDeseleccionados.remove(grupo);
 						}
 					}
 				}
 			}
-			//Remover no seleccionados
+			// Remover no seleccionados
 			Iterator iteradorGruposDeseleccionados = listaGruposDeseleccionados.iterator();
 			GrupoVO grupoDeseleccionado = null;
-			while (iteradorGruposDeseleccionados.hasNext()){
+
+			while (iteradorGruposDeseleccionados.hasNext()) {
 				grupoDeseleccionado = (GrupoVO) iteradorGruposDeseleccionados.next();
-				boolean eliminaRegistro = personalDAO.eliminarGruposDocente(idDocente, asignatura, vigencia, grupoDeseleccionado.getGruCodigoJerarquiaGrupo().longValue());
-				String llaveCompuesta = grupoDeseleccionado.getGruCodigoJerarquiaGrupo().longValue() + "-" + idDocente + "-" + asignatura + "-" + vigencia;
-				if (eliminaRegistro) { personalDAO.insetrarMensajeRegistroBorrado(llaveCompuesta, "borrado desde la funcion guardarGruposDocente");}
+				System.out.println("REGISTRO grupoDeseleccionado ==> " + grupoDeseleccionado.toString());
+
+				boolean eliminaRegistro = personalDAO.eliminarGruposDocente(idDocente, asignatura, vigencia,
+						grupoDeseleccionado.getGruCodigoJerarquiaGrupo().longValue());
+				String llaveCompuesta = grupoDeseleccionado.getGruCodigoJerarquiaGrupo().longValue() + "-" + idDocente
+						+ "-" + asignatura + "-" + vigencia;
+
+				if (eliminaRegistro) {
+					personalDAO.insetrarMensajeRegistroBorrado(llaveCompuesta,
+							"borrado desde la funcion guardarGruposDocente");
+					actualizarAsigAcadeDocAzul(grupoDeseleccionado.getGruCodigoJerarquia(), idDocente, asignatura,
+							grupoDeseleccionado.getGruCodigo(), vigencia, "eliminar");
+				}
 			}
-			
+
 			setMensaje("Operacion Satisfecha");
 		}
 	}
-	
-		
-	
-	public void editarCarga(HttpServletRequest request, Login login,Personal personal) throws ServletException, IOException {
+
+	@SuppressWarnings("unchecked")
+	public void actualizarAsigAcadeDocAzul(long jerCodigoGrado, long idDocente, long asignatura, int grupo,
+			int vigencia, String accion) {
+		System.out.println(
+				"DATOS ENTRADA ==> jerCodigoGrado: " + jerCodigoGrado + ", idDocente: " + idDocente + ", asignatura: "
+						+ asignatura + ", grupo: " + grupo + ", vigencia: " + vigencia + ", accion: " + accion + "  ");
+
+		List<RotDocAsigGradoGrupoVO> listHrDocenteXGradoAzul = null;
+		List<RotDocAsigGradoVO> listHrDocenteXGradoNaranja = null;
+		int horaNaranja = 0;
+		int horaAzul = 0;
+		RotDocAsigGradoGrupoVO rotDocAsigGradoGrupoVO = null;
+
+		/*
+		 * [] - Accion crear nuevo registros con grupo para ver en el AZUL: -
+		 * GRUPO: Siempre guardar el primer registro con el valor maximo de
+		 * horas por asignatura y el resto en cero - GRUPO: Si existe registros
+		 * por el grado y se agrega uno se crea con cero - GRADO: Si aumentan
+		 * numero de horas, teniendo registros de grupo, asignar el valor hora
+		 * al primer grupo, controlando que no pase los valores del maximo por
+		 * asignatura - GRADO y GRUPO: Si registran grupos sin haber almacenado
+		 * grado, se crearan en cero los registros en el azul, pero una ves se
+		 * digite la hora debe minimo actualizar uno de los registros [] -
+		 * Accion eliminar cuando deseleccione en naraja, eliminar registro en
+		 * tabla de AA AZUL - GRUPO: Se elimina registro de grupo del naranja,
+		 * se debe eliminar registro de la tabla azul - GRADO:Si eliminan horas
+		 * del input grado, eliminar registros de grupos si tienen y registros
+		 * de tabla azul si existen [] - Generar migracion de datos historico de
+		 * asignaciones del naranja al azul para que se visualice
+		 * 
+		 */
+
+		listHrDocenteXGradoNaranja = (List<RotDocAsigGradoVO>) personalDAO.consultarHrDocenteXGradoNaranja(idDocente,
+				asignatura, vigencia, jerCodigoGrado);
+		System.out.println("listHrDocenteXGradoNaranja ==> " + listHrDocenteXGradoNaranja.toString());
+
+		// VALIDA: Si existe registro de grado con horas, se asignara al primer
+		// registro
+		if (listHrDocenteXGradoNaranja != null && !listHrDocenteXGradoNaranja.isEmpty()) {
+			horaNaranja = listHrDocenteXGradoNaranja.get(0).getRotDagIhtotal();
+		}
+		System.out.println("horaNaranja ==> " + horaNaranja);
+
+		listHrDocenteXGradoAzul = (List<RotDocAsigGradoGrupoVO>) personalDAO.consultarHrDocenteXGradoAzul(idDocente,
+				asignatura, vigencia, jerCodigoGrado);
+		System.out.println("listHrDocenteXGradoAzul ==> " + listHrDocenteXGradoAzul.toString());
+
+		for (RotDocAsigGradoGrupoVO reg : listHrDocenteXGradoAzul) {
+			if (reg.getRotDagGgrupo() > 0 && grupo > 0 && reg.getRotDagGgrupo() == grupo){
+				rotDocAsigGradoGrupoVO = reg;	
+			}			
+			horaAzul = (horaAzul < reg.getRotDagGih()) ? reg.getRotDagGih() : horaAzul;
+		}
+		System.out.println("horaAzul ==> " + horaAzul);
+
+		if (accion.equalsIgnoreCase("crear")) {
+
+			if (rotDocAsigGradoGrupoVO != null) {
+				System.out.println("ENTRO 1 ==> ");
+
+				/*
+				 * // VALIDA: Si existen registros con valores de hora, se
+				 * creara con hora cero, de lo contrario se validara si existe
+				 * horas if (horaAzul > 0){ System.out.println("INSERT 1 ==> ");
+				 * personalDAO.insertarHrDocenteXGradoGrupoAzul(jerCodigoGrado,
+				 * idDocente, asignatura, grupo, vigencia, 0); } else {
+				 * System.out.println("INSERT 2 ==> ");
+				 * personalDAO.insertarHrDocenteXGradoGrupoAzul(jerCodigoGrado,
+				 * idDocente, asignatura, grupo, vigencia, horaNaranja); }
+				 */
+
+			} else {
+				System.out.println("ENTRO 2 ==> ");
+
+				if ((horaAzul == 0)) {
+					System.out.println("INSERT 1 ==> ");
+					personalDAO.insertarHrDocenteXGradoGrupoAzul(jerCodigoGrado, idDocente, asignatura, grupo, vigencia,
+							horaNaranja);
+				} else {
+					System.out.println("INSERT 2 ==> ");
+					personalDAO.insertarHrDocenteXGradoGrupoAzul(jerCodigoGrado, idDocente, asignatura, grupo, vigencia,
+							0);
+				}
+			}
+
+		} else if (accion.equalsIgnoreCase("eliminar")) {
+			System.out.println("INGRESO A ELIMINAR ==> ");
+			System.out.println("REGISTROS ==> "+ listHrDocenteXGradoAzul.size());
+
+			if (listHrDocenteXGradoAzul.size() > 1) {
+				System.out.println("INGRESO A ACTUALIZAR 2 ==> ");
+				
+				for (RotDocAsigGradoGrupoVO reg : listHrDocenteXGradoAzul) {
+					if (reg.getRotDagGgrupo() != grupo) {
+						System.out.println("REG. ==> "+ reg.toString());
+						System.out.println("grupo. ==> "+ grupo);
+						reg.setRotDagGih(reg.getRotDagGih() + rotDocAsigGradoGrupoVO.getRotDagGih());
+						personalDAO.actualizarHrDocenteXGradoGrupoAzul(reg.getRotDagGjergrado(),
+								reg.getRotDagGdocente(), reg.getRotDagGasignatura(), reg.getRotDagGgrupo(),
+								reg.getRotDagGvigencia(), reg.getRotDagGih());
+						break;
+					}
+				}
+			}
+
+			personalDAO.eliminarHrDocenteXGradoGrupoAzul(jerCodigoGrado, idDocente, asignatura, grupo, vigencia);
+
+		}
+	}
+
+	public void editarCarga(HttpServletRequest request, Login login, Personal personal)
+			throws ServletException, IOException {
 		// String
 		// boton=(request.getParameter("cmd")!=null)?request.getParameter("cmd"):new
 		// String("");
@@ -667,24 +765,30 @@ public class ControllerNuevoEdit extends HttpServlet {
 			o[1] = login.getInstId();
 			list.add(o);
 			// traer la lista de metodologias
-			request.setAttribute("filtroMetodologiaF",personalDAO.getFiltro(rb.getString("Lista.MetodologiaInstitucion"), list));
+			request.setAttribute("filtroMetodologiaF",
+					personalDAO.getFiltro(rb.getString("Lista.MetodologiaInstitucion"), list));
 			o = new Object[2];
 			o[0] = Properties.ENTEROLARGO;
 			o[1] = personal.getPernumdocum();
 			list.add(o);
 			request.setAttribute("ihTotal", (personalDAO.getFiltroArray(rb.getString("Lista.ihTotal"), list))[0]);
 			// sedes,jornadas
-			request.setAttribute("filtroSedeF",personalDAO.getFiltro(rb.getString("Lista.filtroSedeInstitucion"), list));
-			request.setAttribute("filtroJornadaF", personalDAO.getFiltro(rb.getString("Lista.filtroSedeJornadaInstitucion"), list));
+			request.setAttribute("filtroSedeF",
+					personalDAO.getFiltro(rb.getString("Lista.filtroSedeInstitucion"), list));
+			request.setAttribute("filtroJornadaF",
+					personalDAO.getFiltro(rb.getString("Lista.filtroSedeJornadaInstitucion"), list));
 			o = new Object[2];
 			o[0] = Properties.ENTEROLARGO;
 			o[1] = String.valueOf(personal.getPerVigencia());
 			list.add(o);
 			// carga
 			request.setAttribute("cargaDocente", personalDAO.getFiltro(rb.getString("Lista.FijarDocente"), list));
-			request.setAttribute("cargaTotal",personalDAO.getCargaHorariaTotal(Long.parseLong(personal.getPernumdocum()), Long.parseLong(login.getInstId()), personal.getPerVigencia()));
-			
-			//request.setAttribute("cargaTotal",personalDAO.getFiltroMatriz(rb.getString("Lista.FijarDocente2"), list));
+			request.setAttribute("cargaTotal",
+					personalDAO.getCargaHorariaTotal(Long.parseLong(personal.getPernumdocum()),
+							Long.parseLong(login.getInstId()), personal.getPerVigencia()));
+
+			// request.setAttribute("cargaTotal",personalDAO.getFiltroMatriz(rb.getString("Lista.FijarDocente2"),
+			// list));
 			request.setAttribute("ihTotal2", (personalDAO.getFiltroArray(rb.getString("Lista.ihTotal2"), list))[0]);
 			list = new ArrayList();
 			// traer asignaturas
@@ -693,11 +797,13 @@ public class ControllerNuevoEdit extends HttpServlet {
 			o[1] = login.getInstId();
 			list.add(o);
 			int metodologiaSeleccionada = 0;
-			if(request.getSession().getAttribute("metodologiaSeleccionada")!= null && Integer.parseInt(request.getSession().getAttribute("metodologiaSeleccionada").toString())>0){
-				metodologiaSeleccionada = Integer.parseInt(request.getSession().getAttribute("metodologiaSeleccionada").toString());
+			if (request.getSession().getAttribute("metodologiaSeleccionada") != null
+					&& Integer.parseInt(request.getSession().getAttribute("metodologiaSeleccionada").toString()) > 0) {
+				metodologiaSeleccionada = Integer
+						.parseInt(request.getSession().getAttribute("metodologiaSeleccionada").toString());
 				request.getSession().removeAttribute("metodologiaSeleccionada");
-				request.getSession().setAttribute("metodologiaSeleccionada", ""+metodologiaSeleccionada);
-			}else{
+				request.getSession().setAttribute("metodologiaSeleccionada", "" + metodologiaSeleccionada);
+			} else {
 				request.getSession().removeAttribute("metodologiaSeleccionada");
 			}
 			o = new Object[2];
@@ -708,13 +814,16 @@ public class ControllerNuevoEdit extends HttpServlet {
 			 * o = new Object[2]; o[0] = Properties.ENTEROLARGO; o[1] =
 			 * login.getMetodologiaId(); list.add(o);
 			 */
-			request.getSession().setAttribute("filtroAsignatura", personalDAO.getAsignaturasMetodologia(rb.getString("Lista.AsignaturaMetodologia"),login.getInstId(),personal.getPerVigencia(),metodologiaSeleccionada));
+			request.getSession().setAttribute("filtroAsignatura",
+					personalDAO.getAsignaturasMetodologia(rb.getString("Lista.AsignaturaMetodologia"),
+							login.getInstId(), personal.getPerVigencia(), metodologiaSeleccionada));
 			// traer los grados asignatura
 			o = new Object[2];
 			o[0] = Properties.ENTEROLARGO;
 			o[1] = personal.getPernumdocum();
 			list.add(o);
-			request.setAttribute("filtroGradoAsignatura",personalDAO.getFiltro(rb.getString("Lista.filtroGradoAsignatura"), list));
+			request.setAttribute("filtroGradoAsignatura",
+					personalDAO.getFiltro(rb.getString("Lista.filtroGradoAsignatura"), list));
 			// traer todos los grados de la institucion-metodologia
 			list = new ArrayList();
 			o = new Object[2];
@@ -726,7 +835,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 			 * login.getMetodologiaId(); list.add(o);
 			 */
 
-			request.getSession().setAttribute("filtroGrados",personalDAO.getFiltro(rb.getString("listaGrados"), list));
+			request.getSession().setAttribute("filtroGrados", personalDAO.getFiltro(rb.getString("listaGrados"), list));
 			// VIGENCIA
 			/*
 			 * int vig = (int) personalDAO.getVigenciaNumerico(); List l = new
@@ -735,7 +844,7 @@ public class ControllerNuevoEdit extends HttpServlet {
 			 * request.setAttribute("listaVigencia", l);
 			 */
 			request.removeAttribute("listaVigencia");
-			request.setAttribute("listaVigencia",personalDAO.getListaVigencia());
+			request.setAttribute("listaVigencia", personalDAO.getListaVigencia());
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Excepcion Carga Edit:" + e);

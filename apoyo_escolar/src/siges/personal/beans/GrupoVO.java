@@ -10,6 +10,12 @@ public class GrupoVO {
 	private int gruSede;
 	private int gruJornada;
 	
+	@Override
+	public String toString() {
+		return "GrupoVO [gruNombre=" + gruNombre + ", gruCodigo=" + gruCodigo + ", gruCodigoJerarquiaGrupo="
+				+ gruCodigoJerarquiaGrupo + ", gruCodigoJerarquia=" + gruCodigoJerarquia + ", gruGrado=" + gruGrado
+				+ ", gruInstitucion=" + gruInstitucion + ", gruSede=" + gruSede + ", gruJornada=" + gruJornada + "]";
+	}
 	public String getGruNombre() {
 		return gruNombre;
 	}

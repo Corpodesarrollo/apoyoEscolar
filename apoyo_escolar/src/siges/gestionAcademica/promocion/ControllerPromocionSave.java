@@ -333,30 +333,63 @@ public class ControllerPromocionSave extends HttpServlet{
 			zz[1]=3; 
 			filtroEvaluacion.setfecha_estado(promocionDAO.getFiltroArray(col[2],zz));
 
+			Collection estudiantes = promocionDAO.getEstudiantes(filtroEvaluacion);
 			
-			Logger.print(login.getUsuarioId(),"Promocinn Inst:"+filtroEvaluacion.getInstitucion()+" Sede:"+filtroEvaluacion.getSede()+" Jorn:"+filtroEvaluacion.getJornada()+" Gra:"+filtroEvaluacion.getGrado()+" Grupo:"+grupo,6,1,this.toString());
-			try {
-				LogPromocionDto logPeriodo= new LogPromocionDto();
-				logPeriodo.setInstitucion(login.getInst());
-				logPeriodo.setSede(login.getSede());
-				logPeriodo.setJornada(login.getJornada());
-				logPeriodo.setAsignatura(filtroEvaluacion.getAsignatura());
-				logPeriodo.setPorcentaje(filtroEvaluacion.getPorcentaje()[0]);
-				logPeriodo.setArea(filtroEvaluacion.getArea());				
-				bitacoraCOM.insertarBitacora(
-						Long.parseLong(login.getInstId()), 
-						Integer.parseInt(login.getJornada()),
-						4 ,
-						login.getPerfil(), 
-						Integer.parseInt(login.getSedeId()),
-						1112, 
-						2, loginBitacora, new Gson().toJson(logPeriodo));
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
+			List<LogPromocionDto> listaPromocion = new ArrayList<LogPromocionDto>();
+			
+			for (Object object : estudiantes) {
+				String json = new Gson().toJson(object);
+				String[] arr = new Gson().fromJson(json, String[].class);
+				String[] listEst = filtroEvaluacion.getNota();
+				String[] fechas = filtroEvaluacion.getfecha_estado();
+				String[] motivos = filtroEvaluacion.getMotivo();
+				for (int i = 0; i < listEst.length; i++) {
+					String[] sp = listEst[i].split("\\|");
+					String[] tiposPromo = {"No Promovido","Promovido","Promovido Anticipadamente","Retirado","Borrar todas las promociones","Pendiente"};
+					if (sp[0].equals(arr[0])) {
+						LogPromocionDto  logPromocion = new LogPromocionDto();
+						logPromocion.setMetodologia(filtroEvaluacion.getMetodologia_());
+						logPromocion.setGrado(filtroEvaluacion.getGrado_());
+						logPromocion.setGrupo(filtroEvaluacion.getGrupo_());
+						logPromocion.setTipodocumento(arr[8]);
+						logPromocion.setNumeroIdentificacion(arr[1]);
+						String nombre = arr[4];
+						if (arr[5] != null && !arr[5].equals("")) {
+							nombre += " "+arr[5];
+						}
+						nombre += " "+arr[2];
+						if (arr[3] != null && !arr[3].equals("")) {
+							nombre += " "+arr[3];
+						}
+						logPromocion.setNombreCompleto(nombre);
+						logPromocion.setPromocion(tiposPromo[Integer.parseInt(sp[1])]);
+						String[] sp2 = fechas[i].split("\\|");
+						if (sp2.length > 1) {
+							if (sp2[1] != null && !sp2[1].equals("")) {
+								logPromocion.setFecha(sp2[1]);
+							}
+						}
+						String[] sp3 = motivos[i].split("\\|");
+						if (sp3.length > 1) {
+							if (sp3[1] != null && !sp3[1].equals("")) {
+								logPromocion.setObservacion(sp3[1]);
+							}
+						}
+						listaPromocion.add(logPromocion);
+					}
+				}
 			}
+			bitacoraCOM.insertarBitacora(
+				Long.parseLong(login.getInstId()), 
+				Integer.parseInt(login.getJornadaId()),
+				3,
+				login.getPerfil(), 
+				Integer.parseInt(login.getSedeId()),
+				3301, 
+				2, loginBitacora, new Gson().toJson(listaPromocion)
+			);
 		 }catch(Exception e){ 
-			 System.out.println("e.getMessage() " + e.getMessage());
+			 e.printStackTrace();
 		    setMensaje(e.getMessage());
 		    return false;	
 		 }

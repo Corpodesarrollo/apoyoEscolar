@@ -1926,13 +1926,16 @@ public class UsuarioDAO extends siges.dao.Dao {
 	
 	public String cuerpoCorreoGeneracionBoletin() {
 		
-		String headHtml = "<html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> </head> <body>";
+		String headHtml = "<html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> <style>\r\n" + ".contenedor-imagen {\r\n"
+            + "            text-align: center; /* Centrar horizontalmente */\r\n" + "margin: auto; /* Centrar verticalmente */\r\n"
+            + "            width: 50%; /* Ancho del contenedor, ajusta según tus necesidades */\r\n" + "}\r\n" + "</style>\r\n"
+            + "    </head> <body><div class=\"contenedor-imagen\">\r\n" + "<img src=\"cid:imageAttach\" width=\"300\" height=\"200\">\r\n"
+            + "</div></br></br></br></br>";
 		
 		String mensaje = "<table><tr><td>" +
-	    				"<p>Apreciado(a) Secretario Acad&eacute;mico, {nombre}</p>" +
-	    				"<br/>"+
+	    				"<p>Apreciado(a) {perfil}, {nombre}</p>" +
 	    				"<p>Le informamos que su reporte de tipo {tipoReporte} solicitado para el colegio {institucion} {estado} </p>" +//esta listo para ser descargado	    				
-	    				"</td></tr></table>";
+	    				"</td></tr></table></br>";
 	    
 		String footerHtml = "</body> </html>";
 		

@@ -28,7 +28,8 @@ import siges.util.MailDTO;
 import siges.util.Mailer;
 
 public class utilDAO {
-	private ResourceBundle rb;
+	private ResourceBundle rb, rbLogin,rPath;
+	
 	private static final int PLANTILLAS_BATCH = 0;
 	private static final int PLANTILLAS_EVALUACION = 1;
 	private static final int BOLETINES_LIBROS_RESUMENES = 2;
@@ -50,12 +51,15 @@ public class utilDAO {
 
 	public utilDAO(String p) {
 		rb = ResourceBundle.getBundle("common");
+		rPath = ResourceBundle.getBundle("path");
+		rbLogin = ResourceBundle.getBundle("login");
 		mensaje = "";
 		path = p;
 	}
 
 	public utilDAO() {
 		rb = ResourceBundle.getBundle("common");
+		rbLogin = ResourceBundle.getBundle("login");
 		mensaje = "";
 	}
 
@@ -641,11 +645,12 @@ public class utilDAO {
 		String[] emails = { getMailNotificationReportes(usuarioId) };
 
 		UsuarioDAO objDatosUsuario = new UsuarioDAO(cursor);
-		String strCuerpo = objDatosUsuario.cuerpoCorreoGeneracionBoletin()
+		String strCuerpo = objDatosUsuario.cuerpoCorreoGeneracionBoletin().replace("{perfil}", getPerfil(usuarioId))
 				.replace("{nombre}", getPersonaFullName(usuarioId)).replace("{institucion}", institucion);
 		MailDTO mailDto = new MailDTO();
 		mailDto.setEmails(emails);
 		mailDto.setSubject("Generación de Reportes");
+		mailDto.setImage(rPath.getString("path.base") + "notificacion-reportes.jpg");
 
 		switch (tipoReporte) {
 		case 1: // TIPO BOLETIN
@@ -738,6 +743,58 @@ public class utilDAO {
 			}
 		}
 		return mailNotificacion;
+	}
+
+	public String getPerfil(String numDocumUsuario, String password) {
+		String perfil = "";
+		int posicion = 1;
+		Connection cn = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		try {
+			cn = DataSourceManager.getConnection(1);
+			pst = cn.prepareStatement(rbLogin.getString("loginUsuario0"));
+			pst.setString(posicion++, numDocumUsuario);
+			rs = pst.executeQuery();
+			if (rs.next()) {
+				perfil = rs.getString(8);
+			}
+		} catch (Exception e) {
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (Exception e) {
+			}
+		}
+		return perfil;
+	}
+
+	public String getPerfil(String numDocumUsuario) {
+		String perfil = "";
+		int posicion = 1;
+		Connection cn = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		try {
+			cn = DataSourceManager.getConnection(1);
+			pst = cn.prepareStatement(rbLogin.getString("loginNotificaciones"));
+			pst.setString(posicion++, numDocumUsuario);
+			rs = pst.executeQuery();
+			if (rs.next()) {
+				perfil = rs.getString(8);
+			}
+		} catch (Exception e) {
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (Exception e) {
+			}
+		}
+		return perfil;
 	}
 
 	public String getPersonaFullName(String numDocumUsuario) {

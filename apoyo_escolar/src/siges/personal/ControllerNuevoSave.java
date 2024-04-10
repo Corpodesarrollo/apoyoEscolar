@@ -87,10 +87,10 @@ public class ControllerNuevoSave extends HttpServlet {
 	private static final int TIPO_ASISTENCIA = 7;
 
 	private static final int TIPO_CARGA = 8;
-	
+
 	private BitacoraCOM bitacoraCOM;
-	
-	//private static final int TIPO_GRUPOS_GUARDAR = 13;
+
+	// private static final int TIPO_GRUPOS_GUARDAR = 13;
 
 	/**
 	 * Recibe la peticion por el metodo Post de HTTP
@@ -100,8 +100,8 @@ public class ControllerNuevoSave extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public String process(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public String process(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		System.out.println("guardar	");
 		rb = ResourceBundle.getBundle("siges.personal.bundle.personal");
@@ -124,8 +124,7 @@ public class ControllerNuevoSave extends HttpServlet {
 		cursor = new Cursor();
 		personalDAO = new PersonalDAO(cursor);
 		try {
-			boton = (request.getParameter("cmd") != null) ? request
-					.getParameter("cmd") : new String("Cancelar");
+			boton = (request.getParameter("cmd") != null) ? request.getParameter("cmd") : new String("Cancelar");
 			if (boton.equals("Cancelar")) {
 				borrarBeans(request);
 				return home;
@@ -149,35 +148,28 @@ public class ControllerNuevoSave extends HttpServlet {
 			Carga carga2 = null;
 			if (personal.getEstado().equals("1")) {
 				personal2 = (Personal) session.getAttribute("nuevoPersonal2");
-				convivencia2 = (Convivencia) session
-						.getAttribute("nuevoConvivencia2");
+				convivencia2 = (Convivencia) session.getAttribute("nuevoConvivencia2");
 				carga2 = (Carga) session.getAttribute("carga2");
 			}
 			if (salud.getSalestado().equals("1")) {
-				salud2 = (Salud) request.getSession().getAttribute(
-						"nuevoSalud2");
+				salud2 = (Salud) request.getSession().getAttribute("nuevoSalud2");
 			}
 			if (laboralVO.getLabEstado().equals("1")) {
-				laboralVO2 = (LaboralVO) request.getSession().getAttribute(
-						"laboralVO2");
+				laboralVO2 = (LaboralVO) request.getSession().getAttribute("laboralVO2");
 			}
 			if (asistenciaVO.getAsiEstado().equals("1")) {
-				asistenciaVO2 = (AsistenciaVO) request.getSession()
-						.getAttribute("asistenciaVO2");
+				asistenciaVO2 = (AsistenciaVO) request.getSession().getAttribute("asistenciaVO2");
 			}
 			if (formacionVO.getForEstado().equals("1")) {
-				formacionVO2 = (FormacionVO) request.getSession().getAttribute(
-						"formacionVO2");
+				formacionVO2 = (FormacionVO) request.getSession().getAttribute("formacionVO2");
 			}
 			if (boton.equals("Nuevo")) {
-				if (request.getParameter("tipo") == null
-						|| request.getParameter("tipo").equals("")) {
+				if (request.getParameter("tipo") == null || request.getParameter("tipo").equals("")) {
 					setMensaje("Acceso denegado no hay una ficha definida");
 					request.setAttribute("mensaje", getMensaje());
 					return er;
 				}
-				int tipo = Integer.parseInt((String) request
-						.getParameter("tipo"));
+				int tipo = Integer.parseInt((String) request.getParameter("tipo"));
 				switch (tipo) {
 				case TIPO_CARGA:
 					session.removeAttribute("carga");
@@ -186,57 +178,47 @@ public class ControllerNuevoSave extends HttpServlet {
 				}
 			}
 			if (boton.equals("Guardar")) {
-				if (request.getParameter("tipo") == null
-						|| request.getParameter("tipo").equals("")) {
+				if (request.getParameter("tipo") == null || request.getParameter("tipo").equals("")) {
 					setMensaje("Acceso denegado no hay una ficha definida");
 					request.setAttribute("mensaje", getMensaje());
 					return er;
 				}
 				int tipo = 1;
 				if (GenericValidator.isInt(request.getParameter("tipo"))) {
-					tipo = Integer.parseInt((String) request
-							.getParameter("tipo"));
+					tipo = Integer.parseInt((String) request.getParameter("tipo"));
 				}
 
-//				System.out.println("tipo en save " + tipo);
+				// System.out.println("tipo en save " + tipo);
 				if (tipo == 8 || tipo == 12) {
-					request.setAttribute("horasref",
-							request.getParameter("rotdaghoras"));
-					request.setAttribute("sederef",
-							request.getParameter("rotdagsede"));
-					request.setAttribute("jornadaref",
-							request.getParameter("rotdagjornada"));
-					request.setAttribute("metodologiaref",
-							request.getParameter("rotdagmetodologia"));
+					request.setAttribute("horasref", request.getParameter("rotdaghoras"));
+					request.setAttribute("sederef", request.getParameter("rotdagsede"));
+					request.setAttribute("jornadaref", request.getParameter("rotdagjornada"));
+					request.setAttribute("metodologiaref", request.getParameter("rotdagmetodologia"));
 				}
 				switch (tipo) {
 				case TIPO_BASICA:// basica
-					if (personal2 == null
-							|| personal2.getPernumdocum().equals("")) {
+					if (personal2 == null || personal2.getPernumdocum().equals("")) {
 						setMensaje("No se puede guardar la información de datos bnsicos");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					String peremail = request.getParameter("peremail");
 					if (!GenericValidator.isEmail(peremail)) {
-						request.setAttribute("mensaje",
-								"VERIFIQUE LA SIGUIENTE información: \n\n   - Email");
+						request.setAttribute("mensaje", "VERIFIQUE LA SIGUIENTE información: \n\n   - Email");
 					}
 					if (personal2.getPernumdocum() != null && peremail != null) {
-						updateEmail(request, personal2.getPernumdocum(),
-								peremail,login);
+						updateEmail(request, personal2.getPernumdocum(), peremail, login);
 						request.setAttribute("mensaje", getMensaje());
-						request.setAttribute("mensaje",
-								"La información fue ingresada satisfactoriamente");
+						request.setAttribute("mensaje", "La información fue ingresada satisfactoriamente");
 						return ("/personal/NuevoPersonal.jsp");
 					}
 
 					break;
 
 				case TIPO_CONVIVENCIA:// convivencia
-					if (personal2 == null
-							|| personal2.getPernumdocum().equals("")) {
-						setMensaje("No se puede guardar la información de convivencia \nSi no se ha registrado un personal en la ficha de información bnsica");
+					if (personal2 == null || personal2.getPernumdocum().equals("")) {
+						setMensaje(
+								"No se puede guardar la información de convivencia \nSi no se ha registrado un personal en la ficha de información bnsica");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -249,16 +231,15 @@ public class ControllerNuevoSave extends HttpServlet {
 						return (ant += "?tipo=" + tipo);
 					}
 					if (convivencia.getEstado().equals("1")) {
-						actualizarRegistroConvivencia(request, convivencia,
-								convivencia2);
+						actualizarRegistroConvivencia(request, convivencia, convivencia2);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					break;
 				case TIPO_SALUD:
-					if (personal2 == null
-							|| personal2.getPernumdocum().equals("")) {
-						setMensaje("No se puede guardar la información de salud \nSi no hay registrado un personal en la ficha de información bnsica");
+					if (personal2 == null || personal2.getPernumdocum().equals("")) {
+						setMensaje(
+								"No se puede guardar la información de salud \nSi no hay registrado un personal en la ficha de información bnsica");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -270,17 +251,16 @@ public class ControllerNuevoSave extends HttpServlet {
 						return (ant += "?tipo=" + tipo);
 					}
 					if (salud.getSalestado().equals("1")) {
-						actualizarRegistroSalud(request, salud, salud2,
-								personal2);
+						actualizarRegistroSalud(request, salud, salud2, personal2);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					break;
 				case TIPO_LABORAL:
 					System.out.println("TIPO_ASISTENCIA ");
-					if (personal2 == null
-							|| personal2.getPernumdocum().equals("")) {
-						setMensaje("No se puede guardar la información laboral \nSi no se ha registrado un personal en la ficha de información bnsica");
+					if (personal2 == null || personal2.getPernumdocum().equals("")) {
+						setMensaje(
+								"No se puede guardar la información laboral \nSi no se ha registrado un personal en la ficha de información bnsica");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -293,8 +273,7 @@ public class ControllerNuevoSave extends HttpServlet {
 						return (ant += "?tipo=" + tipo);
 					}
 					if (laboralVO.getLabEstado().equals("1")) {
-						actualizarRegistroLaboral(request, laboralVO,
-								laboralVO2);
+						actualizarRegistroLaboral(request, laboralVO, laboralVO2);
 						request.getSession().removeAttribute("laboralVO");
 						request.getSession().removeAttribute("laboralVO2");
 						request.setAttribute("mensaje", getMensaje());
@@ -302,27 +281,23 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 					break;
 				case TIPO_ACADEMICA:
-					if (personal2 == null
-							|| personal2.getPernumdocum().equals("")) {
-						setMensaje("No se puede guardar la información de formacinn academica \nSi no se ha registrado un personal en la ficha de información bnsica");
+					if (personal2 == null || personal2.getPernumdocum().equals("")) {
+						setMensaje(
+								"No se puede guardar la información de formacinn academica \nSi no se ha registrado un personal en la ficha de información bnsica");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
-					System.out.println("formacionVO.getForEstado() "
-							+ formacionVO.getForEstado());
-					System.out.println("personal2.getPernumdocum() "
-							+ personal2.getPernumdocum());
+					System.out.println("formacionVO.getForEstado() " + formacionVO.getForEstado());
+					System.out.println("personal2.getPernumdocum() " + personal2.getPernumdocum());
 					if (formacionVO.getForEstado().trim().equals("")) {
 						formacionVO.setForCodPerso(personal2.getPernumdocum());
-						System.out.println("formacionVO.getForEstado() "
-								+ formacionVO.getForEstado());
+						System.out.println("formacionVO.getForEstado() " + formacionVO.getForEstado());
 						insertarRegistroFormacion(request, formacionVO);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					if (formacionVO.getForEstado().equals("1")) {
-						actualizarRegistroFormacion(request, formacionVO,
-								formacionVO2);
+						actualizarRegistroFormacion(request, formacionVO, formacionVO2);
 						request.getSession().removeAttribute("asistenciaVO");
 						request.getSession().removeAttribute("asistenciaVO2");
 						request.setAttribute("mensaje", getMensaje());
@@ -331,17 +306,15 @@ public class ControllerNuevoSave extends HttpServlet {
 					break;
 				case TIPO_ASISTENCIA:
 					System.out.println("personal2 " + personal2.getEstado());
-					System.out.println("personal2.getPernumdocum() "
-							+ personal2.getPernumdocum());
-					if (personal2 == null
-							|| personal2.getPernumdocum().equals("")) {
+					System.out.println("personal2.getPernumdocum() " + personal2.getPernumdocum());
+					if (personal2 == null || personal2.getPernumdocum().equals("")) {
 
-						setMensaje("No se puede guardar la información \nSi no se ha registrado un personal en la ficha de información bnsica");
+						setMensaje(
+								"No se puede guardar la información \nSi no se ha registrado un personal en la ficha de información bnsica");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
-					System.out.println("asistenciaVO.getAsiEstado() "
-							+ asistenciaVO.getAsiEstado());
+					System.out.println("asistenciaVO.getAsiEstado() " + asistenciaVO.getAsiEstado());
 					if (asistenciaVO.getAsiEstado().equals("")) {
 						asistenciaVO.setAsiCodPer(personal2.getPernumdocum());
 						insertarRegistroAsistencia(request, asistenciaVO);
@@ -349,16 +322,15 @@ public class ControllerNuevoSave extends HttpServlet {
 						return (ant += "?tipo=" + tipo);
 					}
 					if (asistenciaVO.getAsiEstado().equals("1")) {
-						actualizarRegistroAsistencia(request, asistenciaVO,
-								asistenciaVO2);
+						actualizarRegistroAsistencia(request, asistenciaVO, asistenciaVO2);
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
 					break;
 				case TIPO_DOCXJOR:// docente-sede-jornada
-					if (personal2 == null
-							|| personal2.getPernumdocum().equals("")) {
-						setMensaje("No se puede guardar la información de sedes y jornadas \nSi no hay registrado un personal en la ficha de información bnsica");
+					if (personal2 == null || personal2.getPernumdocum().equals("")) {
+						setMensaje(
+								"No se puede guardar la información de sedes y jornadas \nSi no hay registrado un personal en la ficha de información bnsica");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -367,7 +339,8 @@ public class ControllerNuevoSave extends HttpServlet {
 					return (ant += "?tipo=" + tipo);
 				case TIPO_CARGA:// carga academica
 					if (personal2 == null || personal2.getPernumdocum().equals("")) {
-						setMensaje("No se puede guardar la información de carga acadnmica \nSi no hay registrado un personal en la ficha de información bnsica");
+						setMensaje(
+								"No se puede guardar la información de carga acadnmica \nSi no hay registrado un personal en la ficha de información bnsica");
 						request.setAttribute("mensaje", getMensaje());
 						return (ant += "?tipo=" + tipo);
 					}
@@ -379,9 +352,7 @@ public class ControllerNuevoSave extends HttpServlet {
 					}
 				}
 			}
-			
-			
-			
+
 			return er;
 		} catch (Exception e) {
 			System.out.println("Error " + this + ": " + e.toString());
@@ -394,13 +365,11 @@ public class ControllerNuevoSave extends HttpServlet {
 		}
 	}
 
-	public boolean compararFichasAsistencia(AsistenciaVO asistenciaVO,
-			AsistenciaVO asistenciaVO2) {
+	public boolean compararFichasAsistencia(AsistenciaVO asistenciaVO, AsistenciaVO asistenciaVO2) {
 		return personalDAO.compararBeans(asistenciaVO, asistenciaVO2);
 	}
 
-	public boolean compararFichasLaboral(LaboralVO laboralVO,
-			LaboralVO laboralVO2) {
+	public boolean compararFichasLaboral(LaboralVO laboralVO, LaboralVO laboralVO2) {
 		return personalDAO.compararBeans(laboralVO, laboralVO2);
 	}
 
@@ -408,9 +377,8 @@ public class ControllerNuevoSave extends HttpServlet {
 		return personalDAO.compararBeans(salud, salud2);
 	}
 
-	public void actualizarRegistroLaboral(HttpServletRequest request,
-			LaboralVO laboralVO, LaboralVO laboralVO2) throws ServletException,
-			IOException {
+	public void actualizarRegistroLaboral(HttpServletRequest request, LaboralVO laboralVO, LaboralVO laboralVO2)
+			throws ServletException, IOException {
 		if (compararFichasLaboral(laboralVO, laboralVO2)) {
 			setMensaje("La información fue actualizada satisfactoriamente -");
 			return;
@@ -424,9 +392,8 @@ public class ControllerNuevoSave extends HttpServlet {
 		recargarBeansLaboral(request, laboralVO, laboralVO2);
 	}
 
-	public void actualizarRegistroAsistencia(HttpServletRequest request,
-			AsistenciaVO asistenciaVO, AsistenciaVO asistenciaVO2)
-			throws ServletException, IOException {
+	public void actualizarRegistroAsistencia(HttpServletRequest request, AsistenciaVO asistenciaVO,
+			AsistenciaVO asistenciaVO2) throws ServletException, IOException {
 		System.out.println("actualizarRegistroAsistencia ");
 		if (compararFichasAsistencia(asistenciaVO, asistenciaVO2)) {
 			setMensaje("La información fue actualizada satisfactoriamente -");
@@ -441,8 +408,7 @@ public class ControllerNuevoSave extends HttpServlet {
 		recargarBeansAsistencia(request, asistenciaVO);
 	}
 
-	public void actualizarRegistroSalud(HttpServletRequest request,
-			Salud salud, Salud salud2, Personal personal2)
+	public void actualizarRegistroSalud(HttpServletRequest request, Salud salud, Salud salud2, Personal personal2)
 			throws ServletException, IOException {
 		if (compararFichasSalud(salud, salud2)) {
 			setMensaje("La información fue actualizada satisfactoriamente -");
@@ -465,8 +431,8 @@ public class ControllerNuevoSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public void insertarRegistroLaboral(HttpServletRequest request,
-			LaboralVO laboralVO) throws ServletException, IOException {
+	public void insertarRegistroLaboral(HttpServletRequest request, LaboralVO laboralVO)
+			throws ServletException, IOException {
 		String[] resul;
 		if (!personalDAO.insertar(laboralVO)) {
 			setMensaje(personalDAO.getMensaje());
@@ -477,8 +443,8 @@ public class ControllerNuevoSave extends HttpServlet {
 		setMensaje("La información fue ingresada satisfactoriamente");
 	}
 
-	public void insertarRegistroAsistencia(HttpServletRequest request,
-			AsistenciaVO asistenciaVO) throws ServletException, IOException {
+	public void insertarRegistroAsistencia(HttpServletRequest request, AsistenciaVO asistenciaVO)
+			throws ServletException, IOException {
 		String[] resul;
 		asistenciaVO.setAsiTipoPer("2");
 		if (!personalDAO.insertar(asistenciaVO)) {
@@ -497,8 +463,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public void insertarRegistroSalud(HttpServletRequest request, Salud salud)
-			throws ServletException, IOException {
+	public void insertarRegistroSalud(HttpServletRequest request, Salud salud) throws ServletException, IOException {
 		String[] resul;
 		salud.setSaltipoperso("2");
 		if (!personalDAO.insertar(salud)) {
@@ -509,14 +474,12 @@ public class ControllerNuevoSave extends HttpServlet {
 		setMensaje("La información fue ingresada satisfactoriamente");
 	}
 
-	public boolean compararFichasConvivencia(Convivencia convivencia,
-			Convivencia convivencia2) {
+	public boolean compararFichasConvivencia(Convivencia convivencia, Convivencia convivencia2) {
 		return personalDAO.compararBeans(convivencia, convivencia2);
 	}
 
-	public void actualizarRegistroConvivencia(HttpServletRequest request,
-			Convivencia convivencia, Convivencia convivencia2)
-			throws ServletException, IOException {
+	public void actualizarRegistroConvivencia(HttpServletRequest request, Convivencia convivencia,
+			Convivencia convivencia2) throws ServletException, IOException {
 		if (compararFichasConvivencia(convivencia, convivencia2)) {
 			setMensaje("La información fue actualizada satisfactoriamente -");
 			return;
@@ -542,8 +505,8 @@ public class ControllerNuevoSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public void insertarRegistroConvivencia(HttpServletRequest request,
-			Convivencia convivencia) throws ServletException, IOException {
+	public void insertarRegistroConvivencia(HttpServletRequest request, Convivencia convivencia)
+			throws ServletException, IOException {
 		String[] resul;
 		if (!personalDAO.insertar(convivencia)) {
 			setMensaje(personalDAO.getMensaje());
@@ -561,9 +524,10 @@ public class ControllerNuevoSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public void insertarCarga(HttpServletRequest request, Login login,Carga carga, Carga carga2) throws ServletException, IOException {
+	public void insertarCarga(HttpServletRequest request, Login login, Carga carga, Carga carga2)
+			throws ServletException, IOException {
 		try {
-			
+
 			List listaGrados = (List) request.getSession().getAttribute("filtroGrados");
 			List listaAsignaturas = (List) request.getSession().getAttribute("filtroAsignatura");
 			List listaCargaAsignaturaGrado = new ArrayList();
@@ -571,93 +535,93 @@ public class ControllerNuevoSave extends HttpServlet {
 			int ASIGNATURA = 0;
 			int GRADO = 1;
 			int CARGA = 2;
-			
+
 			HttpSession session = request.getSession();
 			bitacoraCOM = new BitacoraCOM();
-			String loginBitacora = (String)session.getAttribute("loginBitacora");
-			
+			String loginBitacora = (String) session.getAttribute("loginBitacora");
+
 			Iterator iteradorGrados = listaGrados.iterator();
 			Iterator iteradorAsignaturas = listaAsignaturas.iterator();
-			
-			List<LogPersonalCargaDto> lstCargaDto= new ArrayList<>();
-			while(iteradorAsignaturas.hasNext()){
-				
+
+			List<LogPersonalCargaDto> lstCargaDto = new ArrayList<>();
+			while (iteradorAsignaturas.hasNext()) {
+
 				Object[] asignatura = (Object[]) iteradorAsignaturas.next();
-				
-				while (iteradorGrados.hasNext()){
-					
+
+				while (iteradorGrados.hasNext()) {
+
 					Object[] grado = (Object[]) iteradorGrados.next();
-					String nombreCaja = "cargaGradoAsignatura_"+grado[0].toString()+"_"+asignatura[0].toString();
-					
-					if(request.getParameter(nombreCaja) != null){
-						
+					String nombreCaja = "cargaGradoAsignatura_" + grado[0].toString() + "_" + asignatura[0].toString();
+
+					if (request.getParameter(nombreCaja) != null) {
+
 						String parametro = request.getParameter(nombreCaja).toString();
-						
-						if(!parametro.trim().equals("") && !parametro.trim().equals("0")){
-							
+
+						if (!parametro.trim().equals("") && !parametro.trim().equals("0")) {
+
 							cargaAsignaturaGrado = new String[3];
-							cargaAsignaturaGrado[ASIGNATURA]= asignatura[0].toString();
-							cargaAsignaturaGrado[GRADO]= grado[0].toString();
-							cargaAsignaturaGrado[CARGA]= parametro;
+							cargaAsignaturaGrado[ASIGNATURA] = asignatura[0].toString();
+							cargaAsignaturaGrado[GRADO] = grado[0].toString();
+							cargaAsignaturaGrado[CARGA] = parametro;
 							listaCargaAsignaturaGrado.add(cargaAsignaturaGrado);
-							LogPersonalCargaDto cargaDto= new LogPersonalCargaDto();
+							LogPersonalCargaDto cargaDto = new LogPersonalCargaDto();
 							cargaDto.setInstitucion(login.getInst());
 							cargaDto.setDocente(carga.getRotdagdocente().trim());
 							cargaDto.setAsignatura(asignatura[0].toString());
 							cargaDto.setGrado(grado[0].toString());
 							cargaDto.setHoras(parametro.toString());
-							
-							lstCargaDto.add(cargaDto);							
-						}
-						else{
-							boolean eliminaDatos = personalDAO.eliminarGruposGrado(Long.parseLong(login.getInstId()),Integer.parseInt(carga.getRotdagsede().trim()), Integer.parseInt(carga.getRotdagjornada().trim()),Integer.parseInt(grado[0].toString()),Long.parseLong(asignatura[0].toString()), Long.parseLong(carga.getRotdagdocente().trim()), carga.getRotdagVigencia());
-							String llaveCompuesta = Long.parseLong(login.getInstId())+"-"+Integer.parseInt(carga.getRotdagsede().trim())+"-"+Integer.parseInt(carga.getRotdagjornada().trim())+"-"+Integer.parseInt(grado[0].toString())+"-"+Long.parseLong(asignatura[0].toString());
-							if (eliminaDatos) {personalDAO.insetrarMensajeRegistroBorrado(llaveCompuesta, "borrado desde la funcion InsertarCarga");}
-							try
-							{
-								LogPersonalCargaDto cargaDto= new LogPersonalCargaDto();
+
+							lstCargaDto.add(cargaDto);
+						} else {
+							boolean eliminaDatos = personalDAO.eliminarGruposGrado(Long.parseLong(login.getInstId()),
+									Integer.parseInt(carga.getRotdagsede().trim()),
+									Integer.parseInt(carga.getRotdagjornada().trim()),
+									Integer.parseInt(grado[0].toString()), Long.parseLong(asignatura[0].toString()),
+									Long.parseLong(carga.getRotdagdocente().trim()), carga.getRotdagVigencia());
+							String llaveCompuesta = Long.parseLong(login.getInstId()) + "-"
+									+ Integer.parseInt(carga.getRotdagsede().trim()) + "-"
+									+ Integer.parseInt(carga.getRotdagjornada().trim()) + "-"
+									+ Integer.parseInt(grado[0].toString()) + "-"
+									+ Long.parseLong(asignatura[0].toString());
+							if (eliminaDatos) {
+								personalDAO.insetrarMensajeRegistroBorrado(llaveCompuesta,
+										"borrado desde la funcion InsertarCarga");
+							}
+							try {
+								LogPersonalCargaDto cargaDto = new LogPersonalCargaDto();
 								cargaDto.setInstitucion(login.getInst());
 								cargaDto.setDocente(carga.getRotdagdocente().trim());
 								cargaDto.setAsignatura(asignatura[0].toString());
 								cargaDto.setGrado(grado[0].toString());
-								cargaDto.setHoras(parametro.toString());								
-								bitacoraCOM.insertarBitacora(
-										Long.parseLong(login.getInstId()), 
-										Integer.parseInt(login.getJornadaId()),
-										2 ,
-										login.getPerfil(), 
-										Integer.parseInt(login.getSede()), 
-										20002, 
-										3, 
-										loginBitacora, 
-										new Gson().toJson(cargaDto)
-										);
-							}catch(Exception e){
+								cargaDto.setHoras(parametro.toString());
+								bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()),
+										Integer.parseInt(login.getJornadaId()), 2, login.getPerfil(),
+										Integer.parseInt(login.getSedeId()), 20002, 3, loginBitacora,
+										new Gson().toJson(cargaDto));
+							} catch (Exception e) {
 								e.printStackTrace();
 								System.out.println("Error " + this + ":" + e.toString());
 							}
 						}
 					}
-					
+
 				}
-				
-				
-				
-				if(listaCargaAsignaturaGrado != null && listaCargaAsignaturaGrado.size()>0){
+
+				if (listaCargaAsignaturaGrado != null && listaCargaAsignaturaGrado.size() > 0) {
 					Iterator iteradorListaCargaAsignaturaGrado = listaCargaAsignaturaGrado.iterator();
 					String[] vectorGrados = new String[listaCargaAsignaturaGrado.size()];
 					String[] vectorHoras = new String[listaCargaAsignaturaGrado.size()];
 					int i = 0;
-					while (iteradorListaCargaAsignaturaGrado.hasNext()){
+					while (iteradorListaCargaAsignaturaGrado.hasNext()) {
 						String[] itemLista = (String[]) iteradorListaCargaAsignaturaGrado.next();
-						vectorGrados[i]=itemLista[GRADO];
-						vectorHoras[i]=itemLista[CARGA];
+						vectorGrados[i] = itemLista[GRADO];
+						vectorHoras[i] = itemLista[CARGA];
 						i++;
 					}
 					carga.setRotdaggrados(vectorGrados);
 					carga.setRotdagIHgrados_(vectorHoras);
-				listaCargaAsignaturaGrado = new ArrayList();
-				}else{
+					listaCargaAsignaturaGrado = new ArrayList();
+				} else {
 					carga.setRotdaggrados(null);
 					carga.setRotdagIHgrados_(null);
 				}
@@ -668,26 +632,18 @@ public class ControllerNuevoSave extends HttpServlet {
 					return;
 				}
 			}
-			try
-			{
-				bitacoraCOM.insertarBitacora(
-						Long.parseLong(login.getInstId()), 
-						Integer.parseInt(login.getJornadaId()),
-						2 ,
-						login.getPerfil(), 
-						Integer.parseInt(login.getSede()), 
-						20003, 
-						1, 
-						loginBitacora, 
-						new Gson().toJson(lstCargaDto)
-						);
-			}catch(Exception e){
+			try {
+				bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), Integer.parseInt(login.getJornadaId()),
+						2, login.getPerfil(), Integer.parseInt(login.getSedeId()), 20003, 1, loginBitacora,
+						new Gson().toJson(lstCargaDto));
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error " + this + ":" + e.toString());
 			}
 			request.removeAttribute("guia");
 			setMensaje("La información fue ingresada satisfactoriamente");
-			siges.util.Logger.print(login != null ? login.getUsuarioId() : "","Insercinn en Tabla 'rot_doc_asig_grado'", 7, 1, this.toString());
+			siges.util.Logger.print(login != null ? login.getUsuarioId() : "",
+					"Insercinn en Tabla 'rot_doc_asig_grado'", 7, 1, this.toString());
 			request.getSession().removeAttribute("carga");
 			request.getSession().removeAttribute("carga2");
 		} catch (Exception e) {
@@ -704,28 +660,25 @@ public class ControllerNuevoSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public void insertarDocenteJornada(HttpServletRequest request, Login login,Personal personal) throws ServletException, IOException {
+	public void insertarDocenteJornada(HttpServletRequest request, Login login, Personal personal)
+			throws ServletException, IOException {
 		String[] resul;
 		try {
 			String[] jornada = request.getParameterValues("jornada");
 			if (jornada != null) {
 				for (int k = 0; k < (jornada != null ? jornada.length : 0); k++)
 					System.out.println("jornada: " + jornada[k]);
-				if (!personalDAO.insertarSedeJornada(personal,
-						Long.parseLong(login.getInstId()), jornada)) {
+				if (!personalDAO.insertarSedeJornada(personal, Long.parseLong(login.getInstId()), jornada)) {
 					setMensaje(personalDAO.getMensaje());
 					return;
 				}
 			}
 			if (!personal.getPercodjerar().equals("")) {
-				personal.setSedejornada(personalDAO.getSedeJornadaPerfil(
-						Long.parseLong(login.getInstId()),
+				personal.setSedejornada(personalDAO.getSedeJornadaPerfil(Long.parseLong(login.getInstId()),
 						Long.parseLong(personal.getPernumdocum())));
 			}
-			request.getSession().setAttribute("nuevoPersonal",
-					(Personal) personal);
-			request.getSession().setAttribute("nuevoPersonal2",
-					(Personal) personal.clone());
+			request.getSession().setAttribute("nuevoPersonal", (Personal) personal);
+			request.getSession().setAttribute("nuevoPersonal2", (Personal) personal.clone());
 			setMensaje("La información fue ingresada satisfactoriamente");
 		} catch (Exception e) {
 			System.out.println("error Insertando docente sede jornada: " + e);
@@ -739,8 +692,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	 * @param HttpServletRequest
 	 *            request
 	 */
-	public void borrarBeans(HttpServletRequest request)
-			throws ServletException, IOException {
+	public void borrarBeans(HttpServletRequest request) throws ServletException, IOException {
 		request.getSession().removeAttribute("nuevoPersonal");
 		request.getSession().removeAttribute("nuevoPersonal2");
 		request.getSession().removeAttribute("nuevoConvivencia");
@@ -757,8 +709,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	 *         los beans en la session
 	 */
 
-	public boolean asignarBeans(HttpServletRequest request)
-			throws ServletException, IOException {
+	public boolean asignarBeans(HttpServletRequest request) throws ServletException, IOException {
 		if (request.getSession().getAttribute("login") == null
 				|| request.getSession().getAttribute("nuevoPersonal") == null
 				|| request.getSession().getAttribute("nuevoConvivencia") == null)
@@ -781,78 +732,66 @@ public class ControllerNuevoSave extends HttpServlet {
 	 * Referencia al bean del usuario con la información proporcionada por el
 	 * bean de respaldo
 	 * 
-	 * @param int n
+	 * @param int
+	 *            n
 	 * @param HttpServletRequest
 	 *            request
 	 */
-	public void restaurarBeans(HttpServletRequest request, Personal personal2)
-			throws ServletException, IOException {
-		request.getSession().setAttribute("nuevoPersonal",
-				(Personal) personal2.clone());
+	public void restaurarBeans(HttpServletRequest request, Personal personal2) throws ServletException, IOException {
+		request.getSession().setAttribute("nuevoPersonal", (Personal) personal2.clone());
 	}
 
-	public void restaurarBeansConvivencia(HttpServletRequest request,
-			Convivencia convivencia, Convivencia convivencia2)
+	public void restaurarBeansConvivencia(HttpServletRequest request, Convivencia convivencia, Convivencia convivencia2)
 			throws ServletException, IOException {
-		request.getSession().setAttribute("nuevoConvivencia",
-				(Convivencia) convivencia2.clone());
+		request.getSession().setAttribute("nuevoConvivencia", (Convivencia) convivencia2.clone());
 	}
 
 	/**
-	 * Referencia al bean de respaldo con la nueva información proporcionada por
-	 * el bean modificado por el usuario
+	 * Referencia al bean de respaldo con la nueva información proporcionada
+	 * por el bean modificado por el usuario
 	 * 
-	 * @param int n
+	 * @param int
+	 *            n
 	 * @param HttpServletRequest
 	 *            request
 	 */
-	public void recargarBeansLaboral(HttpServletRequest request,
-			LaboralVO laboralVO, LaboralVO laboralVO2) throws ServletException,
-			IOException {
-		request.getSession().setAttribute("laboralVO2",
-				(LaboralVO) laboralVO.clone());
+	public void recargarBeansLaboral(HttpServletRequest request, LaboralVO laboralVO, LaboralVO laboralVO2)
+			throws ServletException, IOException {
+		request.getSession().setAttribute("laboralVO2", (LaboralVO) laboralVO.clone());
 	}
 
-	public void recargarBeansSalud(HttpServletRequest request, Salud salud,
-			Salud salud2) throws ServletException, IOException {
+	public void recargarBeansSalud(HttpServletRequest request, Salud salud, Salud salud2)
+			throws ServletException, IOException {
 		request.getSession().setAttribute("nuevoSalud", (Salud) salud.clone());
 	}
 
-	public void recargarBeansAsistencia(HttpServletRequest request,
-			AsistenciaVO asistenciaVO) throws ServletException, IOException {
-		request.getSession().setAttribute("asistenciaVO2",
-				(AsistenciaVO) asistenciaVO.clone());
-	}
-
-	public void recargarBeans(HttpServletRequest request, Personal personal)
+	public void recargarBeansAsistencia(HttpServletRequest request, AsistenciaVO asistenciaVO)
 			throws ServletException, IOException {
-		request.getSession().setAttribute("nuevoPersonal2",
-				(Personal) personal.clone());
+		request.getSession().setAttribute("asistenciaVO2", (AsistenciaVO) asistenciaVO.clone());
 	}
 
-	public void recargarBeansConvivencia(HttpServletRequest request,
-			Convivencia convivencia, Convivencia convivencia2)
+	public void recargarBeans(HttpServletRequest request, Personal personal) throws ServletException, IOException {
+		request.getSession().setAttribute("nuevoPersonal2", (Personal) personal.clone());
+	}
+
+	public void recargarBeansConvivencia(HttpServletRequest request, Convivencia convivencia, Convivencia convivencia2)
 			throws ServletException, IOException {
-		request.getSession().setAttribute("nuevoConvivencia2",
-				(Convivencia) convivencia.clone());
+		request.getSession().setAttribute("nuevoConvivencia2", (Convivencia) convivencia.clone());
 	}
 
-	public void restaurarBeansLaboral(HttpServletRequest request,
-			LaboralVO laboralVO, LaboralVO laboralVO2) throws ServletException,
-			IOException {
-		request.getSession().setAttribute("laboralVO",
-				(LaboralVO) laboralVO2.clone());
+	public void restaurarBeansLaboral(HttpServletRequest request, LaboralVO laboralVO, LaboralVO laboralVO2)
+			throws ServletException, IOException {
+		request.getSession().setAttribute("laboralVO", (LaboralVO) laboralVO2.clone());
 	}
 
-	public void restaurarBeansSalud(HttpServletRequest request, Salud salud,
-			Salud salud2) throws ServletException, IOException {
+	public void restaurarBeansSalud(HttpServletRequest request, Salud salud, Salud salud2)
+			throws ServletException, IOException {
 		request.getSession().setAttribute("nuevoSalud", (Salud) salud2.clone());
 	}
 
-	public void restaurarBeansAsistencia(HttpServletRequest request,
-			AsistenciaVO asistenciaVO2) throws ServletException, IOException {
-		request.getSession().setAttribute("asistenciaVO",
-				(AsistenciaVO) asistenciaVO2.clone());
+	public void restaurarBeansAsistencia(HttpServletRequest request, AsistenciaVO asistenciaVO2)
+			throws ServletException, IOException {
+		request.getSession().setAttribute("asistenciaVO", (AsistenciaVO) asistenciaVO2.clone());
 	}
 
 	/**
@@ -863,8 +802,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);// redirecciona la peticion a doPost
 	}
 
@@ -876,8 +814,7 @@ public class ControllerNuevoSave extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String s = process(request, response);
 		if (s != null && !s.equals(""))
 			ir(1, s, request, response);
@@ -886,7 +823,8 @@ public class ControllerNuevoSave extends HttpServlet {
 	/**
 	 * Redirige el control a otro servlet
 	 * 
-	 * @param int a: 1=redirigir como 'include', 2=redirigir como 'forward'
+	 * @param int
+	 *            a: 1=redirigir como 'include', 2=redirigir como 'forward'
 	 * @param String
 	 *            s
 	 * @param HttpServletRequest
@@ -894,8 +832,8 @@ public class ControllerNuevoSave extends HttpServlet {
 	 * @param HttpServletResponse
 	 *            response
 	 */
-	public void ir(int a, String s, HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	public void ir(int a, String s, HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		if (cursor != null)
 			cursor.cerrar();
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(s);
@@ -938,8 +876,8 @@ public class ControllerNuevoSave extends HttpServlet {
 	 *            request
 	 * @return boolean
 	 */
-	public void insertarRegistroFormacion(HttpServletRequest request,
-			FormacionVO formacionVO) throws ServletException, IOException {
+	public void insertarRegistroFormacion(HttpServletRequest request, FormacionVO formacionVO)
+			throws ServletException, IOException {
 		try {
 			System.out.println("insertarRegistroFormacion");
 
@@ -958,9 +896,8 @@ public class ControllerNuevoSave extends HttpServlet {
 		}
 	}
 
-	public void actualizarRegistroFormacion(HttpServletRequest request,
-			FormacionVO formacionVO, FormacionVO formacionVO2)
-			throws ServletException, IOException {
+	public void actualizarRegistroFormacion(HttpServletRequest request, FormacionVO formacionVO,
+			FormacionVO formacionVO2) throws ServletException, IOException {
 		System.out.println("actualizarRegistroFormacion ");
 		if (compararFichasFormacion(formacionVO, formacionVO2)) {
 			setMensaje("La información fue actualizada satisfactoriamente -");
@@ -975,53 +912,39 @@ public class ControllerNuevoSave extends HttpServlet {
 		recargarBeansFormacion(request, formacionVO, formacionVO2);
 	}
 
-	public boolean compararFichasFormacion(FormacionVO formacionVO,
-			FormacionVO formacionVO2) {
+	public boolean compararFichasFormacion(FormacionVO formacionVO, FormacionVO formacionVO2) {
 		return personalDAO.compararBeans(formacionVO, formacionVO2);
 	}
 
-	public void recargarBeansFormacion(HttpServletRequest request,
-			FormacionVO formacionVO, FormacionVO formacionVO2)
+	public void recargarBeansFormacion(HttpServletRequest request, FormacionVO formacionVO, FormacionVO formacionVO2)
 			throws ServletException, IOException {
-		request.getSession().setAttribute("formacionVO2",
-				(FormacionVO) formacionVO.clone());
+		request.getSession().setAttribute("formacionVO2", (FormacionVO) formacionVO.clone());
 	}
 
-	public void restaurarBeansFormacion(HttpServletRequest request,
-			FormacionVO formacionVO, FormacionVO formacionVO2)
+	public void restaurarBeansFormacion(HttpServletRequest request, FormacionVO formacionVO, FormacionVO formacionVO2)
 			throws ServletException, IOException {
-		request.getSession().setAttribute("formacionVO",
-				(FormacionVO) formacionVO2.clone());
+		request.getSession().setAttribute("formacionVO", (FormacionVO) formacionVO2.clone());
 	}
 
-	public void updateEmail(HttpServletRequest request, String pernumdoc,
-		String peremail,Login login) throws ServletException, IOException {
+	public void updateEmail(HttpServletRequest request, String pernumdoc, String peremail, Login login)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		bitacoraCOM = new BitacoraCOM();
-		String loginBitacora = (String)session.getAttribute("loginBitacora");
+		String loginBitacora = (String) session.getAttribute("loginBitacora");
 		System.out.println("updateEmail");
 		if (!personalDAO.updatePersonal(pernumdoc, peremail)) {
 			setMensaje(personalDAO.getMensaje());
 			return;
 		}
-		//bitacora
-		try
-		{
+		// bitacora
+		try {
 			LogPersonalDto log = new LogPersonalDto();
 			log.setCorreo(peremail);
 			log.setFecha(LocalDateTime.now().toString());
-			bitacoraCOM.insertarBitacora(
-					Long.parseLong(login.getInstId()), 
-					Integer.parseInt(login.getJornadaId()),
-					2 ,
-					login.getPerfil(), 
-					Integer.parseInt(login.getSede()), 
-					20002, 
-					2, 
-					loginBitacora, 
-					new Gson().toJson(log)
-					);
-		}catch(Exception e){
+			bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), Integer.parseInt(login.getJornadaId()), 2,
+					login.getPerfil(), Integer.parseInt(login.getSedeId()), 20002, 2, loginBitacora,
+					new Gson().toJson(log));
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Error " + this + ":" + e.toString());
 		}

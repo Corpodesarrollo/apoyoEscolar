@@ -263,38 +263,40 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				nuevasNotas.add(data);
 			}
 			for (String[] old : notasOld) {
-				LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
-				logEvaluacionDto.setNumeroIdentificacion(old[1]);
-				logEvaluacionDto.setNombreCompleto(old[4]+' '+old[5]+' '+old[2]+' '+old[3]);
-				logEvaluacionDto.setGrado(filtroEvaluacion.getGrado_());
-				logEvaluacionDto.setGrupo(filtroEvaluacion.getGrupo_());
-				logEvaluacionDto.setPeriodo(Integer.parseInt(filtroEvaluacion.getPeriodo()));
-				logEvaluacionDto.setMateria(filtroEvaluacion.getAsignatura_());
 				if (old[6] != null && !old[6].equals("")) {
-					logEvaluacionDto.setNotaAnterior(Float.parseFloat(old[6]));	
-				}else{
-					logEvaluacionDto.setNotaAnterior(null);
-				}
-				for (String[] nuev : nuevasNotas) {
-					if (nuev[0].equals(old[0])) {
-						if (nuev.length > 1 && !nuev[1].equals("")) {
-							logEvaluacionDto.setNotaActualizada(Float.parseFloat(nuev[1]));
-						} else{
-							logEvaluacionDto.setNotaActualizada(null);
-						}
-						if (nuev.length > 2 && !nuev[2].equals("")) {
-							logEvaluacionDto.setNotaRecuperada(Float.parseFloat(nuev[2]));
-						} else{
-							logEvaluacionDto.setNotaRecuperada(null);
+					LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
+					logEvaluacionDto.setNumeroIdentificacion(old[1]);
+					logEvaluacionDto.setNombreCompleto(old[4]+' '+old[5]+' '+old[2]+' '+old[3]);
+					logEvaluacionDto.setGrado(filtroEvaluacion.getGrado_());
+					logEvaluacionDto.setGrupo(filtroEvaluacion.getGrupo_());
+					logEvaluacionDto.setPeriodo(filtroEvaluacion.getPeriodo());
+					logEvaluacionDto.setMateria(filtroEvaluacion.getAsignatura_());
+					if (old[6] != null && !old[6].equals("")) {
+						logEvaluacionDto.setNotaAnterior(old[6]);	
+					}else{
+						logEvaluacionDto.setNotaAnterior(null);
+					}
+					for (String[] nuev : nuevasNotas) {
+						if (nuev[0].equals(old[0])) {
+							if (nuev.length > 1 && !nuev[1].equals("")) {
+								logEvaluacionDto.setNotaActualizada(nuev[1]);
+							} else{
+								logEvaluacionDto.setNotaActualizada(null);
+							}
+							if (nuev.length > 2 && !nuev[2].equals("")) {
+								logEvaluacionDto.setNotaRecuperada(nuev[2]);
+							} else{
+								logEvaluacionDto.setNotaRecuperada(null);
+							}
 						}
 					}
+					list.add(logEvaluacionDto);
 				}
-				list.add(logEvaluacionDto);
 			}
-			String tipo = "2";
+			String tipo = "7";
 			for (LogEvaluacionDto item : list) {
 				if (item.getNotaAnterior() == null && item.getNotaActualizada() != null) {
-					tipo = "1";
+					tipo = "7";
 				}
 			}
 			Gson gson = new Gson();

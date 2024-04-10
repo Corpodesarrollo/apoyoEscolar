@@ -857,8 +857,8 @@ public class Libro {
 			parametros.put("JORNADA", bdt.getDABOLJORNOMBRE());
 			parametros.put("DANE", bdt.getDANE12());
 			long consecutivoConsultaExterna = this.getConsecutivoConsultasExternas();
-			this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "LIB");
-			String pinConsultaExterna = "LIB"+consecutivoConsultaExterna;
+			this.insertarConsultasExternas(consecutivoConsultaExterna,"", "", "", "FOL");
+			String pinConsultaExterna = "FOL"+consecutivoConsultaExterna;
 			parametros.put("PINCONSULTAEXTERNA", pinConsultaExterna);
 		}
 		return parametros;

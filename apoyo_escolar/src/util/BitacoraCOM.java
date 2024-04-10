@@ -44,7 +44,6 @@ public class BitacoraCOM {
 			request.setUsuario(loginBit[0]);
 		    Gson gson = new Gson();
 		    String jsonString = gson.toJson(request);
-		    System.out.println("FER: "+jsonString+" :FER");
 		    Response post = solicitud.header("Authorization", "Bearer " + token).post(Entity.json(jsonString));
 		    retorno = post.readEntity(String.class);
 			
@@ -76,7 +75,6 @@ public class BitacoraCOM {
 			String userDetails = jobjUsuarioDetails.get("userDetails").toString();
 			JsonObject jobjToken = new Gson().fromJson(userDetails, JsonObject.class);
 			token = jobjToken.get("token").toString().replace(PREFIX, "");
-			System.out.println("FER: "+token+" :FER");
 		} catch (Exception e) { 
 		    e.printStackTrace();  
 			System.out.println(e.getMessage());

@@ -49,13 +49,13 @@ public class LogEvaluacionDto {
 	}
 
 	@SerializedName("Periodo estudiante")
-	private Integer periodo;
+	private String periodo;
 	
-	public void setPeriodo(Integer periodo){
+	public void setPeriodo(String periodo){
 		this.periodo=periodo;
 	}
 
-	public Integer getPeriodo(){
+	public String getPeriodo(){
 		return this.periodo;
 	}	
 
@@ -71,35 +71,35 @@ public class LogEvaluacionDto {
 	}
 
 	@SerializedName("Nota recuperada")
-	private Float notaRecuperada;
+	private String notaRecuperada;
 
-	public void setNotaRecuperada(Float notaRecuperada){
+	public void setNotaRecuperada(String notaRecuperada){
 		this.notaRecuperada=notaRecuperada;
 	}
 
-	public Float getNotaRecuperada(){
+	public String getNotaRecuperada(){
 		return this.notaRecuperada;
 	}	
 
 	@SerializedName("Nota anterior")
-	private Float notaAnterior;
+	private String notaAnterior;
 
-	public void setNotaAnterior(Float notaAnterior){
+	public void setNotaAnterior(String notaAnterior){
 		this.notaAnterior=notaAnterior;
 	}
 
-	public Float getNotaAnterior(){
+	public String getNotaAnterior(){
 		return this.notaAnterior;
 	}	
 
 	@SerializedName("Nota actualizada")
-	private Float notaActualizada;
+	private String notaActualizada;
 
-	public void setNotaActualizada(Float notaActualizada){
+	public void setNotaActualizada(String notaActualizada){
 		this.notaActualizada=notaActualizada;
 	}
 
-	public Float getNotaActualizada(){
+	public String getNotaActualizada(){
 		return this.notaActualizada;
 	}	
 	

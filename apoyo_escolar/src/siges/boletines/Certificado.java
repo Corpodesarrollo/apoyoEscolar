@@ -61,7 +61,7 @@ import siges.util.dao.utilDAO;
 
 public class Certificado{
 	
-	private utilDAO utilDAO = new utilDAO();;
+	private utilDAO utilDAO = new utilDAO();
 	private static boolean ocupado = false;
 	private Cursor cursor;// objeto que maneja las sentencias sql
 	private Zip zip;

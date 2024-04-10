@@ -14,7 +14,7 @@ public class LogEstudianteDto {
 		return this.tipoDocumento;
 	}
 	
-	@SerializedName("N&uacute;umero Identificaci&oacute;n")
+	@SerializedName("N&uacute;mero Identificaci&oacute;n")
 	private String numeroIdentificacion;
 
 	public void setNumeroIdentificacion(String numeroIdentificacion){

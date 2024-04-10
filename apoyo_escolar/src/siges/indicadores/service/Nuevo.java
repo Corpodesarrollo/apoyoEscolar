@@ -396,7 +396,7 @@ public class Nuevo extends Service {
 				log.setPeriodoFinal(logroE.getLogPeriodoFin());
 				log.setPeriodoInicial(logroE.getLogPeriodoIni());
 				log.setTipoCargue("individual");
-				log.setVigencia(logroE.getLogPeriodoIni()+" - "+logroE.getLogPeriodoFin());
+				log.setVigencia(String.valueOf(logroE.getLogVigencia()));
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
@@ -438,7 +438,7 @@ public class Nuevo extends Service {
 			LogDescriptorDto log = new LogDescriptorDto();
 			log.setAbreviatura(descE.getDesAbreviatura());
 			
-			List<ItemVO> areas = indicadoresDAO.getListaArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado());
+			List<ItemVO> areas = indicadoresDAO.getListaArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesVigencia(), descE.getDesGrado());
 			for(int i=0;i<areas.size();i++){
 				ItemVO obj = areas.get(i);
 				if(obj.getCodigo()==descE.getDesArea()){
@@ -449,10 +449,10 @@ public class Nuevo extends Service {
 			
 			log.setComentario(descE.getDesDescripcion());
 			
-			List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesMetodologia(), descE.getDesGrado(), descE.getDesArea());
+			List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(descE.getDesInstitucion(), descE.getDesMetodologia(), descE.getDesVigencia(), descE.getDesGrado(), descE.getDesArea());
 			for(int i=0;i<docentes.size();i++){
 				ItemVO obj = docentes.get(i);
-				if(obj.getCodigo()==descE.getDesArea()){
+				if(obj.getCodigo()==descE.getDesDocente()){
 					log.setDocente(obj.getNombre());
 					break;
 				}
@@ -493,6 +493,7 @@ public class Nuevo extends Service {
 			
 			log.setVigencia(descE.getDesPeriodoIni()+" - "+descE.getDesPeriodoFin());
 			log.setDescripcion(descE.getDesDescripcion());
+			log.setTipoOrigenDato("?");
 			
 			Gson gson = new Gson();
 			jsonString = gson.toJson(log);
@@ -641,7 +642,7 @@ public class Nuevo extends Service {
 				log.setAbreviatura(desc.getDesAbreviatura());
 				
 				try{
-				List<ItemVO> areas = indicadoresDAO.getListaArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado());
+				List<ItemVO> areas = indicadoresDAO.getListaArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesVigencia(), desc.getDesGrado());
 				
 				for(int i=0;i<areas.size();i++){
 					ItemVO obj = areas.get(i);
@@ -656,7 +657,7 @@ public class Nuevo extends Service {
 
 				log.setComentario(desc.getDesDescripcion());
 				try{
-				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesMetodologia(), desc.getDesGrado(), desc.getDesArea());
+				List<ItemVO> docentes = indicadoresDAO.getListaDocenteArea(desc.getDesInstitucion(), desc.getDesMetodologia(), desc.getDesVigencia(), desc.getDesGrado(), desc.getDesArea());
 				
 				for(int i=0;i<docentes.size();i++){
 					ItemVO obj = docentes.get(i);
@@ -717,6 +718,8 @@ public class Nuevo extends Service {
 				}
 				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
 				log.setDescripcion(desc.getDesDescripcion());
+				log.setTipoOrigenDato("?");
+				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
 			}catch(Exception e){

@@ -132,10 +132,10 @@ public class ControllerFiltroAdd extends HttpServlet {
 
 				Login usuVO = (Login) session.getAttribute("login");
 				
-				bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+				/*bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
 										Integer.parseInt(usuVO.getJornadaId()), 2, 
 										usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-										30, 4, loginBitacora, jsonString);
+										30, 4, loginBitacora, jsonString);*/
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error " + this + ":" + e.toString());

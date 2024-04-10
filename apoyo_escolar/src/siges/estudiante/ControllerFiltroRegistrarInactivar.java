@@ -125,18 +125,22 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 		String mensaje="";
 		if(estudianteDAO.getEstudiante(filtro.getTipoDocumento(),filtro.getId())){
 			//2. Si existe debemos actualizarle la ubicacion
-			resultado = estudianteDAO.inactivarGrupoAlumno(filtro);
-			try
-			{
-				LogEstudianteDto log = new LogEstudianteDto();
-				log.setNumeroIdentificacion(filtro.getId());
-				log.setEstado("Inactivo");
-				log.setNombreInstitucion(login.getInst());
-				log.setSede(filtro.getSede());
-				log.setJornada(filtro.getJornada());
-				log.setGrado(filtro.getGrado());
-				log.setGrupo(filtro.getGrupo());
-				bitacoraCOM.insertarBitacora(
+			resultado=true;
+			mensaje = " El estudiante fue actualizado satisfactoriamente.";
+			try {
+				String[] Grupo = estudianteDAO.getGrupoPorEstudiante(filtro.getId(), filtro.getTipoDocumento());
+				if (Grupo[0]==null) {
+					mensaje = " El estudiante ya se encontraba inactivo.";
+				} else{
+					LogEstudianteDto log = new LogEstudianteDto();
+					log.setNumeroIdentificacion(filtro.getId());
+					log.setEstado("Inactivo");
+					log.setNombreInstitucion(Grupo[0]);
+					log.setSede(Grupo[1]);
+					log.setJornada(Grupo[2]);
+					log.setGrado(Grupo[3]);
+					log.setGrupo(Grupo[4]);
+					bitacoraCOM.insertarBitacora(
 						Long.parseLong(login.getInstId()), 
 						Integer.parseInt(login.getJornadaId()),
 						2,
@@ -146,12 +150,13 @@ public class ControllerFiltroRegistrarInactivar extends HttpServlet {
 						2, 
 						loginBitacora, 
 						new Gson().toJson(log)
-						);
-			}catch(Exception e){
+					);
+					resultado = estudianteDAO.inactivarGrupoAlumno(filtro);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("Error " + this + ":" + e.toString());
 			}
-			mensaje = " El estudiante fue actualizado satisfactoriamente.";
 		}else{
 			//2. Si no existe, lo registramos
 			resultado=true;

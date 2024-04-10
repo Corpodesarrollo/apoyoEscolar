@@ -26,6 +26,14 @@ public String[] getEmails() {
 		this.subject = subject;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 /** The emails. */
   private String[] emails;
 
@@ -34,5 +42,8 @@ public String[] getEmails() {
 
   /** The subject. */
   private String subject;
+  
+  /** Image */
+  private String image;
 
 }

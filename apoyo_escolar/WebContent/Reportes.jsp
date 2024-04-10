@@ -51,7 +51,8 @@
 	
 function validarArchivo(f1,f2) {
             // URL del servlet con la ruta del archivo como parámetro
-            var url = 'ValidarArchivo.do?filepath='+f2;
+            var repTipoVal = document.getElementsByName("repTipo")[0].value
+            var url = 'ValidarArchivo.do?filepath='+f2+'&tipo='+repTipoVal+'&archivo='+f1;
 			var url2 = 'Descargar.do?filepath='+f2;
             // Realiza la solicitud AJAX al servlet
             var xhr = new XMLHttpRequest();
@@ -95,7 +96,7 @@ function validarArchivo(f1,f2) {
 		if(urlPath.indexOf("http") > -1){
 			urlPath = '<c:out value="${fila[1]}"/>';
 		}		
-        document.listado.action= "./GuardarBitacoraReporte?archivo=<c:out value="${fila[0]}"/>&action=" + urlPath;
+        document.listado.action= urlPath;
 		document.listado.submit();
 	}
 </c:forEach>
@@ -109,7 +110,7 @@ function validarArchivo(f1,f2) {
 			urlPath = '<c:out value="${fila[1]}"/>';
 		}
 		var blade="http://bladenodo4.redp.edu.co:7779";
-         document.listado.action= "./GuardarBitacoraReporte?archivo=<c:out value="${fila[0]}"/>&action=" + blade + urlPath;
+         document.listado.action= blade + urlPath;
 
         //document.listado.action= urlPath;
 		document.listado.submit();

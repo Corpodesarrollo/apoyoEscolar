@@ -32,10 +32,8 @@ import siges.login.beans.Login;
 import util.BitacoraCOM;
 import util.LogAreaDto;
 import util.LogAsignaturaDto;
-import util.LogDescriptorDto;
 import util.LogGradoDto;
 import util.LogPlanEstudioDto;
-import utils.system;
 
 /**
  * 27/10/2009

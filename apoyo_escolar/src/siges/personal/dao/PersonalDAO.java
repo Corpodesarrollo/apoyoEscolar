@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -27,6 +26,8 @@ import siges.personal.beans.FormacionVO;
 import siges.personal.beans.GrupoVO;
 import siges.personal.beans.LaboralVO;
 import siges.personal.beans.Personal;
+import siges.personal.beans.RotDocAsigGradoGrupoVO;
+import siges.personal.beans.RotDocAsigGradoVO;
 
 public class PersonalDAO extends Dao {
 	private Cursor cursor;
@@ -2567,6 +2568,358 @@ public class PersonalDAO extends Dao {
 			} 
 		}
 		return listaGruposDocente;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List consultarHrDocenteXGradoNaranja(long idDocente, long asignatura, int vigencia, long jerCodigoGrado) {
+		int posicion = 1;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		List listaHrDocenteXGradoNaranja = null;
+		RotDocAsigGradoVO rotDocAsigGradoVO = null;
+		
+		try {
+			cn = cursor.getConnection();
+			pst = cn.prepareStatement(rb.getString("Personal.consultarHrDocenteXGradoNaranja"));
+			pst.clearParameters(); 
+			pst.setLong(posicion++, jerCodigoGrado);
+			pst.setLong(posicion++, idDocente);
+			pst.setLong(posicion++, asignatura);
+			pst.setInt(posicion++, vigencia);
+			rs=pst.executeQuery();
+			
+			listaHrDocenteXGradoNaranja = new ArrayList();
+			
+			while (rs.next()) {
+				int i=1;
+				rotDocAsigGradoVO = new RotDocAsigGradoVO();
+				rotDocAsigGradoVO.setRotDagJergrado(rs.getLong(i++));
+				rotDocAsigGradoVO.setRotDagDocente(rs.getLong(i++));
+				rotDocAsigGradoVO.setRotDagAsignatura(rs.getLong(i++));
+				rotDocAsigGradoVO.setRotDagIhtotal(rs.getInt(i++));
+				rotDocAsigGradoVO.setRotDagIhreal(rs.getInt(i++));
+				rotDocAsigGradoVO.setRotDagIhprop(rs.getInt(i++));
+				rotDocAsigGradoVO.setRotDagGvigencia(rs.getInt(i++));
+				listaHrDocenteXGradoNaranja.add(rotDocAsigGradoVO);
+			}
+						
+		} catch (InternalErrorException in) {
+			setMensaje("[consultarHrDocenteXGradoNaranja]: No se puede establecer conexiÛn con la base de datos: ");
+			return null;
+		
+		} catch (SQLException sqle) {
+			try {
+				cn.rollback();
+			} catch (SQLException s) {
+				s.printStackTrace();
+			}
+			setMensaje("[consultarHrDocenteXGradoNaranja]: Error intentando ingresar informaciÛn laboral.("+ sqle.getErrorCode() + ") Posible problema: ");
+			switch (sqle.getErrorCode()) {
+			default:
+				setMensaje(sqle.getMessage().replace('\'', '`').replace('"', 'n'));
+			}
+			return null;
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (InternalErrorException inte) {
+				inte.printStackTrace();
+			} 
+		}
+		return listaHrDocenteXGradoNaranja;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List consultarHrDocenteXGradoGrupoAzul(long idDocente, long asignatura, int vigencia, long jerCodigoGrado, long grupo) {
+		int posicion = 1;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		List listaHrDocenteXGradosAzul = null;
+		RotDocAsigGradoGrupoVO rotDocAsigGradoGrupoVO = null;
+		
+		try {
+			cn = cursor.getConnection();
+			pst = cn.prepareStatement(rb.getString("Personal.consultarHrDocenteXGradoGrupoAzul"));
+			pst.clearParameters();
+			pst.setLong(posicion++, jerCodigoGrado);
+			pst.setLong(posicion++, idDocente);
+			pst.setLong(posicion++, asignatura);
+			pst.setInt(posicion++, vigencia);
+			pst.setLong(posicion++, grupo);
+			rs=pst.executeQuery();
+			
+			listaHrDocenteXGradosAzul = new ArrayList();
+			
+			while (rs.next()) {
+				int i=1;
+				rotDocAsigGradoGrupoVO = new RotDocAsigGradoGrupoVO();
+				rotDocAsigGradoGrupoVO.setRotDagGjergrado(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGdocente(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGasignatura(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGgrupo(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGvigencia(rs.getInt(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGih(rs.getInt(i++));
+				listaHrDocenteXGradosAzul.add(rotDocAsigGradoGrupoVO);
+			}
+			
+		} catch (InternalErrorException in) {
+			setMensaje("[consultarHrDocenteXGradoGrupoAzul]: No se puede establecer conexiÛn con la base de datos: ");
+			return null;
+		
+		} catch (SQLException sqle) {
+			try {
+				cn.rollback();
+			} catch (SQLException s) {
+				s.printStackTrace();
+			}
+			setMensaje("[consultarHrDocenteXGradoGrupoAzul]: Error intentando ingresar informaciÛn laboral.("+ sqle.getErrorCode() + ") Posible problema: ");
+			switch (sqle.getErrorCode()) {
+			default:
+				setMensaje(sqle.getMessage().replace('\'', '`').replace('"', 'n'));
+			}
+			return null;
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (InternalErrorException inte) {
+				inte.printStackTrace();
+			} 
+		}
+		return listaHrDocenteXGradosAzul;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List consultarHrDocenteXGradoAzul(long idDocente, long asignatura, int vigencia, long jerCodigoGrado) {
+		int posicion = 1;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		List listaHrDocenteXGradosAzul = null;
+		RotDocAsigGradoGrupoVO rotDocAsigGradoGrupoVO = null;
+		
+		try {
+			cn = cursor.getConnection();
+			pst = cn.prepareStatement(rb.getString("Personal.consultarHrDocenteXGradoAzul"));
+			pst.clearParameters();
+			pst.setLong(posicion++, jerCodigoGrado);
+			pst.setLong(posicion++, idDocente);
+			pst.setLong(posicion++, asignatura);
+			pst.setInt(posicion++, vigencia);
+			rs=pst.executeQuery();
+			
+			listaHrDocenteXGradosAzul = new ArrayList();
+			
+			while (rs.next()) {
+				int i=1;
+				rotDocAsigGradoGrupoVO = new RotDocAsigGradoGrupoVO();
+				rotDocAsigGradoGrupoVO.setRotDagGjergrado(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGdocente(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGasignatura(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGgrupo(rs.getLong(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGvigencia(rs.getInt(i++));
+				rotDocAsigGradoGrupoVO.setRotDagGih(rs.getInt(i++));
+				listaHrDocenteXGradosAzul.add(rotDocAsigGradoGrupoVO);
+			}
+						
+		} catch (InternalErrorException in) {
+			setMensaje("[consultarHrDocenteXGradoAzul]: No se puede establecer conexiÛn con la base de datos: ");
+			return null;
+		
+		} catch (SQLException sqle) {
+			try {
+				cn.rollback();
+			} catch (SQLException s) {
+				s.printStackTrace();
+			}
+			setMensaje("[consultarHrDocenteXGradoAzul]: Error intentando ingresar informaciÛn laboral.("+ sqle.getErrorCode() + ") Posible problema: ");
+			switch (sqle.getErrorCode()) {
+			default:
+				setMensaje(sqle.getMessage().replace('\'', '`').replace('"', 'n'));
+			}
+			return null;
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+			} catch (InternalErrorException inte) {
+				inte.printStackTrace();
+			} 
+		}
+		return listaHrDocenteXGradosAzul;
+	}
+	
+	public boolean insertarHrDocenteXGradoGrupoAzul(long jerCodigoGrado, long idDocente, long asignatura , long grupo, int vigencia, int hora) {
+		int posicion = 1;
+		
+		PreparedStatement pst = null;
+		try {
+			cn = cursor.getConnection();
+			pst = cn.prepareStatement(rb.getString("Personal.InsertHrDocenteXGradoGrupoAzul"));
+			//ROTDAGGJERGRADO, ROTDAGGDOCENTE, ROTDAGGASIGNATURA,ROTDAGGGRUPO,ROTDAGGVIGENCIA,ROTDAGGIH
+			pst.clearParameters();
+			pst.setLong(posicion++, jerCodigoGrado);
+			pst.setLong(posicion++, idDocente);
+			pst.setLong(posicion++, asignatura);
+			pst.setLong(posicion++, grupo);
+			pst.setInt(posicion++, vigencia);
+			pst.setInt(posicion++, hora);			
+			pst.executeUpdate();
+			cn.commit();
+			cn.setAutoCommit(true);
+			
+			System.out.println("[PersonalDAO]-[insertarHrDocenteXGradoGrupoAzul]: Registro exitoso de informaciÛn en la tabla ROT_DOC_ASIG_GRADO_GRUPO ==> REG [ROTDAGGJERGRADO: "+jerCodigoGrado+", ROTDAGGDOCENTE: "+idDocente+", ROTDAGGASIGNATURA: "+asignatura+",ROTDAGGGRUPO: "+grupo+",ROTDAGGVIGENCIA: "+vigencia+",ROTDAGGIH: "+hora+"]");
+		
+		} catch (InternalErrorException in) {
+			in.printStackTrace();
+			setMensaje("[insertarHrDocenteXGradoGrupoAzul]: NO se puede estabecer conexiÛn con la base de datos: ");
+			return false;
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+			try {
+				cn.rollback();
+			} catch (SQLException s) {
+				s.printStackTrace();
+				return false;
+			}
+			setMensaje("[insertarHrDocenteXGradoGrupoAzul]: Error intentando ingresar informaciÛn laboral.("+ sqle.getErrorCode() + ") Posible problema: ");
+			switch (sqle.getErrorCode()) {
+			default:
+				setMensaje(sqle.getMessage().replace('\'', '`').replace('"', 'n'));
+			}
+			return false;
+		} finally {
+			try {
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+				cursor.cerrar();
+			} catch (InternalErrorException inte) {
+				inte.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
+	public boolean actualizarHrDocenteXGradoGrupoAzul(long jerCodigoGrado, long idDocente, long asignatura , long grupo, int vigencia, int hora) {
+		int posicion = 1;
+		
+		PreparedStatement pst = null;
+		try {
+			cn = cursor.getConnection();
+			pst = cn.prepareStatement(rb.getString("Personal.actualizarHrDocenteXGradoGrupoAzul"));
+			pst.clearParameters();
+			pst.setInt(posicion++, hora);
+			pst.setLong(posicion++, jerCodigoGrado);
+			pst.setLong(posicion++, idDocente);
+			pst.setLong(posicion++, asignatura);
+			pst.setLong(posicion++, grupo);
+			pst.setInt(posicion++, vigencia);
+			pst.executeUpdate();
+			cn.commit();
+			cn.setAutoCommit(true);
+			
+			System.out.println("[PersonalDAO]-[actualizarHrDocenteXGradoGrupoAzul]: ActualizaciÛn exitosa de informaciÛn en la tabla ROT_DOC_ASIG_GRADO_GRUPO ==> REG [ROTDAGGJERGRADO: "+jerCodigoGrado+", ROTDAGGDOCENTE: "+idDocente+", ROTDAGGASIGNATURA: "+asignatura+",ROTDAGGGRUPO: "+grupo+",ROTDAGGVIGENCIA: "+vigencia+",ROTDAGGIH: "+hora+"]");
+		
+		} catch (InternalErrorException in) {
+			in.printStackTrace();
+			setMensaje("[actualizarHrDocenteXGradoGrupoAzul]: NO se puede estabecer conexiÛn con la base de datos: ");
+			return false;
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+			try {
+				cn.rollback();
+			} catch (SQLException s) {
+				s.printStackTrace();
+				return false;
+			}
+			setMensaje("[actualizarHrDocenteXGradoGrupoAzul]: Error intentando ingresar informaciÛn laboral.("+ sqle.getErrorCode() + ") Posible problema: ");
+			switch (sqle.getErrorCode()) {
+			default:
+				setMensaje(sqle.getMessage().replace('\'', '`').replace('"', 'n'));
+			}
+			return false;
+		} finally {
+			try {
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+				cursor.cerrar();
+			} catch (InternalErrorException inte) {
+				inte.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean eliminarHrDocenteXGradoGrupoAzul(long jerCodigoGrado, long idDocente, long asignatura , long grupo, int vigencia) {
+		
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		int posicion = 1;
+		
+		try {
+			cn = cursor.getConnection();
+			
+			pst = cn.prepareStatement(rb.getString("Personal.consultarHrDocenteXGradoGrupoAzul"));
+			pst.clearParameters();
+			pst.setLong(posicion++, jerCodigoGrado);
+			pst.setLong(posicion++, idDocente);
+			pst.setLong(posicion++, asignatura);
+			pst.setInt(posicion++, vigencia);
+			pst.setLong(posicion++, grupo);
+			rs=pst.executeQuery();
+			
+			if (!rs.next()){
+				System.out.println("[PersonalDAO]-[eliminarHrDocenteXGradoGrupoAzul]: No existe registro para eliminar de la tabla ROT_DOC_ASIG_GRADO_GRUPO ==> REG [ROTDAGGJERGRADO: "+jerCodigoGrado+", ROTDAGGDOCENTE: "+idDocente+", ROTDAGGASIGNATURA: "+asignatura+",ROTDAGGGRUPO: "+grupo+",ROTDAGGVIGENCIA: "+vigencia+"]");
+				return false;
+			}
+					
+			posicion = 1; 
+			pst = cn.prepareStatement(rb.getString("Personal.eliminarHrDocenteXGradoGrupoAzul"));
+			pst.clearParameters();
+			pst.setLong(posicion++, jerCodigoGrado);
+			pst.setLong(posicion++, idDocente);
+			pst.setLong(posicion++, asignatura);
+			pst.setLong(posicion++, grupo);
+			pst.setInt(posicion++, vigencia);			
+			pst.executeUpdate();
+			cn.commit();
+			cn.setAutoCommit(true);
+			System.out.println("[PersonalDAO]-[eliminarHrDocenteXGradoGrupoAzul]: Se elimino el registro de la tabla ROT_DOC_ASIG_GRADO_GRUPO ==> REG [ROTDAGGJERGRADO: "+jerCodigoGrado+", ROTDAGGDOCENTE: "+idDocente+", ROTDAGGASIGNATURA: "+asignatura+",ROTDAGGGRUPO: "+grupo+",ROTDAGGVIGENCIA: "+vigencia+"]");
+			
+		} catch (InternalErrorException in) {
+			setMensaje("[eliminarHrDocenteXGradoGrupoAzul]: NO se puede estabecer conexinn con la base de datos: ");
+			return false;
+		} catch (SQLException sqle) {
+			try {
+				sqle.printStackTrace();
+				cn.rollback();
+			} catch (SQLException s) {
+				s.printStackTrace();
+				return false;
+			}
+			setMensaje("[eliminarHrDocenteXGradoGrupoAzul]: Error intentando ingresar informaci√≥n laboral.("+ sqle.getErrorCode() + ") Posible problema: ");
+			switch (sqle.getErrorCode()) {
+			default:
+				setMensaje(sqle.getMessage().replace('\'', '`').replace('"', 'n'));
+			}
+			return false;
+		} finally {
+			try {
+				OperacionesGenerales.closeResultSet(rs);
+				OperacionesGenerales.closeStatement(pst);
+				OperacionesGenerales.closeConnection(cn);
+				cursor.cerrar();
+			} catch (InternalErrorException inte) {
+				inte.printStackTrace();
+			} 
+		}
+		
+		return true;
 	}
 	
 	public boolean eliminarGruposGrado(long institucion, int sede,int jornada, int grado,long asignatura, long idDocente, int vigencia) {

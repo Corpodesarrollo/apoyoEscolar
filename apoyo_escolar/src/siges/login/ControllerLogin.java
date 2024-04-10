@@ -487,11 +487,11 @@ public class ControllerLogin extends HttpServlet {
 						bitacoraCOM.insertarBitacora(
 								Long.parseLong(login.getInstId()),
 								Integer.parseInt(login.getJornadaId()),
-								1,
+								0,
 								login.getPerfil(),
 								Integer.parseInt(login.getSedeId()),
-								45,
 								0,
+								5,
 								loginBitacora,
 								new Gson().toJson(logLogOut));
 					}catch(Exception e){

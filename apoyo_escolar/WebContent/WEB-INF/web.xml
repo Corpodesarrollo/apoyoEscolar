@@ -6825,7 +6825,7 @@
 	<!--/Recursos JNDI -->
 	<!--Configuracion -->
 	<session-config>
-		<session-timeout>30</session-timeout>
+		<session-timeout>66</session-timeout>
 	</session-config>
 	<!--/Configuracion -->
 </web-app>

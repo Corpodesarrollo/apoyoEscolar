@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -36,6 +37,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JExcelApiExporter;
 import net.sf.jasperreports.engine.export.JExcelApiExporterParameter;
+import siges.common.vo.ItemVO;
 import siges.dao.Cursor;
 import siges.dao.Dao;
 import siges.dao.OperacionesGenerales;
@@ -4219,4 +4221,26 @@ public class EstudianteDAO extends Dao {
 		}
 		return true;
 	}
+
+	public String[] getGrupoPorEstudiante(String numerodoc, String tipodoc) throws Exception {
+		String[] grupo = new String[5];
+		Connection cn = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		cn = cursor.getConnection();
+		pst = cn.prepareStatement(rb.getString("getGrupoPorEstudiante"));
+		pst.setString(1, numerodoc);
+		pst.setInt(2, Integer.parseInt(tipodoc));
+		rs = pst.executeQuery();
+		if (rs.next()) {
+			grupo[0] = rs.getString(1);
+			grupo[1] = rs.getString(2);
+			grupo[2] = rs.getString(3);
+			grupo[3] = rs.getString(4);
+			grupo[4] = rs.getString(5);
+		}
+		return grupo;
+	}
+	
+	
 }

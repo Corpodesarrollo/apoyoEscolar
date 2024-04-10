@@ -39,8 +39,19 @@
 			<!--
 			
 				if(self.parent.frames.length > 0) {
-					top.location.href = '<c:url value="/login.jsp"/>';
-					top.alert('La sesión se ha terminado. Ingrese de nuevo al sistema');
+					//top.alert('La sesión se ha terminado. Ingrese de nuevo al sistema');
+					//top.location.href = '<c:url value="/login.jsp"/>';
+					
+					//==>LINKTIC
+					//top.location.href = "https://pruebas-sed.linktic.com/apoyo-ui/#/home";
+					//==>PRUEBAS-APOYOFAB
+					//top.location.href = "https://apoyofab.educacionbogota.edu.co:7733/apoyo-ui/#/home";
+					//==>PRUEBAS-APOYOPRUEBAS-SED
+					//top.location.href = "https://apoyopruebas.educacionbogota.edu.co/apoyo-ui/#/home";
+					//==>PRE-PROD-SED
+					top.location.href = "https://apoyoprepro.educacionbogota.edu.co/apoyo-ui/#/home";
+					
+					top.alert('No se permite el acceso a esta opcion o no se encontro información para acceder.');
 			 	}
 	
 				function hacerValidaciones_frmLogin(forma) {
