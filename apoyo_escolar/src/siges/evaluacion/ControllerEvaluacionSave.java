@@ -31,6 +31,8 @@ import siges.util.Logger;
 import util.BitacoraCOM;
 import util.EstudianteEvalDto;
 import util.LogEvaluacionDto;
+import util.LogEvaluacionLogroDetalleDto;
+import util.LogEvaluacionLogroDto;
 
 /**
  * Nombre: ControllerEvaluacionSave<BR>
@@ -177,20 +179,28 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				}
 			}
 			if (boton.equals("Aceptar")) {
-				List<String[]> notasOld = (List<String[]>)session.getAttribute("filtroResultado");
+				List<String[]> estudiantes = (List<String[]>)session.getAttribute("filtroResultado");
+				
 				switch (tipo) {
 				case 1:// logros
 					if (!insertarLogro(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
-					} else
-						request.setAttribute("mensaje",
-								"Los datos fueron registrados satisfactoriamente");
+					} else {
+						List<String[]> logros = (List<String[]>)session.getAttribute("filtroLogros");
+						List<String[]> notas = (List<String[]>)session.getAttribute("filtroNota");
+						String stringEvalLogros = stringEvalLogros(estudiantes, logros, notas, filtroEvaluacion);
+						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 3, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								2202, 7, loginBitacora, stringEvalLogros);
+						request.setAttribute("mensaje","Los datos fueron registrados satisfactoriamente");
+					}
 					return sig0 += "?tipo=" + tipo;
 				case ParamsVO.EVAL_ASI:// asig
 					if (!insertarAsignatura(request, login, filtroEvaluacion)){
 						request.setAttribute("mensaje", mensaje);
 					} else {				
-						String[] arrString  = stringEvalAsignatura(notasOld, filtroEvaluacion);						
+						String[] arrString  = stringEvalAsignatura(estudiantes, filtroEvaluacion);
 						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornadaId()), 3, 
 								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
@@ -251,6 +261,66 @@ public class ControllerEvaluacionSave extends HttpServlet {
 		return sig0 += "?tipo=" + tipo;
 	}
 
+	private String stringEvalLogros(List<String[]> estudiantes, List<String[]> logros, List<String[]> notas, FiltroBeanEvaluacion filtroEvaluacion){
+		try {
+			List<LogEvaluacionLogroDto> listEvLogro = new ArrayList<LogEvaluacionLogroDto>();
+			String[] newNotas = filtroEvaluacion.getNota();
+			List<String[]> listEstudiantes = new ArrayList<>();
+			for (String nota : newNotas) {
+				String[] data = nota.split("\\|");
+				if (data.length > 1) {
+					for (String[] estudiante : estudiantes) {
+						if (estudiante[0].equals(data[0])) {
+							listEstudiantes.add(estudiante);
+						}
+					}
+				}
+			}
+			for (String[] estudiante : listEstudiantes) {
+				LogEvaluacionLogroDto evLogro = new LogEvaluacionLogroDto();
+				List<LogEvaluacionLogroDetalleDto> detalle = new ArrayList<LogEvaluacionLogroDetalleDto>();
+				for (String nota : newNotas) {
+					String[] data = nota.split("\\|");
+					if (data.length > 1 && data[0].equals(estudiante[0])) {
+						LogEvaluacionLogroDetalleDto tempDetalle = new LogEvaluacionLogroDetalleDto();
+						for (String[] logro : logros) {
+							if (data[1].equals(logro[0])) {
+								tempDetalle.setAbreviatura(logro[1]);
+								tempDetalle.setLogro(logro[2]);
+							}
+						}
+						for (String[] respuesta : notas) {
+							if (data[3].equals(respuesta[0])) {
+								tempDetalle.setRespuesta(respuesta[2]);
+							}
+						}
+						detalle.add(tempDetalle);
+					}
+				}
+				evLogro.setNumeroIdentificacion(estudiante[2]);
+				String nombre = estudiante[4];
+				if (estudiante[5] != null && !estudiante[5].equals("")) {
+					nombre += " "+estudiante[5];
+				}
+				nombre += " "+estudiante[2];
+				if (estudiante[3] != null && !estudiante[3].equals("")) {
+					nombre += " "+estudiante[3];
+				}
+				evLogro.setNombreCompleto(nombre);
+				evLogro.setGrado(filtroEvaluacion.getGrado_());
+				evLogro.setGrupo(filtroEvaluacion.getGrupo_());
+				evLogro.setMateria(filtroEvaluacion.getAsignatura_());
+				evLogro.setPeriodo(filtroEvaluacion.getPeriodo_());
+				evLogro.setLogros(detalle);
+				listEvLogro.add(evLogro);
+			}
+			String retorno = new Gson().toJson(listEvLogro);
+			return retorno;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+	}
 
 	private String[] stringEvalAsignatura(List<String[]> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
 		try {
