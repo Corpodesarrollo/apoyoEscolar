@@ -29,7 +29,6 @@ import siges.estudiante.dao.EstudianteDAO;
 import siges.io.Zip;
 import siges.login.beans.Login;
 import siges.util.beans.ReporteVO;
-import util.BitacoraCOM;
 import util.LogEstudianteDto;
 
 /**
@@ -71,7 +70,6 @@ public class ControllerFiltroSave extends HttpServlet {
 	private String path2;
 	private final String modulo = "57";
 	private java.sql.Timestamp f2;
-	private BitacoraCOM bitacoraCOM;
 
 	/**
 	 * Procesa la peticion HTTP
@@ -114,8 +112,6 @@ public class ControllerFiltroSave extends HttpServlet {
 		f2 = new java.sql.Timestamp(new java.util.Date().getTime());
 		
 		HttpSession session = request.getSession();
-		bitacoraCOM = new BitacoraCOM();
-		String loginBitacora = (String)session.getAttribute("loginBitacora");
 
 		try {
 			estudianteDAO = new EstudianteDAO(cursor);

@@ -22,7 +22,6 @@ import siges.grupoPeriodo.dao.GrupoPeriodoDAO;
 import siges.login.beans.Login;
 import siges.util.Logger;
 import util.BitacoraCOM;
-import util.BitacoraDto;
 import util.LogAbrirGrupoDto;
 import util.LogCerrarPeriodoDto;
 
@@ -327,30 +326,30 @@ public class ControllerAbrirSave extends HttpServlet{
 			setMensaje(grupoPeriodoDAO.getMensaje());
 		}else{
 			setMensaje("El periodo ha sido abierto satisfactoriamente");
+			try {
+				LogCerrarPeriodoDto logPeriodo= new LogCerrarPeriodoDto();
+				logPeriodo.setInstitucion(login.getInst());
+				logPeriodo.setSede(login.getSede());
+				logPeriodo.setJornada(login.getJornada());
+				logPeriodo.setPeriodo(cierreVO.getCiePer());
+				logPeriodo.setTipo("Abrir Periodo");
+				bitacoraCOM.insertarBitacora(
+						Long.parseLong(login.getInstId()), 
+						Integer.parseInt(login.getJornadaId()),
+						4,
+						login.getPerfil(), 
+						Integer.parseInt(login.getSedeId()),
+						1114, 
+						2, loginBitacora, new Gson().toJson(logPeriodo));
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
 			return false;
 		}
 		Logger.print(login.getUsuarioId(),
 		        "Abrir Periodo Inst:"+login.getInstId()+" Sede:"+sede+" Jornada:"+jor+" Periodo:"+periodo,
 		        7,1,this.toString());
-		try {
-			LogCerrarPeriodoDto logPeriodo= new LogCerrarPeriodoDto();
-			logPeriodo.setInstitucion(login.getInst());
-			logPeriodo.setSede(login.getSede());
-			logPeriodo.setJornada(login.getJornada());
-			logPeriodo.setPeriodo(cierreVO.getCiePer());
-			logPeriodo.setTipo("Abrir Periodo");
-			bitacoraCOM.insertarBitacora(
-					Long.parseLong(login.getInstId()), 
-					Integer.parseInt(login.getJornadaId()),
-					4,
-					login.getPerfil(), 
-					Integer.parseInt(login.getSedeId()),
-					1114, 
-					2, loginBitacora, new Gson().toJson(logPeriodo));
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
 		return true;
 	}
 	

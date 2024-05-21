@@ -21,7 +21,6 @@ import siges.estudiante.beans.Basica;
 import siges.estudiante.dao.EstudianteDAO;
 import siges.login.beans.Login;
 import siges.util.Logger;
-import util.BitacoraCOM;
 
 /**
  * Nombre: ControllerFiltroEdit<BR>
@@ -45,8 +44,6 @@ public class ControllerFiltroAdd extends HttpServlet {
 	private Basica basica;
 	private Login login;
 	private ResourceBundle rb;
-	
-	private BitacoraCOM bitacoraCOM;
 
 	/**
 	 * Procesa la peticion HTTP
@@ -76,8 +73,6 @@ public class ControllerFiltroAdd extends HttpServlet {
 		reportesDAO = new ReporteLogrosDAO(cursor);
 		
 		HttpSession session = request.getSession();
-		bitacoraCOM = new BitacoraCOM();
-		String loginBitacora = (String)session.getAttribute("loginBitacora");
 		
 		if (!asignarBeans(request)) {
 			setMensaje("Error capturando datos de sesinn para el usuario");
@@ -129,13 +124,7 @@ public class ControllerFiltroAdd extends HttpServlet {
 			Gson gson = new Gson();
 			String jsonString = gson.toJson(list);
 			try {
-
 				Login usuVO = (Login) session.getAttribute("login");
-				
-				/*bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
-										Integer.parseInt(usuVO.getJornadaId()), 2, 
-										usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-										30, 4, loginBitacora, jsonString);*/
 			} catch (Exception e) {
 				// TODO: handle exception
 				System.out.println("Error " + this + ":" + e.toString());

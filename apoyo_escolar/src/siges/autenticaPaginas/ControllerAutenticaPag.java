@@ -29,7 +29,6 @@ import siges.login.beans.Login;
 import siges.util.Acceso;
 import siges.util.AccesoPaginas;
 import siges.util.Logger;
-import util.BitacoraCOM;
 
 /**
  *	VERSION		FECHA			AUTOR				DESCRIPCION
@@ -56,7 +55,6 @@ public class ControllerAutenticaPag extends HttpServlet {
 	private String contrasena;
 	private String contrasena2;
 	private String URLPag;
-	private BitacoraCOM bitacoraCOM;
 
 	public String autenticacion(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
@@ -71,9 +69,6 @@ public class ControllerAutenticaPag extends HttpServlet {
 		String password = ((String) req.getParameter("password")).trim();
 		session.setAttribute("numeroDocumento", log);
 		session.setAttribute("loginBitacora", log+'-'+password);
-		
-		bitacoraCOM = new BitacoraCOM();
-		String loginBitacora = (String)session.getAttribute("loginBitacora");
 
 		// VALIDACION NORMAL DE ACCESO
 		String[][] params = AccesoPaginas.autorizado(log, password);

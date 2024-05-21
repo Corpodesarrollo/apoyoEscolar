@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
@@ -18,7 +17,6 @@ import com.google.gson.Gson;
 
 import siges.adminParamsInst.dao.AdminParametroInstDAO;
 import siges.adminParamsInst.vo.InstParVO;
-import siges.common.vo.Params;
 import siges.dao.Cursor;
 import siges.evaluacion.beans.FiltroBeanEvaluacion;
 import siges.evaluacion.beans.FiltroComportamiento;
@@ -29,7 +27,6 @@ import siges.evaluacion.dao.EvaluacionDAO;
 import siges.login.beans.Login;
 import siges.util.Logger;
 import util.BitacoraCOM;
-import util.EstudianteEvalDto;
 import util.LogEvaluacionDto;
 import util.LogEvaluacionLogroDetalleDto;
 import util.LogEvaluacionLogroDto;
@@ -336,7 +333,16 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				if (old[6] != null && !old[6].equals("")) {
 					LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
 					logEvaluacionDto.setNumeroIdentificacion(old[1]);
-					logEvaluacionDto.setNombreCompleto(old[4]+' '+old[5]+' '+old[2]+' '+old[3]);
+					String nombreC = old[4];
+					if (old[5] != null && !old[5].equals("")) {
+						nombreC = nombreC + ' ' + old[5];
+					}
+					nombreC = nombreC + ' ' + old[2];
+					if (old[3] != null && !old[3].equals("")) {
+						nombreC = nombreC + ' ' + old[3];
+					}
+					logEvaluacionDto.setNombreCompleto(nombreC);
+					logEvaluacionDto.setTipoIdentificacion(old[7]);
 					logEvaluacionDto.setGrado(filtroEvaluacion.getGrado_());
 					logEvaluacionDto.setGrupo(filtroEvaluacion.getGrupo_());
 					logEvaluacionDto.setPeriodo(filtroEvaluacion.getPeriodo());

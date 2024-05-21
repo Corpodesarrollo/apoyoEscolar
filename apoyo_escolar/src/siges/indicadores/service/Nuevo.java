@@ -491,7 +491,7 @@ public class Nuevo extends Service {
 				}
 			}
 			
-			log.setVigencia(descE.getDesPeriodoIni()+" - "+descE.getDesPeriodoFin());
+			log.setVigencia(String.valueOf(descE.getDesVigencia()));
 			log.setDescripcion(descE.getDesDescripcion());
 			log.setTipoOrigenDato("?");
 			
@@ -572,7 +572,7 @@ public class Nuevo extends Service {
 				log.setPeriodoFinal(logro.getLogPeriodoFin());
 				log.setPeriodoInicial(logro.getLogPeriodoIni());
 				log.setTipoCargue("individual");
-				log.setVigencia(logro.getLogPeriodoIni()+" - "+logro.getLogPeriodoFin());
+				log.setVigencia(String.valueOf(logro.getLogVigencia()));
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
@@ -716,7 +716,7 @@ public class Nuevo extends Service {
 				}catch(Exception e){
 					
 				}
-				log.setVigencia(desc.getDesPeriodoIni()+" - "+desc.getDesPeriodoFin());
+				log.setVigencia(String.valueOf(desc.getDesVigencia()));
 				log.setDescripcion(desc.getDesDescripcion());
 				log.setTipoOrigenDato("?");
 				
