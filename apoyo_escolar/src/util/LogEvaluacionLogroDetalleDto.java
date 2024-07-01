@@ -26,15 +26,15 @@ public class LogEvaluacionLogroDetalleDto {
 		return this.abreviatura;
 	}
 	
-	@SerializedName("Respuesta")
-	private String respuesta;
+	@SerializedName("Evaluaci&oacute;n")
+	private String evaluacion;
 
-	public void setRespuesta(String respuesta){
-		this.respuesta=respuesta;
+	public void setEvaluacion(String evaluacion){
+		this.evaluacion=evaluacion;
 	}
 
-	public String getRespuesta(){
-		return this.respuesta;
+	public String getEvaluacion(){
+		return this.evaluacion;
 	}
 	
 }

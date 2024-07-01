@@ -14,6 +14,7 @@ import siges.common.vo.FiltroCommonVO;
 import siges.common.vo.ItemVO;
 import siges.common.vo.Params;
 import siges.common.vo.TipoEvalVO;
+import siges.evaluacion.beans.FiltroComportamiento;
 import siges.exceptions.InternalErrorException;
 import siges.gestionAdministrativa.repCarnes.vo.ParamsVO;
 import siges.plantilla.beans.NivelEvalVO;
@@ -1811,5 +1812,6 @@ public class Dao {
 			}
 		}
 		return l;
-	}
+	}	
+	
 }

@@ -16,6 +16,7 @@ import siges.common.vo.ItemVO;
 import siges.dao.Cursor;
 import siges.dao.Dao;
 import siges.dao.OperacionesGenerales;
+import siges.evaluacion.beans.FiltroComportamiento;
 import siges.exceptions.InternalErrorException;
 import siges.observacion.vo.ObservacionAsignaturaVO;
 import siges.observacion.vo.ObservacionEstudianteVO;
@@ -728,4 +729,113 @@ System.out.println("observacion.getObsGrado() " + observacion.getObsGrado());
 			}catch(InternalErrorException inte){}
 		}
 	}
+	
+	public String[] getEstudiantePorId(String ide) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato[] = new String[6];
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("estudiantePorId"));
+			ps.setString(1, ide);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato[0] = rs.getString(1);
+				dato[1] = rs.getString(2);
+				dato[2] = rs.getString(3);
+				dato[3] = rs.getString(4);
+				dato[4] = rs.getString(5);
+				dato[5] = rs.getString(6);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getMetodologiaPorId(int ide) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getMetodologiaPorId"));
+			ps.setLong(1, ide);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getGradoPorId(int ide) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getGradoPorId"));
+			ps.setLong(1, ide);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getGrupoPorFiltrosEst(ObservacionEstudianteVO observacionEstudianteVO) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getGrupoPorFiltros"));
+			ps.setLong(1, observacionEstudianteVO.getObsInstitucion());
+			ps.setLong(2, observacionEstudianteVO.getObsSede());
+			ps.setLong(3, observacionEstudianteVO.getObsJornada());
+			ps.setLong(4, observacionEstudianteVO.getObsGrado());
+			ps.setLong(5, observacionEstudianteVO.getObsGrupo());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getGrupoPorFiltrosAsig(ObservacionAsignaturaVO observacionAsignaturaVO) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getGrupoPorFiltros"));
+			ps.setLong(1, observacionAsignaturaVO.getObsInstitucion());
+			ps.setLong(2, observacionAsignaturaVO.getObsSede());
+			ps.setLong(3, observacionAsignaturaVO.getObsJornada());
+			ps.setLong(4, observacionAsignaturaVO.getObsGrado());
+			ps.setLong(5, observacionAsignaturaVO.getObsGrupo());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
 }

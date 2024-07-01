@@ -1,0 +1,145 @@
+	<!DOCTYPE html>
+<!--<html >
+    <head>
+        <meta charset="UTF-8">
+        <title>Novedades para incluir en nomina - GTH-FO-38</title>
+    </head>-->
+    <!--<body>-->
+    <div class="box-header with-border">
+		<h3 class="box-title">Administrar permisos laborales solicitados por funconarios(as)</h3>
+	</div>
+        <div >
+            <form class="well form-horizontal" method="post"  id="form" name="form" ng-submit="form.$valid && persistir()" ng-show="!form.submitted">
+                    <!-- Success message -->
+                    <!--<div class="alert alert-success" role="alert" id="success_message">Success <i class="glyphicon glyphicon-thumbs-up"></i>--> 
+                        <mc-messages></mc-messages>
+                    <!--</div>-->
+                          
+                    <div class="row">
+                        <div class="col-sm-9"> 
+                            <div class="form" ng-class="{ 'has-error' : form.tipoSolicitud.$invalid && !form.tipoSolicitud.$pristine}">
+                                <label class="control-label" >Opciones de administración</label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <select name="tipoSolicitud" placeholder="seleccione opciones de administración" class="form-control" ng-model="datosUsuario.tipoSolicitud" required="" ng-change="cargarCampos()" >
+                                        <option value="">Seleccione</option>
+                                        <option ng-selected="{{tipoSolicitud.id == datosUsuario.tipoSolicitud}}" ng-repeat="tipoSolicitud in tipoSolicitudList" value="{{tipoSolicitud.id}}">{{tipoSolicitud.ds}}</option>
+                                    </select>
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$error.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$dirty && form.tipoSolicitud.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                        <label class="control-label" align="center"> {{datosUsuario.dsTipoSolicitud}} </label> 
+                       
+                    
+                    <!--Habilitar solicitud de permiso prioritario-->
+                    <div ng-show ="tipo1">
+                        <div class="row" > 
+                            
+                            <div class="col-sm-3" >
+                                <div class="form" ng-class="{ 'has-error' : form.cedula.$invalid && !form.cedula.$pristine}">
+                                    <label class="control-label" >Número de cédula del(a) solicitante </label>
+                                    <div>
+                                        <div class="input-group" >
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                            <input name="cedula" placeholder="" class="form-control" ng-model="datosFunCiom.numDoc" required="" type="text" maxlength="12" ng-pattern="numModel">
+                                        </div>
+                                        <span class="text-danger pull-right" ng-show="form.cedula.$error.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.cedula.$dirty && form.cedula.$error.required">Campo requerido</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3" align="left">
+                                <br>
+                                <br>
+                                <div class="form" >
+                                    <div align="right">
+                                        <div class="input-group" >
+                                            <button type="button" class="btn btn-info" ng-disabled="btnBuscarFunc" ng-click="buscarFuncionarioCiom()">Buscar funcionario(a)<span class="glyphicon glyphicon-search"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3" >
+                            </div>
+                            <div class="col-sm-3" >
+                            </div>
+                        </div>
+                       
+                        <div ng-show="mostrarResultado" id="divLoadingGeneral"> 
+                            <div class="row" >
+                                <div class="col-sm-3" >
+                                    <div class="form">
+                                    <label class="control-label" >Nombre: </label>
+                                        <div>
+                                            <div class="input-group" >
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                                <input name="nombre" placeholder="" class="form-control" ng-model="datosFunCiom.nombreCompleto" disabled="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-3" >
+                                    <div class="form">
+                                    <label class="control-label" >Cargo: </label>
+                                        <div>
+                                            <div class="input-group" >
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                                <input name="nombre" placeholder="" class="form-control" ng-model="datosFunCiom.cargoCompleto" disabled="" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-3" >
+                                    <div class="form">
+                                    <label class="control-label" >Telefono: </label>
+                                        <div>
+                                            <div class="input-group" >
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                                <input name="nombre" placeholder="" class="form-control" ng-model="datosFunCiom.TELEFONO" type="text" disabled="" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                               
+                            </div>
+                            
+                            <div class ="row" aling="right">
+                                 <div class="col-sm-12">
+                                    <div class="form" ng-class="{ 'has-error' : form.cesantiasA.$invalid && !form.cesantiasA.$pristine}">
+                                        <div align="right"><
+                                            <div class="input-group" >
+                                                <button type="button" class="btn btn-info" ng-disabled="btnHabilitarPermiso" ng-click="habilitarFuncionarioCiom()" >Habilitar permiso prioritario  <span class="glyphicon glyphicon-send"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        
+                   </div> 
+                    
+                                      
+                        
+                        
+             </form>
+        </div>
+<!--    </body>
+</html>-->
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker2').datetimepicker({
+            locale: 'ru'
+        });
+    });
+</script>

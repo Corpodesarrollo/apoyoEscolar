@@ -1,0 +1,69 @@
+<!--traslado de seguridad social y cesantias-->
+<div>
+    <div>
+        <div>
+            <div class="col-sm-3">
+                <div class="form">
+                    <div>
+                        <div class="input-group" >
+                            <label class="control-label" >Tipo de Solicitud</label>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.checkReconocimiento.$invalid && !form.checkReconocimiento.$pristine}">
+                    <div>
+                        <div class="input-group" >
+                            <input type="checkbox" ng-model="datosUsuario.checkReconocimiento" name="checkReconocimiento">&nbsp;
+                            <label class="control-label" >Reconocimiento</label>                            
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.checkReconocimiento.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.checkReconocimiento.$dirty && form.checkReconocimiento.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+                <div class="form" ng-class="{ 'has-error' : form.checkReajuste.$invalid && !form.checkReajuste.$pristine}">
+                    <div>
+                        <div class="input-group" >
+                            <input type="checkbox" ng-model="datosUsuario.checkReajuste" name="checkReajuste">&nbsp;
+                            <label class="control-label" >Reajuste</label>                            
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.checkReajuste.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.checkReajuste.$dirty && form.checkReajuste.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form">
+                    <div>
+                        <div class="input-group" >
+                            <label class="control-label" >Motivo de ajuste</label>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.checkEstudios.$invalid && !form.checkEstudios.$pristine}">
+                    <div>
+                        <div class="input-group" >
+                            <input type="checkbox" ng-model="datosUsuario.checkEstudios" name="checkEstudios">&nbsp;
+                            <label class="control-label" >Estudios</label>                            
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.checkEstudios.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.checkEstudios.$dirty && form.checkEstudios.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+                <div class="form" ng-class="{ 'has-error' : form.checkExperiencia.$invalid && !form.checkExperiencia.$pristine}">
+                    <div>
+                        <div class="input-group" >
+                            <input type="checkbox" ng-model="datosUsuario.checkExperiencia" name="checkExperiencia">&nbsp;
+                            <label class="control-label" >Experiencia</label>                            
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.checkExperiencia.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.checkExperiencia.$dirty && form.checkExperiencia.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

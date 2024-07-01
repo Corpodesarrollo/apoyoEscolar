@@ -1,0 +1,64 @@
+<!--traslado de seguridad social y cesantias-->
+<div>
+    <div>
+        <div>
+            <div class="col-sm-12">
+                <div class="form" ng-class="{ 'has-error' : form.labelLicencia.$invalid && !form.labelLicencia.$pristine}">
+                    <div>
+                        <div class="input-group" >
+                            <label class="control-label" >Fecha de Licencia</label>                            
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.fInicioLicencia.$invalid && !form.fInicioLicencia.$pristine}">
+                    <label class="control-label" >Desde</label> 
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <input type="text" class="form-control" ng-model="datosUsuario.fInicio" ng-required="tipo5">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.fHastaLicencia.$invalid && !form.fHastaLicencia.$pristine}">
+                    <label class="control-label" >Hasta</label> 
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <input type="text" class="form-control" ng-model="datosUsuario.fHasta" ng-required="tipo5">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="col-sm-4">
+                <label class="control-label">Motivo de permiso</label>
+                <div>
+                    <div class="input-group" >
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                        <select name="motPermisoLicencia" placeholder="tmotPermisoLicencia" class="form-control" ng-model="datosUsuario.motPermiso" ng-change="validarOtroMotivo()" ng-required="tipo5">
+                            <option value="">Seleccione</option>
+                            <option ng-selected="{{motPermisoLicencia.ID_MOTIVO == datosUsuario.motPermiso}}" ng-repeat="motPermisoLicencia in motPermisoList" value="{{motPermisoLicencia.ID_MOTIVO}}">{{motPermisoLicencia.DESC_MOTIVO}}</option>
+                        </select>
+                    </div>
+                    <span class="text-danger pull-right" ng-show="form.motPermisoLicencia.cedula.pattern" >C&#225;racter no permitido</span>
+                    <span class="text-danger pull-right" ng-show="form.motPermisoLicencia.cedula && form.motPermisoLicencia.$error.required">Campo requerido</span>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <br>
+                   <div class="custom-file">
+                       <label class="control-label" for="customFileLang">Seleccionar Archivo {{adjuntar}}</label>
+                       <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+                       <input type="file" name="fileLicencia" uploader-model="datosUsuario.fileLicencia" ng-model="datosUsuario.fileLicencia" ng-required="tipo5"/>
+                   </div>
+            </div>
+        </div>        
+    </div>
+</div>

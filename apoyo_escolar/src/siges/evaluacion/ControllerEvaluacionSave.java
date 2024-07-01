@@ -3,6 +3,7 @@ package siges.evaluacion;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 
 import siges.adminParamsInst.dao.AdminParametroInstDAO;
 import siges.adminParamsInst.vo.InstParVO;
+import siges.common.vo.ItemVO;
 import siges.dao.Cursor;
 import siges.evaluacion.beans.FiltroBeanEvaluacion;
 import siges.evaluacion.beans.FiltroComportamiento;
@@ -27,9 +29,14 @@ import siges.evaluacion.dao.EvaluacionDAO;
 import siges.login.beans.Login;
 import siges.util.Logger;
 import util.BitacoraCOM;
+import util.LogEvaluacionAreaDto;
+import util.LogEvaluacionDescripDetalleDto;
+import util.LogEvaluacionDescripDto;
+import util.LogEvaluacionDimensionDto;
 import util.LogEvaluacionDto;
 import util.LogEvaluacionLogroDetalleDto;
 import util.LogEvaluacionLogroDto;
+import utils.system;
 
 /**
  * Nombre: ControllerEvaluacionSave<BR>
@@ -209,6 +216,13 @@ public class ControllerEvaluacionSave extends HttpServlet {
 					if (!insertarDescriptor(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
+						List<String[]> filtroDescriptores = (List<String[]>)session.getAttribute("filtroDescriptores");
+						String stringEvalDescrip = stringEvalDescrip(estudiantes, filtroDescriptores, filtroEvaluacion);
+						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 3, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								2202, 7, loginBitacora, stringEvalDescrip);
+						
 						request.setAttribute("mensaje",
 								"Los datos fueron registrados satisfactoriamente");
 					}
@@ -217,6 +231,11 @@ public class ControllerEvaluacionSave extends HttpServlet {
 					if (!insertarArea(request, login, filtroEvaluacion)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
+						String stringEvalAreas = stringEvalAreas(estudiantes, filtroEvaluacion);
+						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 3, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								2202, 7, loginBitacora, stringEvalAreas);
 						request.setAttribute("mensaje",
 								"Los datos fueron registrados satisfactoriamente");
 					}
@@ -232,7 +251,13 @@ public class ControllerEvaluacionSave extends HttpServlet {
 					if (!insertarPreescolar(request, login,
 							filtroComportamiento)) {
 						request.setAttribute("mensaje", mensaje);
-					} else {
+					} else {												
+						List<ItemVO> escalaDim = (List<ItemVO>) session.getAttribute("escalaDim");						
+						String stringEvalDimensiones = stringEvalDimensiones(escalaDim, filtroComportamiento);
+						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 3, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								2202, 7, loginBitacora, stringEvalDimensiones);
 						request.setAttribute("mensaje",
 								"Los datos fueron registrados satisfactoriamente");
 					}
@@ -242,6 +267,12 @@ public class ControllerEvaluacionSave extends HttpServlet {
 							filtroComportamiento)) {
 						request.setAttribute("mensaje", mensaje);
 					} else {
+						String stringEvalComportamientos = stringEvalComportamientos(filtroComportamiento);
+						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+								Integer.parseInt(login.getJornadaId()), 3, 
+								login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+								2202, 7, loginBitacora, stringEvalComportamientos);
+						
 						request.setAttribute("mensaje",
 								"Los datos fueron registrados satisfactoriamente");
 					}
@@ -257,57 +288,245 @@ public class ControllerEvaluacionSave extends HttpServlet {
 		}
 		return sig0 += "?tipo=" + tipo;
 	}
+	
+	private String stringEvalComportamientos(FiltroComportamiento filtroComportamiento){
+		String[] idesEstudiantes = filtroComportamiento.getEval();
+		String[] notas = filtroComportamiento.getEval2();
+		String[] observaciones = filtroComportamiento.getEval3();
+		String metodologia = evaluacion2DAO.getMetodologiaPorId(filtroComportamiento.getFilMetodologia());
+		String grado = evaluacion2DAO.getGradoPorId(filtroComportamiento.getFilGrado());
+		String grupo = evaluacion2DAO.getGrupoPorFilComportamiento(filtroComportamiento);
+		List<LogEvaluacionDimensionDto> lista = new ArrayList<>();
+		for (int i = 0; i < idesEstudiantes.length; i++) {
+			String nota = notas[i];
+			String observacion = observaciones[i];
+			if ((nota != null && !nota.equals("")) || (observacion != null && !observacion.equals(""))) {
+				String ide = idesEstudiantes[i].split("\\|")[0];
+				String[] estudiante = evaluacion2DAO.getEstudiantePorId(ide);
+				LogEvaluacionDimensionDto dimensionDto = new LogEvaluacionDimensionDto();
+				dimensionDto.setTipoIdentificacion(estudiante[0]);
+				dimensionDto.setNumeroIdentificacion(estudiante[1]);
+				String nombreC = estudiante[2];
+				if (estudiante[3] != null && !estudiante[3].equals("")) {
+					nombreC = nombreC + ' ' + estudiante[3];
+				}
+				nombreC = nombreC + ' ' + estudiante[4];
+				if (estudiante[5] != null && !estudiante[5].equals("")) {
+					nombreC = nombreC + ' ' + estudiante[5];
+				}
+				dimensionDto.setNombreCompleto(nombreC);
+				dimensionDto.setMetodologia(metodologia);
+				dimensionDto.setGrado(grado);
+				dimensionDto.setGrupo(grupo);
+				dimensionDto.setPeriodo(String.valueOf(filtroComportamiento.getFilPeriodo()));
+				dimensionDto.setObservacion(observacion);
+				lista.add(dimensionDto);
+			}
+		}
+		String retorno = new Gson().toJson(lista);
+		return retorno;
+	}
+	
+	private String stringEvalDimensiones(List<ItemVO> escalaDim, FiltroComportamiento filtroComportamiento){
+		String[] idesEstudiantes = filtroComportamiento.getEval();
+		String[] notas = filtroComportamiento.getEval2();
+		String[] observaciones = filtroComportamiento.getEval3();
+		String metodologia = evaluacion2DAO.getMetodologiaPorId(filtroComportamiento.getFilMetodologia());
+		String grado = evaluacion2DAO.getGradoPorId(filtroComportamiento.getFilGrado());
+		String grupo = evaluacion2DAO.getGrupoPorFilComportamiento(filtroComportamiento);
+		String dimension = evaluacion2DAO.getDimensionPorId(filtroComportamiento.getFilDimension());
+		List<LogEvaluacionDimensionDto> lista = new ArrayList<>();
+		for (int i = 0; i < idesEstudiantes.length; i++) {
+			String nota = notas[i];
+			String observacion = observaciones[i];
+			if ((nota != null && !nota.equals("-99")) || (observacion != null && !observacion.equals(""))) {
+				String[] estudiante = evaluacion2DAO.getEstudiantePorId(idesEstudiantes[i]);
+				LogEvaluacionDimensionDto dimensionDto = new LogEvaluacionDimensionDto();
+				dimensionDto.setTipoIdentificacion(estudiante[0]);
+				dimensionDto.setNumeroIdentificacion(estudiante[1]);
+				String nombreC = estudiante[2];
+				if (estudiante[3] != null && !estudiante[3].equals("")) {
+					nombreC = nombreC + ' ' + estudiante[3];
+				}
+				nombreC = nombreC + ' ' + estudiante[4];
+				if (estudiante[5] != null && !estudiante[5].equals("")) {
+					nombreC = nombreC + ' ' + estudiante[5];
+				}
+				dimensionDto.setNombreCompleto(nombreC);
+				dimensionDto.setMetodologia(metodologia);
+				dimensionDto.setGrado(grado);
+				dimensionDto.setGrupo(grupo);
+				dimensionDto.setDimension(dimension);
+				dimensionDto.setPeriodo(String.valueOf(filtroComportamiento.getFilPeriodo()));
+				for (ItemVO escala : escalaDim) {
+					if (escala.getCodigo() == Long.parseLong(nota)) {
+						dimensionDto.setNota(escala.getNombre());
+					}
+				}
+				dimensionDto.setObservacion(observacion);
+				lista.add(dimensionDto);
+			}
+		}
+		String retorno = new Gson().toJson(lista);
+		return retorno;
+	}
+	
+	private String stringEvalDescrip(List<String[]> estudiantes, List<String[]> descriptores, FiltroBeanEvaluacion filtroEvaluacion){
+		List<LogEvaluacionDescripDto> lista = new ArrayList<>();
+		String[] newNotas = filtroEvaluacion.getNota();
+		for (String nota : newNotas) {
+			String[] data = nota.split("\\|");
+			if(data.length > 1 && data[1] != null && !data[1].equals("")){
+				for (Object oEstudiante : estudiantes) {
+					String sEstudiante = new Gson().toJson(oEstudiante);
+					String[] aEstudiante = new Gson().fromJson(sEstudiante, String[].class);
+					if(data[0].equals(aEstudiante[0])){
+						LogEvaluacionDescripDto descripDto = new LogEvaluacionDescripDto();
+						String[] datoEstudiante = evaluacionDAO.getEstudiantePorNumDoc(aEstudiante[1]);
+						descripDto.setTipoIdentificacion(datoEstudiante[0]);
+						descripDto.setNumeroIdentificacion(aEstudiante[1]);
+						String nombreC = aEstudiante[4];
+						if (aEstudiante[5] != null && !aEstudiante[5].equals("")) {
+							nombreC = nombreC + ' ' + aEstudiante[5];
+						}
+						nombreC = nombreC + ' ' + aEstudiante[2];
+						if (aEstudiante[3] != null && !aEstudiante[3].equals("")) {
+							nombreC = nombreC + ' ' + aEstudiante[3];
+						}
+						descripDto.setNombreCompleto(nombreC);
+						descripDto.setGrado(filtroEvaluacion.getGrado_());
+						descripDto.setGrupo(filtroEvaluacion.getGrupo_());
+						descripDto.setPeriodo(filtroEvaluacion.getPeriodo_());
+						descripDto.setMateria(filtroEvaluacion.getAsignatura_());
+						descripDto.setTipoDescrip(filtroEvaluacion.getDescriptor_());
+						List<LogEvaluacionDescripDetalleDto> detalle = new ArrayList<>();
+						String[] descripDetal = data[1].split(",");
+						for (String detal : descripDetal) {
+							if (detal != null && !detal.equals("")) {
+								for (Object descrip : descriptores) {
+									String sDescrip = new Gson().toJson(descrip);
+									String[] aDescrip = new Gson().fromJson(sDescrip, String[].class);
+									if (aDescrip[0].equals(detal)) {
+										LogEvaluacionDescripDetalleDto detalleDto = new LogEvaluacionDescripDetalleDto();
+										detalleDto.setDescriptor(aDescrip[3]);
+										detalleDto.setAbreviatura(aDescrip[1]);
+										detalle.add(detalleDto);
+									}
+								}
+							}
+						}
+						descripDto.setDescriptores(detalle);
+						lista.add(descripDto);
+					}
+				}
+			}
+		}
+		String retorno = new Gson().toJson(lista);
+		return retorno;
+	}
 
+	private String stringEvalAreas(List<String[]> estudiantes, FiltroBeanEvaluacion filtroEvaluacion){
+		List<LogEvaluacionAreaDto> lista = new ArrayList<>();
+		String[] newNotas = filtroEvaluacion.getNota();
+		for (String nota : newNotas) {
+			String[] data = nota.split("\\|");
+			if(data.length > 1 && data[1] != null && !data[1].equals("")){
+				for (String[] estudiante : estudiantes) {
+					if(data[0].equals(estudiante[0])){
+						LogEvaluacionAreaDto areaDto = new LogEvaluacionAreaDto();
+						String[] datoEstudiante = evaluacionDAO.getEstudiantePorNumDoc(estudiante[1]);
+						areaDto.setTipoIdentificacion(datoEstudiante[0]);
+						areaDto.setNumeroIdentificacion(estudiante[1]);
+						String nombreC = estudiante[4];
+						if (estudiante[5] != null && !estudiante[5].equals("")) {
+							nombreC = nombreC + ' ' + estudiante[5];
+						}
+						nombreC = nombreC + ' ' + estudiante[2];
+						if (estudiante[3] != null && !estudiante[3].equals("")) {
+							nombreC = nombreC + ' ' + estudiante[3];
+						}
+						areaDto.setNombreCompleto(nombreC);
+						areaDto.setGrado(filtroEvaluacion.getGrado_());
+						areaDto.setGrupo(filtroEvaluacion.getGrupo_());
+						areaDto.setPeriodo(filtroEvaluacion.getPeriodo_());
+						areaDto.setArea(filtroEvaluacion.getArea_());
+						areaDto.setNotaAnterior(estudiante[6]);
+						if (!data[1].equals(estudiante[6])) {
+							areaDto.setNotaActualizada(data[1]);
+						}
+						if (data.length > 2 && data[2] != null && !data[2].equals("")) {
+							areaDto.setNotaRecuperada(data[2]);
+						}
+						lista.add(areaDto);
+					}
+				}
+			}
+		}
+		String retorno = new Gson().toJson(lista);
+		return retorno;
+	}
+	
 	private String stringEvalLogros(List<String[]> estudiantes, List<String[]> logros, List<String[]> notas, FiltroBeanEvaluacion filtroEvaluacion){
 		try {
 			List<LogEvaluacionLogroDto> listEvLogro = new ArrayList<LogEvaluacionLogroDto>();
 			String[] newNotas = filtroEvaluacion.getNota();
-			List<String[]> listEstudiantes = new ArrayList<>();
+			List<String> estNota = new ArrayList<String>();
 			for (String nota : newNotas) {
-				String[] data = nota.split("\\|");
-				if (data.length > 1) {
-					for (String[] estudiante : estudiantes) {
-						if (estudiante[0].equals(data[0])) {
-							listEstudiantes.add(estudiante);
-						}
-					}
+				if (!nota.equals("-1")) {
+					String[] data = nota.split("\\|");
+					estNota.add(data[0]);
 				}
 			}
-			for (String[] estudiante : listEstudiantes) {
+			List<String> estNotaUnicos = new ArrayList<>(new HashSet<>(estNota));
+			for (String estUnico : estNotaUnicos) {
 				LogEvaluacionLogroDto evLogro = new LogEvaluacionLogroDto();
-				List<LogEvaluacionLogroDetalleDto> detalle = new ArrayList<LogEvaluacionLogroDetalleDto>();
-				for (String nota : newNotas) {
-					String[] data = nota.split("\\|");
-					if (data.length > 1 && data[0].equals(estudiante[0])) {
-						LogEvaluacionLogroDetalleDto tempDetalle = new LogEvaluacionLogroDetalleDto();
-						for (String[] logro : logros) {
-							if (data[1].equals(logro[0])) {
-								tempDetalle.setAbreviatura(logro[1]);
-								tempDetalle.setLogro(logro[2]);
-							}
+				for (Object oEstudiante : estudiantes) {
+					String sEstudiante = new Gson().toJson(oEstudiante);
+					String[] aEstudiante = new Gson().fromJson(sEstudiante, String[].class);
+					if (estUnico.equals(aEstudiante[0])) {
+						String[] datoEstudiante = evaluacionDAO.getEstudiantePorNumDoc(aEstudiante[1]);
+						evLogro.setTipoIdentificacion(datoEstudiante[0]);
+						evLogro.setNumeroIdentificacion(aEstudiante[1]);
+						String nombreC = aEstudiante[4];
+						if (aEstudiante[5] != null && !aEstudiante[5].equals("")) {
+							nombreC = nombreC + ' ' + aEstudiante[5];
 						}
-						for (String[] respuesta : notas) {
-							if (data[3].equals(respuesta[0])) {
-								tempDetalle.setRespuesta(respuesta[2]);
-							}
+						nombreC = nombreC + ' ' + aEstudiante[2];
+						if (aEstudiante[3] != null && !aEstudiante[3].equals("")) {
+							nombreC = nombreC + ' ' + aEstudiante[3];
 						}
-						detalle.add(tempDetalle);
+						evLogro.setNombreCompleto(nombreC);
 					}
 				}
-				evLogro.setNumeroIdentificacion(estudiante[2]);
-				String nombre = estudiante[4];
-				if (estudiante[5] != null && !estudiante[5].equals("")) {
-					nombre += " "+estudiante[5];
-				}
-				nombre += " "+estudiante[2];
-				if (estudiante[3] != null && !estudiante[3].equals("")) {
-					nombre += " "+estudiante[3];
-				}
-				evLogro.setNombreCompleto(nombre);
 				evLogro.setGrado(filtroEvaluacion.getGrado_());
 				evLogro.setGrupo(filtroEvaluacion.getGrupo_());
-				evLogro.setMateria(filtroEvaluacion.getAsignatura_());
 				evLogro.setPeriodo(filtroEvaluacion.getPeriodo_());
+				evLogro.setMateria(filtroEvaluacion.getAsignatura_());
+				List<LogEvaluacionLogroDetalleDto> detalle = new ArrayList<LogEvaluacionLogroDetalleDto>();
+				for (String nota : newNotas) {
+					if (!nota.equals("-1")) {
+						String[] data = nota.split("\\|");
+						if (data[0].equals(estUnico)) {
+							LogEvaluacionLogroDetalleDto tempDetalle = new LogEvaluacionLogroDetalleDto();
+							for (Object oLogro : logros) {
+								String sLogro = new Gson().toJson(oLogro);
+								String[] aLogro = new Gson().fromJson(sLogro, String[].class);
+								if (data[1].equals(aLogro[0])) {
+									tempDetalle.setLogro(aLogro[2]);
+									tempDetalle.setAbreviatura(aLogro[1]);
+								}
+							}
+							for (Object oNota : notas) {
+								String sNota = new Gson().toJson(oNota);
+								String[] aNota = new Gson().fromJson(sNota, String[].class);
+								if (data[3].equals(aNota[0])) {
+									tempDetalle.setEvaluacion(aNota[2]);
+								}
+							}
+							detalle.add(tempDetalle);
+						}
+					}
+				}
 				evLogro.setLogros(detalle);
 				listEvLogro.add(evLogro);
 			}
@@ -330,48 +549,50 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				nuevasNotas.add(data);
 			}
 			for (String[] old : notasOld) {
-				if (old[6] != null && !old[6].equals("")) {
-					LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
-					logEvaluacionDto.setNumeroIdentificacion(old[1]);
-					String nombreC = old[4];
-					if (old[5] != null && !old[5].equals("")) {
-						nombreC = nombreC + ' ' + old[5];
-					}
-					nombreC = nombreC + ' ' + old[2];
-					if (old[3] != null && !old[3].equals("")) {
-						nombreC = nombreC + ' ' + old[3];
-					}
-					logEvaluacionDto.setNombreCompleto(nombreC);
-					logEvaluacionDto.setTipoIdentificacion(old[7]);
-					logEvaluacionDto.setGrado(filtroEvaluacion.getGrado_());
-					logEvaluacionDto.setGrupo(filtroEvaluacion.getGrupo_());
-					logEvaluacionDto.setPeriodo(filtroEvaluacion.getPeriodo());
-					logEvaluacionDto.setMateria(filtroEvaluacion.getAsignatura_());
-					if (old[6] != null && !old[6].equals("")) {
-						logEvaluacionDto.setNotaAnterior(old[6]);	
-					}else{
-						logEvaluacionDto.setNotaAnterior(null);
-					}
-					for (String[] nuev : nuevasNotas) {
-						if (nuev[0].equals(old[0])) {
-							if (nuev.length > 1 && !nuev[1].equals("")) {
+				for (String[] nuev : nuevasNotas) {
+					if (nuev[0].equals(old[0])) {
+						if (nuev.length > 1 && !nuev[1].equals("")) {
+							LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
+							logEvaluacionDto.setNumeroIdentificacion(old[1]);
+							String nombreC = old[4];
+							if (old[5] != null && !old[5].equals("")) {
+								nombreC = nombreC + ' ' + old[5];
+							}
+							nombreC = nombreC + ' ' + old[2];
+							if (old[3] != null && !old[3].equals("")) {
+								nombreC = nombreC + ' ' + old[3];
+							}
+							logEvaluacionDto.setNombreCompleto(nombreC);
+							String[] datoEstudiante = evaluacionDAO.getEstudiantePorNumDoc(old[1]);
+							logEvaluacionDto.setTipoIdentificacion(datoEstudiante[0]);
+							logEvaluacionDto.setGrado(filtroEvaluacion.getGrado_());
+							logEvaluacionDto.setGrupo(filtroEvaluacion.getGrupo_());
+							logEvaluacionDto.setPeriodo(filtroEvaluacion.getPeriodo());
+							logEvaluacionDto.setMateria(filtroEvaluacion.getAsignatura_());
+							if (old[6] != null && !old[6].equals("")) {
+								logEvaluacionDto.setNotaAnterior(old[6]);
+								if (!old[6].equals(nuev[1])) {
+									logEvaluacionDto.setNotaActualizada(nuev[1]);
+								} else{
+									logEvaluacionDto.setNotaActualizada(null);
+								}
+							}else{
+								logEvaluacionDto.setNotaAnterior(null);
 								logEvaluacionDto.setNotaActualizada(nuev[1]);
-							} else{
-								logEvaluacionDto.setNotaActualizada(null);
 							}
 							if (nuev.length > 2 && !nuev[2].equals("")) {
 								logEvaluacionDto.setNotaRecuperada(nuev[2]);
 							} else{
 								logEvaluacionDto.setNotaRecuperada(null);
 							}
+							list.add(logEvaluacionDto);
 						}
 					}
-					list.add(logEvaluacionDto);
 				}
 			}
-			String tipo = "7";
+			String tipo = "1";
 			for (LogEvaluacionDto item : list) {
-				if (item.getNotaAnterior() == null && item.getNotaActualizada() != null) {
+				if (item.getNotaAnterior() != null) {
 					tipo = "7";
 				}
 			}
@@ -598,6 +819,10 @@ public class ControllerEvaluacionSave extends HttpServlet {
 			// escala valorativa
 			l = evaluacion2DAO.getEscalaComportamiento();
 			request.setAttribute("escalaDim", l);
+			
+			HttpSession session = request.getSession();
+			session.removeAttribute("escalaDim");
+			session.setAttribute("escalaDim", l);
 			// REVISAR SI ESTA O NO ABIERTA PARA EDICION DEL GRUPO
 			filtroComportamiento.setFilCerrar(evaluacion2DAO
 					.getEstadoCierreDim(filtroComportamiento));

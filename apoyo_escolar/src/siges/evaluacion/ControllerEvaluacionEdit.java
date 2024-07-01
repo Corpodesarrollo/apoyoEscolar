@@ -154,8 +154,7 @@ public class ControllerEvaluacionEdit extends HttpServlet {
 		request.setAttribute("lGrupo",
 				evaluacion2DAO.getAllGrupo(inst, sed, jor));
 		// request.setAttribute("lPeriodo",Recursos.recursoEstatico[Recursos.PERIODO]);
-		request.setAttribute("lPeriodo",
-				getListaPeriodo(login.getLogNumPer(), login.getLogNomPerDef()));
+		request.setAttribute("lPeriodo", getListaPeriodo(login.getLogNumPer(), login.getLogNomPerDef()));
 	}
 	
 	

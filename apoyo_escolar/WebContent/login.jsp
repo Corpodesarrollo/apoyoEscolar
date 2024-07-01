@@ -43,13 +43,13 @@
 					//top.location.href = '<c:url value="/login.jsp"/>';
 					
 					//==>LINKTIC
-					//top.location.href = "https://pruebas-sed.linktic.com/apoyo-ui/#/home";
+					top.location.href = "https://pruebas-sed.linktic.com/apoyo-ui/#/home";
 					//==>PRUEBAS-APOYOFAB
 					//top.location.href = "https://apoyofab.educacionbogota.edu.co:7733/apoyo-ui/#/home";
 					//==>PRUEBAS-APOYOPRUEBAS-SED
 					//top.location.href = "https://apoyopruebas.educacionbogota.edu.co/apoyo-ui/#/home";
 					//==>PRE-PROD-SED
-					top.location.href = "https://apoyoprepro.educacionbogota.edu.co/apoyo-ui/#/home";
+					//top.location.href = "https://apoyoprepro.educacionbogota.edu.co/apoyo-ui/#/home";
 					
 					top.alert('No se permite el acceso a esta opcion o no se encontro información para acceder.');
 			 	}

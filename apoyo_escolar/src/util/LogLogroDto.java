@@ -12,6 +12,9 @@ public class LogLogroDto {
 	@SerializedName("Metodolog&iacute;a")
 	private String metodologia;
 	
+	@SerializedName("Docente")
+	private String docente;
+	
 	@SerializedName("Grado")
 	private String grado;
 	
@@ -111,6 +114,12 @@ public class LogLogroDto {
 	}
 	public void setMetodologia(String metodologia) {
 		this.metodologia = metodologia;
+	}
+	public String getDocente() {
+		return docente;
+	}
+	public void setDocente(String docente) {
+		this.docente = docente;
 	}
 
 

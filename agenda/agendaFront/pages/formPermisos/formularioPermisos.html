@@ -1,0 +1,372 @@
+	<!DOCTYPE html>
+<!--<html >
+-->    <head>
+        <meta charset="UTF-8" >
+        <!--<title>Novedades para incluir en nomina - GTH-FO-38</title>-->
+    </head>
+    <!--<body>-->
+    <div class="box-header with-border">
+		<h3 class="box-title">Diligenciar Formulario</h3>
+	</div>
+        <div >
+            <form class="well form-horizontal" enctype="multipart/form-data" method="post"  id="form" name="form" ng-submit="form.$valid && guardar()" ng-show="!form.submitted">
+                    <!-- Success message -->
+                    <!--<div class="alert alert-success" role="alert" id="success_message">Success <i class="glyphicon glyphicon-thumbs-up"></i>--> 
+                        <mc-messages></mc-messages>
+                    <!--</div>-->
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form" ng-class="{ 'has-error' : form.fecha_solicitud.$invalid && !form.fecha_solicitud.$pristine}">
+                                <label class="control-label" >Fecha de Solicitud </label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                        <input name="fecha_solicitud" placeholder="fecha_solicitud" class="form-control" ng-model="datosUsuario.fecha_solicitud" disabled="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form" ng-class="{ 'has-error' : form.nombre.$invalid && !form.nombre.$pristine}">
+                                <label class="control-label" >Solicitante </label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <input name="nombre" placeholder="solicitante" class="form-control" ng-model="datosUsuario.nombre" disabled="">
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.nombre.$error.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.nombre.$dirty && form.nombre.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form" ng-class="{ 'has-error' : form.numDoc.$invalid && !form.numDoc.$pristine}">
+                                <label class="control-label" >Cédula </label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <input name="cedula" placeholder="cedula" class="form-control" ng-model="datosUsuario.numDoc" disabled="">
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.numDoc.cedula.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.numDoc.cedula && form.numDoc.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form" ng-class="{ 'has-info' : form.dep.$invalid && !form.dep.$pristine}">
+                                <label class="control-label" >Dependencia </label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <input name="dep" placeholder="dep" class="form-control" ng-model="datosUsuario.DEPENDENCIA" required="" type="text" maxlength="50" ng-pattern="letrasModel">
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.dep.$error.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.dep.$dirty && form.dep.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form" ng-class="{ 'has-error' : form.cargo.$invalid && !form.cargo.$pristine}">
+                                <label class="control-label" >Cargo </label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <select name="cargo" placeholder="cargo" class="form-control" ng-model="datosUsuario.ID_CARGOFK" required="" ng-disabled="">
+                                        <option value="">Seleccione</option>
+                                        <option ng-selected="{{datosUsuario.ID_CARGOFK==cargo.ID_CARGO}}" ng-repeat="cargo in cargoList" value="{{cargo.ID_CARGO}}">{{cargo.CARGO}} {{cargo.CARGO_ESPEC}}</option>
+                                    </select>
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.cargo.$dirty && form.cargo.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form" ng-class="{ 'has-error' : form.telefono.$invalid && !form.telefono.$pristine}">
+                                <label class="control-label" >Telefono </label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>
+                                        <input name="telefono" placeholder="telefono" class="form-control" ng-model="datosUsuario.TELEFONO" required="" type="text" maxlength="12" ng-pattern="numModel">
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.telefono.$error.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.telefono.$dirty && form.telefono.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="form" ng-class="{ 'has-error' : form.tipoSolicitud.$invalid && !form.tipoSolicitud.$pristine}">
+                                <label class="control-label" >Tipo de solicitud:</label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <select name="tipoSolicitud" placeholder="tipo Solicitud" class="form-control" ng-model="datosUsuario.tipoSolicitud" required="" ng-change="cargarCampos()">
+                                        <option value="">Seleccione</option>
+                                        <option ng-selected="{{tipoSolicitud.id == datosUsuario.tipoSolicitud}}" ng-repeat="tipoSolicitud in tipoSolicitudList" value="{{tipoSolicitud.id}}">{{tipoSolicitud.ds}}</option>
+                                    </select>
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$error.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$dirty && form.tipoSolicitud.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                       
+                        <label class="control-label"> {{datosUsuario.dsTipoSolicitud}}</label> 
+                       
+                    <hr>
+                    
+                    <!--Solicitud de permiso o ausencia de servidor publico-->
+                    <div ng-show ="tipo1">
+                        <div class="row" >
+                            <div class="col-sm-3">
+                                <div class="form" ng-class="{ 'has-error' : form.tipoPermiso.$invalid && !form.tipoPermiso.$pristine}">
+                                    <label class="control-label" >Permiso por: </label>
+                                    <div>
+                                            <input type="hidden" name="tipoPermiso" ng-model="datosUsuario.tipoPermiso">
+                                            <label>
+                                            <input type="radio"  ng-model="datosUsuario.tipoPermiso" value="horas" ng-change="validarDiasHoras()">
+                                                Horas
+                                            </label>
+                                            <label>
+                                            <input type="radio"  ng-model="datosUsuario.tipoPermiso" value="dias" ng-change="validarDiasHoras()">
+                                                Dias
+                                            </label>
+                                        <span class="text-danger pull-right" ng-show="form.tipoPermiso.$pristine && form.tipoPermiso.$error.required">Campo requerido</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <div class="form" ng-class="{ 'has-error' : form.cantidad.$invalid && !form.cantidad.$pristine}">
+                                    <label class="control-label" >Cantidad:</label> 
+                                    <div>
+                                        <div class="input-group" >
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                            <input name="cantidad" placeholder="cantidad" class="form-control" ng-model="datosUsuario.cantidad" ng-ng-required="tipo1" type="number" maxlength="2" ng-pattern="numModel" ng-change="validarDiasHoras()">
+                                        </div>
+                                        <span class="text-danger pull-right" ng-show="form.cantidad.$error.pattern" >C&#225;racter no permitido</span>
+                                        <span class="text-danger pull-right" ng-show="form.cantidad.$dirty && form.cantidad.$error.required">Campo requerido</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <div class="form" ng-class="{ 'has-error' : form.fInicio.$invalid && !form.fInicio.$pristine}">
+                                    <label class="control-label" >Fecha Inicio: </label> 
+                                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                        <input type="text" class="form-control" ng-model="datosUsuario.fInicio" ng-change="validarDiasHoras()" ng-required="tipo1">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <div class="form" ng-class="{ 'has-error' : form.fHasta.$invalid && !form.fHasta.$pristine}">
+                                    <label class="control-label" >Fecha Final: {{horas}}</label> 
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th" ></span>
+                                        </div>
+                                        <input type="text" class="form-control" ng-model="datosUsuario.strfHasta" disabled="">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="row" ng-show="horas">
+                            
+                            <div class="col-sm-3">
+                                    <label class="control-label" >Seleccione Hora Inicio: </label> 
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <div class="form" ng-class="{ 'has-error' : form.horaIni.$invalid && !form.horaIni.$pristine}">
+                                    <label class="control-label" >Hora: </label> 
+                                    <div>
+                                        <div class="input-group" >
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                            <select name="horaIni" type="number" placeholder="Hora Inicial" class="form-control" ng-model="datosUsuario.horaIni" ng-change="validarDiasHoras()" ng-required="horas">
+                                            <option value="">Seleccione</option>
+                                            <option ng-selected="{{hora.h == datosUsuario.horaIni}}" ng-repeat="hora in horaList" value="{{hora.h}}">{{hora.h}}</option>
+                                        </select>
+                                        </div>
+                                        <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$error.pattern" >C&#225;racter no permitido</span>
+                                        <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$dirty && form.tipoSolicitud.$error.required">Campo requerido</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <div class="form" ng-class="{ 'has-error' : form.minIni.$invalid && !form.minIni.$pristine}">
+                                    <label class="control-label" >Minutos: </label> 
+                                    <div>
+                                        <div class="input-group" >
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                            <select name="minIni" type="number" placeholder="Minuto Inicial" class="form-control" ng-model="datosUsuario.minIni" ng-change="validarDiasHoras()" ng-required="horas">
+                                            <option value="">Seleccione</option>
+                                            <option value="00">00</option>
+                                            <option value="30">30</option>
+                                        </select>
+                                        </div>
+                                        <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$error.pattern" >C&#225;racter no permitido</span>
+                                        <span class="text-danger pull-right" ng-show="form.tipoSolicitud.$dirty && form.tipoSolicitud.$error.required">Campo requerido</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <div class="form" ng-class="{ 'has-error' : form.calHoraFinal.$invalid && !form.calHoraFinal.$dirty}">
+                                    <label class="control-label" >Hora Final: </label> 
+                                        <div>
+                                            <div class="input-group" >
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                            <input name="horaFin" placeholder="Hora Inicial" class="form-control" ng-model="calHoraFinal" type="text" disabled="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="control-label">Motivo de permiso</label>
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <select name="motPermiso" placeholder="tmotPermiso" class="form-control" ng-model="datosUsuario.motPermiso" ng-change="validarOtroMotivo()" ng-required="tipo1">
+                                        <option value="">Seleccione</option>
+                                        <option ng-selected="{{motPermiso.ID_MOTIVO == datosUsuario.motPermiso}}" ng-repeat="motPermiso in motPermisoList" value="{{motPermiso.ID_MOTIVO}}">{{motPermiso.DESC_MOTIVO}}</option>
+                                    </select>
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.motPermiso.cedula.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.motPermiso.cedula && form.motPermiso.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-8" ng-show="cargarOtroMot">
+                                <div class="form" ng-class="{ 'has-error' : form.otroMotPermiso.$invalid && !form.otroMotPermiso.$pristine}">
+                                    <label class="control-label" >Otro motivo</label> 
+                                    <div>
+                                        <div class="input-group" >
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                            <input name="otroMotPermiso" placeholder="otroMotPermiso" class="form-control" ng-model="datosUsuario.otroMotPermiso" type="text" maxlength="10" 
+                                                   ng-pattern="letrasModel" ng-required="cargarOtroMot">
+                                        </div>
+                                        <span class="text-danger pull-right" ng-show="form.otroMotPermiso.$error.pattern" >C&#225;racter no permitido</span>
+                                        <span class="text-danger pull-right" ng-show="form.otroMotPermiso.$dirty && form.otroMotPermiso.$error.required">Campo requerido</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="row"> 
+                            
+                            <div class="col-sm-8">
+                                <br>
+                                   <div class="custom-file">
+                                       <label class="control-label" for="customFileLang">Seleccionar Archivo {{adjuntar}}</label>
+                                       <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+                                       <!--<input type="file"  class="custom-file-input" id="customFileLang" lang="es">-->
+                                       <input type="file" name="file" uploader-model="file" ng-required="tipo1 && adjuntar"/>
+                                   </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-show="cargarEstudio">
+                        </div>
+                   </div> 
+                    <div ng-show ="tipo2" ng-include="'pages/formPermisos/tipo2FormularioPermisos.html'"></div>
+                    <div ng-show ="tipo3" ng-include="'pages/formPermisos/tipo3FormularioPermisos.html'"></div>
+                    <div ng-show ="tipo4" ng-include="'pages/formPermisos/tipo4FormularioPermisos.html'"></div>
+                    <div ng-show ="tipo5" ng-include="'pages/formPermisos/tipo5FormularioPermisos.html'"></div>
+                    <!--licencia no remunerada o licencia por luto-->
+<!--                    <div ng-show ="tipo5">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="fAproHasta">Fecha de licencia desde</label>
+                                <div class="datepicker" date-format="yyyy-MM-dd" date-validator required> 
+                                    <input name="fLicDesde" placeholder="Fecha hasta" class="form-control" ng-model="datosUsuario.fLicDesde" type="text" readonly="">
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <label for="fAproHasta">Fecha de licencia hasta</label>
+                                <div class="datepicker" date-format="yyyy-MM-dd" date-validator required> 
+                                    <input name="fLicHasta" placeholder="Fecha hasta" class="form-control" ng-model="datosUsuario.fLicHasta" type="text" readonly="">
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form" ng-class="{ 'has-error' : form.cargo.$invalid && !form.cargo.$pristine}">
+                                    <label class="control-label" >Motivo de licencia </label> 
+                                    <div>
+                                        <div class="input-group" >
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                            <select name="cargo" placeholder="cargo" class="form-control" ng-model="datosUsuario.cargo"  ng-change="cargarCargo()">
+                                            <option value="">Seleccione</option>
+                                            <option ng-selected="{{cargo.id == datosUsuario.cargo}}" ng-repeat="cargo in cargoList" value="{{cargo.id}}">{{cargo.ds}}</option>
+                                        </select>
+                                        </div>
+                                        <span class="text-danger pull-right" ng-show="form.cargo.$error.pattern" >C&#225;racter no permitido</span>
+                                        <span class="text-danger pull-right" ng-show="form.cargo.$dirty && form.cargo.$error.required">Campo requerido</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="col-sm-4" ng-show="cargarOtroLic">
+                            <div class="form" ng-class="{ 'has-error' : form.otroMotLic.$invalid && !form.otroMotLic.$pristine}">
+                                <label class="control-label" >Otro motivo:</label> 
+                                <div>
+                                    <div class="input-group" >
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                                        <input name="otroMotLic" placeholder="resolucion" class="form-control" ng-model="datosUsuario.otroMotLic" type="text" maxlength="10" ng-pattern="letrasModel">
+                                    </div>
+                                    <span class="text-danger pull-right" ng-show="form.otroMotLic.$error.pattern" >C&#225;racter no permitido</span>
+                                    <span class="text-danger pull-right" ng-show="form.otroMotLic.$dirty && form.otroMotLic.$error.required">Campo requerido</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    -->
+                    
+                    <!-- Button -->
+                    <hr>
+                    <div class="row"> 
+                        <div class="col-sm-12">
+                            <hr>
+                                <div class="form" ng-class="{ 'has-error' : form.btnEnviar.$invalid}">
+                                    <div align="right">
+                                        <div class="input-group" >
+                                            <button type="submit" class="btn btn-info" ng-disabled="btnEnviar">Enviar Solicitud  <span class="glyphicon glyphicon-send"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+             </form>
+        </div>
+<!--    </body>
+</html>-->
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker2').datetimepicker({
+            locale: 'ru',
+            minDate : 0
+        });
+    });
+</script>

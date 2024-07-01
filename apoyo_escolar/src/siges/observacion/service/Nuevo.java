@@ -18,14 +18,19 @@ import siges.common.service.Service;
 import siges.common.vo.ItemVO;
 import siges.common.vo.Params;
 import siges.dao.Cursor;
+import siges.evaluacion.beans.FiltroComportamiento;
 import siges.login.beans.Login;
 import siges.observacion.dao.ObservacionDAO;
 import siges.observacion.vo.ObservacionAsignaturaVO;
 import siges.observacion.vo.ObservacionEstudianteVO;
 import siges.observacion.vo.ObservacionGrupoVO;
 import siges.observacion.vo.ObservacionPeriodoVO;
+import siges.observacion.vo.ObservacionVO;
 import siges.observacion.vo.ParamsVO;
 import util.BitacoraCOM;
+import util.LogEvaluacionDimensionDto;
+import util.LogObservacionAsignaturaDto;
+import util.LogObservacionEstudianteDto;
 
 /**
  * 25/11/2007
@@ -108,7 +113,7 @@ public class Nuevo extends Service {
 				break;
 			case ParamsVO.CMD_GUARDAR:
 				periodoGuardar(request, session, usuVO, observacionPeriodoVO);
-				guardar = gson.toJson(observacionPeriodoVO.getObsObservacion());
+				guardar = gson.toJson(observacionPeriodoVO);
 				FICHA = FICHA_OBSERVACION_PERIODO;
 				break;
 			}
@@ -129,7 +134,7 @@ public class Nuevo extends Service {
 				break;
 			case ParamsVO.CMD_GUARDAR:
 				grupoGuardar(request, session, usuVO, observacionGrupoVO);
-				guardar = gson.toJson(observacionGrupoVO.getObsObservacion());
+				guardar = gson.toJson(observacionGrupoVO);
 				FICHA = FICHA_OBSERVACION_GRUPO;
 				break;
 			}
@@ -146,12 +151,18 @@ public class Nuevo extends Service {
 				break;
 			case ParamsVO.CMD_BUSCAR:
 				asignaturaBuscar(request, session, usuVO, observacionAsignaturaVO);
-				busqueda = gson.toJson(request.getAttribute("listaObservacionAsignatura"));
+				session.removeAttribute("listaObservacionAsignatura");
+				session.setAttribute("listaObservacionAsignatura", request.getAttribute("listaObservacionAsignatura"));
 				FICHA = FICHA_OBSERVACION_ASIGNATURA2;
 				break;
 			case ParamsVO.CMD_GUARDAR:
 				asignaturaGuardar(request, session, usuVO, observacionAsignaturaVO);
-				guardar = gson.toJson(observacionAsignaturaVO.getObsObservacion());
+				List<ObservacionVO> listaObservacionAsignatura = (List<ObservacionVO>) session.getAttribute("listaObservacionAsignatura");
+				String stringEvalObservacionAsignatura = stringEvalObservacionAsignatura(listaObservacionAsignatura, observacionAsignaturaVO);
+				bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+						Integer.parseInt(usuVO.getJornadaId()), 4, 
+						usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+						1114, 1, loginBitacora, stringEvalObservacionAsignatura);
 				FICHA = FICHA_OBSERVACION_ASIGNATURA;
 				break;
 			}
@@ -168,33 +179,97 @@ public class Nuevo extends Service {
 				break;
 			case ParamsVO.CMD_BUSCAR:
 				estudianteBuscar(request, session, usuVO, observacionEstudianteVO);
-				busqueda = gson.toJson(request.getAttribute("listaObservacionEstudiante"));
 				FICHA = FICHA_OBSERVACION_ESTUDIANTE2;
 				break;
 			case ParamsVO.CMD_GUARDAR:
 				estudianteGuardar(request, session, usuVO, observacionEstudianteVO);
-				guardar = gson.toJson(observacionEstudianteVO.getObsObservacion());
+				String stringEvalObservacionEstudiante = stringEvalObservacionEstudiante(observacionEstudianteVO);
+				bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+						Integer.parseInt(usuVO.getJornadaId()), 4, 
+						usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
+						1114, 1, loginBitacora, stringEvalObservacionEstudiante);
 				FICHA = FICHA_OBSERVACION_ESTUDIANTE;
 				break;
 			}
 			break;
 		}
 		if (CMD == 2) {
-			bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+			System.out.println("FER:busqueda->"+busqueda);
+			/*bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
 					Integer.parseInt(usuVO.getJornadaId()), 4, 
 					usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-					1114, 4, loginBitacora, busqueda);
+					1114, 4, loginBitacora, busqueda);*/
 		}
 		if (CMD == 3) {
-			bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
+			System.out.println("FER:guardar->"+guardar);
+			/*bitacoraCOM.insertarBitacora(Long.parseLong(usuVO.getInstId()), 
 					Integer.parseInt(usuVO.getJornadaId()), 4, 
 					usuVO.getPerfil(), Integer.parseInt(usuVO.getSedeId()), 
-					1114, 1, loginBitacora, guardar);
+					1114, 1, loginBitacora, guardar);*/
 		}
 		
 		dispatcher[0] = String.valueOf(ParamsVO.FORWARD);
 		dispatcher[1] = FICHA;
 		return dispatcher;
+	}
+	
+	private String stringEvalObservacionEstudiante(ObservacionEstudianteVO observacionEstudianteVO){
+		String[] obsEstudiante = observacionEstudianteVO.getObsEstudiante();
+		String[] obsObservacion = observacionEstudianteVO.getObsObservacion();
+		String metodologia = observacionDAO.getMetodologiaPorId(observacionEstudianteVO.getObsMetodologia());
+		String grado = observacionDAO.getGradoPorId(observacionEstudianteVO.getObsGrado());
+		String grupo = observacionDAO.getGrupoPorFiltrosEst(observacionEstudianteVO);
+		List<LogObservacionEstudianteDto> lista = new ArrayList<>();
+		for (int i = 0; i < obsEstudiante.length; i++) {
+			if (!obsObservacion[i].equals("")) {
+				String[] estudiante = observacionDAO.getEstudiantePorId(obsEstudiante[i]);
+				LogObservacionEstudianteDto dto = new LogObservacionEstudianteDto();
+				dto.setTipoIdentificacion(estudiante[0]);
+				dto.setNumeroIdentificacion(estudiante[1]);
+				String nombreC = estudiante[2];
+				if (estudiante[3] != null && !estudiante[3].equals("")) {
+					nombreC = nombreC + ' ' + estudiante[3];
+				}
+				nombreC = nombreC + ' ' + estudiante[4];
+				if (estudiante[5] != null && !estudiante[5].equals("")) {
+					nombreC = nombreC + ' ' + estudiante[5];
+				}
+				dto.setNombreCompleto(nombreC);
+				dto.setMetodologia(metodologia);
+				dto.setGrado(grado);
+				dto.setGrupo(grupo);
+				dto.setPeriodo(String.valueOf(observacionEstudianteVO.getObsPeriodo()));
+				dto.setObservacion(obsObservacion[i]);
+				lista.add(dto);
+			}
+		}
+		String retorno = new Gson().toJson(lista);
+		return retorno;
+	}
+	
+	private String stringEvalObservacionAsignatura(List<ObservacionVO> listaObservacionAsignatura, ObservacionAsignaturaVO observacionAsignaturaVO){
+		String[] obsAsignatura = observacionAsignaturaVO.getObsAsignatura();
+		String[] obsObservacion = observacionAsignaturaVO.getObsObservacion();
+		String metodologia = observacionDAO.getMetodologiaPorId(observacionAsignaturaVO.getObsMetodologia());
+		String grado = observacionDAO.getGradoPorId(observacionAsignaturaVO.getObsGrado());
+		String grupo = observacionDAO.getGrupoPorFiltrosAsig(observacionAsignaturaVO);
+		List<LogObservacionAsignaturaDto> lista = new ArrayList<>();
+		for (int i = 0; i < obsAsignatura.length; i++) {
+			for (ObservacionVO observacionVO : listaObservacionAsignatura) {
+				if (obsAsignatura[i].equals(String.valueOf(observacionVO.getCodigo())) && !obsObservacion[i].equals(observacionVO.getObservacion())) {
+					LogObservacionAsignaturaDto dto = new LogObservacionAsignaturaDto();
+					dto.setMetodologia(metodologia);
+					dto.setGrado(grado);
+					dto.setGrupo(grupo);
+					dto.setPeriodo(String.valueOf(observacionAsignaturaVO.getObsPeriodo()));
+					dto.setAsignatura(observacionVO.getNombre());
+					dto.setObservacion(obsObservacion[i]);
+					lista.add(dto);
+				}
+			}
+		}
+		String retorno = new Gson().toJson(lista);
+		return retorno;
 	}
 
 	private void periodoNuevo(HttpServletRequest request, HttpSession session,

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="AgendaApp">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Agenda SED Mujer</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+            name="viewport">
+
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet"
+              href="css/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="css/font-awesome/css/ionicons.min.css">
+
+        <!-- iCheck -->
+        <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
+        <link rel="stylesheet" href="plugins/iCheck/all.css">
+        <!-- Morris chart -->
+        <link rel="stylesheet" href="plugins/morris/morris.css">
+        <!-- Date Picker -->
+        <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
+        <!-- Daterange picker -->
+        <link rel="stylesheet"
+              href="plugins/daterangepicker/daterangepicker-bs3.css">
+        <!-- bootstrap wysihtml5 - text editor -->
+        <link rel="stylesheet" href="css/bootstrap3-wysihtml5.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet"
+              href="plugins/datatables/dataTables.bootstrap.css">
+        <!-- Bootstrap Color Picker -->
+        <link rel="stylesheet"
+              href="plugins/colorpicker/bootstrap-colorpicker.min.css">
+        <!-- Bootstrap time Picker -->
+        <link rel="stylesheet"
+              href="plugins/timepicker/bootstrap-timepicker.min.css">
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+                     folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+        <link rel="stylesheet" href="css/angular-datatables.css">
+        <link rel="stylesheet" href="css/angularjs-datetime-picker.css">
+		
+    </head>
+    <body class="hold-transition skin-blue sidebar-mini">
+        <div class="wrapper">
+            <div class="content-wrapper">
+                <section class="content">
+<!--                    <div><mc-messages></mc-messages></div>-->
+                    <div ng-show="globals.currentUser" class="" ng-include src="'pages/home/header.html'"></div>
+                    <div id="divLoadingGeneral">
+						<div ng-view></div>
+					</div>
+                </section>
+            </div>
+        </div>
+        <!-- ./wrapper -->
+
+        
+		<script src="lib/jquery.js"></script>
+        <script src="lib/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="lib/bootstrap.min.js"></script>
+        <!-- date-range-picker -->
+        <script src="plugins/daterangepicker/daterangepicker.js"></script>
+        <!-- bootstrap color picker -->
+        <script src="plugins/colorpicker/bootstrap-colorpicker.min.js"></script>
+        <!-- bootstrap time picker -->
+        <script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
+        <!-- Morris.js charts -->
+        <script src="lib/raphael-min.js"></script>
+        <script src="plugins/morris/morris.min.js"></script>
+        
+        <!-- daterangepicker -->
+        <script src="lib/moment.min.js"></script>
+        <script src="plugins/daterangepicker/daterangepicker.js"></script>
+        <!-- datepicker -->
+        <script src="plugins/datepicker/bootstrap-datepicker.js"></script>
+        <!-- Bootstrap WYSIHTML5 -->
+        <script
+        src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+        
+        <!-- FastClick -->
+        <script src="plugins/fastclick/fastclick.min.js"></script>
+        
+
+        <!-- AdminLTE App -->
+        
+        <!-- AdminLTE for demo purposes -->
+        <script src="dist/js/demo.js"></script>
+		
+		<!--Angular-->
+
+        <script src="lib/angular.min.js"></script>
+        <script src="lib/angular-route.min.js"></script>
+        <script src="lib/angular-cookies.min.js"></script>
+        <script src="lib/jquery.dataTables.min.js"></script>
+        <script src="lib/angular-datatables.min.js"></script>
+        <script src="lib/datatables.min.js"></script>
+        <script src="lib/angularjs-datetime-picker.min.js"></script>
+        <script src="lib/angular-locale_es-co.js"></script>
+        <script src="lib/angular-material.js"></script>
+        <script src="lib/angular-material.min.js"></script>
+                
+
+        <!--Configuracion-->
+        <script src="js/config/app.js"></script>
+        <script src="js/config/routes.js"></script>
+        <script src="js/config/config.js"></script>
+
+        <!--librerias-->
+        <script src="lib/message-center.js"></script>
+        <script src="lib/constantes.js"></script>
+        <script src="lib/angular-resource.js"></script>
+        <script src="lib/angular-route.js"></script>
+        <script src="lib/paramsApp.js"></script>
+        <script src="lib/dirPagination.js"></script>
+        <script src="lib/angular-confirm.js"></script>
+        <script src="lib/ui-bootstrap-tpls-0.10.0.js"></script>
+        <script src="lib/bootstrap-datetimepicker.js"></script>
+        <script src="lib/spin.min.js"></script>
+		
+        <!-- 	Declaracion de los service -->
+        <script src="js/servicios/permisos/PermisoSrv.js"></script>
+        <script src="js/servicios/permisos/AdminPermisosSrv.js"></script>
+        
+        <!--configInicial-->
+        <script src="js/controladores/configInicial/paginationAngelusController.js"></script>
+        <script src="js/controladores/permisos/formPermisosCtrl.js"></script>
+        <script src="js/controladores/permisos/adminPermisosCtrl.js"></script>
+        <script src="js/controladores/permisos/reposicionCtrl.js"></script>
+        
+    </body>
+</html>

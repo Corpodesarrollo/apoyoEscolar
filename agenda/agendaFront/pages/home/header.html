@@ -1,0 +1,34 @@
+<div>
+	<div ng-show="globals.currentUser.rol == 1">
+		<div class="box-header with-border text-right">
+			<div class="row">
+				<div class="col-sm-7 text-left">
+					<img src="img/logo_directv.png" width="15%">
+				</div>
+				<div class="col-sm-5">
+					<h1 class="box-title">
+						<p><font size="3">Ultima Sesion: {{globals.currentUser.fecha}}</font></p>
+						<p><strong>{{globals.currentUser.nombre}}</strong></p>
+						<p>Administrador</p>
+						<p><a href="#/login">Cerrar sesion</a></p>
+					</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-show="globals.currentUser.rol == 2">
+		<div class="box-header with-border text-right">
+			<div class="col-sm-7 text-left">
+				<img src="img/logo_directv.png" width="15%">
+			</div>
+			<div class="col-sm-5">
+				<h1 class="box-title">
+					<p><font size="3">Ultima Sesion: {{globals.currentUser.fecha}}</font></p>
+					<p><strong>{{globals.currentUser.nombre}}</strong></p>
+					<p>Agente</p>
+					<p><a href="#/login">Cerrar sesion</a></p>
+				</h1>
+			</div>
+		</div>
+	</div>
+</div>

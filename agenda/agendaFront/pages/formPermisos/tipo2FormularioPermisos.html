@@ -1,0 +1,173 @@
+<!--traslado de seguridad social y cesantias-->
+<div>
+    <div>
+        <div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.valuePension.$invalid && !form.pensiones.$pristine}">
+                    <div>
+                        <div class="input-group" >
+                            <label class="control-label" >Fondo de Pensiones</label>
+                            <br>
+                            <input type="checkbox" ng-model="checkboxModel.valuePension">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.pensionesA.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.pensionesA.$dirty && form.pensionesA.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.pensionesDe.$invalid && !form.pensionesDe.$pristine}">
+                    <label class="control-label" >De</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="pensionesDe" placeholder="pensionesDe" class="form-control" ng-model="datosUsuario.pensionesDe" type="text" maxlength="10" ng-pattern="letrasModel" ng-disabled="!checkboxModel.valuePension"
+                                   ng-required="checkboxModel.valuePension">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.pensionesD.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.pensionesD.$dirty && form.pensionesB.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.pensionesA.$invalid && !form.pensionesA.$pristine}">
+                    <label class="control-label" >A</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="pensionesA" placeholder="pensionesA" class="form-control" ng-model="datosUsuario.pensionesA" type="text" maxlength="10" ng-pattern="letrasModel" ng-disabled="!checkboxModel.valuePension"
+                                   ng-required="checkboxModel.valuePension">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.pensionesA.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.pensionesA.$dirty && form.pensionesA.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>       
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.fPension.$invalid && !form.fPension.$pristine}">
+                    <label class="control-label" >Fecha Afiliacion Pension</label> 
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                        <div class="input-group-addon" ng-show="checkboxModel.valuePension">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <input type="text" class="form-control" ng-model="datosUsuario.fePensiones" ng-disabled="!checkboxModel.valuePension" ng-required="checkboxModel.valuePension">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.valueEps.$invalid && !form.valueEps.$pristine}">
+
+                    <div>
+                        <div class="input-group" >
+                            <label class="control-label" >EPS</label>
+                            <br>
+                            <input type="checkbox" ng-model="checkboxModel.valueEps">
+
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.valueEps.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.valueEps.$dirty && form.valueEps.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.epsDe.$invalid && !form.epsDe.$pristine}">
+                    <label class="control-label" >De</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="epsDe" placeholder="epsDe" class="form-control" ng-model="datosUsuario.epsDe"  type="text" maxlength="10" ng-pattern="letrasModel" ng-disabled="!checkboxModel.valueEps"
+                                   ng-required="checkboxModel.valueEps">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.epsDe.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.epsDe.$dirty && form.epsDe.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.epsA.$invalid && !form.epsA.$pristine}">
+                    <label class="control-label" >A</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="epsA" placeholder="epsA" class="form-control" ng-model="datosUsuario.epsA"  type="text" maxlength="10" ng-pattern="letrasModel" ng-disabled="!checkboxModel.valueEps"
+                                   ng-required="checkboxModel.valueEps">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.epsA.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.epsA.$dirty && form.epsA.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.fEps.$invalid && !form.fEps.$pristine}">
+                    <label class="control-label" >Fecha Afiliacion EPS</label> 
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                        <div class="input-group-addon" ng-show="checkboxModel.valueEps">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <input type="text" class="form-control" ng-model="datosUsuario.feEps" ng-disabled="!checkboxModel.valueEps" ng-required="checkboxModel.valueEps">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.valueCesantias.$invalid && !form.valueCesantias.$pristine}">
+
+                    <div>
+                        <div class="input-group" >
+                            <label class="control-label" >Fondo de Cesantias </label>
+                            <br>
+                            <input type="checkbox" ng-model="checkboxModel.valueCesantias">
+
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.valueCesantias.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.valueCesantias.$dirty && form.valueCesantias.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.cesantiasDe.$invalid && !form.cesantiasDe.$pristine}">
+                    <label class="control-label" >De</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="cesantiasDe" placeholder="cesantiasDe" class="form-control" ng-model="datosUsuario.cesantiasDe" type="text" maxlength="10" ng-pattern="letrasModel" ng-disabled="!checkboxModel.valueCesantias"
+                                   ng-required="checkboxModel.valueCesantias">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.cesantiasDe.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.cesantiasDe.$dirty && form.cesantiasDe.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.cesantiasA.$invalid && !form.cesantiasA.$pristine}">
+                    <label class="control-label" >A</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="cesantiasA" placeholder="cesantiasA" class="form-control" ng-model="datosUsuario.cesantiasA" type="text" maxlength="10" ng-pattern="letrasModel" ng-disabled="!checkboxModel.valueCesantias"
+                                   ng-required="checkboxModel.valueCesantias">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.cesantiasA.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.cesantiasA.$dirty && form.cesantiasA.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.fCesantias.$invalid && !form.fCesantias.$pristine}">
+                    <label class="control-label" >Fecha Afiliacion Cesantias</label> 
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                        <div class="input-group-addon" ng-show="checkboxModel.valueCesantias">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <input type="text" class="form-control" ng-model="datosUsuario.feCesantias" ng-disabled="!checkboxModel.valueCesantias" ng-required="checkboxModel.valueCesantias">
+                    </div>
+                </div>
+            </div>
+            <div><br></div>
+        </div>
+    </div>
+</div>

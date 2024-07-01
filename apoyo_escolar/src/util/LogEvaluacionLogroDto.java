@@ -6,6 +6,17 @@ import com.google.gson.annotations.SerializedName;
 
 public class LogEvaluacionLogroDto {
 	
+	@SerializedName("Tipo de identificaci&oacute;n")
+	private String tipoIdentificacion;
+	
+	public void setTipoIdentificacion(String tipoIdentificacion){
+		this.tipoIdentificacion=tipoIdentificacion;
+	}
+
+	public String getTipoIdentificacion(){
+		return this.tipoIdentificacion;
+	}
+	
 	@SerializedName("N&uacute;mero Identificaci&oacute;n")
 	private String numeroIdentificacion;
 

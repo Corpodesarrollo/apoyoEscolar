@@ -1,0 +1,136 @@
+<div ng-show ="tipo3">
+    <div class="row">
+         <div class="col-sm-12">
+            <div class="form" ng-class="{ 'has-error' : form.vacaciones.$invalid && !form.vacaciones.$pristine}">
+                <label class="control-label" >Permiso por: </label>
+                <div>
+                        <input type="hidden" name="vacaciones" ng-model="datosUsuario.tipoVacaciones" ng-required="tipo3">
+                        <label>
+                        <input type="radio"  ng-model="datosUsuario.tipoVacaciones" value="1" ng-change="validarVacaciones()">
+                            Reprogramacion &nbsp; &nbsp;
+                        </label>
+                        <label>
+                        <input type="radio"  ng-model="datosUsuario.tipoVacaciones" value="2" ng-change="validarVacaciones()">
+                            Aplazamiento &nbsp; &nbsp;
+                        </label>
+                         <label>
+                        <input type="radio"  ng-model="datosUsuario.tipoVacaciones" value="3" ng-change="validarVacaciones()">
+                            Interrupcion &nbsp; &nbsp;
+                        </label>
+                        <label>
+                        <input type="radio"  ng-model="datosUsuario.tipoVacaciones" value="0" ng-change="validarVacaciones()">
+                            Ninguno &nbsp; &nbsp;
+                        </label>
+                    <span class="text-danger pull-right" ng-show="form.tipoVacaciones.$pristine && form.tipoVacaciones.$error.required">Campo requerido</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row" ng-show="mostrarResolucion">
+        <div class="col-sm-3">
+                
+            </div>
+        <div class="col-sm-5">
+            <div class="form" ng-class="{ 'has-error' : form.resolucion.$invalid && !form.resolucion.$pristine}">
+                <label class="control-label" >Resolución de aplazamiento o interrupción</label> 
+                <div>
+                    <div class="input-group" >
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                        <input name="resolucion" placeholder="resolucion" class="form-control" ng-model="datosUsuario.resolucion" 
+                               ng-required="mostrarResolucion" type="text" maxlength="10" ng-pattern="letrasModel">
+                    </div>
+                    <span class="text-danger pull-right" ng-show="form.resolucion.$error.pattern" >C&#225;racter no permitido</span>
+                    <span class="text-danger pull-right" ng-show="form.resolucion.$dirty && form.resolucion.$error.required">Campo requerido</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form" ng-class="{ 'has-error' : form.fResolucion.$invalid && !form.fResolucion.$pristine}">
+                <label class="control-label" >Fecha Resolución</label> 
+                <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                    <input type="text" class="form-control" ng-model="datosUsuario.fResolucion" ng-required="mostrarResolucion">
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <div ng-show="mostrarFechaVacaciones">
+        
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.diasDisfrutar.$invalid && !form.diasDisfrutar.$pristine}">
+                    <label class="control-label" >Días a Disfrutar</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="diasDisfrutar" placeholder="diasDisfrutar" class="form-control" ng-model="datosUsuario.diasDisfrutar" 
+                                   type="text" maxlength="10" ng-pattern="letrasModel" ng-required="mostrarFechaVacaciones">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.diasDisfrutar.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.diasDisfrutar.$dirty && form.diasDisfrutar.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                
+                <div class="form" ng-class="{ 'has-error' : form.diasPendientes.$invalid && !form.diasPendientes.$pristine}">
+                    <label class="control-label" >Días pendientes</label> 
+                    <div>
+                        <div class="input-group" >
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-info-sign"></i></span>
+                            <input name="diasPendientes" placeholder="diasPendientes" class="form-control" ng-model="datosUsuario.diasPendientes"
+                                   type="text" maxlength="10" ng-pattern="letrasModel" ng-required="mostrarFechaVacaciones">
+                        </div>
+                        <span class="text-danger pull-right" ng-show="form.diasPendientes.$error.pattern" >C&#225;racter no permitido</span>
+                        <span class="text-danger pull-right" ng-show="form.diasPendientes.$dirty && form.diasPendientes.$error.required">Campo requerido</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.fInicio.$invalid && !form.fInicio.$pristine}">
+                    <label class="control-label" >Fecha de Disfrute Inicial</label> 
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <input type="text" class="form-control" ng-model="datosUsuario.fInicio" ng-required="mostrarFechaVacaciones">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form" ng-class="{ 'has-error' : form.fHasta.$invalid && !form.fHasta.$pristine}">
+                    <label class="control-label" >Fecha de Disfrute Final</label> 
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy/mm/dd">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <input type="text" class="form-control" ng-model="datosUsuario.fHasta" ng-required="mostrarFechaVacaciones">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-8">
+                <br>
+                   <div class="custom-file">
+                       <label class="control-label" for="customFileLang">Seleccionar Archivo</label>
+                       <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+                       <input type="file" name="fileVacaciones" uploader-model="datosUsuario.fileVacaciones" ng-required="mostrarFechaVacaciones"/>
+                   </div>
+            </div>
+            
+        </div>
+        
+        
+    </div>
+
+</div>

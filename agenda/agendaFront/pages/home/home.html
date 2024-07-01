@@ -1,0 +1,15 @@
+<div ng-show="globals.currentUser.rol == 1">
+	<div class="row">
+		<div class="col-sm-6" style="text-align:right">	
+			<p class="control-label"><strong>Gestionar Usuarios</strong></p>
+			<img src="img/usuarios.png" class="img-circle" alt="Gestionar usuarios"  title="Gestionar usuarios" width="25%" ng-click="gestionarUsuarios()">
+		</div>
+		<div class="col-sm-6">							
+			<p class="control-label"><strong>Gestionar Colas</strong></p>
+			<img src="img/colas.png" class="img-circle" title="Gestionar Colas" alt="Gestionar Colas" ng-click="gestionarColas()" width="25%">
+		</div>
+	</div>
+</div>
+<div ng-show="globals.currentUser.rol == 2">
+	
+</div>

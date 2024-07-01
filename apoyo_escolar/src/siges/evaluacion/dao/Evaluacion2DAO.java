@@ -1160,4 +1160,108 @@ public class Evaluacion2DAO extends Dao{
 		return 0;
 	}
 	
+	public String[] getEstudiantePorId(String ide) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato[] = new String[6];
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("estudiantePorId"));
+			ps.setString(1, ide);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato[0] = rs.getString(1);
+				dato[1] = rs.getString(2);
+				dato[2] = rs.getString(3);
+				dato[3] = rs.getString(4);
+				dato[4] = rs.getString(5);
+				dato[5] = rs.getString(6);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getMetodologiaPorId(int ide) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getMetodologiaPorId"));
+			ps.setLong(1, ide);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getGradoPorId(int ide) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getGradoPorId"));
+			ps.setLong(1, ide);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getGrupoPorFilComportamiento(FiltroComportamiento filtroComportamiento) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getGrupoPorFilComportamiento"));
+			ps.setLong(1, filtroComportamiento.getFilInstitucion());
+			ps.setLong(2, filtroComportamiento.getFilSede());
+			ps.setLong(3, filtroComportamiento.getFilJornada());
+			ps.setLong(4, filtroComportamiento.getFilGrado());
+			ps.setLong(5, filtroComportamiento.getFilGrupo());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
+	public String getDimensionPorId(int ide) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato = "";
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("getDimensionPorId"));
+			ps.setLong(1, ide);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato = rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
+	
 }

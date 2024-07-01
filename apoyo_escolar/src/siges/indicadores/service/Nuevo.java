@@ -397,6 +397,15 @@ public class Nuevo extends Service {
 				log.setPeriodoInicial(logroE.getLogPeriodoIni());
 				log.setTipoCargue("individual");
 				log.setVigencia(String.valueOf(logroE.getLogVigencia()));
+
+				List<ItemVO> docentes = indicadoresDAO.getListaDocenteAsignatura(logroE.getLogInstitucion(), logroE.getLogMetodologia(), logroE.getLogVigencia(), logroE.getLogGrado(), logroE.getLogAsignatura());
+				for(int i=0;i<docentes.size();i++){
+					ItemVO obj = docentes.get(i);
+					if(obj.getCodigo()==logroE.getLogDocente()){
+						log.setDocente(obj.getNombre());
+						break;
+					}
+				}
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);
@@ -573,6 +582,15 @@ public class Nuevo extends Service {
 				log.setPeriodoInicial(logro.getLogPeriodoIni());
 				log.setTipoCargue("individual");
 				log.setVigencia(String.valueOf(logro.getLogVigencia()));
+
+				List<ItemVO> docentes = indicadoresDAO.getListaDocenteAsignatura(logro.getLogInstitucion(), logro.getLogMetodologia(), logro.getLogVigencia(), logro.getLogGrado(), logro.getLogAsignatura());
+				for(int i=0;i<docentes.size();i++){
+					ItemVO obj = docentes.get(i);
+					if(obj.getCodigo()==logro.getLogDocente()){
+						log.setDocente(obj.getNombre());
+						break;
+					}
+				}
 				
 				Gson gson = new Gson();
 				jsonString = gson.toJson(log);

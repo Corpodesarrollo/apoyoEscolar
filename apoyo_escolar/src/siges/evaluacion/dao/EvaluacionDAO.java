@@ -1963,6 +1963,30 @@ public class EvaluacionDAO extends Dao {
 			}
 		}
 	}
+	
+	
+	public String[] getEstudiantePorNumDoc(String numDoc) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String dato[] = new String[5];
+		try {
+			cn = cursor.getConnection();
+			ps = cn.prepareStatement(rb.getString("estudiantePorNumDoc"));
+			ps.setString(1, numDoc);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dato[0] = rs.getString(1);
+				dato[1] = rs.getString(2);
+				dato[2] = rs.getString(3);
+				dato[3] = rs.getString(4);
+				dato[4] = rs.getString(5);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dato;
+	}
 
 	/**
 	 * Funcinn: Insertar Evaluacinn Asignatura <br>
