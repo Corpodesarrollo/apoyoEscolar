@@ -36,7 +36,6 @@ import util.LogEvaluacionDimensionDto;
 import util.LogEvaluacionDto;
 import util.LogEvaluacionLogroDetalleDto;
 import util.LogEvaluacionLogroDto;
-import utils.system;
 
 /**
  * Nombre: ControllerEvaluacionSave<BR>
@@ -203,7 +202,7 @@ public class ControllerEvaluacionSave extends HttpServlet {
 				case ParamsVO.EVAL_ASI:// asig
 					if (!insertarAsignatura(request, login, filtroEvaluacion)){
 						request.setAttribute("mensaje", mensaje);
-					} else {				
+					} else {
 						String[] arrString  = stringEvalAsignatura(estudiantes, filtroEvaluacion);
 						bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
 								Integer.parseInt(login.getJornadaId()), 3, 
@@ -586,6 +585,28 @@ public class ControllerEvaluacionSave extends HttpServlet {
 								logEvaluacionDto.setNotaRecuperada(null);
 							}
 							list.add(logEvaluacionDto);
+						} else{
+							if (old[6] != null) {
+								LogEvaluacionDto logEvaluacionDto = new LogEvaluacionDto();
+								logEvaluacionDto.setNumeroIdentificacion(old[1]);
+								String nombreC = old[4];
+								if (old[5] != null && !old[5].equals("")) {
+									nombreC = nombreC + ' ' + old[5];
+								}
+								nombreC = nombreC + ' ' + old[2];
+								if (old[3] != null && !old[3].equals("")) {
+									nombreC = nombreC + ' ' + old[3];
+								}
+								logEvaluacionDto.setNombreCompleto(nombreC);
+								String[] datoEstudiante = evaluacionDAO.getEstudiantePorNumDoc(old[1]);
+								logEvaluacionDto.setTipoIdentificacion(datoEstudiante[0]);
+								logEvaluacionDto.setGrado(filtroEvaluacion.getGrado_());
+								logEvaluacionDto.setGrupo(filtroEvaluacion.getGrupo_());
+								logEvaluacionDto.setPeriodo(filtroEvaluacion.getPeriodo());
+								logEvaluacionDto.setMateria(filtroEvaluacion.getAsignatura_());
+								logEvaluacionDto.setNotaActualizada("Nota eliminada");
+								list.add(logEvaluacionDto);
+							}
 						}
 					}
 				}
