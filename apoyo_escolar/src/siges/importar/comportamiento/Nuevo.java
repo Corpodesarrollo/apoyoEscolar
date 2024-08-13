@@ -3,8 +3,10 @@ package siges.importar.comportamiento;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
@@ -21,6 +23,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
+import com.google.gson.Gson;
+
 import siges.common.service.Service;
 import siges.common.vo.Params;
 import siges.dao.Cursor;
@@ -33,6 +37,7 @@ import siges.importar.beans.UrlImportar;
 import siges.importar.dao.ImportarDAO;
 import siges.login.beans.Login;
 import siges.plantilla.comportamiento.dao.ComportamientoDAO;
+import util.BitacoraCOM;
 
 /**  
  * 24/08/2007
@@ -60,6 +65,7 @@ public class Nuevo extends Service {
 		try {
 			FICHA = FICHA_COMPORTAMIENTO;
 			usuVO = (Login) session.getAttribute("login");
+			String loginBitacora = (String)request.getSession().getAttribute("loginBitacora");
 			//String file = 
 			UrlImportar url=subirFile(request, usuVO);
 			if(url!=null){
@@ -100,6 +106,7 @@ public class Nuevo extends Service {
 									break;
 									case 1://Bien
 										request.setAttribute("mensaje", prefijo+"Plantilla importada satisfactoriamente");
+										this.guardarBitacora(loginBitacora, usuVO, "Evaluación Comportamiento");
 									break;
 								}
 							break;
@@ -114,6 +121,17 @@ public class Nuevo extends Service {
 		dispatcher[0] = String.valueOf(Params.INCLUDE);
 		dispatcher[1] = FICHA;
 		return dispatcher;
+	}
+	
+	private void guardarBitacora(String loginBitacora, Login login, String tipo){
+		BitacoraCOM bitacoraCOM = new BitacoraCOM();
+		Map<String, String> descripcion = new HashMap<String, String>();
+		descripcion.put("Archivo importado", tipo);
+		String sDescripcion = new Gson().toJson(descripcion);
+		bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+				Integer.parseInt(login.getJornadaId()), 3, 
+				login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+				3309, 1, loginBitacora, sDescripcion);
 	}
 
 	

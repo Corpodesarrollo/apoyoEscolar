@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
@@ -32,6 +34,9 @@ import siges.importar.Excel;
 import siges.importar.dao.ImportarDAO;
 import siges.login.beans.Login;
 import siges.util.Properties;
+
+import com.google.gson.Gson;
+import util.BitacoraCOM;
 
 /**
  * siges.importar.evaluacion<br>
@@ -266,6 +271,7 @@ public class ControllerImportarSave extends HttpServlet {
 			Login login, String[] nombre, ImportarDAO importarDAO)
 			throws ServletException, IOException {
 		login = (Login) request.getSession().getAttribute("login");
+		String loginBitacora = (String)request.getSession().getAttribute("loginBitacora");
 		String pathPlantilla = null;
 		String pathDownload = null;
 		String relativo = null;
@@ -285,9 +291,7 @@ public class ControllerImportarSave extends HttpServlet {
 			pathDownload = Ruta.get(getServletContext(), path);// path del nuevo
 																// archivo
 			// validar estructura del archivo*/
-			if (!excel.validarFormatoAsignatura(tipo, nombre, pathPlantilla,
-					pathDownload, params, login.getUsuarioId(),
-					login.getPerfil())) {
+			if (!excel.validarFormatoAsignatura(tipo, nombre, pathPlantilla, pathDownload, params, login.getUsuarioId(), login.getPerfil())) {
 				if (!excel.getError()) {
 					ponerReporte(
 							login.getUsuarioId(),
@@ -314,6 +318,7 @@ public class ControllerImportarSave extends HttpServlet {
 				}
 				request.setAttribute("resultado", importarDAO.getResultado());
 				request.setAttribute("resultado2", importarDAO.getResultado2());
+				this.guardarBitacora(loginBitacora, login, "Evaluación Asignatura");
 			}
 			break;
 		case Properties.PLANTILLAAREADESC:// AREA
@@ -358,6 +363,7 @@ public class ControllerImportarSave extends HttpServlet {
 				}
 				request.setAttribute("resultado", importarDAO.getResultado());
 				request.setAttribute("resultado2", importarDAO.getResultado2());
+				this.guardarBitacora(loginBitacora, login, "Evaluación Área");
 			}
 			break;
 		case Properties.PLANTILLAPREE:// PREESCOLAR
@@ -408,10 +414,22 @@ public class ControllerImportarSave extends HttpServlet {
 					request.setAttribute("resultado3", excel.getAdvertencia());
 				}
 				request.setAttribute("resultado", importarDAO.getResultado());
+				this.guardarBitacora(loginBitacora, login, "Evaluación Dimensiones");
 			}
 			break;
 		}
 		return null;
+	}
+	
+	private void guardarBitacora(String loginBitacora, Login login, String tipo){
+		BitacoraCOM bitacoraCOM = new BitacoraCOM();
+		Map<String, String> descripcion = new HashMap<String, String>();
+		descripcion.put("Archivo importado", tipo);
+		String sDescripcion = new Gson().toJson(descripcion);
+		bitacoraCOM.insertarBitacora(Long.parseLong(login.getInstId()), 
+				Integer.parseInt(login.getJornadaId()), 3, 
+				login.getPerfil(), Integer.parseInt(login.getSedeId()), 
+				3309, 1, loginBitacora, sDescripcion);
 	}
 
 	/**

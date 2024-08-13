@@ -24,7 +24,7 @@ public class BitacoraCOM {
 	
 	public String insertarBitacora(long colegio,int jornada,int modulo,String perfil,int sede,int submodulo,int tipoLog,String usuario, String descripcion){
 		String retorno = "";
-		try {
+		try {			
 			String[] loginBit = usuario.split("-");						
 			String token = this.getToken(loginBit[0], loginBit[1]);
 			
