@@ -539,6 +539,10 @@ public class ControllerEvaluacionSave extends HttpServlet {
 
 	private String[] stringEvalAsignatura(List<String[]> notasOld, FiltroBeanEvaluacion filtroEvaluacion){
 		try {
+			
+			Gson gsonx = new Gson();
+			System.out.println("FER:notasOld ->"+gsonx.toJson(notasOld));
+			
 			List<LogEvaluacionDto> list = new ArrayList<LogEvaluacionDto>();
 			String[] newNotas = filtroEvaluacion.getNota();
 			String[] newAusencias = filtroEvaluacion.getNota();
@@ -582,7 +586,11 @@ public class ControllerEvaluacionSave extends HttpServlet {
 							if (nuev.length > 2 && !nuev[2].equals("")) {
 								logEvaluacionDto.setNotaRecuperada(nuev[2]);
 							} else{
-								logEvaluacionDto.setNotaRecuperada(null);
+								if (old[8] != null && !old[8].equals("")) {
+									logEvaluacionDto.setNotaRecuperada("Nota eliminada");
+								} else{
+									logEvaluacionDto.setNotaRecuperada(null);
+								}
 							}
 							list.add(logEvaluacionDto);
 						} else{
